@@ -124,7 +124,7 @@ chip8.prototype.initialize = function(romimage) {
 
 chip8.prototype.emulateCycle = function() {
     // Fetch Opcode
-    this.opcode = this.memory[pc] << 8 | this.memory[pc + 1];
+    this.opcode = this.memory[this.pc] << 8 | this.memory[this.pc + 1];
 
     // Decode Opcode
     switch(this.opcode & 0xF000) {
@@ -133,9 +133,17 @@ chip8.prototype.emulateCycle = function() {
             switch(this.opcode & 0x000F) {
                 case 0x0000: // 0x00E0: Clears the screen
                     // Execute opcode
+                    for(var i = 0; i < this.gfx.length; i++) {
+                        this.gfx[i] = 0;
+                    }
+                    this.drawflag = true;
+                    this.pc += 2; // Increment the program counter.
                     break;
                 case 0x000E: // 0x00EE: Returns from subroutine
                     // Execute opcode
+                    this.sp--; // Move back down the stack.
+                    // We're going to jump, so no incrementing the program counter.
+                    this.pc = this.stack[this.sp]; // Stack pointer points to the last address on the stack.
                     break;
             }
             break;
@@ -306,6 +314,9 @@ chip8.prototype.emulateCycle = function() {
 
         case 0xC000: // 0xCXnn: Sets VX to a random number and nn
             // Execute opcode.
+            var randomNumber = Math.floor(Math.random() * 255); // This should be between 0x00 and 0xFF...
+            this.V[(this.opcode & 0x0F00) >> 8] = (randomNumber & (this.opcode & 0x00FF)) & 0x00FF;
+            this.pc += 2; // Increment the program counter.
             break;
 
         case 0xD000: // 0xDXYn: Draws a sprite at coordinate (VX, VY) that has a width of 8 pixels and a
@@ -355,9 +366,11 @@ chip8.prototype.emulateCycle = function() {
 
         case 0xE000:
             switch (this.opcode & 0x000F){
+            
                 case 0x000E: // 0xEX9E: Skips the next instruction if the key stored in VX is pressed
                     // Execute opcode.
                     break;
+                    
                 case 0x0001: // 0xEXA1: Skips the next instruction if the key stored in VX isn't pressed.
                     // Execute opcode.
                     break;
@@ -370,19 +383,38 @@ chip8.prototype.emulateCycle = function() {
 
                 case 0x0007: // 0xFX07: Sets VX to the value of the delay timer.
                     // Execute opcode.
+                    this.V[(this.opcode & 0x0F00) >> 8] = this.delay_timer;
+                    this.pc += 2; // Increment the program counter.
                     break;
+                    
                 case 0x000A: // 0xFX0A: A key press is awaited, and then stored in VX.
                     // Execute opcode.
                     break;
+                    
                 case 0x0015: // 0xFX15: Sets the delay timer to VX.
                     // Execute opcode.
+                    this.delay_timer = this.V[(this.opcode & 0x0F00) >> 8];
+                    this.pc += 2; // Increment the program counter.
                     break;
+                    
                 case 0x0018: // 0xFX18: Sets the sound timer to VX.
                     // Execute opcode.
+                    this.sound_timer = this.V[(this.opcode & 0x0F00) >> 8];
+                    this.pc += 2; // Increment the program counter.
                     break;
+                    
                 case 0x001E: // 0xFX1E: Adds VX to I.
                     // Execute opcode.
+                    // VF is set to 1 when there is overflow. This is undocumented, but utilised in Spaceflight 2019!
+                    this.V[0xF] = 0;
+                    if((this.V[(this.opcode & 0x0F00) >> 8] + this.I) > 0xFFF) {
+                        this.V[0xF] = 1;
+                    }
+                    this.I += this.V[(this.opcode & 0x0F00) >> 8];
+                    this.I &= 0xFFF;
+                    this.pc += 2; // Increment the program counter.
                     break;
+                    
                 case 0x0029: // 0xFX29: Sets I to the location of the sprite for the character in VX.
                              //         Characters 0-F (in HEX) are represented by a 4x5 font.
                     // Execute opcode.
@@ -394,14 +426,29 @@ chip8.prototype.emulateCycle = function() {
                     this.memory[I] = this.V[(0x0F00) >> 8] / 100;
                     this.memory[I + 1] = (this.V[(0x0F00) >> 8] / 10) % 10;
                     this.memory[I + 2] = (this.V[(0x0F00) >> 8] % 100) % 10;
-                    this.pc += 2;
+                    this.pc += 2; // Increment the program counter.
                     break;
 
                 case 0x0055: // 0xFX55: Stores V0 to VX in memory starting at address I.
                     // Execute opcode.
+                    var xAddr = (this.opcode & 0x0F00) >> 8;
+                    for(var i = 0; i <= xAddr; i++) {
+                        this.memory[this.I + i] = this.V[i];
+                    }
+                    // After the operation, I should be set to I + X + 1:
+                    this.I += xAddr + 1;
+                    this.pc += 2; // Increment the program counter.
                     break;
+                    
                 case 0x0065: // 0xFX65: Fills V0 to VX with values from memory starting at address I.
                     // Execute opcode.
+                    var xAddr = (this.opcode & 0x0F00) >> 8;
+                    for(var i = 0; i <= xAddr; i++) {
+                        this.V[i] = this.memory[this.I + i];
+                    }
+                    //After the operation, I shoul dbe set to I + X + 1:
+                    this.I += xAddr + 1;
+                    this.pc += 2; // Increment the program counter.
                     break;
             }
             break;
