@@ -142,6 +142,10 @@ chip8.prototype.emulateCycle = function() {
 
         case 0x1000: // 0x1nnn: Jump to address nnn
             // Execute opcode
+            this.stack[sp] = pc;
+            this.sp++;
+            // We're jumping... Don't increment the program counter, but point it somewhere else...
+            this.pc = this.opcode & 0x0FFF;
             break;
 
         case 0x2000: // 0x2nnn: Calls the subroutine at address nnn
@@ -154,22 +158,48 @@ chip8.prototype.emulateCycle = function() {
 
         case 0x3000: // 0x3Xnn: Skips the next instruction if VX equals nn
             // Execute opcode
+            if(this.V[(this.opcode & 0x0F00) >> 8] == (this.opcode & 0x0FF)) {
+                // It equal, so skip the next instruction.
+                this.pc += 4;
+            } else {
+                // Not equal, so keep on going.
+                this.pc += 2;
+            }
             break;
 
         case 0x4000: // 0x4Xnn: Skips the next instruction if VX doesn't equal nn.
             // Execute opcode
+            if(this.V[(this.opcode & 0x0F00) >> 8] != (this.opcode & 0x00FF)) {
+                // Not equal, so skip the next instruction.
+                this.pc += 4;
+            } else {
+                // It's equal, so continue.
+                this.pc += 2;
+            }
             break;
 
         case 0x5000: // 0x5XY0: Skips the next instruction if VX equals VY.
             // Execute opcode.
+            if(this.V[(this.opcode & 0x0F00) >> 8] == this.V[(this.opcode & 0x00F0) >> 4]) {
+                // VX and VY match! Skip the next instruction.
+                this.pc += 4;
+            } else {
+                // VX and VY are not the same. Keep going.
+                this.pc += 2;
+            }
             break;
 
         case 0x6000: // 0x6Xnn: Sets VX to nn.
             // Execute opcode.
+            this.V[(this.opcode & 0x0F00) >> 8] = (this.opcode & 0x00FF);
+            this.pc += 2; // Increment the program counter.
             break;
 
         case 0x7000: // 0x7Xnn: Adds nn to VX.
             // Execute opcode.
+            // Does this set VF on overflow?... There seems to be no documentation.
+            this.V[(this.opcode & 0x0F00) >> 8] += (this.opcode & 0x00FF);
+            this.pc += 2; // Increment the program counter.
             break;
 
         case 0x8000:
@@ -207,20 +237,47 @@ chip8.prototype.emulateCycle = function() {
                     } else {
                         this.V[0xF] = 0;
                     }
+                    this.V[(this.opcode & 0x0F00) >> 8] += this.V[(this.opcode & 0x00F0) >> 4];
                     this.pc += 2; // Increment the program counter.
                     break;
 
                 case 0x0005: // 0x8XY5: VY is subtracted from VX. VF is set to 0 when there's a borrow, and 1 when there isn't.
                     // Execute opcode
+                    // If VY > VX, there will be a borrow...
+                    if(this.V[(this.opcode & 0x00F0) >> 4] > this.V[(this.opcode & 0x0F00) >> 8]) {
+                        this.V[0xF] = 1; // Set the borrow flag.
+                    } else {
+                        this.V[0xF] = 0;
+                    }
+                    this.V[(this.opcode & 0x0F00) >> 8] -= this.V[(this.opcode & 0x00F0) >> 4];  // VX - VY
+                    this.pc += 2; // Increment the program counter.
                     break;
+
                 case 0x0006: // 0x8XY6: Shifts VX right by one. VF is set to the value of the least significant bit of VX before the shift.
                     // Execute opcode
+                    this.V[0xF] = this.V[(this.opcode & 0x0F00) >> 8] & 0x000F;
+                    this.V[(this.opcode & 0x0F00) >> 8] >>= 1; // Shift one right and store.
+                    this.pc += 2; // Incrment the program counter.
                     break;
+
                 case 0x0007: // 0x8XY7: Sets VX to VY-VX. VF is set to 0 when there's a borrow and 1 when there isn't.
                     // Execute opcode
+                    // If VX > VY, there will be a borrow...
+                    if(this.V[(this.opcode & 0x0F00) >> 8] > this.V[(this.opcode & 0x00F0) >> 4]) {
+                        this.V[0xF] = 0; // Set the borrow flag
+                    } else {
+                        this.V[0xF] = 1;
+                    }
+                    this.V[(this.opcode & 0x0F00) >> 8] = this.V[(this.opcode & 0x00F0) >> 4] - this.V[(this.opcode & 0x0F00) >> 8];
+                    this.pc += 2; // Increment the program counter.
                     break;
+
                 case 0x000E: // 0x8XYE: Shifts VX left by one. VF is set to the value of the most significant bit of VX before the shift.
                     // Execute opcode
+                    this.V[0xF] = this.V[(this.opcode & 0x0F00) >> 8] & 0x00F0; // Remember, it's only an 8-bit register!
+                    this.V[(this.opcode & 0x0F00) >> 8] <<= 1; // Shift left by one.
+                    this.V[(this.opcode & 0x0F00) >> 8] &= 0x00FF; // Do I need to do this? I suppose if there's a lot of shifts it could overflow...
+                    this.pc += 2; // Increment the program counter.
                     break;
             }
             break;
@@ -237,11 +294,14 @@ chip8.prototype.emulateCycle = function() {
         case 0xA000: // 0xAnnn: Sets I to the address nnn
             // Execute opcode.
             this.I = opcode & 0x0FFF;
-            this.pc += 2;
+            this.pc += 2; // Increment the program counter.
         break;
 
         case 0xB000: // 0xBnnn: Jumps to the address nnn plus V0
             // Execute opcode.
+            this.stack[sp] = this.pc;
+            this.sp++;
+            this.pc = (this.opcode & 0x0FFF) + this.V[0x0]; // Jumping, so no incrementing.
             break;
 
         case 0xC000: // 0xCXnn: Sets VX to a random number and nn
