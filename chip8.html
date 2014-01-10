@@ -1,0 +1,18 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <script type="text/javascript" src="Chip8TryTwo.js"></script>
+    </head>
+    <body>
+    <canvas id="chip8Screen"></canvas>
+    <script>
+        document.addEventListener('DOMContentLoaded',function() {
+            console.debug("DOM Loaded...");
+            var emu = new chip8Emu();
+
+            emu.beginEmulation("spaceinv.ch8","chip8Screen");
+
+        })
+    </script>
+    </body>
+</html>

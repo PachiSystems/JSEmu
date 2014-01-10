@@ -8,14 +8,20 @@ chip8Emu.prototype.beginEmulation = function(romimage,canvasID) {
         Please be as descriptive as possible. I'll try and put a test suite together when I have time.
      */
     this.setupGraphics(canvasID);
+    console.debug("Graphics setup complete");
+
     this.setupInput();
+    console.debug("Input setup complete");
 
     this.initialize();
+    console.debug("Initialisation complete");
+
     this.loadGame(romimage);
+    console.debug("ROM image loading complete");
 
     // Emulation loop
     while(true) {
-
+        console.debug("Emulation loop running");
         // Emulate one cycle
         this.emulateCycle();
 
@@ -30,7 +36,7 @@ chip8Emu.prototype.beginEmulation = function(romimage,canvasID) {
 };
 
 chip8Emu.prototype.setupGraphics = function(canvasID) {
-
+    this.screen = document.getElementById(canvasID).getContext('2d');
 };
 
 chip8Emu.prototype.setupInput = function() {
@@ -183,7 +189,7 @@ chip8Emu.prototype.loadGame = function(romimage) {
         Load the program into the memory. Check to make sure it's not too big as well...
      */
     var xhr = new XMLHttpRequest;
-    xhr.open("GET",romimage,true);
+    xhr.open("GET",romimage);
     xhr.responseType = "arraybuffer";
 
     xhr.onload = function() {
@@ -192,7 +198,8 @@ chip8Emu.prototype.loadGame = function(romimage) {
 
         if((4096 - 512) > program.length) {
 
-            console.log("This program will not fit into Chip-8 memory.");
+            console.error("This program will not fit into Chip-8 memory.");
+
         } else {
 
             for (var i = 0; i < program.length; i++) {
@@ -230,6 +237,10 @@ chip8Emu.prototype.emulateCycle = function() {
                     this.sp--; // Move back down the stack.
                     // We're going to jump, so no incrementing the program counter.
                     this.pc = this.stack[this.sp]; // Stack pointer points to the last address on the stack.
+                    break;
+
+                default:
+                    console.error("Unknown opcode [0x0000]: 0x" + this.opcode);
                     break;
             }
             break;
@@ -376,7 +387,7 @@ chip8Emu.prototype.emulateCycle = function() {
                     break;
 
                 default:
-                    console.log("Unknown opcode [0x8000]: 0x" + this.opcode);
+                    console.error("Unknown opcode [0x8000]: 0x" + this.opcode);
                     break;
             }
             break;
@@ -478,7 +489,7 @@ chip8Emu.prototype.emulateCycle = function() {
                     break;
 
                 default:
-                    console.log("Unknown opcode [0xE000]: 0x" + this.opcode);
+                    console.error("Unknown opcode [0xE000]: 0x" + this.opcode);
                     break;
             }
             break;
@@ -567,14 +578,14 @@ chip8Emu.prototype.emulateCycle = function() {
                     break;
 
                 default:
-                    console.log("Unknown opcode [0xF000]: 0x" + this.opcode);
+                    console.error("Unknown opcode [0xF000]: 0x" + this.opcode);
                     break;
 
             }
             break;
 
         default:
-            alert("Unknown opcode: 0x" + this.opcode);
+            console.error("Unknown opcode: 0x" + this.opcode);
     }
 
     // Update timers
