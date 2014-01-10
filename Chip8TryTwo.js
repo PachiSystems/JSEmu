@@ -1,13 +1,13 @@
 var chip8Emu = function() {};
 
-chip8Emu.prototype.beginEmulation = function(romimage) {
+chip8Emu.prototype.beginEmulation = function(romimage,canvasID) {
     /* EMULATION OF CHIP-8
         Call this function with the path of the ROM you want to use. That should be it...
         If it doesn't work, then there's something wrong... Obviously...
         You can submit a bug/issue at http://github.com/PachiSystems/JSEmu
         Please be as descriptive as possible. I'll try and put a test suite together when I have time.
      */
-    this.setupGraphics();
+    this.setupGraphics(canvasID);
     this.setupInput();
 
     this.initialize();
@@ -27,6 +27,71 @@ chip8Emu.prototype.beginEmulation = function(romimage) {
     }
 
     return 0;
+};
+
+chip8Emu.prototype.setupGraphics = function(canvasID) {
+
+};
+
+chip8Emu.prototype.setupInput = function() {
+    /* KEYPAD INITIALISATION
+     Chip 8 has a HEX based keypad. Since we need to use a PC keyboard, the following mapping is used:
+
+     PC Keyboard             Chip-8 Keypad
+     [1] [2] [3] [4]          [1] [2] [3] [C]
+     [Q] [W] [E] [R]          [4] [5] [6] [D]
+     [A] [S] [D] [F]          [7] [8] [9] [E]
+     [Z] [X] [C] [V]          [A] [0] [B] [F]
+
+     This object maps an ASCII keycode to the keypad HEX value.
+     */
+    this.keymap = {
+        49:0x1, // PC 1 -> C8 1
+        50:0x2, // PC 2 -> C8 2
+        51:0x3, // PC 3 -> C8 3
+        52:0xC, // PC 4 -> C8 C
+        81:0x4, // PC Q -> C8 4
+        87:0x5, // PC W -> C8 5
+        69:0x6, // PC E -> C8 6
+        82:0xD, // PC R -> C8 D
+        65:0x7, // PC A -> C8 7
+        83:0x8, // PC S -> C8 8
+        68:0x9, // PC D -> C8 9
+        70:0xE, // PC F -> C8 E
+        90:0xA, // PC Z -> C8 A
+        88:0x0, // PC X -> C8 0
+        67:0xB, // PC C -> C8 B
+        86:0xF  // PC V -> C8 F
+    };
+
+    this.lastKeyPressed = null;
+
+    /* KEYPRESS EVENT HANDLERS
+     This is a bit special... Normally the key handler should be a part of the emulation loop and
+     checked after a cycle. However, since JS doesn't have a way to poll the keyboard state, we are
+     going to have to capture the keypress and set a variable to the ASCII code when the key is down
+     and remove it when the key is up.
+     */
+    document.onkeydown = function (ev) {
+        var key = (ev || window.event).keyCode;
+        if(!(key in this.keymap)) {
+            // We're not pressing a key in the keymap, so ignore it and cancel out the keypress.
+            this.lastKeyPressed = null;
+            return true;
+        } else {
+            // We're pressing a key! Quick! Do something useful!
+            this.lastKeyPressed = this.keymap[key];
+        }
+    };
+
+    document.onkeyup = function (ev) {
+        // Unset the lastKeyPressed.
+        this.lastKeyPressed = null;
+    }
+
+    window.onblur = function() {
+        this.lastKeyPressed = null;
+    }
 };
 
 chip8Emu.prototype.initialize = function() {
@@ -110,65 +175,6 @@ chip8Emu.prototype.initialize = function() {
      */
     this.delay_timer = 0;
     this.sound_timer = 0;
-
-    /* KEYPAD INITIALISATION
-        Chip 8 has a HEX based keypad. Since we need to use a PC keyboard, the following mapping is used:
-
-          PC Keyboard             Chip-8 Keypad
-        [1] [2] [3] [4]          [1] [2] [3] [C]
-        [Q] [W] [E] [R]          [4] [5] [6] [D]
-        [A] [S] [D] [F]          [7] [8] [9] [E]
-        [Z] [X] [C] [V]          [A] [0] [B] [F]
-
-        This object maps an ASCII keycode to the keypad HEX value.
-     */
-    this.keymap = {
-        49:0x1, // PC 1 -> C8 1
-        50:0x2, // PC 2 -> C8 2
-        51:0x3, // PC 3 -> C8 3
-        52:0xC, // PC 4 -> C8 C
-        81:0x4, // PC Q -> C8 4
-        87:0x5, // PC W -> C8 5
-        69:0x6, // PC E -> C8 6
-        82:0xD, // PC R -> C8 D
-        65:0x7, // PC A -> C8 7
-        83:0x8, // PC S -> C8 8
-        68:0x9, // PC D -> C8 9
-        70:0xE, // PC F -> C8 E
-        90:0xA, // PC Z -> C8 A
-        88:0x0, // PC X -> C8 0
-        67:0xB, // PC C -> C8 B
-        86:0xF  // PC V -> C8 F
-    };
-
-    this.lastKeyPressed = null;
-
-    /* KEYPRESS EVENT HANDLERS
-        This is a bit special... Normally the key handler should be a part of the emulation loop and
-        checked after a cycle. However, since JS doesn't have a way to poll the keyboard state, we are
-        going to have to capture the keypress and set a variable to the ASCII code when the key is down
-        and remove it when the key is up.
-     */
-    document.onkeydown = function (ev) {
-        var key = (ev || window.event).keyCode;
-        if(!(key in this.keymap)) {
-            // We're not pressing a key in the keymap, so ignore it and cancel out the keypress.
-            this.lastKeyPressed = null;
-            return true;
-        } else {
-            // We're pressing a key! Quick! Do something useful!
-            this.lastKeyPressed = this.keymap[key];
-        }
-    };
-
-    document.onkeyup = function (ev) {
-        // Unset the lastKeyPressed.
-        this.lastKeyPressed = null;
-    }
-
-    window.onblur = function() {
-        this.lastKeyPressed = null;
-    }
 };
 
 chip8Emu.prototype.loadGame = function(romimage) {
