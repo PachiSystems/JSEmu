@@ -179,7 +179,8 @@ module ("OPCODE", {
 
         chip8.emulateCycle();
 
-        equal(chip8.pc, 0x200 + 2, "Program counter moved to next instruction when V" + randReg + " = " + chip8.V[randReg] + " but randNum = " + (randNum+1));
+        equal(chip8.pc, 0x200 + 2, "Program counter moved to next instruction when V" + randReg + " = " +
+              chip8.V[randReg] + " but randNum = " + (randNum+1));
     });
 
     test("[0x4Xnn]", function() {
@@ -187,7 +188,32 @@ module ("OPCODE", {
         /**
          * Skips the next instruction if VX doesn't equal nn.
          */
+        var randNum = Math.floor(Math.random() * (0x01 + 0xFF)),
+            randReg = Math.floor(Math.random() * (0x1 + 0xE)),
+            tempOpCode = 0x3000 | (randReg << 8) | randNum;
 
+        chip8.memory[0x200] = (tempOpCode & 0xFF00) >> 8;
+        chip8.memory[0x201] = tempOpCode & 0x00FF;
+
+        equal(chip8.memory[0x200] << 8 | chip8.memory[0x201], tempOpCode, "Opcode created successfully.");
+
+        chip8.V[randReg] = randNum;
+
+        chip8.emulateCycle();
+
+        equal(chip8.pc, 0x200 + 4, "Program counter skipped an instruction when V[" + randReg + "] = " +
+            chip8.V[randReg] + " but randNum = " + (randNum+1));
+
+        chip8.initialize();
+
+        tempOpCode = 0x3000 | (randReg << 8) | randNum + 1;
+        chip8.memory[0x200] = (tempOpCode & 0xFF00) >> 8;
+        chip8.memory[0x201] = tempOpCode & 0x00FF;
+        chip8.V[randReg] = randNum;
+
+        chip8.emulateCycle();
+
+        equal(chip8.pc, 0x200 + 2, "Program counter moved to the next instruction when V[" + randReg + "] = " + randNum);
     });
 
     test("[0x5XY0]", function() {
@@ -196,6 +222,25 @@ module ("OPCODE", {
          * Skips the next instruction if VX equals VY.
          */
 
+        // Using V0 and V1 for this test.
+        chip8.memory[0x200] = 0x50;
+        chip8.memory[0x201] = 0x10;
+        chip8.V[0] = 0x05;
+        chip8.V[1] = 0x05;
+
+        chip8.emulateCycle();
+
+        equal(chip8.pc, 0x204, "Next instruction skipped when V[X] = V[Y].");
+
+        chip8.initialize();
+        chip8.memory[0x200] = 0x50;
+        chip8.memory[0x201] = 0x10;
+        chip8.V[0] = 0x05;
+        chip8.V[1] = 0x10;
+
+        chip8.emulateCycle();
+
+        equal(chip8.pc, 0x202, "Program counter moved to next instruction when V[X] != V[Y].");
     });
 
     test("[0x6Xnn]", function() {
@@ -203,6 +248,14 @@ module ("OPCODE", {
         /**
          * Sets VX to nn.
          */
+        var randNum = Math.floor(Math.random() * (0x01 + 0xFF));
+        chip8.memory[0x200] = 0x66; // Using V6
+        chip8.memory[0x201] = randNum;
+
+        chip8.emulateCycle();
+
+        equal(chip8.V[6], randNum, "V[X] set successfully to a random number.");
+        equal(chip8.pc, 0x202, "Program counter incremented correctly");
 
     });
 
@@ -211,6 +264,17 @@ module ("OPCODE", {
         /**
          * Adds nn to VX.
          */
+        var randNum1 = Math.floor(Math.random() * (0x01 + 0xFF)),
+            randNum2 = Math.floor(Math.random() * (0x01 + 0xFF));
+        chip8.memory[0x200] = 0x70; // Use V[0] for this test.
+        chip8.memory[0x201] = randNum2;
+
+        chip8.V[0] = randNum1;
+
+        chip8.emulateCycle();
+
+        equal(chip8.V[0], randNum1 + randNum2, "Added nn to V[0] successfully.");
+        equal(chip8.pc, 0x202, "Program counter incremented correctly.");
 
     });
 
@@ -219,6 +283,17 @@ module ("OPCODE", {
         /**
          * Sets VX to the value of VY.
          */
+        var randNum = Math.floor(Math.random() * (0x01 + 0xFF));
+        chip8.memory[0x200] = 0x80; // Using V[0] as VX
+        chip8.memory[0x201] = 0x10; // Using V[1] as VY
+
+        chip8.V[1] = randNum;
+
+        chip8.emulateCycle();
+
+        equal(chip8.V[0], randNum, "V[X] equals the random number.");
+        equal(chip8.V[0],chip8.V[1], "V[X] equals V[Y].");
+        equal(chip8.pc, 0x202, "Program counter incremented correctly.");
 
     });
 
