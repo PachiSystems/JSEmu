@@ -11,16 +11,16 @@ chip8Emu.prototype.beginEmulation = function(romimage,canvasID) {
     var me = this;
 
     me.setupGraphics(canvasID);
-    console.debug("Graphics setup complete");
+    // console.debug("Graphics setup complete");
 
     me.setupInput();
-    console.debug("Input setup complete");
+    // console.debug("Input setup complete");
 
     me.initialize();
-    console.debug("Initialisation complete");
+    // console.debug("Initialisation complete");
 
     me.loadGame(romimage);
-    console.debug("ROM image loading complete");
+    // console.debug("ROM image loading complete");
 
     return 0;
 };
@@ -67,7 +67,9 @@ chip8Emu.prototype.setupInput = function() {
         86:0xF  // PC V -> C8 F
     };
 
-    me.lastKeyPressed = null;
+    // Create it and blank it.
+    me.key = new Array(16);
+    for (var i = 0;i<16;i++){me.key[i]=0;}
 
     /* KEYPRESS EVENT HANDLERS
      This is a bit special... Normally the key handler should be a part of the emulation loop and
@@ -77,32 +79,39 @@ chip8Emu.prototype.setupInput = function() {
      */
     window.onkeydown = function (ev) {
 
-        var key = (ev || window.event).keyCode;
+        var pressedKey = (ev || window.event).keyCode;
 
-        console.debug("KEY DOWN:" + key);
-
-        if(!(key in me.keymap)) {
-            // We're not pressing a key in the keymap, so ignore it and cancel out the keypress.
-            me.lastKeyPressed = null;
-
-            console.debug("KEY [" + key + "] NOT IN KEYMAP");
-
-        } else {
-            // We're pressing a key! Quick! Do something useful!
-            me.lastKeyPressed = me.keymap[key];
-
-            console.debug("KEY [" + key + "] MAPPED TO [" + me.keymap[key] + "]");
+        if(pressedKey in me.keymap) {
+            me.key[me.keymap[pressedKey]] = 1;
         }
     };
 
     window.onkeyup = function (ev) {
         // Unset the lastKeyPressed.
-        me.lastKeyPressed = null;
-        console.debug("KEY UP");
+        var releasedKey = (ev || window.event).keyCode;
+
+        if(releasedKey in me.keymap) {
+            me.key[me.keymap[releasedKey]] = 0;
+        }
     }
 
     window.onblur = function() {
-        me.lastKeyPressed = null;
+        me.key[0x0] = 0;
+        me.key[0x1] = 0;
+        me.key[0x2] = 0;
+        me.key[0x3] = 0;
+        me.key[0x4] = 0;
+        me.key[0x5] = 0;
+        me.key[0x6] = 0;
+        me.key[0x7] = 0;
+        me.key[0x8] = 0;
+        me.key[0x9] = 0;
+        me.key[0xA] = 0;
+        me.key[0xB] = 0;
+        me.key[0xC] = 0;
+        me.key[0xD] = 0;
+        me.key[0xE] = 0;
+        me.key[0xF] = 0;
     }
 };
 
@@ -190,11 +199,6 @@ chip8Emu.prototype.initialize = function() {
     me.delay_timer = 0;
     me.sound_timer = 0;
 
-    /* OTHER VARIABLES
-        These are other variables that get used at various times. Here are their initial states.
-     */
-    me.lastKeyPressed = null;
-
 };
 
 chip8Emu.prototype.loadGame = function(romimage) {
@@ -205,47 +209,47 @@ chip8Emu.prototype.loadGame = function(romimage) {
     /* GAME LOADING
         Load the program into the memory. Check to make sure it's not too big as well...
      */
+    if(romimage != "TEST_MODE") {
+        xhr.open("GET",romimage);
+        xhr.responseType = "arraybuffer";
 
-    xhr.open("GET",romimage);
-    xhr.responseType = "arraybuffer";
+        xhr.onload = function() {
 
-    xhr.onload = function() {
+            var program = new Uint8Array(xhr.response);
 
-        var program = new Uint8Array(xhr.response);
+            if(program.length > (4096 - 512)) {
 
-        if(program.length > (4096 - 512)) {
+                console.error("This program will not fit into Chip-8 memory.");
 
-            console.error("This program will not fit into Chip-8 memory.");
+            } else {
 
-        } else {
+                for (var i = 0; i < program.length; i++) {
 
-            for (var i = 0; i < program.length; i++) {
+                    me.memory[(i + 512)] = program[i];
 
-                me.memory[(i + 512)] = program[i];
+                }
+
+                // Emulation loop to trigger once our ROM has finished loading.
+                //while(true) {
+                //For test purposes, we're going to run just 10000 cycles
+                //for (var i = 0 ; i < 10000; i++) {
+                // Since it blocks the whole app, let's try a setInterval:
+                setInterval(function() {
+                    //console.debug("Emulation loop running");
+                    // Emulate one cycle
+                    me.emulateCycle();
+
+                    // If the draw flag is set, update the screen
+                    if(me.drawflag) {
+                        me.drawGraphics();
+                    }
+                },1); // Should give us about 30fps-ish
 
             }
 
-            // Emulation loop to trigger once our ROM has finished loading.
-            //while(true) {
-            //For test purposes, we're going to run just 10000 cycles
-            //for (var i = 0 ; i < 10000; i++) {
-            // Since it blocks the whole app, let's try a setInterval:
-            setInterval(function() {
-                //console.debug("Emulation loop running");
-                // Emulate one cycle
-                me.emulateCycle();
-
-                // If the draw flag is set, update the screen
-                if(me.drawflag) {
-                    me.drawGraphics();
-                }
-            },1); // Should give us about 30fps-ish
-
-        }
-
-    };
-    xhr.send();
-
+        };
+        xhr.send();
+    }
 };
 
 chip8Emu.prototype.emulateCycle = function() {
@@ -292,7 +296,7 @@ chip8Emu.prototype.emulateCycle = function() {
 
         case 0x2000: // 0x2nnn: Calls the subroutine at address nnn
             // Execute opcode
-            me.stack[me.sp] = me.pc;
+            me.stack[me.sp] = me.pc + 2; // If we don't increment the program counter here, we will just keep bouncing.
             me.sp++;
             // We're jumping... Don't increment the program counter, but point it somewhere else...
             me.pc = me.opcode & 0x0FFF;
@@ -508,7 +512,7 @@ chip8Emu.prototype.emulateCycle = function() {
             
                 case 0x000E: // 0xEX9E: Skips the next instruction if the key stored in VX is pressed
                     // Execute opcode.
-                    if (me.V[(me.opcode & 0x0F00) >> 8] == me.lastKeyPressed) {
+                    if (me.key[me.V[(me.opcode & 0x0F00) >> 8]] == 1) {
                         me.pc += 4; // Skip an instruction.
                     } else {
                         me.pc += 2; // Increment the program counter.
@@ -517,7 +521,7 @@ chip8Emu.prototype.emulateCycle = function() {
                     
                 case 0x0001: // 0xEXA1: Skips the next instruction if the key stored in VX isn't pressed.
                     // Execute opcode.
-                    if (me.V[(me.opcode & 0x0F00) >> 8] != me.lastKeyPressed) {
+                    if (me.key[me.V[(me.opcode & 0x0F00) >> 8]] == 0) {
                         me.pc += 4; // Skip an instruction.
                     } else {
                         me.pc += 2;
@@ -542,11 +546,22 @@ chip8Emu.prototype.emulateCycle = function() {
                     
                 case 0x000A: // 0xFX0A: A key press is awaited, and then stored in VX.
                     // Execute opcode.
-                    if(me.lastKeyPressed == null) {
-                        return; // If there isn't a key pressed, then we should just return and not increment the pc.
-                    } else {
-                        me.pc += 2; // YAY! A key was pressed! We can increment the program counter.
+                    var pressed = false;
+
+                    // Scan the keys to see if one was pressed.
+                    for (var i = 0 ; i < 16 ; i++) {
+                        if (me.key[i] != 0) {
+                            me.V[(me.opcode & 0x0F00) >> 8] = i;
+                            pressed = true;
+                        }
                     }
+
+                    // Check to see if we pressed something...
+                    if (!pressed) {
+                        return;
+                    }
+
+                    me.pc += 2; // Increment the program counter.
                     break;
                     
                 case 0x0015: // 0xFX15: Sets the delay timer to VX.
