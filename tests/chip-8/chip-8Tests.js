@@ -43,11 +43,26 @@ module("CPU");
         ok(gfxEmpty, "Graphics buffer is clear.");
         ok(regEmpty, "Registers are clear.");
         ok(staEmpty, "Stack is clear.");
-        equal(chip8.pc, 0x200, "Program counter pointing to start of program memory.");
-        equal(chip8.delay_timer, 0, "Delay timer at zero.");
-        equal(chip8.sound_timer, 0, "Sound timer at zero.");
-        equal(chip8.sp, 0, "Stack pointer at zero.");
-        equal(chip8.opcode, 0, "No opcode loaded.");
+
+        equal(chip8.pc,
+              0x200,
+              "Program counter pointing to start of program memory.");
+
+        equal(chip8.delay_timer,
+              0,
+              "Delay timer at zero.");
+
+        equal(chip8.sound_timer,
+              0,
+              "Sound timer at zero.");
+
+        equal(chip8.sp,
+              0,
+              "Stack pointer at zero.");
+
+        equal(chip8.opcode,
+              0,
+              "No opcode loaded.");
     });
 
 /**
@@ -60,10 +75,11 @@ module ("OPCODE", {
         chip8.initialize();
     }
 });
-    test("[0x00E0]", function() {
+    test("[0x00E0] - CLS", function() {
 
         /**
-         * Clear the screen
+         * 00E0 - CLS
+         * Clear the display.
          */
         chip8.memory[0x200] = 0x00;
         chip8.memory[0x201] = 0xE0;
@@ -78,16 +94,28 @@ module ("OPCODE", {
             }
         }
 
-        equal(graphicsEmpty,true,"Graphics buffer has been emptied.");
-        equal(chip8.drawflag,true,"Drawflag is set to true.");
-        equal(chip8.pc,0x200+0x2,"Program counter incremented from 0x200 to 0x202.");
+        equal(graphicsEmpty,
+              true,
+              "Graphics buffer has been emptied.");
+
+        equal(chip8.drawflag,
+              true,
+              "Drawflag is set to true.");
+
+        equal(chip8.pc,
+              0x202,
+              "Program counter incremented from 0x200 to 0x202.");
 
     });
 
-    test("[0x00EE]", function() {
+    test("[0x00EE] - RET", function() {
 
         /**
-         * Return from subroutine.
+         * 00EE - RET
+         * Return from a subroutine.
+         *
+         * The interpreter sets the program counter to the address at the top of the stack, then subtracts 1 from the
+         * stack pointer.
          */
         chip8.memory[0x200] = 0x00;
         chip8.memory[0x201] = 0xEE;
@@ -103,14 +131,22 @@ module ("OPCODE", {
 
         chip8.emulateCycle();
 
-        equal(chip8.sp, sp - 1, "Stack pointer decremented");
-        equal(chip8.pc, randAddr, "Jumped to correct random address at memory location " + randAddr);
+        equal(chip8.sp,
+              sp - 1,
+              "Stack pointer decremented");
+
+        equal(chip8.pc,
+             randAddr,
+             "Jumped to correct random address at memory location " + randAddr);
     });
 
     test("[0x1nnn]", function() {
 
         /**
-         * Jump to address nnn.
+         * 1nnn - JP addr
+         * Jump to location nnn.
+         *
+         * The interpreter sets the program counter to nnn.
          */
 
         var randAddr = Math.floor(Math.random() * (0x001 + 0xFFF - 0x200)) + 0x200,
@@ -119,11 +155,11 @@ module ("OPCODE", {
         chip8.memory[0x200] = (tempOpCode & 0xFF00) >> 8;
         chip8.memory[0x201] = tempOpCode & 0x00FF;
 
-        equal(chip8.memory[0x200] << 8 | chip8.memory[0x201], tempOpCode, "Opcode created successfully.");
-
         chip8.emulateCycle();
 
-        equal(chip8.pc, randAddr, "Jumped to correct random address at " + randAddr);
+        equal(chip8.pc,
+              randAddr,
+              "Jumped to correct random address at " + randAddr);
 
 
     });
@@ -131,7 +167,11 @@ module ("OPCODE", {
     test("[0x2nnn]", function() {
 
         /**
+         * 2nnn - CALL addr
          * Call subroutine at nnn.
+         *
+         * The interpreter increments the stack pointer, then puts the current PC on the top of the stack. The PC is
+         * then set to nnn.
          */
 
         var randAddr = Math.floor(Math.random() * (0x001 + 0xFFF - 0x200)) + 0x200,
@@ -141,85 +181,94 @@ module ("OPCODE", {
         chip8.memory[0x200] = (tempOpCode & 0xFF00) >> 8;
         chip8.memory[0x201] = tempOpCode & 0x00FF;
 
-        equal(chip8.memory[0x200] << 8 | chip8.memory[0x201], tempOpCode, "Opcode created successfully.");
-
         chip8.emulateCycle();
 
-        equal(chip8.sp, sp + 1, "Stack pointer incremented by one.");
-        equal(chip8.stack[sp], 0x202, "Return point stored at the top of the stack (sp-1).");
-        equal(chip8.pc, randAddr, "Program counter pointing to random subroutine at " + randAddr);
+        equal(chip8.sp,
+              sp + 1,
+              "Stack pointer incremented by one.");
+
+        equal(chip8.stack[sp],
+              0x202,
+              "Return point stored at the top of the stack.");
+
+        equal(chip8.pc,
+              randAddr,
+              "Program counter pointing to random subroutine at " + randAddr);
     });
 
     test("[0x3Xnn]", function() {
 
         /**
-         * Skips the next instruction if VX equals nn.
+         * 3xkk - SE Vx, byte
+         * Skip next instruction if Vx = kk.
+         *
+         * The interpreter compares register Vx to kk, and if they are equal, increments the program counter by 2.
          */
-        var randNum = Math.floor(Math.random() * (0x01 + 0xFF)),
-            randReg = Math.floor(Math.random() * (0x1 + 0xE)),
-            tempOpCode = 0x3000 | (randReg << 8) | randNum;
+        var randNum = Math.floor(Math.random() * (0x01 + 0xFF));
 
-        chip8.memory[0x200] = (tempOpCode & 0xFF00) >> 8;
-        chip8.memory[0x201] = tempOpCode & 0x00FF;
+        chip8.memory[0x200] = 0x30;
+        chip8.memory[0x201] = randNum;
 
-        equal(chip8.memory[0x200] << 8 | chip8.memory[0x201], tempOpCode, "Opcode created successfully.");
-
-        chip8.V[randReg] = randNum;
+        chip8.V[0] = randNum;
 
         chip8.emulateCycle();
 
-        equal(chip8.pc, 0x200 + 4, "Program counter skipped an instruction when V" + randReg + " = " + randNum);
+        equal(chip8.pc, 0x200 + 4, "Program counter skipped an instruction when V[0] = " + randNum);
 
         chip8.initialize();
 
-        tempOpCode = 0x3000 | (randReg << 8) | randNum + 1;
-        chip8.memory[0x200] = (tempOpCode & 0xFF00) >> 8;
-        chip8.memory[0x201] = tempOpCode & 0x00FF;
-        chip8.V[randReg] = randNum;
+        chip8.memory[0x200] = 0x30;
+        chip8.memory[0x201] = randNum;
+        chip8.V[0] = randNum + 1;
 
         chip8.emulateCycle();
 
-        equal(chip8.pc, 0x200 + 2, "Program counter moved to next instruction when V" + randReg + " = " +
-              chip8.V[randReg] + " but randNum = " + (randNum+1));
+        equal(chip8.pc, 0x200 + 2, "Program counter moved to next instruction when V[0] = " + chip8.V[0] +
+              " but randNum = " + randNum);
     });
 
     test("[0x4Xnn]", function() {
 
         /**
-         * Skips the next instruction if VX doesn't equal nn.
+         * 4xkk - SNE Vx, byte
+         * Skip next instruction if Vx != kk.
+         *
+         * The interpreter compares register Vx to kk, and if they are not equal, increments the program counter by 2.
          */
-        var randNum = Math.floor(Math.random() * (0x01 + 0xFF)),
-            randReg = Math.floor(Math.random() * (0x1 + 0xE)),
-            tempOpCode = 0x3000 | (randReg << 8) | randNum;
+        var randNum = Math.floor(Math.random() * (0x01 + 0xFF));
 
-        chip8.memory[0x200] = (tempOpCode & 0xFF00) >> 8;
-        chip8.memory[0x201] = tempOpCode & 0x00FF;
+        chip8.memory[0x200] = 0x40;
+        chip8.memory[0x201] = randNum;
 
-        equal(chip8.memory[0x200] << 8 | chip8.memory[0x201], tempOpCode, "Opcode created successfully.");
-
-        chip8.V[randReg] = randNum;
+        chip8.V[0] = randNum;
 
         chip8.emulateCycle();
 
-        equal(chip8.pc, 0x200 + 4, "Program counter skipped an instruction when V[" + randReg + "] = " +
-            chip8.V[randReg] + " but randNum = " + (randNum+1));
+        equal(chip8.pc,
+              0x202,
+              " Vx is equal to  nn. Program counter moved to next instruction.");
 
         chip8.initialize();
 
-        tempOpCode = 0x3000 | (randReg << 8) | randNum + 1;
-        chip8.memory[0x200] = (tempOpCode & 0xFF00) >> 8;
-        chip8.memory[0x201] = tempOpCode & 0x00FF;
-        chip8.V[randReg] = randNum;
+        chip8.memory[0x200] = 0x40;
+        chip8.memory[0x201] = randNum;
+        chip8.V[0] = randNum + 1;
 
         chip8.emulateCycle();
 
-        equal(chip8.pc, 0x200 + 2, "Program counter moved to the next instruction when V[" + randReg + "] = " + randNum);
+        equal(chip8.pc,
+              0x204,
+              "Vx is not equal to nn. Program counter skipped an instruction.");
     });
 
     test("[0x5XY0]", function() {
 
         /**
-         * Skips the next instruction if VX equals VY.
+         * 5xy0 - SE Vx, Vy
+         * Skip next instruction if Vx = Vy.
+         *
+         * The interpreter compares register Vx to register Vy, and if they are equal, increments the program counter
+         * by 2.
          */
 
         // Using V0 and V1 for this test.
@@ -246,7 +295,10 @@ module ("OPCODE", {
     test("[0x6Xnn]", function() {
 
         /**
-         * Sets VX to nn.
+         * 6xkk - LD Vx, byte
+         * Set Vx = kk.
+         *
+         * The interpreter puts the value kk into register Vx.
          */
         var randNum = Math.floor(Math.random() * (0x01 + 0xFF));
         chip8.memory[0x200] = 0x66; // Using V6
@@ -262,7 +314,10 @@ module ("OPCODE", {
     test("[0x7Xnn]", function() {
 
         /**
-         * Adds nn to VX.
+         * 7xkk - ADD Vx, byte
+         * Set Vx = Vx + kk.
+         *
+         * Adds the value kk to the value of register Vx, then stores the result in Vx.
          */
         var randNum1 = Math.floor(Math.random() * (0x01 + 0xFF)),
             randNum2 = Math.floor(Math.random() * (0x01 + 0xFF));
@@ -281,7 +336,10 @@ module ("OPCODE", {
     test("[0x8XY0]", function() {
 
         /**
-         * Sets VX to the value of VY.
+         * 8xy0 - LD Vx, Vy
+         * Set Vx = Vy.
+         *
+         * Stores the value of register Vy in register Vx.
          */
         var randNum = Math.floor(Math.random() * (0x01 + 0xFF));
         chip8.memory[0x200] = 0x80; // Using V[0] as VX
@@ -300,7 +358,12 @@ module ("OPCODE", {
     test("[0x8XY1]", function() {
 
         /**
-         * Sets VX to VX OR VY (bitwise).
+         * 8xy1 - OR Vx, Vy
+         * Set Vx = Vx OR Vy.
+         *
+         * Performs a bitwise OR on the values of Vx and Vy, then stores the result in Vx. A bitwise OR compares the
+         * corrseponding bits from two values, and if either bit is 1, then the same bit in the result is also 1.
+         * Otherwise, it is 0.
          */
 
     });
@@ -308,7 +371,12 @@ module ("OPCODE", {
     test("[0x8XY2]", function() {
 
         /**
-         * Sets VX to VX & VY (bitwise).
+         * 8xy2 - AND Vx, Vy
+         * Set Vx = Vx AND Vy.
+         *
+         * Performs a bitwise AND on the values of Vx and Vy, then stores the result in Vx. A bitwise AND compares the
+         * corresponding bits from two values, and if both bits are 1, then the same bit in the result is also 1.
+         * Otherwise, it is 0.
          */
 
     });
@@ -316,7 +384,12 @@ module ("OPCODE", {
     test("[0x8XY3]", function() {
 
         /**
-         * Sets VX to VX ^ VY (bitwise).
+         * 8xy3 - XOR Vx, Vy
+         * Set Vx = Vx XOR Vy.
+         *
+         * Performs a bitwise exclusive OR on the values of Vx and Vy, then stores the result in Vx. An exclusive OR
+         * compares the corresponding bits from two values, and if the bits are not both the same, then the
+         * corresponding bit in the result is set to 1. Otherwise, it is 0.
          */
 
     });
@@ -324,7 +397,11 @@ module ("OPCODE", {
     test("[0x8XY4]", function() {
 
         /**
-         * Adds VY to VX. VF is set to 1 when there's a carry.
+         * 8xy4 - ADD Vx, Vy
+         * Set Vx = Vx + Vy, set VF = carry.
+         *
+         * The values of Vx and Vy are added together. If the result is greater than 8 bits (i.e., > 255,) VF is set to
+         * 1, otherwise 0. Only the lowest 8 bits of the result are kept, and stored in Vx.
          */
 
     });
@@ -332,7 +409,10 @@ module ("OPCODE", {
     test("[0x8XY5]", function() {
 
         /**
-         * VY is subtracted from VX. VF is set to 0 when there's a borrow, and 1 when there isn't.
+         * 8xy5 - SUB Vx, Vy
+         * Set Vx = Vx - Vy, set VF = NOT borrow.
+         *
+         * If Vx > Vy, then VF is set to 1, otherwise 0. Then Vy is subtracted from Vx, and the results stored in Vx.
          */
 
     });
@@ -340,7 +420,10 @@ module ("OPCODE", {
     test("[0x8XY6]", function() {
 
         /**
-         * Shifts VX right by one. VF is set to the value of the least significant bit of VX before the shift.
+         * 8xy6 - SHR Vx {, Vy}
+         * Set Vx = Vx SHR 1.
+         *
+         * If the least-significant bit of Vx is 1, then VF is set to 1, otherwise 0. Then Vx is divided by 2.
          */
 
     });
@@ -348,7 +431,10 @@ module ("OPCODE", {
     test("[0x8XY7]", function() {
 
         /**
-         * Sets VX to VY minus VX. VF is set to 0 when there's a borrow, and 1 when there isn't.
+         * 8xy7 - SUBN Vx, Vy
+         * Set Vx = Vy - Vx, set VF = NOT borrow.
+         *
+         * If Vy > Vx, then VF is set to 1, otherwise 0. Then Vx is subtracted from Vy, and the results stored in Vx.
          */
 
     });
@@ -356,7 +442,10 @@ module ("OPCODE", {
     test("[0x8XYE]", function() {
 
         /**
-         * Shifts VX left by one. VF is set to the value of the most significant bit of VX before the shift.
+         * 8xyE - SHL Vx {, Vy}
+         * Set Vx = Vx SHL 1.
+         *
+         * If the most-significant bit of Vx is 1, then VF is set to 1, otherwise to 0. Then Vx is multiplied by 2.
          */
 
     });
@@ -364,7 +453,10 @@ module ("OPCODE", {
     test("[0x9XY0]", function() {
 
         /**
-         * Skips the next instruction if VX doesn't equal VY.
+         * 9xy0 - SNE Vx, Vy
+         * Skip next instruction if Vx != Vy.
+         *
+         * The values of Vx and Vy are compared, and if they are not equal, the program counter is increased by 2.
          */
 
     });
@@ -372,7 +464,10 @@ module ("OPCODE", {
     test("[0xAnnn]", function() {
 
         /**
-         * Sets I to the address NNN.
+         * Annn - LD I, addr
+         * Set I = nnn.
+         *
+         * The value of register I is set to nnn.
          */
 
     });
@@ -380,7 +475,10 @@ module ("OPCODE", {
     test("[0xBnnn]", function() {
 
         /**
-         * Jumps to the address NNN plus V0.
+         * Bnnn - JP V0, addr
+         * Jump to location nnn + V0.
+         *
+         * The program counter is set to nnn plus the value of V0.
          */
 
     });
@@ -388,7 +486,11 @@ module ("OPCODE", {
     test("[0xCXnn]", function() {
 
         /**
-         * Sets VX to a random number and NN.
+         * Cxkk - RND Vx, byte
+         * Set Vx = random byte AND kk.
+         *
+         * The interpreter generates a random number from 0 to 255, which is then ANDed with the value kk. The results
+         * are stored in Vx. See instruction 8xy2 for more information on AND.
          */
 
     });
@@ -396,11 +498,10 @@ module ("OPCODE", {
     test("[0xDXYn]", function() {
 
         /**
-         * Draws a sprite at coordinate (VX, VY) that has a width of 8 pixels and a height of N pixels. Each row of 8
-         * pixels is read as bit-coded (with the most significant bit of each byte displayed on the left) starting from
-         * memory location I; I value doesn't change after the execution of this instruction. As described above, VF is
-         * set to 1 if any screen pixels are flipped from set to unset when the sprite is drawn, and to 0 if that
-         * doesn't happen.
+         * Dxyn - DRW Vx, Vy, nibble
+         * Display n-byte sprite starting at memory location I at (Vx, Vy), set VF = collision.
+         *
+         * The interpreter reads n bytes from memory, starting at the address stored in I. These bytes are then displayed as sprites on screen at coordinates (Vx, Vy). Sprites are XORed onto the existing screen. If this causes any pixels to be erased, VF is set to 1, otherwise it is set to 0. If the sprite is positioned so part of it is outside the coordinates of the display, it wraps around to the opposite side of the screen. See instruction 8xy3 for more information on XOR, and section 2.4, Display, for more information on the Chip-8 screen and sprites.
          */
 
     });
@@ -408,7 +509,11 @@ module ("OPCODE", {
     test("[0xEX9E]", function() {
 
         /**
-         * Skips the next instruction if the key stored in VX is pressed.
+         * Ex9E - SKP Vx
+         * Skip next instruction if key with the value of Vx is pressed.
+         *
+         * Checks the keyboard, and if the key corresponding to the value of Vx is currently in the down position, PC
+         * is increased by 2.
          */
 
     });
@@ -416,7 +521,11 @@ module ("OPCODE", {
     test("[0xEXA1]", function() {
 
         /**
-         * Skips the next instruction if the key stored in VX isn't pressed.
+         * ExA1 - SKNP Vx
+         * Skip next instruction if key with the value of Vx is not pressed.
+         *
+         * Checks the keyboard, and if the key corresponding to the value of Vx is currently in the up position, PC is
+         * increased by 2.
          */
 
     });
@@ -424,7 +533,10 @@ module ("OPCODE", {
     test("[0xFX07]", function() {
 
         /**
-         * Sets VX to the value of the delay timer.
+         * Fx07 - LD Vx, DT
+         * Set Vx = delay timer value.
+         *
+         * The value of DT is placed into Vx.
          */
 
     });
@@ -432,7 +544,10 @@ module ("OPCODE", {
     test("[0xFX0A]", function() {
 
         /**
-         * A key press is awaited, and then stored in VX.
+         * Fx0A - LD Vx, K
+         * Wait for a key press, store the value of the key in Vx.
+         *
+         * All execution stops until a key is pressed, then the value of that key is stored in Vx.
          */
 
     });
@@ -440,7 +555,10 @@ module ("OPCODE", {
     test("[0xFX15]", function() {
 
         /**
-         * Sets the delay timer to VX.
+         * Fx15 - LD DT, Vx
+         * Set delay timer = Vx.
+         *
+         * DT is set equal to the value of Vx.
          */
 
     });
@@ -448,7 +566,10 @@ module ("OPCODE", {
     test("[0xFX18]", function() {
 
         /**
-         * Sets the sound timer to VX.
+         * Fx18 - LD ST, Vx
+         * Set sound timer = Vx.
+         *
+         * ST is set equal to the value of Vx.
          */
 
     });
@@ -456,7 +577,10 @@ module ("OPCODE", {
     test("[0xFX1E]", function() {
 
         /**
-         * Adds VX to I.
+         * Fx1E - ADD I, Vx
+         * Set I = I + Vx.
+         *
+         * The values of I and Vx are added, and the results are stored in I.
          */
 
     });
@@ -464,8 +588,10 @@ module ("OPCODE", {
     test("[0xFX29]", function() {
 
         /**
-         * Sets I to the location of the sprite for the character in VX. Characters 0-F (in hexadecimal) are
-         * represented by a 4x5 font.
+         * Fx29 - LD F, Vx
+         * Set I = location of sprite for digit Vx.
+         *
+         * The value of I is set to the location for the hexadecimal sprite corresponding to the value of Vx.
          */
 
     });
@@ -473,10 +599,11 @@ module ("OPCODE", {
     test("[0xFX33]", function() {
 
         /**
-         * Stores the Binary-coded decimal representation of VX, with the most significant of three digits at the
-         * address in I, the middle digit at I plus 1, and the least significant digit at I plus 2. (In other words,
-         * take the decimal representation of VX, place the hundreds digit in memory at location in I, the tens digit
-         * at location I+1, and the ones digit at location I+2.)
+         * Fx33 - LD B, Vx
+         * Store BCD representation of Vx in memory locations I, I+1, and I+2.
+         *
+         * The interpreter takes the decimal value of Vx, and places the hundreds digit in memory at location in I,
+         * the tens digit at location I+1, and the ones digit at location I+2.
          */
 
     });
@@ -484,7 +611,10 @@ module ("OPCODE", {
     test("[0xFX55]", function() {
 
         /**
-         * Stores V0 to VX in memory starting at address I.
+         * Fx55 - LD [I], Vx
+         * Store registers V0 through Vx in memory starting at location I.
+         *
+         * The interpreter copies the values of registers V0 through Vx into memory, starting at the address in I.
          */
 
     });
@@ -492,7 +622,10 @@ module ("OPCODE", {
     test("[0xFX65]", function() {
 
         /**
-         * Fills V0 to VX with values from memory starting at address I.
+         * Fx65 - LD Vx, [I]
+         * Read registers V0 through Vx from memory starting at location I.
+         *
+         * The interpreter reads values from memory starting at location I into registers V0 through Vx.
          */
 
     });
