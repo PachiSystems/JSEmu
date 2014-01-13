@@ -7,39 +7,36 @@ chip8Emu.prototype.beginEmulation = function(romimage,canvasID) {
         You can submit a bug/issue at http://github.com/PachiSystems/JSEmu
         Please be as descriptive as possible. I'll try and put a test suite together when I have time.
      */
-    this.setupGraphics(canvasID);
+
+    var me = this;
+
+    me.setupGraphics(canvasID);
     console.debug("Graphics setup complete");
 
-    this.setupInput();
+    me.setupInput();
     console.debug("Input setup complete");
 
-    this.initialize();
+    me.initialize();
     console.debug("Initialisation complete");
 
-    this.loadGame(romimage);
+    me.loadGame(romimage);
     console.debug("ROM image loading complete");
-
-    // Emulation loop
-    while(true) {
-        console.debug("Emulation loop running");
-        // Emulate one cycle
-        this.emulateCycle();
-
-        // If the draw flag is set, update the screen
-        if(this.drawflag) {
-            this.drawGraphics();
-        }
-
-    }
 
     return 0;
 };
 
 chip8Emu.prototype.setupGraphics = function(canvasID) {
-    this.screen = document.getElementById(canvasID).getContext('2d');
+
+    var me = this;
+
+    me.screen = document.getElementById(canvasID).getContext('2d');
+
 };
 
 chip8Emu.prototype.setupInput = function() {
+
+    var me = this;
+
     /* KEYPAD INITIALISATION
      Chip 8 has a HEX based keypad. Since we need to use a PC keyboard, the following mapping is used:
 
@@ -51,7 +48,7 @@ chip8Emu.prototype.setupInput = function() {
 
      This object maps an ASCII keycode to the keypad HEX value.
      */
-    this.keymap = {
+    me.keymap = {
         49:0x1, // PC 1 -> C8 1
         50:0x2, // PC 2 -> C8 2
         51:0x3, // PC 3 -> C8 3
@@ -70,7 +67,7 @@ chip8Emu.prototype.setupInput = function() {
         86:0xF  // PC V -> C8 F
     };
 
-    this.lastKeyPressed = null;
+    me.lastKeyPressed = null;
 
     /* KEYPRESS EVENT HANDLERS
      This is a bit special... Normally the key handler should be a part of the emulation loop and
@@ -78,36 +75,47 @@ chip8Emu.prototype.setupInput = function() {
      going to have to capture the keypress and set a variable to the ASCII code when the key is down
      and remove it when the key is up.
      */
-    document.onkeydown = function (ev) {
+    window.onkeydown = function (ev) {
+
         var key = (ev || window.event).keyCode;
-        if(!(key in this.keymap)) {
+
+        console.debug("KEY DOWN:" + key);
+
+        if(!(key in me.keymap)) {
             // We're not pressing a key in the keymap, so ignore it and cancel out the keypress.
-            this.lastKeyPressed = null;
-            return true;
+            me.lastKeyPressed = null;
+
+            console.debug("KEY [" + key + "] NOT IN KEYMAP");
+
         } else {
             // We're pressing a key! Quick! Do something useful!
-            this.lastKeyPressed = this.keymap[key];
+            me.lastKeyPressed = me.keymap[key];
+
+            console.debug("KEY [" + key + "] MAPPED TO [" + me.keymap[key] + "]");
         }
     };
 
-    document.onkeyup = function (ev) {
+    window.onkeyup = function (ev) {
         // Unset the lastKeyPressed.
-        this.lastKeyPressed = null;
+        me.lastKeyPressed = null;
+        console.debug("KEY UP");
     }
 
     window.onblur = function() {
-        this.lastKeyPressed = null;
+        me.lastKeyPressed = null;
     }
 };
 
 chip8Emu.prototype.initialize = function() {
 
+    var me = this;
+
     /* PROGRAM COUNTER & INDEX REGISTER
         There is an Index register (I) and a program counter (pc)
         which can have a value from 0x000 to 0xFFF.
      */
-    this.pc = 0x200; // Program counter starts at 0x200 (program memory)
-    this.I  = 0;     // Reset index register
+    me.pc = 0x200; // Program counter starts at 0x200 (program memory)
+    me.I  = 0;     // Reset index register
 
     /* STACK INITIALISATION
         Chip 8's instruction set has opcodes which allow the program to jump to a certain address
@@ -117,8 +125,8 @@ chip8Emu.prototype.initialize = function() {
         Chip 8 has 16 levels of stack and in order to remember which part of the stack is used,
         we will also need a stack pointer (sp).
      */
-    this.stack = new Array(16);
-    this.sp    = 0;
+    me.stack = new Array(16);
+    me.sp    = 0;
 
     /* GRAPHICS INITIALISATION
         The graphics are black and white and the screen has a total of 2048 pixels (64x32).
@@ -126,13 +134,13 @@ chip8Emu.prototype.initialize = function() {
         mode and if a pixel is turned off as a result of drawing, the VF register is set.
         This is used for collision detection.
      */
-    this.gfx = new Array(64 * 32);
+    me.gfx = new Array(64 * 32);
 
     /* GENERAL REGISTERS INITIALISATION
         Chip 8 has 15 8-bit general purpose registers named V0 to VE.
         The 16th register (VF) is used for the 'carry flag'
      */
-    this.V = new Array(16);
+    me.V = new Array(16);
 
     /* MEMORY INITIALISATION
         Chip 8 has 4K memory in total.
@@ -141,12 +149,12 @@ chip8Emu.prototype.initialize = function() {
         0x050 - 0x0A0 = Used for the built in 4x5 pixel font set (0-F)
         0x200 - 0xFFF = Program ROM and work RAM
      */
-    this.memory = new Array(4096);
+    me.memory = new Array(4096);
 
     /* OPCODE HOLDER
         Chip 8 has 35 opcodes which are all two bytes long.
      */
-    this.opcode = 0;     // Reset current opcode
+    me.opcode = 0;     // Reset current opcode
 
     /* FONTSET INITIALISATION
         Since there's no interpreter to store, we can just pop the fontset here.
@@ -171,7 +179,7 @@ chip8Emu.prototype.initialize = function() {
     ];
 
     for (var i = 0; i < 80; i++) {
-        this.memory[i] = fontset[i];
+        me.memory[i] = fontset[i];
     }
 
     /* TIMERS INITIALISATION
@@ -179,16 +187,25 @@ chip8Emu.prototype.initialize = function() {
         count at 60Hz. When set above zero, they will count down to zero. The buzzer sounds
         when the sound timer reaches zero.
      */
-    this.delay_timer = 0;
-    this.sound_timer = 0;
+    me.delay_timer = 0;
+    me.sound_timer = 0;
+
+    /* OTHER VARIABLES
+        These are other variables that get used at various times. Here are their initial states.
+     */
+    me.lastKeyPressed = null;
+
 };
 
 chip8Emu.prototype.loadGame = function(romimage) {
 
+    var xhr = new XMLHttpRequest(),
+        me = this;
+
     /* GAME LOADING
         Load the program into the memory. Check to make sure it's not too big as well...
      */
-    var xhr = new XMLHttpRequest;
+
     xhr.open("GET",romimage);
     xhr.responseType = "arraybuffer";
 
@@ -196,7 +213,7 @@ chip8Emu.prototype.loadGame = function(romimage) {
 
         var program = new Uint8Array(xhr.response);
 
-        if((4096 - 512) > program.length) {
+        if(program.length > (4096 - 512)) {
 
             console.error("This program will not fit into Chip-8 memory.");
 
@@ -204,9 +221,25 @@ chip8Emu.prototype.loadGame = function(romimage) {
 
             for (var i = 0; i < program.length; i++) {
 
-                this.memory[i + 512] = program[i];
+                me.memory[(i + 512)] = program[i];
 
             }
+
+            // Emulation loop to trigger once our ROM has finished loading.
+            //while(true) {
+            //For test purposes, we're going to run just 10000 cycles
+            //for (var i = 0 ; i < 10000; i++) {
+            // Since it blocks the whole app, let's try a setInterval:
+            setInterval(function() {
+                //console.debug("Emulation loop running");
+                // Emulate one cycle
+                me.emulateCycle();
+
+                // If the draw flag is set, update the screen
+                if(me.drawflag) {
+                    me.drawGraphics();
+                }
+            },1); // Should give us about 30fps-ish
 
         }
 
@@ -216,31 +249,34 @@ chip8Emu.prototype.loadGame = function(romimage) {
 };
 
 chip8Emu.prototype.emulateCycle = function() {
+
+    var me = this;
+
     // Fetch Opcode
-    this.opcode = this.memory[this.pc] << 8 | this.memory[this.pc + 1];
+    me.opcode = me.memory[me.pc] << 8 | me.memory[me.pc + 1];
 
     // Decode Opcode
-    switch(this.opcode & 0xF000) {
+    switch(me.opcode & 0xF000) {
 
         case 0x0000:
-            switch(this.opcode & 0x000F) {
+            switch(me.opcode & 0x000F) {
                 case 0x0000: // 0x00E0: Clears the screen
                     // Execute opcode
-                    for(var i = 0; i < this.gfx.length; i++) {
-                        this.gfx[i] = 0;
+                    for(var i = 0; i < me.gfx.length; i++) {
+                        me.gfx[i] = 0;
                     }
-                    this.drawflag = true;
-                    this.pc += 2; // Increment the program counter.
+                    me.drawflag = true;
+                    me.pc += 2; // Increment the program counter.
                     break;
                 case 0x000E: // 0x00EE: Returns from subroutine
                     // Execute opcode
-                    this.sp--; // Move back down the stack.
+                    me.sp--; // Move back down the stack.
                     // We're going to jump, so no incrementing the program counter.
-                    this.pc = this.stack[this.sp]; // Stack pointer points to the last address on the stack.
+                    me.pc = me.stack[me.sp]; // Stack pointer points to the last address on the stack.
                     break;
 
                 default:
-                    console.error("Unknown opcode [0x0000]: 0x" + this.opcode);
+                    console.error("Unknown opcode [0x0000]: 0x" + me.opcode);
                     break;
             }
             break;
@@ -248,178 +284,178 @@ chip8Emu.prototype.emulateCycle = function() {
         case 0x1000: // 0x1nnn: Jump to address nnn
             // Execute opcode
             // Does it need to go on the stack?...
-            // this.stack[sp] = pc;
-            // this.sp++;
+            // me.stack[sp] = pc;
+            // me.sp++;
             // We're jumping... Don't increment the program counter, but point it somewhere else...
-            this.pc = this.opcode & 0x0FFF;
+            me.pc = me.opcode & 0x0FFF;
             break;
 
         case 0x2000: // 0x2nnn: Calls the subroutine at address nnn
             // Execute opcode
-            this.stack[this.sp] = this.pc;
-            this.sp++;
+            me.stack[me.sp] = me.pc;
+            me.sp++;
             // We're jumping... Don't increment the program counter, but point it somewhere else...
-            this.pc = this.opcode & 0x0FFF;
+            me.pc = me.opcode & 0x0FFF;
             break;
 
         case 0x3000: // 0x3Xnn: Skips the next instruction if VX equals nn
             // Execute opcode
-            if(this.V[(this.opcode & 0x0F00) >> 8] == (this.opcode & 0x0FF)) {
+            if(me.V[(me.opcode & 0x0F00) >> 8] == (me.opcode & 0x0FF)) {
                 // It equal, so skip the next instruction.
-                this.pc += 4;
+                me.pc += 4;
             } else {
                 // Not equal, so keep on going.
-                this.pc += 2;
+                me.pc += 2;
             }
             break;
 
         case 0x4000: // 0x4Xnn: Skips the next instruction if VX doesn't equal nn.
             // Execute opcode
-            if(this.V[(this.opcode & 0x0F00) >> 8] != (this.opcode & 0x00FF)) {
+            if(me.V[(me.opcode & 0x0F00) >> 8] != (me.opcode & 0x00FF)) {
                 // Not equal, so skip the next instruction.
-                this.pc += 4;
+                me.pc += 4;
             } else {
                 // It's equal, so continue.
-                this.pc += 2;
+                me.pc += 2;
             }
             break;
 
         case 0x5000: // 0x5XY0: Skips the next instruction if VX equals VY.
             // Execute opcode.
-            if(this.V[(this.opcode & 0x0F00) >> 8] == this.V[(this.opcode & 0x00F0) >> 4]) {
+            if(me.V[(me.opcode & 0x0F00) >> 8] == me.V[(me.opcode & 0x00F0) >> 4]) {
                 // VX and VY match! Skip the next instruction.
-                this.pc += 4;
+                me.pc += 4;
             } else {
                 // VX and VY are not the same. Keep going.
-                this.pc += 2;
+                me.pc += 2;
             }
             break;
 
         case 0x6000: // 0x6Xnn: Sets VX to nn.
             // Execute opcode.
-            this.V[(this.opcode & 0x0F00) >> 8] = (this.opcode & 0x00FF);
-            this.pc += 2; // Increment the program counter.
+            me.V[(me.opcode & 0x0F00) >> 8] = (me.opcode & 0x00FF);
+            me.pc += 2; // Increment the program counter.
             break;
 
         case 0x7000: // 0x7Xnn: Adds nn to VX.
             // Execute opcode.
             // Does this set VF on overflow?... There seems to be no documentation.
-            this.V[(this.opcode & 0x0F00) >> 8] += (this.opcode & 0x00FF);
-            this.pc += 2; // Increment the program counter.
+            me.V[(me.opcode & 0x0F00) >> 8] += (me.opcode & 0x00FF);
+            me.pc += 2; // Increment the program counter.
             break;
 
         case 0x8000:
-            switch(this.opcode & 0x000F) {
+            switch(me.opcode & 0x000F) {
 
                 case 0x0000: // 0x8XY0: Sets VX to the value of VY
                     // Execute opcode
-                    this.V[(this.opcode & 0x0F00) >> 8] = this.V[(this.opcode & 0x00F0) >> 4];
-                    this.pc += 2; // Increment the program counter.
+                    me.V[(me.opcode & 0x0F00) >> 8] = me.V[(me.opcode & 0x00F0) >> 4];
+                    me.pc += 2; // Increment the program counter.
                     break;
 
                 case 0x0001: // 0x8XY1: Sets VX to VX | VY
                     // Execute opcode
-                    this.V[(this.opcode & 0x0F00) >> 8] |= this.V[(this.opcode & 0x00F0) >> 4];
-                    this.pc += 2; // Increment the program counter.
+                    me.V[(me.opcode & 0x0F00) >> 8] |= me.V[(me.opcode & 0x00F0) >> 4];
+                    me.pc += 2; // Increment the program counter.
                     break;
 
                 case 0x0002: // 0x8XY2: Sets VX to VX & VY
                     // Execute opcode
-                    this.V[(this.opcode & 0x0F00) >> 8] &= this.V[(this.opcode & 0x00F0) >> 4];
-                    this.pc += 2; // Increment the program counter.
+                    me.V[(me.opcode & 0x0F00) >> 8] &= me.V[(me.opcode & 0x00F0) >> 4];
+                    me.pc += 2; // Increment the program counter.
                     break;
 
                 case 0x0003: // 0x8XY3: Sets VX to VX XOR VY
                     // Execute opcode
-                    this.V[(this.opcode & 0x0F00) >> 8] ^= this.V[(this.opcode & 0x00F0) >> 4];
-                    this.pc += 2;  // Increment the program counter.
+                    me.V[(me.opcode & 0x0F00) >> 8] ^= me.V[(me.opcode & 0x00F0) >> 4];
+                    me.pc += 2;  // Increment the program counter.
                     break;
 
                 case 0x0004: // 0x8XY4: Adds VY to VX. VF is set to 1 when there's a carry and 0 when there isn't.
                     // Execute opcode
                     // If VY > (0xFF - VX) it will carry...
-                    if(this.V[(this.opcode & 0x00F0) >> 4] > (0xFF - this.V[(this.opcode & 0x0F00) >> 8])) {
-                        this.V[0xF] = 1; // Set the carry flag
+                    if(me.V[(me.opcode & 0x00F0) >> 4] > (0xFF - me.V[(me.opcode & 0x0F00) >> 8])) {
+                        me.V[0xF] = 1; // Set the carry flag
                     } else {
-                        this.V[0xF] = 0;
+                        me.V[0xF] = 0;
                     }
-                    this.V[(this.opcode & 0x0F00) >> 8] += this.V[(this.opcode & 0x00F0) >> 4];
-                    this.pc += 2; // Increment the program counter.
+                    me.V[(me.opcode & 0x0F00) >> 8] += me.V[(me.opcode & 0x00F0) >> 4];
+                    me.pc += 2; // Increment the program counter.
                     break;
 
                 case 0x0005: // 0x8XY5: VY is subtracted from VX. VF is set to 0 when there's a borrow, and 1 when there isn't.
                     // Execute opcode
                     // If VY > VX, there will be a borrow...
-                    if(this.V[(this.opcode & 0x00F0) >> 4] > this.V[(this.opcode & 0x0F00) >> 8]) {
-                        this.V[0xF] = 0; // Set the borrow flag.
+                    if(me.V[(me.opcode & 0x00F0) >> 4] > me.V[(me.opcode & 0x0F00) >> 8]) {
+                        me.V[0xF] = 0; // Set the borrow flag.
                     } else {
-                        this.V[0xF] = 1;
+                        me.V[0xF] = 1;
                     }
-                    this.V[(this.opcode & 0x0F00) >> 8] -= this.V[(this.opcode & 0x00F0) >> 4];  // VX - VY
-                    this.pc += 2; // Increment the program counter.
+                    me.V[(me.opcode & 0x0F00) >> 8] -= me.V[(me.opcode & 0x00F0) >> 4];  // VX - VY
+                    me.pc += 2; // Increment the program counter.
                     break;
 
                 case 0x0006: // 0x8XY6: Shifts VX right by one. VF is set to the value of the least significant bit of VX before the shift.
                     // Execute opcode
-                    this.V[0xF] = this.V[(this.opcode & 0x0F00) >> 8] & 0x000F;
-                    this.V[(this.opcode & 0x0F00) >> 8] >>= 1; // Shift one right and store.
-                    this.pc += 2; // Incrment the program counter.
+                    me.V[0xF] = me.V[(me.opcode & 0x0F00) >> 8] & 0x000F;
+                    me.V[(me.opcode & 0x0F00) >> 8] >>= 1; // Shift one right and store.
+                    me.pc += 2; // Incrment the program counter.
                     break;
 
                 case 0x0007: // 0x8XY7: Sets VX to VY-VX. VF is set to 0 when there's a borrow and 1 when there isn't.
                     // Execute opcode
                     // If VX > VY, there will be a borrow...
-                    if(this.V[(this.opcode & 0x0F00) >> 8] > this.V[(this.opcode & 0x00F0) >> 4]) {
-                        this.V[0xF] = 0; // Set the borrow flag
+                    if(me.V[(me.opcode & 0x0F00) >> 8] > me.V[(me.opcode & 0x00F0) >> 4]) {
+                        me.V[0xF] = 0; // Set the borrow flag
                     } else {
-                        this.V[0xF] = 1;
+                        me.V[0xF] = 1;
                     }
-                    this.V[(this.opcode & 0x0F00) >> 8] = this.V[(this.opcode & 0x00F0) >> 4] - this.V[(this.opcode & 0x0F00) >> 8];
-                    this.pc += 2; // Increment the program counter.
+                    me.V[(me.opcode & 0x0F00) >> 8] = me.V[(me.opcode & 0x00F0) >> 4] - me.V[(me.opcode & 0x0F00) >> 8];
+                    me.pc += 2; // Increment the program counter.
                     break;
 
                 case 0x000E: // 0x8XYE: Shifts VX left by one. VF is set to the value of the most significant bit of VX before the shift.
                     // Execute opcode
-                    this.V[0xF] = this.V[(this.opcode & 0x0F00) >> 8] & 0x00F0; // Remember, it's only an 8-bit register!
-                    this.V[(this.opcode & 0x0F00) >> 8] <<= 1; // Shift left by one.
-                    this.V[(this.opcode & 0x0F00) >> 8] &= 0x00FF; // Do I need to do this? I suppose if there's a lot of shifts it could overflow...
-                    this.pc += 2; // Increment the program counter.
+                    me.V[0xF] = me.V[(me.opcode & 0x0F00) >> 8] & 0x00F0; // Remember, it's only an 8-bit register!
+                    me.V[(me.opcode & 0x0F00) >> 8] <<= 1; // Shift left by one.
+                    me.V[(me.opcode & 0x0F00) >> 8] &= 0x00FF; // Do I need to do this? I suppose if there's a lot of shifts it could overflow...
+                    me.pc += 2; // Increment the program counter.
                     break;
 
                 default:
-                    console.error("Unknown opcode [0x8000]: 0x" + this.opcode);
+                    console.error("Unknown opcode [0x8000]: 0x" + me.opcode);
                     break;
             }
             break;
 
         case 0x9000: // 0x9XY0: Skips the next instruction if VX doesn't equal VY
             // Execute opcode
-            if(this.V[(this.opcode & 0x0F00) >> 8] != this.V[(this.opcode & 0x00F0) >> 4]) {
-                this.pc += 4; // Skips an opcode.
+            if(me.V[(me.opcode & 0x0F00) >> 8] != me.V[(me.opcode & 0x00F0) >> 4]) {
+                me.pc += 4; // Skips an opcode.
             } else {
-                this.pc += 2; // Doesn't skip an opcode.
+                me.pc += 2; // Doesn't skip an opcode.
             }
             break;
 
         case 0xA000: // 0xAnnn: Sets I to the address nnn
             // Execute opcode.
-            this.I = opcode & 0x0FFF;
-            this.pc += 2; // Increment the program counter.
+            me.I = me.opcode & 0x0FFF;
+            me.pc += 2; // Increment the program counter.
         break;
 
         case 0xB000: // 0xBnnn: Jumps to the address nnn plus V0
             // Execute opcode.
             // Does a jump really need the stack? Surely only a subroutine would...
-            // this.stack[sp] = this.pc;
-            // this.sp++;
-            this.pc = (this.opcode & 0x0FFF) + this.V[0x0]; // Jumping, so no incrementing.
+            // me.stack[sp] = me.pc;
+            // me.sp++;
+            me.pc = (me.opcode & 0x0FFF) + me.V[0x0]; // Jumping, so no incrementing.
             break;
 
         case 0xC000: // 0xCXnn: Sets VX to a random number and nn
             // Execute opcode.
             var randomNumber = Math.floor(Math.random() * 255); // This should be between 0x00 and 0xFF...
-            this.V[(this.opcode & 0x0F00) >> 8] = (randomNumber & (this.opcode & 0x00FF)) & 0x00FF;
-            this.pc += 2; // Increment the program counter.
+            me.V[(me.opcode & 0x0F00) >> 8] = (randomNumber & (me.opcode & 0x00FF)) & 0x00FF;
+            me.pc += 2; // Increment the program counter.
             break;
 
         case 0xD000: // 0xDXYn: Draws a sprite at coordinate (VX, VY) that has a width of 8 pixels and a
@@ -429,19 +465,19 @@ chip8Emu.prototype.emulateCycle = function() {
                      //         instruction. VF is set to 1 if any screen pixels are flipped from set to
                      //         unset when the sprite is drawn and 0 if that doesn't happen.
             // Execute opcode.
-            var x = this.V[(this.opcode & 0x0F00) >> 8]; // X co-ordinate
-            var y = this.V[(this.opcode & 0x00F0) >> 4]; // Y co-ordinate
-            var height = opcode & 0x000F; // Height in pixels.
+            var x = me.V[(me.opcode & 0x0F00) >> 8]; // X co-ordinate
+            var y = me.V[(me.opcode & 0x00F0) >> 4]; // Y co-ordinate
+            var height = me.opcode & 0x000F; // Height in pixels.
             var pixel;
 
             // Unless there's a change in a pixel state, this should be 0.
-            this.V[0xF] = 0;
+            me.V[0xF] = 0;
 
             // Top to bottom
             for(var yline = 0; yline < height; yline++) {
 
                 // Get the pixel value from the memory starting at location I
-                pixel = this.memory[I + yline];
+                pixel = me.memory[me.I + yline];
 
                 // Left to right
                 for(var xline = 0; xline < 8; xline++) {
@@ -450,91 +486,91 @@ chip8Emu.prototype.emulateCycle = function() {
                     if((pixel & (0x80 >> xline)) != 0) {
 
                         // Check if the pixel on display is set to 1...
-                        if(this.gfx[(x + xline + ((y + yline) * 64))] == 1) {
+                        if(me.gfx[(x + xline + ((y + yline) * 64))] == 1) {
                             // ... if it is, register a collision in the VF register.
-                            this.V[0xF] = 1;
+                            me.V[0xF] = 1;
 
                         }
 
                         // The the pixel value by using XOR.
-                        this.gfx[x + xline + ((y + yline) * 64)] ^= 1;
+                        me.gfx[x + xline + ((y + yline) * 64)] ^= 1;
 
                     }
                 }
             }
 
-            this.drawflag = true; // GFX has changed, update the screen.
-            this.pc += 2; // Increment the program counter to move to the next opcode.
+            me.drawflag = true; // GFX has changed, update the screen.
+            me.pc += 2; // Increment the program counter to move to the next opcode.
             break;
 
         case 0xE000:
-            switch (this.opcode & 0x000F){
+            switch (me.opcode & 0x000F){
             
                 case 0x000E: // 0xEX9E: Skips the next instruction if the key stored in VX is pressed
                     // Execute opcode.
-                    if (this.V[(this.opcode & 0x0F00) >> 8] == this.lastKeyPressed) {
-                        this.pc += 4; // Skip an instruction.
+                    if (me.V[(me.opcode & 0x0F00) >> 8] == me.lastKeyPressed) {
+                        me.pc += 4; // Skip an instruction.
                     } else {
-                        this.pc += 2; // Increment the program counter.
+                        me.pc += 2; // Increment the program counter.
                     }
                     break;
                     
                 case 0x0001: // 0xEXA1: Skips the next instruction if the key stored in VX isn't pressed.
                     // Execute opcode.
-                    if (this.V[(this.opcode & 0x0F00) >> 8] != this.lastKeyPressed) {
-                        this.pc += 4; // Skip an instruction.
+                    if (me.V[(me.opcode & 0x0F00) >> 8] != me.lastKeyPressed) {
+                        me.pc += 4; // Skip an instruction.
                     } else {
-                        this.pc += 2;
+                        me.pc += 2;
                     }
                     break;
 
                 default:
-                    console.error("Unknown opcode [0xE000]: 0x" + this.opcode);
+                    console.error("Unknown opcode [0xE000]: 0x" + me.opcode);
                     break;
             }
             break;
 
         case 0xF000:
 
-            switch(this.opcode & 0x00FF){
+            switch(me.opcode & 0x00FF){
 
                 case 0x0007: // 0xFX07: Sets VX to the value of the delay timer.
                     // Execute opcode.
-                    this.V[(this.opcode & 0x0F00) >> 8] = this.delay_timer;
-                    this.pc += 2; // Increment the program counter.
+                    me.V[(me.opcode & 0x0F00) >> 8] = me.delay_timer;
+                    me.pc += 2; // Increment the program counter.
                     break;
                     
                 case 0x000A: // 0xFX0A: A key press is awaited, and then stored in VX.
                     // Execute opcode.
-                    if(this.lastKeyPressed == null) {
+                    if(me.lastKeyPressed == null) {
                         return; // If there isn't a key pressed, then we should just return and not increment the pc.
                     } else {
-                        this.pc += 2; // YAY! A key was pressed! We can increment the program counter.
+                        me.pc += 2; // YAY! A key was pressed! We can increment the program counter.
                     }
                     break;
                     
                 case 0x0015: // 0xFX15: Sets the delay timer to VX.
                     // Execute opcode.
-                    this.delay_timer = this.V[(this.opcode & 0x0F00) >> 8];
-                    this.pc += 2; // Increment the program counter.
+                    me.delay_timer = me.V[(me.opcode & 0x0F00) >> 8];
+                    me.pc += 2; // Increment the program counter.
                     break;
                     
                 case 0x0018: // 0xFX18: Sets the sound timer to VX.
                     // Execute opcode.
-                    this.sound_timer = this.V[(this.opcode & 0x0F00) >> 8];
-                    this.pc += 2; // Increment the program counter.
+                    me.sound_timer = me.V[(me.opcode & 0x0F00) >> 8];
+                    me.pc += 2; // Increment the program counter.
                     break;
                     
                 case 0x001E: // 0xFX1E: Adds VX to I.
                     // Execute opcode.
                     // VF is set to 1 when there is overflow. This is undocumented, but utilised in Spaceflight 2019!
-                    if((this.V[(this.opcode & 0x0F00) >> 8] + this.I) > 0xFFF) {
-                        this.V[0xF] = 1;
+                    if((me.V[(me.opcode & 0x0F00) >> 8] + me.I) > 0xFFF) {
+                        me.V[0xF] = 1;
                     } else {
-                        this.V[0xF] = 0;
+                        me.V[0xF] = 0;
                     }
-                    this.I += this.V[(this.opcode & 0x0F00) >> 8];
-                    this.pc += 2; // Increment the program counter.
+                    me.I += me.V[(me.opcode & 0x0F00) >> 8];
+                    me.pc += 2; // Increment the program counter.
                     break;
                     
                 case 0x0029: // 0xFX29: Sets I to the location of the sprite for the character in VX.
@@ -542,65 +578,95 @@ chip8Emu.prototype.emulateCycle = function() {
                              //         We set the font at the beginning of memory. Each char is 5 bytes,
                              //         so we can determine VX * 5 = First byte of char.
                     // Execute opcode.
-                    this.I = this.V[(this.opcode & 0x0F00) >> 8] * 5;
-                    this.pc += 2; // Increment the program counter.
+                    me.I = me.V[(me.opcode & 0x0F00) >> 8] * 5;
+                    me.pc += 2; // Increment the program counter.
                     break;
 
                 case 0x0033: // 0xFX33: Stores the binary-coded decimal representation of VX, with the hundreds
                              //         digit at address I, tens digit at address I+1 and the ones digit at I+2.
                     // Execute opcode.
-                    this.memory[I] = this.V[(0x0F00) >> 8] / 100;
-                    this.memory[I + 1] = (this.V[(0x0F00) >> 8] / 10) % 10;
-                    this.memory[I + 2] = (this.V[(0x0F00) >> 8] % 100) % 10;
-                    this.pc += 2; // Increment the program counter.
+                    me.memory[I] = me.V[(0x0F00) >> 8] / 100;
+                    me.memory[I + 1] = (me.V[(0x0F00) >> 8] / 10) % 10;
+                    me.memory[I + 2] = (me.V[(0x0F00) >> 8] % 100) % 10;
+                    me.pc += 2; // Increment the program counter.
                     break;
 
                 case 0x0055: // 0xFX55: Stores V0 to VX in memory starting at address I.
                     // Execute opcode.
-                    var xAddr = (this.opcode & 0x0F00) >> 8;
+                    var xAddr = (me.opcode & 0x0F00) >> 8;
                     for(var i = 0; i <= xAddr; i++) {
-                        this.memory[this.I + i] = this.V[i];
+                        me.memory[me.I + i] = me.V[i];
                     }
                     // After the operation, I should be set to I + X + 1:
-                    this.I += xAddr + 1;
-                    this.pc += 2; // Increment the program counter.
+                    me.I += xAddr + 1;
+                    me.pc += 2; // Increment the program counter.
                     break;
                     
                 case 0x0065: // 0xFX65: Fills V0 to VX with values from memory starting at address I.
                     // Execute opcode.
-                    var xAddr = (this.opcode & 0x0F00) >> 8;
+                    var xAddr = (me.opcode & 0x0F00) >> 8;
                     for(var i = 0; i <= xAddr; i++) {
-                        this.V[i] = this.memory[this.I + i];
+                        me.V[i] = me.memory[me.I + i];
                     }
-                    //After the operation, I shoul dbe set to I + X + 1:
-                    this.I += xAddr + 1;
-                    this.pc += 2; // Increment the program counter.
+                    // After the operation, I should be set to I + X + 1:
+                    me.I += xAddr + 1;
+                    me.pc += 2; // Increment the program counter.
                     break;
 
                 default:
-                    console.error("Unknown opcode [0xF000]: 0x" + this.opcode);
+                    console.error("Unknown opcode [0xF000]: 0x" + me.opcode);
                     break;
 
             }
             break;
 
         default:
-            console.error("Unknown opcode: 0x" + this.opcode);
+            console.error("Unknown opcode: 0x" + me.opcode);
     }
 
     // Update timers
-    if(this.delay_timer > 0) {
-        this.delay_timer--;
+    if(me.delay_timer > 0) {
+        me.delay_timer--;
     }
 
-    if(this.sound_timer > 0) {
-        if(this.sound_timer == 1) {
+    if(me.sound_timer > 0) {
+        if(me.sound_timer == 1) {
             console.log("BEEP!");
         }
-        this.sound_timer--;
+        me.sound_timer--;
     }
 };
 
 chip8Emu.prototype.drawGraphics = function() {
-    // This is going to be fun... :-S
+
+    var me = this;
+
+    for (var curRow = 0; curRow < 32; curRow++) {
+
+        // Work our way down the image one row at a time.
+
+        for (var curCol = 0; curCol < 64; curCol++) {
+
+            // And we work our way across the row one column at a time.
+
+            if (me.gfx[(curRow * 64) + curCol] == 1) {
+
+                // Draw a white pixel.
+
+                me.screen.fillStyle = '#FFF';
+
+            } else {
+
+                // Draw a black pixel... Yes. I know... I'll do something better next time.
+
+                me.screen.fillStyle = '#000';
+
+            }
+
+            var sizeMod = 10;
+
+            me.screen.fillRect(curCol * sizeMod, curRow * sizeMod, sizeMod, sizeMod);
+
+        }
+    }
 };
