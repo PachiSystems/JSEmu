@@ -33,6 +33,34 @@ chip8Emu.prototype.setupGraphics = function(canvasID) {
 
     me.screen = document.getElementById(canvasID).getContext('2d');
 
+    // A shim for requestAnimationFrame (code by Erik Möller)
+    var lastTime = 0;
+    var vendors = ['ms','moz','webkit','o'];
+    for (var x = 0 ; x < vendors.length && !window.requestAnimationFrame; ++x) {
+        window.requestAnimationFrame = window[vendors[x]+'RequestAnimationFrame'];
+        window.cancelRequestAnimationFrame = window[vendors[x]+'CancelRequestAnimationFrame'];
+    }
+
+    if (!window.requestAnimationFrame) {
+        window.requestAnimationFrame = function(cb, ele) {
+            var currTime = new Date().getTime();
+            var timeToCall = Math.max(0, 16 - (currTime - lastTime));
+            var id = window.setTimeout(function() { callback(currTime + timeToCall); },
+                timeToCall);
+            lastTime = currTime + timeToCall;
+            return id;
+        };
+    }
+
+    if (!window.cancelAnimationFrame) {
+
+        window.cancelAnimationFrame = function(id) {
+            clearTimeout(id);
+        };
+    }
+
+    chip8Emu.prototype.requestAnimFrame = window.requestAnimationFrame;
+
 };
 
 chip8Emu.prototype.setupInput = function() {
@@ -235,11 +263,7 @@ chip8Emu.prototype.loadGame = function(romimage) {
             }
 
             // Emulation loop to trigger once our ROM has finished loading.
-            //while(true) {
-            //For test purposes, we're going to run just 10000 cycles
-            //for (var i = 0 ; i < 10000; i++) {
-            // Since it blocks the whole app, let's try a setInterval:
-            setInterval(function() {
+            me.requestAnimFrame(function loopy() {
                 //console.debug("Emulation loop running");
                 // Emulate one cycle
                 me.emulateCycle();
@@ -248,7 +272,10 @@ chip8Emu.prototype.loadGame = function(romimage) {
                 if(me.drawflag) {
                     me.drawGraphics();
                 }
-            },0);
+
+                me.requestAnimFrame(loopy);
+
+            });
 
         }
 
@@ -261,7 +288,7 @@ chip8Emu.prototype.emulateCycle = function() {
     var me = this;
 
     // Update timers
-    if( ! (me.step++ % 2)) {
+    if( me.step++ % 10 == 0) {
         if(me.delay_timer > 0) {
             me.delay_timer--;
         }
@@ -715,4 +742,6 @@ chip8Emu.prototype.drawGraphics = function() {
 
         }
     }
+
+    me.drawflag = false;
 };
