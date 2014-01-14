@@ -11,16 +11,18 @@ chip8Emu.prototype.beginEmulation = function(romimage,canvasID) {
     var me = this;
 
     me.setupGraphics(canvasID);
-    // console.debug("Graphics setup complete");
 
     me.setupInput();
-    // console.debug("Input setup complete");
 
     me.initialize();
-    // console.debug("Initialisation complete");
 
-    me.loadGame(romimage);
-    // console.debug("ROM image loading complete");
+    if(romimage == "TEST_MODE") {
+        me.TEST_MODE = true;
+        me.randomNumber = 0; // This can be test in a test case.
+    } else {
+        me.TEST_MODE = false;
+        me.loadGame(romimage);
+    }
 
     return 0;
 };
@@ -144,12 +146,14 @@ chip8Emu.prototype.initialize = function() {
         This is used for collision detection.
      */
     me.gfx = new Array(64 * 32);
+    for(var i = 0 ; i < (64*32) ; i++){me.gfx[i]=0;};
 
     /* GENERAL REGISTERS INITIALISATION
         Chip 8 has 15 8-bit general purpose registers named V0 to VE.
         The 16th register (VF) is used for the 'carry flag'
      */
     me.V = new Array(16);
+    for(var i = 0 ; i < 16 ; i++){me.V[i]=0;};
 
     /* MEMORY INITIALISATION
         Chip 8 has 4K memory in total.
@@ -159,6 +163,7 @@ chip8Emu.prototype.initialize = function() {
         0x200 - 0xFFF = Program ROM and work RAM
      */
     me.memory = new Array(4096);
+    for(var i = 0 ; i < 4096 ; i++){me.memory[i]=0;};
 
     /* OPCODE HOLDER
         Chip 8 has 35 opcodes which are all two bytes long.
@@ -198,6 +203,7 @@ chip8Emu.prototype.initialize = function() {
      */
     me.delay_timer = 0;
     me.sound_timer = 0;
+    me.step = 0;
 
 };
 
@@ -209,52 +215,64 @@ chip8Emu.prototype.loadGame = function(romimage) {
     /* GAME LOADING
         Load the program into the memory. Check to make sure it's not too big as well...
      */
-    if(romimage != "TEST_MODE") {
-        xhr.open("GET",romimage);
-        xhr.responseType = "arraybuffer";
+    xhr.open("GET",romimage);
+    xhr.responseType = "arraybuffer";
 
-        xhr.onload = function() {
+    xhr.onload = function() {
 
-            var program = new Uint8Array(xhr.response);
+        var program = new Uint8Array(xhr.response);
 
-            if(program.length > (4096 - 512)) {
+        if(program.length > (4096 - 512)) {
 
-                console.error("This program will not fit into Chip-8 memory.");
+            console.error("This program will not fit into Chip-8 memory.");
 
-            } else {
+        } else {
 
-                for (var i = 0; i < program.length; i++) {
+            for (var i = 0; i < program.length; i++) {
 
-                    me.memory[(i + 512)] = program[i];
-
-                }
-
-                // Emulation loop to trigger once our ROM has finished loading.
-                //while(true) {
-                //For test purposes, we're going to run just 10000 cycles
-                //for (var i = 0 ; i < 10000; i++) {
-                // Since it blocks the whole app, let's try a setInterval:
-                setInterval(function() {
-                    //console.debug("Emulation loop running");
-                    // Emulate one cycle
-                    me.emulateCycle();
-
-                    // If the draw flag is set, update the screen
-                    if(me.drawflag) {
-                        me.drawGraphics();
-                    }
-                },1); // Should give us about 30fps-ish
+                me.memory[(i + 512)] = program[i];
 
             }
 
-        };
-        xhr.send();
-    }
+            // Emulation loop to trigger once our ROM has finished loading.
+            //while(true) {
+            //For test purposes, we're going to run just 10000 cycles
+            //for (var i = 0 ; i < 10000; i++) {
+            // Since it blocks the whole app, let's try a setInterval:
+            setInterval(function() {
+                //console.debug("Emulation loop running");
+                // Emulate one cycle
+                me.emulateCycle();
+
+                // If the draw flag is set, update the screen
+                if(me.drawflag) {
+                    me.drawGraphics();
+                }
+            },0);
+
+        }
+
+    };
+    xhr.send();
 };
 
 chip8Emu.prototype.emulateCycle = function() {
 
     var me = this;
+
+    // Update timers
+    if( ! (me.step++ % 2)) {
+        if(me.delay_timer > 0) {
+            me.delay_timer--;
+        }
+
+        if(me.sound_timer > 0) {
+            if(me.sound_timer == 1) {
+                console.log("BEEP!");
+            }
+            me.sound_timer--;
+        }
+    }
 
     // Fetch Opcode
     me.opcode = me.memory[me.pc] << 8 | me.memory[me.pc + 1];
@@ -344,7 +362,13 @@ chip8Emu.prototype.emulateCycle = function() {
         case 0x7000: // 0x7Xnn: Adds nn to VX.
             // Execute opcode.
             // Does this set VF on overflow?... There seems to be no documentation.
-            me.V[(me.opcode & 0x0F00) >> 8] += (me.opcode & 0x00FF);
+
+            var total = (me.V[(me.opcode & 0x0F00) >> 8] + (me.opcode & 0x00FF));
+
+            // carry? then V[F] = 1 :else: V[F] = 0
+            (total > 255) ? me.V[0xF] = 1 : me.V[0xF] = 0;
+
+            me.V[(me.opcode & 0x0F00) >> 8] = total % 256;
             me.pc += 2; // Increment the program counter.
             break;
 
@@ -377,52 +401,56 @@ chip8Emu.prototype.emulateCycle = function() {
 
                 case 0x0004: // 0x8XY4: Adds VY to VX. VF is set to 1 when there's a carry and 0 when there isn't.
                     // Execute opcode
-                    // If VY > (0xFF - VX) it will carry...
-                    if(me.V[(me.opcode & 0x00F0) >> 4] > (0xFF - me.V[(me.opcode & 0x0F00) >> 8])) {
-                        me.V[0xF] = 1; // Set the carry flag
-                    } else {
-                        me.V[0xF] = 0;
-                    }
-                    me.V[(me.opcode & 0x0F00) >> 8] += me.V[(me.opcode & 0x00F0) >> 4];
+
+                    var total = me.V[(me.opcode & 0x0F00) >> 8] + me.V[(me.opcode & 0x00F0) >> 4];
+
+                    // carry? then V[0xF] = 1 :else: V[0xF] = 0
+                    (total > 256) ? me.V[0xF] = 1 : me.V[0xF] = 0;
+
+                    me.V[(me.opcode & 0x0F00) >> 8] = total % 256; // %256 ensures we don't overflow.
                     me.pc += 2; // Increment the program counter.
                     break;
 
                 case 0x0005: // 0x8XY5: VY is subtracted from VX. VF is set to 0 when there's a borrow, and 1 when there isn't.
                     // Execute opcode
-                    // If VY > VX, there will be a borrow...
-                    if(me.V[(me.opcode & 0x00F0) >> 4] > me.V[(me.opcode & 0x0F00) >> 8]) {
-                        me.V[0xF] = 0; // Set the borrow flag.
-                    } else {
-                        me.V[0xF] = 1;
-                    }
-                    me.V[(me.opcode & 0x0F00) >> 8] -= me.V[(me.opcode & 0x00F0) >> 4];  // VX - VY
+
+                    var total = me.V[(me.opcode & 0x0F00) >> 8] - me.V[(me.opcode & 0x00F0) >> 4];
+
+                    // borrow? then V[0xF] = 0 :else: V[0xF] = 1
+                    (total < 0) ? me.V[0xF] = 0 : me.V[0xF] = 1;
+
+                    me.V[(me.opcode & 0x0F00) >> 8] = Math.abs(total) % 256; // %256 ensures we don't overflow.
+
                     me.pc += 2; // Increment the program counter.
                     break;
 
                 case 0x0006: // 0x8XY6: Shifts VX right by one. VF is set to the value of the least significant bit of VX before the shift.
                     // Execute opcode
-                    me.V[0xF] = me.V[(me.opcode & 0x0F00) >> 8] & 0x000F;
+                    me.V[0xF] = me.V[(me.opcode & 0x0F00) >> 8] & 0x1;
+
                     me.V[(me.opcode & 0x0F00) >> 8] >>= 1; // Shift one right and store.
-                    me.pc += 2; // Incrment the program counter.
+
+                    me.pc += 2; // Increment the program counter.
                     break;
 
                 case 0x0007: // 0x8XY7: Sets VX to VY-VX. VF is set to 0 when there's a borrow and 1 when there isn't.
                     // Execute opcode
-                    // If VX > VY, there will be a borrow...
-                    if(me.V[(me.opcode & 0x0F00) >> 8] > me.V[(me.opcode & 0x00F0) >> 4]) {
-                        me.V[0xF] = 0; // Set the borrow flag
-                    } else {
-                        me.V[0xF] = 1;
-                    }
-                    me.V[(me.opcode & 0x0F00) >> 8] = me.V[(me.opcode & 0x00F0) >> 4] - me.V[(me.opcode & 0x0F00) >> 8];
+                    var total = me.V[(me.opcode & 0x00F0) >> 4] - me.V[(me.opcode & 0x0F00) >> 8];
+
+                    // borrow? then V[F] = 0 :else: V[F] = 1
+                    (total < 0) ? me.V[0xF] = 0 : me.V[0xF] = 1;
+
+                    me.V[(me.opcode & 0x0F00) >> 8] = Math.abs(total);
+
                     me.pc += 2; // Increment the program counter.
                     break;
 
                 case 0x000E: // 0x8XYE: Shifts VX left by one. VF is set to the value of the most significant bit of VX before the shift.
                     // Execute opcode
-                    me.V[0xF] = me.V[(me.opcode & 0x0F00) >> 8] & 0x00F0; // Remember, it's only an 8-bit register!
-                    me.V[(me.opcode & 0x0F00) >> 8] <<= 1; // Shift left by one.
-                    me.V[(me.opcode & 0x0F00) >> 8] &= 0x00FF; // Do I need to do this? I suppose if there's a lot of shifts it could overflow...
+                    me.V[0xF] = me.V[(me.opcode & 0x0F00) >> 8] >> 7;
+
+                    me.V[(me.opcode & 0x0F00) >> 8] = (me.V[(me.opcode & 0x0F00) >> 8] << 1) % 256; // Shift left by one and keep it a byte.
+
                     me.pc += 2; // Increment the program counter.
                     break;
 
@@ -434,11 +462,10 @@ chip8Emu.prototype.emulateCycle = function() {
 
         case 0x9000: // 0x9XY0: Skips the next instruction if VX doesn't equal VY
             // Execute opcode
-            if(me.V[(me.opcode & 0x0F00) >> 8] != me.V[(me.opcode & 0x00F0) >> 4]) {
-                me.pc += 4; // Skips an opcode.
-            } else {
-                me.pc += 2; // Doesn't skip an opcode.
-            }
+
+            // Not equal? then skip :else: continue
+            (me.V[(me.opcode & 0x0F00) >> 8] != me.V[(me.opcode & 0x00F0) >> 4]) ? me.pc += 4 : me.pc += 2;
+
             break;
 
         case 0xA000: // 0xAnnn: Sets I to the address nnn
@@ -449,16 +476,28 @@ chip8Emu.prototype.emulateCycle = function() {
 
         case 0xB000: // 0xBnnn: Jumps to the address nnn plus V0
             // Execute opcode.
-            // Does a jump really need the stack? Surely only a subroutine would...
-            // me.stack[sp] = me.pc;
-            // me.sp++;
-            me.pc = (me.opcode & 0x0FFF) + me.V[0x0]; // Jumping, so no incrementing.
+            // If the memory goes out of bounds, let's log an error... We can handle it better later.
+            var total = (me.opcode & 0x0FFF) + me.V[0x0];
+            (total > 0xFFF) ? console.error("[0xB000] : Calling address out of bounds. Will wrap around.") : 0;
+            me.pc = total % 4096; // Jumping, so no incrementing and keeping within memory bounds.
             break;
 
         case 0xC000: // 0xCXnn: Sets VX to a random number and nn
             // Execute opcode.
-            var randomNumber = Math.floor(Math.random() * 255); // This should be between 0x00 and 0xFF...
-            me.V[(me.opcode & 0x0F00) >> 8] = (randomNumber & (me.opcode & 0x00FF)) & 0x00FF;
+            // Problem is, to unit test this one, we need to stop it from creating a random number...
+            // Luckily, we put the Chip-8 into TEST_MODE before...
+            var randomNumber;
+
+            if(me.TEST_MODE) {
+                // Running in test/debug mode. This should be set in initialization.
+                randomNumber = chip8.randomNumber;
+            } else {
+                // Regular operation.
+                randomNumber = Math.floor(Math.random() * (0x01 + 0xFF)); // This should be between 0x00 and 0xFF...
+            }
+
+            me.V[(me.opcode & 0x0F00) >> 8] = randomNumber & (me.opcode & 0x00FF);
+
             me.pc += 2; // Increment the program counter.
             break;
 
@@ -512,20 +551,18 @@ chip8Emu.prototype.emulateCycle = function() {
             
                 case 0x000E: // 0xEX9E: Skips the next instruction if the key stored in VX is pressed
                     // Execute opcode.
-                    if (me.key[me.V[(me.opcode & 0x0F00) >> 8]] == 1) {
-                        me.pc += 4; // Skip an instruction.
-                    } else {
-                        me.pc += 2; // Increment the program counter.
-                    }
+
+                    // key pressed? then skip :else: continue
+                    (me.key[me.V[(me.opcode & 0x0F00) >> 8]] == 1) ? me.pc += 4 : me.pc += 2;
+
                     break;
                     
                 case 0x0001: // 0xEXA1: Skips the next instruction if the key stored in VX isn't pressed.
                     // Execute opcode.
-                    if (me.key[me.V[(me.opcode & 0x0F00) >> 8]] == 0) {
-                        me.pc += 4; // Skip an instruction.
-                    } else {
-                        me.pc += 2;
-                    }
+
+                    // key not pressed? then skip :else: continue
+                    (me.key[me.V[(me.opcode & 0x0F00) >> 8]] == 0) ? me.pc += 4 : me.pc += 2;
+
                     break;
 
                 default:
@@ -579,11 +616,11 @@ chip8Emu.prototype.emulateCycle = function() {
                 case 0x001E: // 0xFX1E: Adds VX to I.
                     // Execute opcode.
                     // VF is set to 1 when there is overflow. This is undocumented, but utilised in Spaceflight 2019!
-                    if((me.V[(me.opcode & 0x0F00) >> 8] + me.I) > 0xFFF) {
-                        me.V[0xF] = 1;
-                    } else {
-                        me.V[0xF] = 0;
-                    }
+                    var total = me.V[(me.opcode & 0x0F00) >> 8] + me.I;
+
+                    // Overflow? Remember I is a 16-bit register...
+                    (total > 65535) ? me.V[0xF] = 1 : me.V[0xF] = 0;
+
                     me.I += me.V[(me.opcode & 0x0F00) >> 8];
                     me.pc += 2; // Increment the program counter.
                     break;
@@ -600,31 +637,37 @@ chip8Emu.prototype.emulateCycle = function() {
                 case 0x0033: // 0xFX33: Stores the binary-coded decimal representation of VX, with the hundreds
                              //         digit at address I, tens digit at address I+1 and the ones digit at I+2.
                     // Execute opcode.
-                    me.memory[I] = me.V[(0x0F00) >> 8] / 100;
-                    me.memory[I + 1] = (me.V[(0x0F00) >> 8] / 10) % 10;
-                    me.memory[I + 2] = (me.V[(0x0F00) >> 8] % 100) % 10;
+                    me.memory[me.I] = Math.floor(me.V[(me.opcode & 0x0F00) >> 8] / 100);
+                    me.memory[me.I + 1] = Math.floor((me.V[(me.opcode & 0x0F00) >> 8] / 10) % 10);
+                    me.memory[me.I + 2] = Math.floor((me.V[(me.opcode & 0x0F00) >> 8] % 100) % 10);
                     me.pc += 2; // Increment the program counter.
                     break;
 
                 case 0x0055: // 0xFX55: Stores V0 to VX in memory starting at address I.
                     // Execute opcode.
                     var xAddr = (me.opcode & 0x0F00) >> 8;
-                    for(var i = 0; i <= xAddr; i++) {
+
+                    for(var i = 0; i <= xAddr ; i++) {
                         me.memory[me.I + i] = me.V[i];
                     }
+
                     // After the operation, I should be set to I + X + 1:
                     me.I += xAddr + 1;
+
                     me.pc += 2; // Increment the program counter.
                     break;
                     
                 case 0x0065: // 0xFX65: Fills V0 to VX with values from memory starting at address I.
                     // Execute opcode.
                     var xAddr = (me.opcode & 0x0F00) >> 8;
-                    for(var i = 0; i <= xAddr; i++) {
+
+                    for(var i = 0; i <= xAddr ; i++) {
                         me.V[i] = me.memory[me.I + i];
                     }
+
                     // After the operation, I should be set to I + X + 1:
                     me.I += xAddr + 1;
+
                     me.pc += 2; // Increment the program counter.
                     break;
 
@@ -637,18 +680,6 @@ chip8Emu.prototype.emulateCycle = function() {
 
         default:
             console.error("Unknown opcode: 0x" + me.opcode);
-    }
-
-    // Update timers
-    if(me.delay_timer > 0) {
-        me.delay_timer--;
-    }
-
-    if(me.sound_timer > 0) {
-        if(me.sound_timer == 1) {
-            console.log("BEEP!");
-        }
-        me.sound_timer--;
     }
 };
 
