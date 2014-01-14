@@ -20,23 +20,23 @@ module("CPU");
 
         // There is a fontset stored in the first 80 bytes...
         for(i = 80, len = chip8.memory.length ; i < len ; i++) {
-            if (chip8.memory[i] != null) { memoryEmpty = false; }
+            if (chip8.memory[i] != 0) { memoryEmpty = false; }
         }
 
         // Graphics buffer, however should be totally empty.
         for(i = 0, len = chip8.gfx.length ; i < len ; i++) {
-            if (chip8.gfx[i] != null) { gfxEmpty = false; }
+            if (chip8.gfx[i] != 0) { gfxEmpty = false; }
         }
 
         // So should the registers
         for (i = 0 ; i < 16 ; i++) {
-            if (chip8.V[i] != null) { regEmpty = false; }
+            if (chip8.V[i] != 0) { regEmpty = false; }
         }
         if (chip8.I != 0) { regEmpty = false; }
 
         // And the stack
         for (i = 0 ; i < 16 ; i++) {
-            if (chip8.stack[i] != null) { staEmpty = false; }
+            if (chip8.stack[i] != 0) { staEmpty = false; }
         }
 
         ok(memoryEmpty,"Memory from 0x050 to 0xFFF is clear.");
