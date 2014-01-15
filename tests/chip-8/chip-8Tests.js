@@ -1,8 +1,10 @@
 var chip8 = new chip8Emu(),
+    renderer = new Chip8Display(),
     $fixture = $( "#qunit-fixture" );
 
 $fixture.append( "<canvas id='TEST_CANVAS'></canvas>" );
-chip8.beginEmulation("TEST_MODE","TEST_CANVAS");
+renderer.init('TEST_CANVAS');
+chip8.beginEmulation("TEST_MODE",renderer);
 
 /**
  * CPU Tests
@@ -11,38 +13,65 @@ chip8.beginEmulation("TEST_MODE","TEST_CANVAS");
 
 module("CPU");
     test("Initialization", function() {
-        chip8.initialize();
+        chip8.init();
         var memoryEmpty = true,
             gfxEmpty = true,
             regEmpty = true,
             staEmpty = true,
+            fontInstalled = true,
             i, len;
 
-        // There is a fontset stored in the first 80 bytes...
-        for(i = 80, len = chip8.memory.length ; i < len ; i++) {
-            if (chip8.memory[i] != null) { memoryEmpty = false; }
+        // There is a fontset stored in 80 bytes between 0x050 and 0x0A0
+        for(i = 0, len = chip8.memory.length ; i < len ; i++) {
+            // Need to take into account the installed font
+            if (chip8.memory[i] != 0 && (i < 0x050 || i > 0x0A0)) { memoryEmpty = false; }
+        }
+
+        // Now let's check the fontset is installed.
+        var fontset = [
+            0xF0, 0x90, 0x90, 0x90, 0xF0, // 0
+            0x20, 0x60, 0x20, 0x20, 0x70, // 1
+            0xF0, 0x10, 0xF0, 0x80, 0xF0, // 2
+            0xF0, 0x10, 0xF0, 0x10, 0xF0, // 3
+            0x90, 0x90, 0xF0, 0x10, 0x10, // 4
+            0xF0, 0x80, 0xF0, 0x10, 0xF0, // 5
+            0xF0, 0x80, 0xF0, 0x90, 0xF0, // 6
+            0xF0, 0x10, 0x20, 0x40, 0x40, // 7
+            0xF0, 0x90, 0xF0, 0x90, 0xF0, // 8
+            0xF0, 0x90, 0xF0, 0x10, 0xF0, // 9
+            0xF0, 0x90, 0xF0, 0x90, 0x90, // A
+            0xE0, 0x90, 0xE0, 0x90, 0xE0, // B
+            0xF0, 0x80, 0x80, 0x80, 0xF0, // C
+            0xE0, 0x90, 0x90, 0x90, 0xE0, // D
+            0xF0, 0x80, 0xF0, 0x80, 0xF0, // E
+            0xF0, 0x80, 0xF0, 0x80, 0x80  // F
+        ];
+        for(i = 0 ; i < fontset.length ; i++) {
+            if(chip8.memory[i + 0x050] != fontset[i]) { fontInstalled = false; console.log("Failed at byte 0x"+(i + 0x050).toString(16));}
         }
 
         // Graphics buffer, however should be totally empty.
         for(i = 0, len = chip8.gfx.length ; i < len ; i++) {
-            if (chip8.gfx[i] != null) { gfxEmpty = false; }
+            if (chip8.gfx[i] != 0) { gfxEmpty = false; }
         }
 
         // So should the registers
         for (i = 0 ; i < 16 ; i++) {
-            if (chip8.V[i] != null) { regEmpty = false; }
+            if (chip8.V[i] != 0) { regEmpty = false; }
         }
         if (chip8.I != 0) { regEmpty = false; }
 
         // And the stack
         for (i = 0 ; i < 16 ; i++) {
-            if (chip8.stack[i] != null) { staEmpty = false; }
+            if (chip8.stack[i] != 0) { staEmpty = false; }
+            if (chip8.sp != 0) { staEmpty = false; }
         }
 
-        ok(memoryEmpty,"Memory from 0x050 to 0xFFF is clear.");
-        ok(gfxEmpty, "Graphics buffer is clear.");
-        ok(regEmpty, "Registers are clear.");
-        ok(staEmpty, "Stack is clear.");
+        ok(memoryEmpty,"Should clear the entire memory except the font area.");
+        ok(fontInstalled,"Should install the font between 0x050 and 0x0A0.");
+        ok(gfxEmpty, "Should clear the graphics buffer.");
+        ok(regEmpty, "Should clear all registers.");
+        ok(staEmpty, "Should clear the stack.");
 
         equal(chip8.pc,
               0x200,
@@ -72,7 +101,7 @@ module("CPU");
 
 module ("OPCODE", {
     setup: function() {
-        chip8.initialize();
+        chip8.init();
     }
 });
     test("[0x00E0] - CLS", function() {
@@ -215,7 +244,7 @@ module ("OPCODE", {
 
         equal(chip8.pc, 0x200 + 4, "Program counter skipped an instruction when V[0] = " + randNum);
 
-        chip8.initialize();
+        chip8.init();
 
         chip8.memory[0x200] = 0x30;
         chip8.memory[0x201] = randNum;
@@ -248,7 +277,7 @@ module ("OPCODE", {
               0x202,
               " Vx is equal to  nn. Program counter moved to next instruction.");
 
-        chip8.initialize();
+        chip8.init();
 
         chip8.memory[0x200] = 0x40;
         chip8.memory[0x201] = randNum;
@@ -283,7 +312,7 @@ module ("OPCODE", {
               0x204,
             "Should skip the program counter over the next instruction when Vx = Vy.");
 
-        chip8.initialize();
+        chip8.init();
         chip8.memory[0x200] = 0x50;
         chip8.memory[0x201] = 0x10;
         chip8.V[0] = 0x05;
@@ -670,7 +699,7 @@ module ("OPCODE", {
             0x204,
             "Vx and Vy not equal so the program counter skipped an instruction.");
 
-        chip8.initialize();
+        chip8.init();
 
         chip8.memory[0x200] = 0x90; // Using V[0] as VX
         chip8.memory[0x201] = 0x10; // Using V[1] as VY
@@ -812,7 +841,7 @@ module ("OPCODE", {
             0x202,
             "Should increment the program counter to the next instruction when key is not pressed.");
 
-        chip8.initialize();
+        chip8.init();
 
         // Key pressed
         chip8.memory[0x200] = 0xE0;
@@ -854,7 +883,7 @@ module ("OPCODE", {
             0x204,
             "Should skip the program counter over the next instruction when key is not pressed.");
 
-        chip8.initialize();
+        chip8.init();
 
         // Key pressed
         chip8.memory[0x200] = 0xE0;
@@ -1044,9 +1073,9 @@ module ("OPCODE", {
         chip8.emulateCycle();
 
         equal(chip8.I,
-            randSprite * 5,
+            (randSprite * 5)+0x050,
             "Should set I to the memory location corresponding to the sprite for 0x" + (randSprite).toString(16) +
-            " [0x00"+(randSprite * 5).toString(16)+"]");
+            " [0x00"+((randSprite * 5)*0x050).toString(16)+"]");
 
         equal(chip8.pc,
             0x202,

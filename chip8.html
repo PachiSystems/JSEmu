@@ -3,6 +3,7 @@
     <head>
         <script type="text/javascript" src="http://code.jquery.com/jquery-1.10.2.min.js"></script>
         <script type="text/javascript" src="js/chip8/chip8.js"></script>
+        <script type="text/javascript" src="js/chip8/display.js"></script>
     </head>
     <body>
     <canvas id="chip8Screen" width="640" height="320" style="background-color:#000;"></canvas><br>
@@ -11,9 +12,11 @@
 
         $(function() {
 
-            var emu = new chip8Emu();
+            var emu = new chip8Emu(),
+                renderer = new Chip8Display();
 
-            emu.beginEmulation("spaceinv.ch8","chip8Screen");
+            renderer.init("chip8Screen");
+            emu.beginEmulation("roms/chip8/spaceinv.ch8",renderer);
 
         });
 
