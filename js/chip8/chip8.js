@@ -9,6 +9,7 @@ var chip8Emu = function() {
     this.memory = new Uint8Array(memory);
     this.opcode = 0x0000;
     this.randomNumber = 0;
+    this.renderer = null;
     this.screen = null;
     this.sound_timer = 0;
     this.sp = 0;
@@ -17,12 +18,12 @@ var chip8Emu = function() {
     this.TEST_MODE = false;
     this.V = new Array(16);
 
-    this.initialize();
+    this.init();
 };
 
 chip8Emu.prototype = {
 
-    initialize : function() {
+    init : function() {
         /**
          * The initialize function can also be called to reset the emulator to its default state.
          */
@@ -181,7 +182,7 @@ chip8Emu.prototype = {
         }
     },
 
-    beginEmulation : function(romimage,renderer) {
+    beginEmulation : function(romimage, renderer) {
         /* EMULATION OF CHIP-8
          Call this function with the path of the ROM you want to use. That should be it...
          If it doesn't work, then there's something wrong... Obviously...
@@ -190,11 +191,16 @@ chip8Emu.prototype = {
 
          NEW ADDITION: Instead of the 'canvasID', there should be a 'renderer' passed. In the future, the renderer
                        should work for ALL implemented engines and not just CHIP-8. However, since that is a fair way
-                       away, there should be a 'display.js' in this folder that can be used.
+                       away, there should be a 'display.js' in this folder that can be used. It should contain the
+                       following methods:
+                        drawPixel(x,y,colour) to draw a pixel at a certain position (scaling handled by the display).
+
+                       This should free up a few cycles from the CPU... The renderer should be initialised separately.
+                       from the CPU.
          */
         var me = this;
 
-        me.setupInput();
+        me.renderer = renderer;
 
         if(romimage == "TEST_MODE") {
             me.TEST_MODE = true;
@@ -682,6 +688,7 @@ chip8Emu.prototype = {
     drawGraphics : function() {
         /**
          * Drawing shizzles!... Badly!
+         * There must be some way to not have to itterate through the WHOLE array every time... This is
          */
         var me = this;
 
@@ -697,19 +704,9 @@ chip8Emu.prototype = {
 
                     // Draw a white pixel.
 
-                    me.screen.fillStyle = '#FFF';
-
-                } else {
-
-                    // Draw a black pixel... Yes. I know... I'll do something better next time.
-
-                    me.screen.fillStyle = '#000';
+                    me.renderer.drawPixel(curCol,curRow,'#FFF');
 
                 }
-
-                var sizeMod = 10;
-
-                me.screen.fillRect(curCol * sizeMod, curRow * sizeMod, sizeMod, sizeMod);
 
             }
         }

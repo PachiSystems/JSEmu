@@ -2,11 +2,10 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="cada73ad-6496-42f9-a029-40872bc4d668" name="Default" comment="">
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/js/chip8/display.js" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/js/display/screen.js" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/tests/chip-8/chip-8Tests.html" afterPath="$PROJECT_DIR$/tests/chip-8/chip-8Tests.html" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/tests/chip-8/chip-8Tests.js" afterPath="$PROJECT_DIR$/tests/chip-8/chip-8Tests.js" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/chip8.html" afterPath="$PROJECT_DIR$/chip8.html" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/js/chip8/chip8.js" afterPath="$PROJECT_DIR$/js/chip8/chip8.js" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
     </list>
     <ignored path="JSEmu.iws" />
     <ignored path=".idea/workspace.xml" />
@@ -32,18 +31,18 @@
       <file leaf-file-name="chip8.html" pinned="false" current="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/chip8.html">
           <provider selected="true" editor-type-id="text-editor">
-            <state line="16" column="43" selection-start="530" selection-end="530" vertical-scroll-proportion="0.0" vertical-offset="288" max-vertical-offset="486">
+            <state line="18" column="67" selection-start="688" selection-end="688" vertical-scroll-proportion="-12.0" vertical-offset="0" max-vertical-offset="540">
               <folding />
             </state>
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="chip8.js" pinned="false" current="true" current-in-tab="true">
+      <file leaf-file-name="chip8.js" pinned="false" current="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/js/chip8/chip8.js">
           <provider selected="true" editor-type-id="text-editor">
-            <state line="205" column="6" selection-start="7825" selection-end="7825" vertical-scroll-proportion="0.49142158" vertical-offset="463" max-vertical-offset="10224">
+            <state line="20" column="13" selection-start="509" selection-end="509" vertical-scroll-proportion="0.0" vertical-offset="216" max-vertical-offset="10170">
               <folding>
-                <element signature="e#549#6764#0" expanded="false" />
+                <element signature="e#563#6778#0" expanded="false" />
               </folding>
             </state>
           </provider>
@@ -58,10 +57,19 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="chip-8Tests.js" pinned="false" current="false" current-in-tab="false">
+      <file leaf-file-name="chip-8Tests.js" pinned="false" current="true" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/tests/chip-8/chip-8Tests.js">
           <provider selected="true" editor-type-id="text-editor">
-            <state line="1073" column="87" selection-start="31554" selection-end="31554" vertical-scroll-proportion="0.0" vertical-offset="18999" max-vertical-offset="21690">
+            <state line="887" column="3" selection-start="26625" selection-end="26625" vertical-scroll-proportion="15.514474" vertical-offset="4175" max-vertical-offset="21726">
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="chip-8Tests.html" pinned="false" current="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/tests/chip-8/chip-8Tests.html">
+          <provider selected="true" editor-type-id="text-editor">
+            <state line="12" column="76" selection-start="472" selection-end="472" vertical-scroll-proportion="-8.0" vertical-offset="0" max-vertical-offset="396">
               <folding />
             </state>
           </provider>
@@ -87,11 +95,12 @@
       <list>
         <option value="$PROJECT_DIR$/Chip8TryTwo.js" />
         <option value="$PROJECT_DIR$/tests/chip8/chip8Spec.js" />
-        <option value="$PROJECT_DIR$/chip8.html" />
-        <option value="$PROJECT_DIR$/tests/chip-8/chip-8Tests.js" />
         <option value="$PROJECT_DIR$/js/display/screen.js" />
         <option value="$PROJECT_DIR$/js/chip8/display.js" />
+        <option value="$PROJECT_DIR$/chip8.html" />
+        <option value="$PROJECT_DIR$/tests/chip-8/chip-8Tests.html" />
         <option value="$PROJECT_DIR$/js/chip8/chip8.js" />
+        <option value="$PROJECT_DIR$/tests/chip-8/chip-8Tests.js" />
       </list>
     </option>
   </component>
@@ -349,7 +358,7 @@
       <provider selected="true" editor-type-id="text-editor">
         <state line="2" column="0" selection-start="31" selection-end="31" vertical-scroll-proportion="0.0" vertical-offset="36" max-vertical-offset="13536">
           <folding>
-            <element signature="e#549#6764#0" expanded="false" />
+            <element signature="e#563#6778#0" expanded="false" />
           </folding>
         </state>
       </provider>
@@ -372,7 +381,7 @@
       <provider selected="true" editor-type-id="text-editor">
         <state line="21" column="22" selection-start="492" selection-end="492" vertical-scroll-proportion="0.0" vertical-offset="399" max-vertical-offset="13946">
           <folding>
-            <element signature="e#549#6764#0" expanded="false" />
+            <element signature="e#563#6778#0" expanded="false" />
           </folding>
         </state>
       </provider>
@@ -395,28 +404,28 @@
       <provider selected="true" editor-type-id="text-editor">
         <state line="190" column="7" selection-start="6699" selection-end="6699" vertical-scroll-proportion="0.0" vertical-offset="3273" max-vertical-offset="11894">
           <folding>
-            <element signature="e#549#6764#0" expanded="false" />
+            <element signature="e#563#6778#0" expanded="false" />
           </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/chip8.html">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="16" column="43" selection-start="530" selection-end="530" vertical-scroll-proportion="0.0" vertical-offset="288" max-vertical-offset="486">
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/tests/chip-8/chip-8Tests.js">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="1073" column="87" selection-start="31554" selection-end="31554" vertical-scroll-proportion="0.0" vertical-offset="18999" max-vertical-offset="21690">
-          <folding />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/js/display/screen.js">
       <provider selected="true" editor-type-id="text-editor">
         <state line="11" column="20" selection-start="290" selection-end="290" vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="342">
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/tests/chip-8/chip-8Tests.html">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="12" column="76" selection-start="472" selection-end="472" vertical-scroll-proportion="-8.0" vertical-offset="0" max-vertical-offset="396">
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/chip8.html">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="18" column="67" selection-start="688" selection-end="688" vertical-scroll-proportion="-12.0" vertical-offset="0" max-vertical-offset="540">
           <folding />
         </state>
       </provider>
@@ -430,10 +439,17 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/js/chip8/chip8.js">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="205" column="6" selection-start="7825" selection-end="7825" vertical-scroll-proportion="0.49142158" vertical-offset="463" max-vertical-offset="10224">
+        <state line="20" column="13" selection-start="509" selection-end="509" vertical-scroll-proportion="0.0" vertical-offset="216" max-vertical-offset="10170">
           <folding>
-            <element signature="e#549#6764#0" expanded="false" />
+            <element signature="e#563#6778#0" expanded="false" />
           </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/tests/chip-8/chip-8Tests.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="887" column="3" selection-start="26625" selection-end="26625" vertical-scroll-proportion="15.514474" vertical-offset="4175" max-vertical-offset="21726">
+          <folding />
         </state>
       </provider>
     </entry>

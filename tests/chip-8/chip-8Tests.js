@@ -1,8 +1,10 @@
 var chip8 = new chip8Emu(),
+    renderer = new Chip8Display(),
     $fixture = $( "#qunit-fixture" );
 
 $fixture.append( "<canvas id='TEST_CANVAS'></canvas>" );
-chip8.beginEmulation("TEST_MODE","TEST_CANVAS");
+renderer.init('TEST_CANVAS');
+chip8.beginEmulation("TEST_MODE",renderer);
 
 /**
  * CPU Tests
@@ -11,7 +13,7 @@ chip8.beginEmulation("TEST_MODE","TEST_CANVAS");
 
 module("CPU");
     test("Initialization", function() {
-        chip8.initialize();
+        chip8.init();
         var memoryEmpty = true,
             gfxEmpty = true,
             regEmpty = true,
@@ -99,7 +101,7 @@ module("CPU");
 
 module ("OPCODE", {
     setup: function() {
-        chip8.initialize();
+        chip8.init();
     }
 });
     test("[0x00E0] - CLS", function() {
@@ -242,7 +244,7 @@ module ("OPCODE", {
 
         equal(chip8.pc, 0x200 + 4, "Program counter skipped an instruction when V[0] = " + randNum);
 
-        chip8.initialize();
+        chip8.init();
 
         chip8.memory[0x200] = 0x30;
         chip8.memory[0x201] = randNum;
@@ -275,7 +277,7 @@ module ("OPCODE", {
               0x202,
               " Vx is equal to  nn. Program counter moved to next instruction.");
 
-        chip8.initialize();
+        chip8.init();
 
         chip8.memory[0x200] = 0x40;
         chip8.memory[0x201] = randNum;
@@ -310,7 +312,7 @@ module ("OPCODE", {
               0x204,
             "Should skip the program counter over the next instruction when Vx = Vy.");
 
-        chip8.initialize();
+        chip8.init();
         chip8.memory[0x200] = 0x50;
         chip8.memory[0x201] = 0x10;
         chip8.V[0] = 0x05;
@@ -697,7 +699,7 @@ module ("OPCODE", {
             0x204,
             "Vx and Vy not equal so the program counter skipped an instruction.");
 
-        chip8.initialize();
+        chip8.init();
 
         chip8.memory[0x200] = 0x90; // Using V[0] as VX
         chip8.memory[0x201] = 0x10; // Using V[1] as VY
@@ -839,7 +841,7 @@ module ("OPCODE", {
             0x202,
             "Should increment the program counter to the next instruction when key is not pressed.");
 
-        chip8.initialize();
+        chip8.init();
 
         // Key pressed
         chip8.memory[0x200] = 0xE0;
@@ -881,7 +883,7 @@ module ("OPCODE", {
             0x204,
             "Should skip the program counter over the next instruction when key is not pressed.");
 
-        chip8.initialize();
+        chip8.init();
 
         // Key pressed
         chip8.memory[0x200] = 0xE0;
