@@ -16,11 +16,36 @@ module("CPU");
             gfxEmpty = true,
             regEmpty = true,
             staEmpty = true,
+            fontInstalled = true,
             i, len;
 
-        // There is a fontset stored in the first 80 bytes...
-        for(i = 80, len = chip8.memory.length ; i < len ; i++) {
-            if (chip8.memory[i] != 0) { memoryEmpty = false; }
+        // There is a fontset stored in 80 bytes between 0x050 and 0x0A0
+        for(i = 0, len = chip8.memory.length ; i < len ; i++) {
+            // Need to take into account the installed font
+            if (chip8.memory[i] != 0 && (i < 0x050 || i > 0x0A0)) { memoryEmpty = false; }
+        }
+
+        // Now let's check the fontset is installed.
+        var fontset = [
+            0xF0, 0x90, 0x90, 0x90, 0xF0, // 0
+            0x20, 0x60, 0x20, 0x20, 0x70, // 1
+            0xF0, 0x10, 0xF0, 0x80, 0xF0, // 2
+            0xF0, 0x10, 0xF0, 0x10, 0xF0, // 3
+            0x90, 0x90, 0xF0, 0x10, 0x10, // 4
+            0xF0, 0x80, 0xF0, 0x10, 0xF0, // 5
+            0xF0, 0x80, 0xF0, 0x90, 0xF0, // 6
+            0xF0, 0x10, 0x20, 0x40, 0x40, // 7
+            0xF0, 0x90, 0xF0, 0x90, 0xF0, // 8
+            0xF0, 0x90, 0xF0, 0x10, 0xF0, // 9
+            0xF0, 0x90, 0xF0, 0x90, 0x90, // A
+            0xE0, 0x90, 0xE0, 0x90, 0xE0, // B
+            0xF0, 0x80, 0x80, 0x80, 0xF0, // C
+            0xE0, 0x90, 0x90, 0x90, 0xE0, // D
+            0xF0, 0x80, 0xF0, 0x80, 0xF0, // E
+            0xF0, 0x80, 0xF0, 0x80, 0x80  // F
+        ];
+        for(i = 0 ; i < fontset.length ; i++) {
+            if(chip8.memory[i + 0x050] != fontset[i]) { fontInstalled = false; console.log("Failed at byte 0x"+(i + 0x050).toString(16));}
         }
 
         // Graphics buffer, however should be totally empty.
@@ -37,12 +62,14 @@ module("CPU");
         // And the stack
         for (i = 0 ; i < 16 ; i++) {
             if (chip8.stack[i] != 0) { staEmpty = false; }
+            if (chip8.sp != 0) { staEmpty = false; }
         }
 
-        ok(memoryEmpty,"Memory from 0x050 to 0xFFF is clear.");
-        ok(gfxEmpty, "Graphics buffer is clear.");
-        ok(regEmpty, "Registers are clear.");
-        ok(staEmpty, "Stack is clear.");
+        ok(memoryEmpty,"Should clear the entire memory except the font area.");
+        ok(fontInstalled,"Should install the font between 0x050 and 0x0A0.");
+        ok(gfxEmpty, "Should clear the graphics buffer.");
+        ok(regEmpty, "Should clear all registers.");
+        ok(staEmpty, "Should clear the stack.");
 
         equal(chip8.pc,
               0x200,
@@ -1044,9 +1071,9 @@ module ("OPCODE", {
         chip8.emulateCycle();
 
         equal(chip8.I,
-            randSprite * 5,
+            (randSprite * 5)+0x050,
             "Should set I to the memory location corresponding to the sprite for 0x" + (randSprite).toString(16) +
-            " [0x00"+(randSprite * 5).toString(16)+"]");
+            " [0x00"+((randSprite * 5)*0x050).toString(16)+"]");
 
         equal(chip8.pc,
             0x202,

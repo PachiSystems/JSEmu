@@ -40,7 +40,7 @@ chip8Emu.prototype = {
         for(i=0;i<me.memory.length;i++) {
             me.memory[i] = 0;
         }
-        // Install font. (Since there's no interpreter from 0x000 to 0x1FF, we can shove stuff there.)
+        // Install font. (Going to put the font where it should be...)
         var fontset = [
             0xF0, 0x90, 0x90, 0x90, 0xF0, // 0
             0x20, 0x60, 0x20, 0x20, 0x70, // 1
@@ -59,7 +59,7 @@ chip8Emu.prototype = {
             0xF0, 0x80, 0xF0, 0x80, 0xF0, // E
             0xF0, 0x80, 0xF0, 0x80, 0x80  // F
         ];
-        for (i = 0 ; i < fontset.length; i++) { me.memory[i] = fontset[i]; }
+        for (i = 0 ; i < fontset.length; i++) { me.memory[i+0x050] = fontset[i]; }
 
         /* GENERAL REGISTERS INITIALISATION
          Chip 8 has 15 8-bit general purpose registers named V0 to VE.
@@ -136,39 +136,6 @@ chip8Emu.prototype = {
             86:0xF  // PC V -> C8 F
         };
         for (i = 0 ; i < me.key.length ; i++) { me.key[i]=0; }
-    },
-
-    beginEmulation : function(romimage,canvasID) {
-        /* EMULATION OF CHIP-8
-         Call this function with the path of the ROM you want to use. That should be it...
-         If it doesn't work, then there's something wrong... Obviously...
-         You can submit a bug/issue at http://github.com/PachiSystems/JSEmu
-         Please be as descriptive as possible. I'll try and put a test suite together when I have time.
-         */
-        var me = this;
-
-        me.setupGraphics(canvasID);
-
-        me.setupInput();
-
-        if(romimage == "TEST_MODE") {
-            me.TEST_MODE = true;
-            me.randomNumber = 0; // This can be test in a test case.
-        } else {
-            me.TEST_MODE = false;
-            me.loadGame(romimage);
-        }
-    },
-
-    setupGraphics : function (canvasID) {
-        /**
-         * Note: This is not reset by the initialize method. Once you declare a canvas, it will be used all the time.
-         */
-        this.screen = document.getElementById(canvasID).getContext('2d');
-    },
-
-    setupInput : function () {
-        var me = this;
 
         /* KEYPRESS EVENT HANDLERS
          This is a bit special... Normally the key handler should be a part of the emulation loop and
@@ -211,6 +178,30 @@ chip8Emu.prototype = {
             me.key[0xD] = 0;
             me.key[0xE] = 0;
             me.key[0xF] = 0;
+        }
+    },
+
+    beginEmulation : function(romimage,renderer) {
+        /* EMULATION OF CHIP-8
+         Call this function with the path of the ROM you want to use. That should be it...
+         If it doesn't work, then there's something wrong... Obviously...
+         You can submit a bug/issue at http://github.com/PachiSystems/JSEmu
+         Please be as descriptive as possible. I'll try and put a test suite together when I have time.
+
+         NEW ADDITION: Instead of the 'canvasID', there should be a 'renderer' passed. In the future, the renderer
+                       should work for ALL implemented engines and not just CHIP-8. However, since that is a fair way
+                       away, there should be a 'display.js' in this folder that can be used.
+         */
+        var me = this;
+
+        me.setupInput();
+
+        if(romimage == "TEST_MODE") {
+            me.TEST_MODE = true;
+            me.randomNumber = 0; // This can be test in a test case.
+        } else {
+            me.TEST_MODE = false;
+            me.loadGame(romimage);
         }
     },
 
@@ -635,7 +626,7 @@ chip8Emu.prototype = {
                         //         We set the font at the beginning of memory. Each char is 5 bytes,
                         //         so we can determine VX * 5 = First byte of char.
                         // Execute opcode.
-                        me.I = me.V[(me.opcode & 0x0F00) >> 8] * 5;
+                        me.I = (me.V[(me.opcode & 0x0F00) >> 8] * 5) + 0x050;
                         me.pc += 2; // Increment the program counter.
                         break;
 
