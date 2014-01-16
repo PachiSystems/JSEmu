@@ -706,6 +706,8 @@ chip8Emu.prototype = {
 
                     me.renderer.drawPixel(curCol,curRow,'#FFF');
 
+                } else {
+                    me.renderer.drawPixel(curCol,curRow,'#000');
                 }
 
             }

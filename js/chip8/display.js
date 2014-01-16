@@ -10,7 +10,8 @@ Chip8Display.prototype = {
         this.scaleY = (this.context.clientHeight) / this.height;
     },
 
-    drawPixel: function(x,y) {
-        this.context.fillRect(x, y, this.scaleX, this.scaleY);
+    drawPixel: function(x,y,colour) {
+        this.context.fillStyle = colour;
+        this.context.fillRect(x * this.scaleX, y * this.scaleY, this.scaleX, this.scaleY);
     }
 }
