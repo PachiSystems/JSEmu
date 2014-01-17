@@ -1,4 +1,4 @@
-var chip8Emu = function() {
+var Chip8Emu = function() {
     var memory = new ArrayBuffer(0x1000);
 
     this.delay_timer = 0;
@@ -10,7 +10,6 @@ var chip8Emu = function() {
     this.opcode = 0x0000;
     this.randomNumber = 0;
     this.renderer = null;
-    this.screen = null;
     this.sound_timer = 0;
     this.sp = 0;
     this.stack = new Array(16);
@@ -21,7 +20,7 @@ var chip8Emu = function() {
     this.init();
 };
 
-chip8Emu.prototype = {
+Chip8Emu.prototype = {
 
     init : function() {
         /**
@@ -238,6 +237,10 @@ chip8Emu.prototype = {
                 }
 
                 // Emulation loop to trigger once our ROM has finished loading.
+
+                // There's some problem with speed here... I'm assuming it's to do with the way that the loop processes
+                // a fairly big array rather inefficiently... Perhaps I should find another way to run the loop...
+
                 setInterval(function() {
                     //console.debug("Emulation loop running");
                     // Emulate one cycle
@@ -245,7 +248,22 @@ chip8Emu.prototype = {
 
                     // If the draw flag is set, update the screen
                     if(me.drawflag) {
-                        me.drawGraphics();
+                        me.renderer.renderScreen(me.gfx);
+                        me.drawflag = false;
+                    }
+
+                    // Update timers
+                    if( me.step++ % 16 == 0) {
+                        if(me.delay_timer > 0) {
+                            me.delay_timer--;
+                        }
+
+                        if(me.sound_timer > 0) {
+                            if(me.sound_timer == 1) {
+                                console.log("BEEP!");
+                            }
+                            me.sound_timer--;
+                        }
                     }
 
                 },0);
@@ -260,21 +278,8 @@ chip8Emu.prototype = {
         /**
          * This is the meat and potatoes of it all...
          */
-        var me = this;
-
-        // Update timers
-        if( me.step++ % 10 == 0) {
-            if(me.delay_timer > 0) {
-                me.delay_timer--;
-            }
-
-            if(me.sound_timer > 0) {
-                if(me.sound_timer == 1) {
-                    console.log("BEEP!");
-                }
-                me.sound_timer--;
-            }
-        }
+        var me;
+        me = this;
 
         // Fetch Opcode
         me.opcode = me.memory[me.pc] << 8 | me.memory[me.pc + 1];
@@ -286,10 +291,19 @@ chip8Emu.prototype = {
                 switch(me.opcode & 0x000F) {
                     case 0x0000: // 0x00E0: Clears the screen
                         // Execute opcode
-                        for(var i = 0; i < me.gfx.length; i++) {
+                        // Let's do this a little more intelligently... If we're now using a renderer to handle our
+                        // graphics, let's just tell that to clear the screen... Might speed it up a bit...
+
+                        me.renderer.clearScreen();
+
+
+                        for(var i = me.gfx.length-1; i >= 0 ; i--) {
                             me.gfx[i] = 0;
                         }
+
                         me.drawflag = true;
+
+
                         me.pc += 2; // Increment the program counter.
                         break;
                     case 0x000E: // 0x00EE: Returns from subroutine
@@ -683,37 +697,6 @@ chip8Emu.prototype = {
             default:
                 console.error("Unknown opcode: 0x" + me.opcode);
         }
-    },
-
-    drawGraphics : function() {
-        /**
-         * Drawing shizzles!... Badly!
-         * There must be some way to not have to itterate through the WHOLE array every time... This is
-         */
-        var me = this;
-
-        for (var curRow = 0; curRow < 32; curRow++) {
-
-            // Work our way down the image one row at a time.
-
-            for (var curCol = 0; curCol < 64; curCol++) {
-
-                // And we work our way across the row one column at a time.
-
-                if (me.gfx[(curRow * 64) + curCol] == 1) {
-
-                    // Draw a white pixel.
-
-                    me.renderer.drawPixel(curCol,curRow,'#FFF');
-
-                } else {
-                    me.renderer.drawPixel(curCol,curRow,'#000');
-                }
-
-            }
-        }
-
-        me.drawflag = false;
     }
 
 };

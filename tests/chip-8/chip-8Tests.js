@@ -1,4 +1,4 @@
-var chip8 = new chip8Emu(),
+var chip8 = new Chip8Emu(),
     renderer = new Chip8Display(),
     $fixture = $( "#qunit-fixture" );
 
@@ -125,7 +125,7 @@ module ("OPCODE", {
 
         equal(graphicsEmpty,
               true,
-              "Graphics buffer has been emptied.");
+              "Should clear the entire graphics buffer.");
 
         equal(chip8.drawflag,
               true,
