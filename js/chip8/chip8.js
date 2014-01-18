@@ -252,7 +252,7 @@ Chip8Emu.prototype = {
                         me.drawflag = false;
                     }
 
-                    // Update timers
+                    // Update timers (1000/60 = roughly 16... Approximately 60hz)
                     if( me.step++ % 16 == 0) {
                         if(me.delay_timer > 0) {
                             me.delay_timer--;
