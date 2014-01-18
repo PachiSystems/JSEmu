@@ -9,6 +9,9 @@ Chip8Display.prototype = {
         this.context.fillStyle = '#FFF';
         this.scaleX = 10; //(this.context.clientWidth) / this.width;
         this.scaleY = 10; //(this.context.clientHeight) / this.height;
+
+        this.clearScreen();
+
     },
 
     renderScreen: function(vRam) {
@@ -18,13 +21,12 @@ Chip8Display.prototype = {
          * chip8.js in order to have a little more separation.
          */
         var me = this,
-            display = vRam,
             i, len,
             y = 0;
 
-        for (i = 0 , len = display.length; i < len ; i++) {
+        for (i = 0 , len = vRam.length; i < len ; i++) {
 
-            if(display[i] == 1) {
+            if(vRam[i] == 1) {
 
                 me.drawPixel(i % 64, y,'#FFF');
 

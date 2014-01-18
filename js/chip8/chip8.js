@@ -2,6 +2,8 @@ var Chip8Emu = function() {
     var memory = new ArrayBuffer(0x1000);
 
     this.delay_timer = 0;
+    this.cycleAmount = 16; // Should give us about 60Hz
+    this.halt = false;
     this.gfx = new Array(64 * 32);
     this.I = 0;
     this.key = new Array(16);
@@ -159,7 +161,7 @@ Chip8Emu.prototype = {
             if(releasedKey in me.keymap) {
                 me.key[me.keymap[releasedKey]] = 0;
             }
-        }
+        };
 
         window.onblur = function() {
             me.key[0x0] = 0;
@@ -178,7 +180,71 @@ Chip8Emu.prototype = {
             me.key[0xD] = 0;
             me.key[0xE] = 0;
             me.key[0xF] = 0;
-        }
+        };
+    },
+
+    loadGame : function(romimage) {
+        var xhr = new XMLHttpRequest(),
+            me = this,
+            i, len;
+
+        /* GAME LOADING
+         Load the program into the memory. Check to make sure it's not too big as well...
+         */
+        xhr.open("GET",romimage);
+        xhr.responseType = "arraybuffer";
+
+        xhr.onload = function() {
+
+            var program = new Uint8Array(xhr.response);
+
+            if (program.length <= (4096 - 512)) {
+
+                for (i = 0; i < program.length; i++) {
+
+                    me.memory[(i + 512)] = program[i];
+
+                }
+
+                // Emulation loop to trigger once our ROM has finished loading.
+
+                // There's some problem with speed here... I'm assuming it's to do with the way that the loop processes
+                // a fairly big array rather inefficiently... Perhaps I should find another way to run the loop...
+
+               requestAnimFrame(function cpuCycle() {
+                    for (i = 0 , len = me.cycleAmount; i < len; i++) {
+                        me.emulateCycle();
+                    }
+
+                    if (me.drawflag) {
+                        me.renderer.renderScreen(me.gfx);
+                        me.drawflag = false;
+                    }
+
+                    if(me.step++ %2) {
+                        if (me.delay_timer > 0) {
+                            me.delay_timer--;
+                        }
+
+                        if (me.sound_timer > 0) {
+                            if (me.sound_timer == 1) {
+                                console.log("BEEP!");
+                            }
+                            me.sound_timer--;
+                        }
+                    }
+
+                   requestAnimFrame(cpuCycle);
+               });
+
+            } else {
+
+                console.error("This program will not fit into Chip-8 memory.");
+
+            }
+
+        };
+        xhr.send();
     },
 
     beginEmulation : function(romimage, renderer) {
@@ -210,79 +276,20 @@ Chip8Emu.prototype = {
         }
     },
 
-    loadGame : function(romimage) {
-        var xhr = new XMLHttpRequest(),
-            me = this;
-
-        /* GAME LOADING
-         Load the program into the memory. Check to make sure it's not too big as well...
-         */
-        xhr.open("GET",romimage);
-        xhr.responseType = "arraybuffer";
-
-        xhr.onload = function() {
-
-            var program = new Uint8Array(xhr.response);
-
-            if(program.length > (4096 - 512)) {
-
-                console.error("This program will not fit into Chip-8 memory.");
-
-            } else {
-
-                for (var i = 0; i < program.length; i++) {
-
-                    me.memory[(i + 512)] = program[i];
-
-                }
-
-                // Emulation loop to trigger once our ROM has finished loading.
-
-                // There's some problem with speed here... I'm assuming it's to do with the way that the loop processes
-                // a fairly big array rather inefficiently... Perhaps I should find another way to run the loop...
-
-                setInterval(function() {
-                    //console.debug("Emulation loop running");
-                    // Emulate one cycle
-                    me.emulateCycle();
-
-                    // If the draw flag is set, update the screen
-                    if(me.drawflag) {
-                        me.renderer.renderScreen(me.gfx);
-                        me.drawflag = false;
-                    }
-
-                    // Update timers (1000/60 = roughly 16... Approximately 60hz)
-                    if( me.step++ % 16 == 0) {
-                        if(me.delay_timer > 0) {
-                            me.delay_timer--;
-                        }
-
-                        if(me.sound_timer > 0) {
-                            if(me.sound_timer == 1) {
-                                console.log("BEEP!");
-                            }
-                            me.sound_timer--;
-                        }
-                    }
-
-                },0);
-
-            }
-
-        };
-        xhr.send();
-    },
-
     emulateCycle : function() {
         /**
          * This is the meat and potatoes of it all...
          */
-        var me;
-        me = this;
+        var me = this,
+            i, xline, yline, total;
 
         // Fetch Opcode
         me.opcode = me.memory[me.pc] << 8 | me.memory[me.pc + 1];
+
+        // These values seem to be the same all the time. Let's cache them and stop processing so many bitshifts in the
+        // OPCODE functions.
+        me.Vx = (me.opcode & 0x0F00) >> 8;
+        me.Vy = (me.opcode & 0x00F0) >> 4;
 
         // Decode Opcode
         switch(me.opcode & 0xF000) {
@@ -297,7 +304,7 @@ Chip8Emu.prototype = {
                         me.renderer.clearScreen();
 
 
-                        for(var i = me.gfx.length-1; i >= 0 ; i--) {
+                        for(i = me.gfx.length-1; i >= 0 ; i--) {
                             me.gfx[i] = 0;
                         }
 
@@ -315,6 +322,7 @@ Chip8Emu.prototype = {
 
                     default:
                         console.error("Unknown opcode [0x0000]: 0x" + me.opcode);
+                        me.halt = true;
                         break;
                 }
                 break;
@@ -338,7 +346,7 @@ Chip8Emu.prototype = {
 
             case 0x3000: // 0x3Xnn: Skips the next instruction if VX equals nn
                 // Execute opcode
-                if(me.V[(me.opcode & 0x0F00) >> 8] == (me.opcode & 0x0FF)) {
+                if(me.V[me.Vx] == (me.opcode & 0x0FF)) {
                     // It equal, so skip the next instruction.
                     me.pc += 4;
                 } else {
@@ -349,7 +357,7 @@ Chip8Emu.prototype = {
 
             case 0x4000: // 0x4Xnn: Skips the next instruction if VX doesn't equal nn.
                 // Execute opcode
-                if(me.V[(me.opcode & 0x0F00) >> 8] != (me.opcode & 0x00FF)) {
+                if(me.V[me.Vx] != (me.opcode & 0x00FF)) {
                     // Not equal, so skip the next instruction.
                     me.pc += 4;
                 } else {
@@ -360,7 +368,7 @@ Chip8Emu.prototype = {
 
             case 0x5000: // 0x5XY0: Skips the next instruction if VX equals VY.
                 // Execute opcode.
-                if(me.V[(me.opcode & 0x0F00) >> 8] == me.V[(me.opcode & 0x00F0) >> 4]) {
+                if(me.V[me.Vx] == me.V[me.Vy]) {
                     // VX and VY match! Skip the next instruction.
                     me.pc += 4;
                 } else {
@@ -371,7 +379,7 @@ Chip8Emu.prototype = {
 
             case 0x6000: // 0x6Xnn: Sets VX to nn.
                 // Execute opcode.
-                me.V[(me.opcode & 0x0F00) >> 8] = (me.opcode & 0x00FF);
+                me.V[me.Vx] = (me.opcode & 0x00FF);
                 me.pc += 2; // Increment the program counter.
                 break;
 
@@ -379,12 +387,12 @@ Chip8Emu.prototype = {
                 // Execute opcode.
                 // Does this set VF on overflow?... There seems to be no documentation.
 
-                var total = (me.V[(me.opcode & 0x0F00) >> 8] + (me.opcode & 0x00FF));
+                total = (me.V[me.Vx] + (me.opcode & 0x00FF));
 
                 // carry? then V[F] = 1 :else: V[F] = 0
                 (total > 255) ? me.V[0xF] = 1 : me.V[0xF] = 0;
 
-                me.V[(me.opcode & 0x0F00) >> 8] = total % 256;
+                me.V[me.Vx] = total % 256;
                 me.pc += 2; // Increment the program counter.
                 break;
 
@@ -393,85 +401,86 @@ Chip8Emu.prototype = {
 
                     case 0x0000: // 0x8XY0: Sets VX to the value of VY
                         // Execute opcode
-                        me.V[(me.opcode & 0x0F00) >> 8] = me.V[(me.opcode & 0x00F0) >> 4];
+                        me.V[me.Vx] = me.V[me.Vy];
                         me.pc += 2; // Increment the program counter.
                         break;
 
                     case 0x0001: // 0x8XY1: Sets VX to VX | VY
                         // Execute opcode
-                        me.V[(me.opcode & 0x0F00) >> 8] |= me.V[(me.opcode & 0x00F0) >> 4];
+                        me.V[me.Vx] |= me.V[me.Vy];
                         me.pc += 2; // Increment the program counter.
                         break;
 
                     case 0x0002: // 0x8XY2: Sets VX to VX & VY
                         // Execute opcode
-                        me.V[(me.opcode & 0x0F00) >> 8] &= me.V[(me.opcode & 0x00F0) >> 4];
+                        me.V[me.Vx] &= me.V[me.Vy];
                         me.pc += 2; // Increment the program counter.
                         break;
 
                     case 0x0003: // 0x8XY3: Sets VX to VX XOR VY
                         // Execute opcode
-                        me.V[(me.opcode & 0x0F00) >> 8] ^= me.V[(me.opcode & 0x00F0) >> 4];
+                        me.V[me.Vx] ^= me.V[me.Vy];
                         me.pc += 2;  // Increment the program counter.
                         break;
 
                     case 0x0004: // 0x8XY4: Adds VY to VX. VF is set to 1 when there's a carry and 0 when there isn't.
                         // Execute opcode
 
-                        var total = me.V[(me.opcode & 0x0F00) >> 8] + me.V[(me.opcode & 0x00F0) >> 4];
+                        total = me.V[me.Vx] + me.V[me.Vy];
 
                         // carry? then V[0xF] = 1 :else: V[0xF] = 0
                         (total > 256) ? me.V[0xF] = 1 : me.V[0xF] = 0;
 
-                        me.V[(me.opcode & 0x0F00) >> 8] = total % 256; // %256 ensures we don't overflow.
+                        me.V[me.Vx] = total % 256; // %256 ensures we don't overflow.
                         me.pc += 2; // Increment the program counter.
                         break;
 
                     case 0x0005: // 0x8XY5: VY is subtracted from VX. VF is set to 0 when there's a borrow, and 1 when there isn't.
                         // Execute opcode
 
-                        var total = me.V[(me.opcode & 0x0F00) >> 8] - me.V[(me.opcode & 0x00F0) >> 4];
+                        total = me.V[me.Vx] - me.V[me.Vy];
 
                         // borrow? then V[0xF] = 0 :else: V[0xF] = 1
                         (total < 0) ? me.V[0xF] = 0 : me.V[0xF] = 1;
 
-                        me.V[(me.opcode & 0x0F00) >> 8] = Math.abs(total) % 256; // %256 ensures we don't overflow.
+                        me.V[me.Vx] = Math.abs(total) % 256; // %256 ensures we don't overflow.
 
                         me.pc += 2; // Increment the program counter.
                         break;
 
                     case 0x0006: // 0x8XY6: Shifts VX right by one. VF is set to the value of the least significant bit of VX before the shift.
                         // Execute opcode
-                        me.V[0xF] = me.V[(me.opcode & 0x0F00) >> 8] & 0x1;
+                        me.V[0xF] = me.V[me.Vx] & 0x1;
 
-                        me.V[(me.opcode & 0x0F00) >> 8] >>= 1; // Shift one right and store.
+                        me.V[me.Vx] >>= 1; // Shift one right and store.
 
                         me.pc += 2; // Increment the program counter.
                         break;
 
                     case 0x0007: // 0x8XY7: Sets VX to VY-VX. VF is set to 0 when there's a borrow and 1 when there isn't.
                         // Execute opcode
-                        var total = me.V[(me.opcode & 0x00F0) >> 4] - me.V[(me.opcode & 0x0F00) >> 8];
+                        total = me.V[me.Vy] - me.V[me.Vx];
 
                         // borrow? then V[F] = 0 :else: V[F] = 1
                         (total < 0) ? me.V[0xF] = 0 : me.V[0xF] = 1;
 
-                        me.V[(me.opcode & 0x0F00) >> 8] = Math.abs(total);
+                        me.V[me.Vx] = Math.abs(total);
 
                         me.pc += 2; // Increment the program counter.
                         break;
 
                     case 0x000E: // 0x8XYE: Shifts VX left by one. VF is set to the value of the most significant bit of VX before the shift.
                         // Execute opcode
-                        me.V[0xF] = me.V[(me.opcode & 0x0F00) >> 8] >> 7;
+                        me.V[0xF] = me.V[me.Vx] >> 7;
 
-                        me.V[(me.opcode & 0x0F00) >> 8] = (me.V[(me.opcode & 0x0F00) >> 8] << 1) % 256; // Shift left by one and keep it a byte.
+                        me.V[me.Vx] = (me.V[me.Vx] << 1) % 256; // Shift left by one and keep it a byte.
 
                         me.pc += 2; // Increment the program counter.
                         break;
 
                     default:
                         console.error("Unknown opcode [0x8000]: 0x" + me.opcode);
+                        me.halt = true;
                         break;
                 }
                 break;
@@ -480,7 +489,7 @@ Chip8Emu.prototype = {
                 // Execute opcode
 
                 // Not equal? then skip :else: continue
-                (me.V[(me.opcode & 0x0F00) >> 8] != me.V[(me.opcode & 0x00F0) >> 4]) ? me.pc += 4 : me.pc += 2;
+                (me.V[me.Vx] != me.V[me.Vy]) ? me.pc += 4 : me.pc += 2;
 
                 break;
 
@@ -493,7 +502,7 @@ Chip8Emu.prototype = {
             case 0xB000: // 0xBnnn: Jumps to the address nnn plus V0
                 // Execute opcode.
                 // If the memory goes out of bounds, let's log an error... We can handle it better later.
-                var total = (me.opcode & 0x0FFF) + me.V[0x0];
+                total = (me.opcode & 0x0FFF) + me.V[0x0];
                 (total > 0xFFF) ? console.error("[0xB000] : Calling address out of bounds. Will wrap around.") : 0;
                 me.pc = total % 4096; // Jumping, so no incrementing and keeping within memory bounds.
                 break;
@@ -512,7 +521,7 @@ Chip8Emu.prototype = {
                     randomNumber = Math.floor(Math.random() * (0x01 + 0xFF)); // This should be between 0x00 and 0xFF...
                 }
 
-                me.V[(me.opcode & 0x0F00) >> 8] = randomNumber & (me.opcode & 0x00FF);
+                me.V[me.Vx] = randomNumber & (me.opcode & 0x00FF);
 
                 me.pc += 2; // Increment the program counter.
                 break;
@@ -524,8 +533,8 @@ Chip8Emu.prototype = {
                 //         instruction. VF is set to 1 if any screen pixels are flipped from set to
                 //         unset when the sprite is drawn and 0 if that doesn't happen.
                 // Execute opcode.
-                var x = me.V[(me.opcode & 0x0F00) >> 8]; // X co-ordinate
-                var y = me.V[(me.opcode & 0x00F0) >> 4]; // Y co-ordinate
+                var x = me.V[me.Vx]; // X co-ordinate
+                var y = me.V[me.Vy]; // Y co-ordinate
                 var height = me.opcode & 0x000F; // Height in pixels.
                 var pixel;
 
@@ -533,13 +542,13 @@ Chip8Emu.prototype = {
                 me.V[0xF] = 0;
 
                 // Top to bottom
-                for(var yline = 0; yline < height; yline++) {
+                for(yline = 0; yline < height; yline++) {
 
                     // Get the pixel value from the memory starting at location I
                     pixel = me.memory[me.I + yline];
 
                     // Left to right
-                    for(var xline = 0; xline < 8; xline++) {
+                    for(xline = 0; xline < 8; xline++) {
 
                         // Check to see if the current pixel is set to 1 (scans the byte one bit at a time)
                         if((pixel & (0x80 >> xline)) != 0) {
@@ -569,7 +578,7 @@ Chip8Emu.prototype = {
                         // Execute opcode.
 
                         // key pressed? then skip :else: continue
-                        (me.key[me.V[(me.opcode & 0x0F00) >> 8]] == 1) ? me.pc += 4 : me.pc += 2;
+                        (me.key[me.V[me.Vx]] == 1) ? me.pc += 4 : me.pc += 2;
 
                         break;
 
@@ -577,12 +586,13 @@ Chip8Emu.prototype = {
                         // Execute opcode.
 
                         // key not pressed? then skip :else: continue
-                        (me.key[me.V[(me.opcode & 0x0F00) >> 8]] == 0) ? me.pc += 4 : me.pc += 2;
+                        (me.key[me.V[me.Vx]] == 0) ? me.pc += 4 : me.pc += 2;
 
                         break;
 
                     default:
                         console.error("Unknown opcode [0xE000]: 0x" + me.opcode);
+                        me.halt = true;
                         break;
                 }
                 break;
@@ -593,7 +603,7 @@ Chip8Emu.prototype = {
 
                     case 0x0007: // 0xFX07: Sets VX to the value of the delay timer.
                         // Execute opcode.
-                        me.V[(me.opcode & 0x0F00) >> 8] = me.delay_timer;
+                        me.V[me.Vx] = me.delay_timer;
                         me.pc += 2; // Increment the program counter.
                         break;
 
@@ -602,9 +612,9 @@ Chip8Emu.prototype = {
                         var pressed = false;
 
                         // Scan the keys to see if one was pressed.
-                        for (var i = 0 ; i < 16 ; i++) {
+                        for (i = 0 ; i < 16 ; i++) {
                             if (me.key[i] != 0) {
-                                me.V[(me.opcode & 0x0F00) >> 8] = i;
+                                me.V[me.Vx] = i;
                                 pressed = true;
                             }
                         }
@@ -619,25 +629,25 @@ Chip8Emu.prototype = {
 
                     case 0x0015: // 0xFX15: Sets the delay timer to VX.
                         // Execute opcode.
-                        me.delay_timer = me.V[(me.opcode & 0x0F00) >> 8];
+                        me.delay_timer = me.V[me.Vx];
                         me.pc += 2; // Increment the program counter.
                         break;
 
                     case 0x0018: // 0xFX18: Sets the sound timer to VX.
                         // Execute opcode.
-                        me.sound_timer = me.V[(me.opcode & 0x0F00) >> 8];
+                        me.sound_timer = me.V[me.Vx];
                         me.pc += 2; // Increment the program counter.
                         break;
 
                     case 0x001E: // 0xFX1E: Adds VX to I.
                         // Execute opcode.
                         // VF is set to 1 when there is overflow. This is undocumented, but utilised in Spaceflight 2019!
-                        var total = me.V[(me.opcode & 0x0F00) >> 8] + me.I;
+                        total = me.V[me.Vx] + me.I;
 
                         // Overflow? Remember I is a 16-bit register...
                         (total > 65535) ? me.V[0xF] = 1 : me.V[0xF] = 0;
 
-                        me.I += me.V[(me.opcode & 0x0F00) >> 8];
+                        me.I += me.V[me.Vx];
                         me.pc += 2; // Increment the program counter.
                         break;
 
@@ -646,16 +656,16 @@ Chip8Emu.prototype = {
                         //         We set the font at the beginning of memory. Each char is 5 bytes,
                         //         so we can determine VX * 5 = First byte of char.
                         // Execute opcode.
-                        me.I = (me.V[(me.opcode & 0x0F00) >> 8] * 5) + 0x050;
+                        me.I = (me.V[me.Vx] * 5) + 0x050;
                         me.pc += 2; // Increment the program counter.
                         break;
 
                     case 0x0033: // 0xFX33: Stores the binary-coded decimal representation of VX, with the hundreds
                         //         digit at address I, tens digit at address I+1 and the ones digit at I+2.
                         // Execute opcode.
-                        me.memory[me.I] = Math.floor(me.V[(me.opcode & 0x0F00) >> 8] / 100);
-                        me.memory[me.I + 1] = Math.floor((me.V[(me.opcode & 0x0F00) >> 8] / 10) % 10);
-                        me.memory[me.I + 2] = Math.floor((me.V[(me.opcode & 0x0F00) >> 8] % 100) % 10);
+                        me.memory[me.I] = Math.floor(me.V[me.Vx] / 100);
+                        me.memory[me.I + 1] = Math.floor((me.V[me.Vx] / 10) % 10);
+                        me.memory[me.I + 2] = Math.floor((me.V[me.Vx] % 100) % 10);
                         me.pc += 2; // Increment the program counter.
                         break;
 
@@ -663,7 +673,7 @@ Chip8Emu.prototype = {
                         // Execute opcode.
                         var xAddr = (me.opcode & 0x0F00) >> 8;
 
-                        for(var i = 0; i <= xAddr ; i++) {
+                        for(i = 0; i <= xAddr ; i++) {
                             me.memory[me.I + i] = me.V[i];
                         }
 
@@ -677,7 +687,7 @@ Chip8Emu.prototype = {
                         // Execute opcode.
                         var xAddr = (me.opcode & 0x0F00) >> 8;
 
-                        for(var i = 0; i <= xAddr ; i++) {
+                        for(i = 0; i <= xAddr ; i++) {
                             me.V[i] = me.memory[me.I + i];
                         }
 
@@ -689,6 +699,7 @@ Chip8Emu.prototype = {
 
                     default:
                         console.error("Unknown opcode [0xF000]: 0x" + me.opcode);
+                        me.halt = true;
                         break;
 
                 }
@@ -696,6 +707,8 @@ Chip8Emu.prototype = {
 
             default:
                 console.error("Unknown opcode: 0x" + me.opcode);
+                me.halt = true;
+                break;
         }
     }
 

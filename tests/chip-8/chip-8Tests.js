@@ -914,7 +914,7 @@ module ("OPCODE", {
         chip8.memory[0x200] = 0xF0;
         chip8.memory[0x201] = 0x07;
 
-        chip8.delay_timer = randNum + 1;  // Delay timer gets decremented at the beginning of the cycle.
+        chip8.delay_timer = randNum;  // Delay timer gets decremented at the beginning of the cycle.
 
         chip8.emulateCycle();
 
