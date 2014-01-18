@@ -1,28 +1,27 @@
-The Random Hajemulator (Thanks, Kirk!) a.k.a. JSEmu
-===================================================
+JSEmu
+=====
+a.k.a. Random Hajemulator
+-------------------------
+
+* Try it here: [PachiSystems JSEmu](http://PachiSystems.com/JSEmu/chip8.html)
 
 Or: An Adventure In Emulation For JavaScript
 --------------------------------------------
 
-Okay... so this is the thought process behind doing this. I'm a software engineer working on the front end
-for a very large company. Most of my work involves CSS and HTML and whilst HTML isn't too bad, CSS tends
-to numb my brain... There is some JavaScript stuff and that's where I revel. We use a framework at our
-company called TroopJS (you should check it out on GitHub) and I enjoy working with it. However a lot of
-the stuff we do is actually in .NET... I'm more familiar with LAMP stacks as opposed to WISA (Windows, IIS,
-SQL, ASP.NET).
+So... Why do it? Why spend hours in my off time to create something like this? Simple: Because I want to.
 
-So that's where this came up. I like fiddling with things in my off-time. I was in my element when I got my
-Raspberry Pi and began experimenting with home automation (although that came to an end when we moved to
-a smaller apartment and things got packed away) and with the increasing popularity of HTML5 and associated
-technologies, I wanted to start building on my knowledge of that as it can only help me in my career.
+Programming used to be nomore than a hobby for me. I am self taught in almost every aspect of computer science and there
+has been no other job in my woork history that has given me as much satisfaction. It's always been my goal to become a
+developer. I never really bothered which language it was in (which is why I know a bit of quite a few languages) but
+since becomming a real Front-End Engineer / Developer, I've kind of started doing more in the way of JavaScript.
 
-Browsing the web one day, I noticed there was a GameBoy emulator written in JavaScript and I thought to
-myself: "What a great idea!". And then I thought: "I wish I knew how emulators worked internally". That was
-quickly followed by: "I want to learn how to build one!". Luckily, this day and age, there are numerous
-tutorials on the internet about building emulators. And the vast majority of them are for people who use
-C or C++... There was a C# one somewhere and a Java one, but very little in terms of JavaScript. I guess
-that even though JavaScript is the most deployed 'language' on the planet, it doesn't get taken too
-seriously... Mind you, it is a perfect language for object-oriented programming on the web.
+Don't get me wrong, I will still dabble with C, Python and other languages on a regular basis, but JavaScript is the one
+that pays the bills, so it's only natural I wanted to do more when it comes to that. I'd put myself in a mid-level
+position when it comes down to it. Hence the desire to move myself up in the ranks of being able to develop things.
+
+I'm not the kind of guy that will jump on a new technology until it's widely adopted or it really perks my interest. I
+tend to stick to pure JS and occasionally use jQuery to assist in that. Recently I've been using TroopJS as well, but
+that's another story.
 
 Notes about development
 -----------------------
@@ -43,11 +42,12 @@ may take a while...
 Things I've Learned Doing This
 ------------------------------
 
-- [x] Loading a binary file into an array buffer.
-- [x] When working with bytes, especially in JavaScript, make sure they remain bytes! Overflows suck.
-- [x] A good, strong technical reference is essential in creating an emulation engine.
-- [x] When emulators go wrong, you wish you'd have written unit tests.
-- [x] When you write unit tests, probably best to do them before you implement an opcode.
-- [x] Retroactively writing unit tests points out gaping flaws in the code.
-- [x] Going over the code word-by-word is a good way to re-think implementation and find errors of judgement.
-- [x] Coffee is king.
+[x] Loading a binary file into an array buffer.
+[x] When working with bytes, especially in JavaScript, make sure they remain bytes! Overflows suck.
+[x] A good, strong technical reference is essential in creating an emulation engine.
+[x] When emulators go wrong, you wish you'd have written unit tests.
+[x] When you write unit tests, probably best to do them before you implement an opcode.
+[x] Retroactively writing unit tests points out gaping flaws in the code.
+[x] Going over the code word-by-word is a good way to re-think implementation and find errors of judgement.
+[x] Coffee is king.
+[x] setTimeout or a recursive call to requestAnimationFrame makes things perform much better than setInterval... D'oh!
