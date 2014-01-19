@@ -42,12 +42,12 @@ may take a while...
 Things I've Learned Doing This
 ------------------------------
 
-[x] Loading a binary file into an array buffer.
-[x] When working with bytes, especially in JavaScript, make sure they remain bytes! Overflows suck.
-[x] A good, strong technical reference is essential in creating an emulation engine.
-[x] When emulators go wrong, you wish you'd have written unit tests.
-[x] When you write unit tests, probably best to do them before you implement an opcode.
-[x] Retroactively writing unit tests points out gaping flaws in the code.
-[x] Going over the code word-by-word is a good way to re-think implementation and find errors of judgement.
-[x] Coffee is king.
-[x] setTimeout or a recursive call to requestAnimationFrame makes things perform much better than setInterval... D'oh!
+- Loading a binary file into an array buffer.
+- When working with bytes, especially in JavaScript, make sure they remain bytes! Overflows suck.
+- A good, strong technical reference is essential in creating an emulation engine.
+- When emulators go wrong, you wish you'd have written unit tests.
+- When you write unit tests, probably best to do them before you implement an opcode.
+- Retroactively writing unit tests points out gaping flaws in the code.
+- Going over the code word-by-word is a good way to re-think implementation and find errors of judgement.
+- Coffee is king.
+- setTimeout or a recursive call to requestAnimationFrame makes things perform much better than setInterval... D'oh!
