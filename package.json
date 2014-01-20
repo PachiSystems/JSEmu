@@ -1,6 +1,21 @@
 {
   "name": "JSEmu",
+  "description" : "An attempt at emulating different systems in JavaScript",
+  "keywords" : ["emulator","chip-8","javascript"],
+  "homepage" : "http://PachiSystems.com/",
   "version": "1.0.0",
+  "author" : {
+      "name" : "Brian Milton",
+      "url" : "http://cn.linkedin.com/pub/brian-milton/42/177/215/"
+  },
+  "repository" : {
+      "type" : "git",
+      "url" : "http://github.com/pachisystems/JSEmu.git"
+  },
+  "bugs" : {
+      "url" : "http://github.com/PachiSystems/JSEmu/issues"
+  },
+  "licence" : "MIT",
   "devDependencies": {
     "grunt": "~0.4.2",
     "grunt-contrib-jshint": "~0.6.3",
