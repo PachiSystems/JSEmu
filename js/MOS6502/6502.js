@@ -43,7 +43,7 @@ var MOS6502 = function() {
     /* Registers */
     this._X = 0x00;
     this._Y = 0x00;
-    this._P = {
+    this._P = { // Status
         "N" : false,  // Negative
         "V" : false,  // Overflow
         "B" : false,  // Break
@@ -55,7 +55,7 @@ var MOS6502 = function() {
     this._A = 0x00; // Accumulator
 
     /* Stack */
-    this._stack = new Array(0xFF);
+    this._stack = new Uint8Array(0xFF);
     this._sp = 0x00;
 
     /* Program Counter */
