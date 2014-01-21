@@ -5,6 +5,7 @@ a.k.a. Random Hajemulator
 
 * Try it here: [PachiSystems JSEmu](http://PachiSystems.com/JSEmu/chip8.html)
 * Learn how to tackle an emulator in JavaScript: [Introduction to Emulation in JavaScript](http://PachiSystems.com/how-to-write-an-emulator-in-javascript/)
+* Next project: MOS 6502 which is used in Commodore 64, Atari 2600 and NES! YEAH, BABY!
 
 Or: An Adventure In Emulation For JavaScript
 --------------------------------------------
