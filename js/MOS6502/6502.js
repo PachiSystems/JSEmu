@@ -384,25 +384,75 @@ MOS6502.prototpe.opcodeMap = {
 
 };
 
-/* Placeholder functions. */
+/* Placeholder functions for the instruction set. */
 
 MOS6502.prototype.ADC = function (ADDR_MODE) {
+    /* Add memory to accumulator with carry
+     *
+     * Affects:
+     * | | |     |
+     * N Z C I D V
+     *
+     * PSEUDO CODE:
+     *
+     * var temp = srcByte + Accumulator + (IF_CARRY() ? 1 : 0);
+     * if( IF_DECIMAL() ) {
+     *      if ( ( ( Accumulator & 0xF) + (srcByte & 0XF) + (IF_CARRY() ? 1 : 0) ) > 9 ) {
+     *          temp += 6;
+     *      }
+     *      SET_SIGN(temp);
+     *      SET_OVERFLOW( !( (Accumulator ^ srcByte) & 0x80) && ( ( Accumulator ^ temp) & 0x80) );
+     *      if ( temp > 0x99) {
+     *          temp += 96;
+     *      }
+     *      SET_CARRY(temp & 0x99);
+     * } else {
+     *      SET_SIGN(temp);
+     *      SET_OVERFLOW( !( (Accumulator  ^ srcByte) & 0x80) && ( ( Accumulator ^ temp) & 0x80) );
+     *      SET_CARRY(temp > 0xFF);
+     * }
+     *
+     */
     switch (ADDR_MODE) {
         case(this._ADDR_MODE.IMM):
+            // OPCODE: 69
+            //  BYTES: 2
+            // CYCLES: 2
             break;
         case(this._ADDR_MODE.ZP):
+            // OPCODE: 65
+            //  BYTES: 2
+            // CYCLES: 3
             break;
         case(this._ADDR_MODE.ZPX):
+            // OPCODE: 75
+            //  BYTES: 2
+            // CYCLES: 4
             break;
         case(this._ADDR_MODE.ABS):
+            // OPCODE: 60
+            //  BYTES: 3
+            // CYCLES: 4
             break;
         case(this._ADDR_MODE.ABX):
+            // OPCODE: 7D
+            //  BYTES: 3
+            // CYCLES: 4 (Add 1 if page boundary is crossed)
             break;
         case(this._ADDR_MODE.ABY):
+            // OPCODE: 79
+            //  BYTES: 3
+            // CYCLES: 4 (Add 1 if page boundary is crossed)
             break;
         case(this._ADDR_MODE.INX):
+            // OPCODE: 61
+            //  BYTES: 2
+            // CYCLES: 6
             break;
         case(this._ADDR_MODE.INY):
+            // OPCODE: 71
+            //  BYTES: 2
+            // CYCLES: 5 (Add 1 if page boundary is crossed)
             break;
     }
 };
