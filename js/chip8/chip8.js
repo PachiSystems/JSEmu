@@ -714,4 +714,6 @@ Chip8Emu.prototype = {
 
 };
 
-module.exports.Chip8Emu = Chip8Emu;
+if (typeof module !== 'undefined' && module.exports != null) {
+    module.exports.Chip8Emu = Chip8Emu;
+}
