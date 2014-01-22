@@ -713,3 +713,5 @@ Chip8Emu.prototype = {
     }
 
 };
+
+module.exports.Chip8Emu = Chip8Emu;
