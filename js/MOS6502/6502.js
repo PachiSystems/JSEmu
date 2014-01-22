@@ -427,70 +427,440 @@ MOS6502.prototype.AND = function(ADDR_MODE) {
             break;
     }
 };
-MOS6502.prototype.ASL = function() {};
 
-MOS6502.prototype.BCC = function() {};
-MOS6502.prototype.BCS = function() {};
-MOS6502.prototype.BEQ = function() {};
-MOS6502.prototype.BIT = function() {};
-MOS6502.prototype.BMI = function() {};
-MOS6502.prototype.BNE = function() {};
-MOS6502.prototype.BPL = function() {};
-MOS6502.prototype.BRK = function() {};
-MOS6502.prototype.BVC = function() {};
-MOS6502.prototype.BVS = function() {};
+MOS6502.prototype.ASL = function(ADDR_MODE) {
+    switch (ADDR_MODE) {
+        case(this._ADDR_MODE.ACC):
+            break;
+        case(this._ADDR_MODE.ZP):
+            break;
+        case(this._ADDR_MODE.ZPX):
+            break;
+        case(this._ADDR_MODE.ABS):
+            break;
+        case(this._ADDR_MODE.ABX):
+            break;
+    }
+};
 
-MOS6502.prototype.CLC = function() {};
-MOS6502.prototype.CLD = function() {};
-MOS6502.prototype.CLI = function() {};
-MOS6502.prototype.CLV = function() {};
-MOS6502.prototype.CMP = function() {};
-MOS6502.prototype.CPX = function() {};
-MOS6502.prototype.CPY = function() {};
+MOS6502.prototype.BCC = function() {
+    // NO ADDR_MODE. (REL)
+};
 
-MOS6502.prototype.DEC = function() {};
-MOS6502.prototype.DEX = function() {};
-MOS6502.prototype.DEY = function() {};
+MOS6502.prototype.BCS = function() {
+    // No ADDR_MODE. (REL)
+};
 
-MOS6502.prototype.EOR = function() {};
+MOS6502.prototype.BEQ = function() {
+    // No ADDR_MODE. (REL)
+};
 
-MOS6502.prototype.INC = function() {};
-MOS6502.prototype.INX = function() {};
-MOS6502.prototype.INY = function() {};
+MOS6502.prototype.BIT = function() {
+    switch (ADDR_MODE) {
+        case(this._ADDR_MODE.ZP):
+            break;
+        case(this._ADDR_MODE.ABS):
+            break;
+    }
+};
 
-MOS6502.prototype.JMP = function() {};
-MOS6502.prototype.JSR = function() {};
+MOS6502.prototype.BMI = function() {
+    // No ADDR_MODE. (REL)
+};
 
-MOS6502.prototype.LDA = function() {};
-MOS6502.prototype.LDX = function() {};
-MOS6502.prototype.LDY = function() {};
-MOS6502.prototype.LSR = function() {};
+MOS6502.prototype.BNE = function() {
+    // No ADDR_MODE. (REL)
+};
 
-MOS6502.prototype.NOP = function() {};
+MOS6502.prototype.BPL = function() {
+    // No ADDR_MODE. (REL)
+};
 
-MOS6502.prototype.ORA = function() {};
+MOS6502.prototype.BRK = function() {
+    // No ADDR_MODE. (IMP)
+};
 
-MOS6502.prototype.PHA = function() {};
-MOS6502.prototype.PHP = function() {};
-MOS6502.prototype.PLA = function() {};
-MOS6502.prototype.PLP = function() {};
+MOS6502.prototype.BVC = function() {
+    // No ADDR_MODE. (REL)
+};
 
-MOS6502.prototype.ROL = function() {};
-MOS6502.prototype.ROR = function() {};
-MOS6502.prototype.RTI = function() {};
-MOS6502.prototype.RTS = function() {};
+MOS6502.prototype.BVS = function() {
+    // No ADDR_MODE. (REL)
+};
 
-MOS6502.prototype.SBC = function() {};
-MOS6502.prototype.SEC = function() {};
-MOS6502.prototype.SED = function() {};
-MOS6502.prototype.SEI = function() {};
-MOS6502.prototype.STA = function() {};
-MOS6502.prototype.STX = function() {};
-MOS6502.prototype.STY = function() {};
+MOS6502.prototype.CLC = function() {
+    // No ADDR_MODE. (IMP)
+};
 
-MOS6502.prototype.TAX = function() {};
-MOS6502.prototype.TAY = function() {};
-MOS6502.prototype.TSX = function() {};
-MOS6502.prototype.TXA = function() {};
-MOS6502.prototype.TXS = function() {};
-MOS6502.prototype.TYA = function() {};
+MOS6502.prototype.CLD = function() {
+    // No ADDR_MODE. (IMP)
+};
+
+MOS6502.prototype.CLI = function() {
+    // No ADDR_MODE. (IMP)
+};
+
+MOS6502.prototype.CLV = function() {
+    // No ADDR_MODE. (IMP)
+};
+
+MOS6502.prototype.CMP = function() {
+    switch (ADDR_MODE) {
+        case(this._ADDR_MODE.IMM):
+            break;
+        case(this._ADDR_MODE.ZP):
+            break;
+        case(this._ADDR_MODE.ZPX):
+            break;
+        case(this._ADDR_MODE.ABS):
+            break;
+        case(this._ADDR_MODE.ABX):
+            break;
+        case(this._ADDR_MODE.ABY):
+            break;
+        case(this._ADDR_MODE.INX):
+            break;
+        case(this._ADDR_MODE.INY):
+            break;
+    }
+};
+
+MOS6502.prototype.CPX = function() {
+    switch (ADDR_MODE) {
+        case(this._ADDR_MODE.IMM):
+            break;
+        case(this._ADDR_MODE.ZP):
+            break;
+        case(this._ADDR_MODE.ABS):
+            break;
+    }
+};
+
+MOS6502.prototype.CPY = function() {
+    switch (ADDR_MODE) {
+        case(this._ADDR_MODE.IMM):
+            break;
+        case(this._ADDR_MODE.ZP):
+            break;
+        case(this._ADDR_MODE.ABS):
+            break;
+    }
+};
+
+MOS6502.prototype.DEC = function() {
+    switch (ADDR_MODE) {
+        case(this._ADDR_MODE.ZP):
+            break;
+        case(this._ADDR_MODE.ZPX):
+            break;
+        case(this._ADDR_MODE.ABS):
+            break;
+        case(this._ADDR_MODE.ABX):
+            break;
+    }
+};
+
+MOS6502.prototype.DEX = function() {
+    // No ADDR_MODE. (IMP)
+};
+
+MOS6502.prototype.DEY = function() {
+    // No ADDR_MODE. (IMP)
+};
+
+MOS6502.prototype.EOR = function() {
+    switch (ADDR_MODE) {
+        case(this._ADDR_MODE.IMM):
+            break;
+        case(this._ADDR_MODE.ZP):
+            break;
+        case(this._ADDR_MODE.ZPX):
+            break;
+        case(this._ADDR_MODE.ABS):
+            break;
+        case(this._ADDR_MODE.ABX):
+            break;
+        case(this._ADDR_MODE.ABY):
+            break;
+        case(this._ADDR_MODE.INX):
+            break;
+        case(this._ADDR_MODE.INY):
+            break;
+    }
+};
+
+MOS6502.prototype.INC = function() {
+    switch (ADDR_MODE) {
+        case(this._ADDR_MODE.ZP):
+            break;
+        case(this._ADDR_MODE.ZPX):
+            break;
+        case(this._ADDR_MODE.ABS):
+            break;
+        case(this._ADDR_MODE.ABX):
+            break;
+    }
+};
+
+MOS6502.prototype.INX = function() {
+    // No ADDR_MODE. (IMP)
+};
+
+MOS6502.prototype.INY = function() {
+    // No ADDR_MODE. (IMP)
+};
+
+MOS6502.prototype.JMP = function() {
+    switch (ADDR_MODE) {
+        case(this._ADDR_MODE.ABS):
+            break;
+        case(this._ADDR_MODE.IND):
+            break;
+    }
+};
+
+MOS6502.prototype.JSR = function() {
+    // No ADDR_MODE. (ABS)
+};
+
+MOS6502.prototype.LDA = function() {
+    switch (ADDR_MODE) {
+        case(this._ADDR_MODE.IMM):
+            break;
+        case(this._ADDR_MODE.ZP):
+            break;
+        case(this._ADDR_MODE.ZPX):
+            break;
+        case(this._ADDR_MODE.ABS):
+            break;
+        case(this._ADDR_MODE.ABX):
+            break;
+        case(this._ADDR_MODE.ABY):
+            break;
+        case(this._ADDR_MODE.INX):
+            break;
+        case(this._ADDR_MODE.INY):
+            break;
+    }
+};
+
+MOS6502.prototype.LDX = function() {
+    switch (ADDR_MODE) {
+        case(this._ADDR_MODE.IMM):
+            break;
+        case(this._ADDR_MODE.ZP):
+            break;
+        case(this._ADDR_MODE.ZPY):
+            break;
+        case(this._ADDR_MODE.ABS):
+            break;
+        case(this._ADDR_MODE.ABY):
+            break;
+    }
+};
+
+MOS6502.prototype.LDY = function() {
+    switch (ADDR_MODE) {
+        case(this._ADDR_MODE.IMM):
+            break;
+        case(this._ADDR_MODE.ZP):
+            break;
+        case(this._ADDR_MODE.ZPX):
+            break;
+        case(this._ADDR_MODE.ABS):
+            break;
+        case(this._ADDR_MODE.ABX):
+            break;
+    }
+};
+
+MOS6502.prototype.LSR = function() {
+    switch (ADDR_MODE) {
+        case(this._ADDR_MODE.ACC):
+            break;
+        case(this._ADDR_MODE.ZP):
+            break;
+        case(this._ADDR_MODE.ZPX):
+            break;
+        case(this._ADDR_MODE.ABS):
+            break;
+        case(this._ADDR_MODE.ABX):
+            break;
+    }
+};
+
+MOS6502.prototype.NOP = function() {
+    // No ADDR_MODE. (IMP)
+};
+
+MOS6502.prototype.ORA = function() {
+    switch (ADDR_MODE) {
+        case(this._ADDR_MODE.IMM):
+            break;
+        case(this._ADDR_MODE.ZP):
+            break;
+        case(this._ADDR_MODE.ZPX):
+            break;
+        case(this._ADDR_MODE.ABS):
+            break;
+        case(this._ADDR_MODE.ABX):
+            break;
+        case(this._ADDR_MODE.ABY):
+            break;
+        case(this._ADDR_MODE.INX):
+            break;
+        case(this._ADDR_MODE.INY):
+            break;
+    }
+};
+
+MOS6502.prototype.PHA = function() {
+    // No ADDR_MODE. (IMP)
+};
+
+MOS6502.prototype.PHP = function() {
+    // No ADDR_MODE. (IMP)
+};
+
+MOS6502.prototype.PLA = function() {
+    // No ADDR_MODE. (IMP)
+};
+
+MOS6502.prototype.PLP = function() {
+    // No ADDR_MODE. (IMP)
+};
+
+MOS6502.prototype.ROL = function() {
+    switch (ADDR_MODE) {
+        case(this._ADDR_MODE.ACC):
+            break;
+        case(this._ADDR_MODE.ZP):
+            break;
+        case(this._ADDR_MODE.ZPX):
+            break;
+        case(this._ADDR_MODE.ABS):
+            break;
+        case(this._ADDR_MODE.ABX):
+            break;
+    }
+};
+MOS6502.prototype.ROR = function() {
+    switch (ADDR_MODE) {
+        case(this._ADDR_MODE.ACC):
+            break;
+        case(this._ADDR_MODE.ZP):
+            break;
+        case(this._ADDR_MODE.ZPX):
+            break;
+        case(this._ADDR_MODE.ABS):
+            break;
+        case(this._ADDR_MODE.ABX):
+            break;
+    }
+};
+
+MOS6502.prototype.RTI = function() {
+    // No ADDR_MODE. (IMP)
+};
+
+MOS6502.prototype.RTS = function() {
+    // No ADDR_MODE. (IMP)
+};
+
+MOS6502.prototype.SBC = function() {
+    switch (ADDR_MODE) {
+        case(this._ADDR_MODE.IMM):
+            break;
+        case(this._ADDR_MODE.ZP):
+            break;
+        case(this._ADDR_MODE.ZPX):
+            break;
+        case(this._ADDR_MODE.ABS):
+            break;
+        case(this._ADDR_MODE.ABX):
+            break;
+        case(this._ADDR_MODE.ABY):
+            break;
+        case(this._ADDR_MODE.INX):
+            break;
+        case(this._ADDR_MODE.INY):
+            break;
+    }
+};
+
+MOS6502.prototype.SEC = function() {
+    // No ADDR_MODE. (IMP)
+};
+
+MOS6502.prototype.SED = function() {
+    // No ADDR_MODE. (IMP)
+};
+
+MOS6502.prototype.SEI = function() {
+    // No ADDR_MODE. (IMP)
+};
+
+MOS6502.prototype.STA = function() {
+    switch (ADDR_MODE) {
+        case(this._ADDR_MODE.ZP):
+            break;
+        case(this._ADDR_MODE.ZPX):
+            break;
+        case(this._ADDR_MODE.ABS):
+            break;
+        case(this._ADDR_MODE.ABX):
+            break;
+        case(this._ADDR_MODE.ABY):
+            break;
+        case(this._ADDR_MODE.INX):
+            break;
+        case(this._ADDR_MODE.INY):
+            break;
+    }
+};
+
+MOS6502.prototype.STX = function() {
+    switch (ADDR_MODE) {
+        case(this._ADDR_MODE.ZP):
+            break;
+        case(this._ADDR_MODE.ZPY):
+            break;
+        case(this._ADDR_MODE.ABS):
+            break;
+    }
+};
+
+MOS6502.prototype.STY = function() {
+    switch (ADDR_MODE) {
+        case(this._ADDR_MODE.ZP):
+            break;
+        case(this._ADDR_MODE.ZPX):
+            break;
+        case(this._ADDR_MODE.ABS):
+            break;
+    }
+};
+
+MOS6502.prototype.TAX = function() {
+    // No ADDR_MODE. (IMP)
+};
+
+MOS6502.prototype.TAY = function() {
+    // No ADDR_MODE. (IMP)
+};
+
+MOS6502.prototype.TSX = function() {
+    // No ADDR_MODE. (IMP)
+};
+
+MOS6502.prototype.TXA = function() {
+    // No ADDR_MODE. (IMP)
+};
+
+MOS6502.prototype.TXS = function() {
+    // No ADDR_MODE. (IMP)
+};
+
+MOS6502.prototype.TYA = function() {
+    // No ADDR_MODE. (IMP)
+};
