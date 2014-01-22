@@ -812,7 +812,7 @@ test("[0xDXYn] - DRW Vx, Vy, nibble", function() {
 
         // Collision (draws a sprite colliding with the last one)
 /*
-    equal(chip8.pc,
+    equal(CHIP8.pc,
         0x202,
         "Should increment the program counter to the next instruction.");
 

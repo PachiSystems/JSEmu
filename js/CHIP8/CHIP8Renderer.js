@@ -18,7 +18,7 @@ Chip8Display.prototype = {
         /**
          * Drawing shizzles!... Badly!
          * There must be some way to not have to itterate through the WHOLE array every time... This is moved from the
-         * chip8.js in order to have a little more separation.
+         * CHIP8.js in order to have a little more separation.
          */
         var me = this,
             i, len,

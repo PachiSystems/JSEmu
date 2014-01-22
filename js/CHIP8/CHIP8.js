@@ -256,7 +256,7 @@ Chip8Emu.prototype = {
 
          NEW ADDITION: Instead of the 'canvasID', there should be a 'renderer' passed. In the future, the renderer
                        should work for ALL implemented engines and not just CHIP-8. However, since that is a fair way
-                       away, there should be a 'display.js' in this folder that can be used. It should contain the
+                       away, there should be a 'CHIP8Renderer.js' in this folder that can be used. It should contain the
                        following methods:
                         drawPixel(x,y,colour) to draw a pixel at a certain position (scaling handled by the display).
 
