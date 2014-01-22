@@ -23,10 +23,10 @@ module.exports = function(grunt) {
             }
         },
         qunit: {
-            files: 'tests/**/*.html'
+            all: ['test/**/*.html']
         },
         jshint: {
-            files: ['Gruntfile.js','js/**/*.js', 'tests/**/*.js'],
+            files: ['Gruntfile.js','js/**/*.js', 'test/**/*.js'],
             options: {
                 globals: {
                     jQuery: true,
@@ -49,6 +49,6 @@ module.exports = function(grunt) {
     grunt.loadNpmTasks('grunt-contrib-watch');
 
     // Default task(s).
-    grunt.registerTask('default', ['concat','uglify']);
-
+    grunt.registerTask('default', ['qunit','concat','uglify']);
+    grunt.registerTask('test',['qunit']);
 }

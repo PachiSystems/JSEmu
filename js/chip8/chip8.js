@@ -503,7 +503,7 @@ Chip8Emu.prototype = {
                 // Execute opcode.
                 // If the memory goes out of bounds, let's log an error... We can handle it better later.
                 total = (me.opcode & 0x0FFF) + me.V[0x0];
-                (total > 0xFFF) ? console.error("[0xB000] : Calling address out of bounds. Will wrap around.") : 0;
+                //(total > 0xFFF) ? console.error("[0xB000] : Calling address out of bounds. Will wrap around.") : 0;
                 me.pc = total % 4096; // Jumping, so no incrementing and keeping within memory bounds.
                 break;
 
