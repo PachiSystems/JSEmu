@@ -1,4 +1,4 @@
-JSEmu
+JSEmu [![Build Status](https://travis-ci.org/PachiSystems/JSEmu.png?branch=master)](https://travis-ci.org/PachiSystems/JSEmu)
 =====
 a.k.a. Random Hajemulator
 -------------------------

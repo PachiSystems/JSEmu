@@ -14,7 +14,9 @@
  *    codes, 4 stack manipulation codes and a NOP... Which basically does nothing.
  *
  * Where possible, every variable will be dealt with as HEX even though JS will throw integers and decimals around
- * everywhere willy-nilly. Flags will be boolean.
+ * everywhere willy-nilly. Flags will be bitmasked from a byte.
+ *
+ * In addition, the PC will point to a single byte and incremented according to the length of the command.
  */
 
 var MOS6502 = function() {
@@ -91,9 +93,19 @@ var MOS6502 = function() {
     }
 };
 
+// Some special functions for checking flags and statuses.
+MOS6502.prototype._IS_CARRY = function() {
+    var me = this;
+    if (me._P & 0x01 === 1) {
+        return true;
+    } else {
+        return false;
+    }
+}
+
 // For now, the memory addressing mode (if any) is included in parens. This needs to be addressed properly.
 // (forgive the pun).
-MOS6502.prototpe.opcodeMap = {
+MOS6502.prototype.opcodeMap = {
     // 0x0X
     0x00 : MOS6502.BRK(),
     0x01 : MOS6502.ORA(this._ADDR_MODE.INX),
@@ -413,18 +425,26 @@ MOS6502.prototype.ADC = function (ADDR_MODE) {
      * }
      *
      */
+
+    var me = this,
+        temp = 0x00;
+    // Switch here will dictate what he have in our temp value.
     switch (ADDR_MODE) {
         case(this._ADDR_MODE.IMM):
+            // ADC #Oper
+            temp = me._RAM[me._PC + 1] + me._A + (me._IF_CARRY() ? 1 : 0);
             // OPCODE: 69
             //  BYTES: 2
             // CYCLES: 2
             break;
         case(this._ADDR_MODE.ZP):
+            // ADC Oper
             // OPCODE: 65
             //  BYTES: 2
             // CYCLES: 3
             break;
         case(this._ADDR_MODE.ZPX):
+            // ADC Oper,X
             // OPCODE: 75
             //  BYTES: 2
             // CYCLES: 4

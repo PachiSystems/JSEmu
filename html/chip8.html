@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <style>
+            #chip8Screen {
+                width: 640px;
+                height: 320px;
+                position: absolute;
+                margin: auto;
+                top: 0;
+                right: 0;
+                bottom: 0;
+                left: 0;
+            }
+        </style>
+        <script type="text/javascript" src="../libs/jquery-1.10.2.min.js"></script>
+        <script type="text/javascript" src="../js/chip8/polyfill.js"></script>
+        <script type="text/javascript" src="../js/chip8/chip8.js"></script>
+        <script type="text/javascript" src="../js/chip8/display.js"></script>
+    </head>
+    <body>
+    <canvas id="chip8Screen" width="640" height="320"></canvas><br>
+    <input type="text" name="ipadinput" value="" /><br>
+    Controls: Left = Q, Right = E, Fire = W
+    <script>
+
+        $(function() {
+
+            var emu = new Chip8Emu(),
+                renderer = new Chip8Display();
+
+            renderer.init('chip8Screen');
+
+            emu.beginEmulation("roms/chip8/spaceinv.ch8",renderer);
+
+        });
+
+    </script>
+    </body>
+</html>
