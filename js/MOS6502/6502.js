@@ -91,17 +91,23 @@ var MOS6502 = function() {
            ABI : 12, // Absolute Indirect
            IND : 13  // Indirect
     }
+
 };
 
 // Some special functions for checking flags and statuses.
-MOS6502.prototype._IS_CARRY = function() {
-    var me = this;
-    if (me._P & 0x01 === 1) {
-        return true;
-    } else {
-        return false;
-    }
-}
+MOS6502.prototype._IF_CARRY = function(){ return (this._P & 0x01 === 1); };
+
+MOS6502.prototype._IF_ZERO = function() { return (this._P & 0x02 === 1); };
+
+MOS6502.prototype._IF_INTERRUPT = function() { return (this._P & 0x04 === 1); };
+
+MOS6502.prototype._IF_DECIMAL = function() { return (this._P & 0x08 === 1); };
+
+MOS6502.prototype._IF_BREAK = function() { return (this._P & 0x10 === 1); };
+
+MOS6502.prototype._IF_OVERFLOW = function() { return (this._P & 0x40 === 1); };
+
+MOS6502.prototype._IF_SIGN = function() { return (this._P & 0x80 === 1); };
 
 // For now, the memory addressing mode (if any) is included in parens. This needs to be addressed properly.
 // (forgive the pun).
