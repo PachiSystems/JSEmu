@@ -1,10 +1,11 @@
-JSEmu
+JSEmu [![Build Status](https://travis-ci.org/PachiSystems/JSEmu.png?branch=master)](https://travis-ci.org/PachiSystems/JSEmu)
 =====
 a.k.a. Random Hajemulator
 -------------------------
 
 * Try it here: [PachiSystems JSEmu](http://PachiSystems.com/JSEmu/chip8.html)
 * Learn how to tackle an emulator in JavaScript: [Introduction to Emulation in JavaScript](http://PachiSystems.com/how-to-write-an-emulator-in-javascript/)
+* Next project: MOS 6502 which is used in Commodore 64, Atari 2600 and NES! YEAH, BABY!
 
 Or: An Adventure In Emulation For JavaScript
 --------------------------------------------
@@ -46,9 +47,9 @@ plan on changing this in the future so that you can select any ROM designed for 
 OPCODEs at a later time if I find that I have a few of the Super Chip ROMs.
 
 Anyway. Here's the files you need to have to make it work (I do plan on making a proper build which contains all 3):
-- chip8.js
-- display.js
-- polyfill.js
+- CHIP8.js
+- CHIP8Renderer.js
+- animPolyfill.js
 
 You will also need a ROM... Feel free to download the roms folder, too. At the moment, only Space Invaders is there.
 
@@ -57,9 +58,9 @@ Set up your HTML page like so:
 <!DOCTYPE html>
 <html>
     <head>
-        <script type="text/javascript" src="polyfill.js"></script>
-        <script type="text/javascript" src="chip8.js"></script>
-        <script type="text/javascript" src="display.js"></script>
+        <script type="text/javascript" src="animPolyfill.js"></script>
+        <script type="text/javascript" src="CHIP8.js"></script>
+        <script type="text/javascript" src="CHIP8Renderer.js"></script>
     </head>
     <body>
         <canvas id="Chip8Display" width="640px" height="320px"></canvas>
