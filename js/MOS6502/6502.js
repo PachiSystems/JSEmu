@@ -49,7 +49,7 @@ var MOS6502 = function() {
      *     S: Sign (Negative) Flag      (Mask: 0x80)
      *
      */
-    this._P = 0x00;
+    this._P = 0x20; // Bit 5 is supposed to be always at logical 1...
 
     /* Stack */
     this._STACK = new Uint8Array(0xFF);  // Thinking to put this in the RAM where it's supposed to be...
@@ -57,6 +57,9 @@ var MOS6502 = function() {
 
     /* Program Counter */
     this._PC = 0x0000;  // This is usually PCL and PCH, but we can combine them here into one.
+
+    /* CPU Cycles */
+    this._CYCLES = 0;
 
     /* Memory */
     /* Here's the suggested allocation:
@@ -94,20 +97,39 @@ var MOS6502 = function() {
 
 };
 
-// Some special functions for checking flags and statuses.
+MOS6502.prototype.emulateCycle = function() {
+    // Let's do this thing...
+
+}
+
+// Some special functions for checking and setting/toggling flags and statuses.
 MOS6502.prototype._IF_CARRY = function(){ return (this._P & 0x01 === 1); };
+
+MOS6502.prototype._SET_CARRY = function(condition) { (condition) ? this._P |= 0x01 : this._P &= 0x01; };
 
 MOS6502.prototype._IF_ZERO = function() { return ((this._P & 0x02) >> 1 === 1); };
 
+MOS6502.prototype._SET_ZERO = function(value) { (value == 0) ? this._P |= 0x02 : this._P &= 0x02;};
+
 MOS6502.prototype._IF_INTERRUPT = function() { return ((this._P & 0x04) >> 2 === 1); };
+
+MOS6502.prototype._SET_INTERRUPT = function(condition) { (condition) ? this._P |= 0x04 : this._P &= 0x04; };
 
 MOS6502.prototype._IF_DECIMAL = function() { return ((this._P & 0x08) >> 3 === 1); };
 
+MOS6502.prototype._SET_DECIMAL = function(condition) { (condition) ? this._P |= 0x0 : this._P &= 0x0; };
+
 MOS6502.prototype._IF_BREAK = function() { return ((this._P & 0x10) >> 4 === 1); };
+
+MOS6502.prototype._SET_BREAK = function(condition) { (condition) ? this._P |= 0x10 : this._P &= 0x10; };
 
 MOS6502.prototype._IF_OVERFLOW = function() { return ((this._P & 0x40) >> 6 === 1); };
 
+MOS6502.prototype._SET_OVERFLOW = function(condition) { (condition) ? this._P |= 0x40 : this._P &= 0x40; };
+
 MOS6502.prototype._IF_SIGN = function() { return ((this._P & 0x80) >> 7 === 1); };
+
+MOS6502.prototype._SET_SIGN = function(value) { ( (value & 0x80) >> 7 === 1) ? this._P |= 0x80 : this._P &= 0x80; };
 
 // For now, the memory addressing mode (if any) is included in parens. This needs to be addressed properly.
 // (forgive the pun).
@@ -433,54 +455,85 @@ MOS6502.prototype.ADC = function (ADDR_MODE) {
      */
 
     var me = this,
-        temp = 0x00;
-    // Switch here will dictate what he have in our temp value.
+        temp, srcByte;
+    // Switch here will dictate what he have in our temp value and source byte.
     switch (ADDR_MODE) {
         case(this._ADDR_MODE.IMM):
-            // ADC #Oper
-            temp = me._RAM[me._PC + 1] + me._A + (me._IF_CARRY() ? 1 : 0);
             // OPCODE: 69
+            // ADC #Oper
+            srcByte = me._RAM[me._PC + 1];
             //  BYTES: 2
             // CYCLES: 2
+            me._PC += 2;
+            me._CYCLES += 2;
             break;
+
         case(this._ADDR_MODE.ZP):
-            // ADC Oper
             // OPCODE: 65
+            // ADC Oper
+            srcByte = me._RAM[me._PC + 1];
             //  BYTES: 2
             // CYCLES: 3
+            me._PC += 2;
+            me._CYCLES += 3;
             break;
+
         case(this._ADDR_MODE.ZPX):
-            // ADC Oper,X
             // OPCODE: 75
+            srcByte = me._RAM[ (me._PC + 1) + me._X ];
             //  BYTES: 2
             // CYCLES: 4
+            me._PC += 2;
+            me._CYCLES += 4;
             break;
+
         case(this._ADDR_MODE.ABS):
             // OPCODE: 60
+            srcByte = me._RAM[ ( (me._PC + 2) << 4) | (me._PC + 1)];
             //  BYTES: 3
             // CYCLES: 4
+            me._PC += 3;
+            me._CYCLES += 4;
             break;
+
         case(this._ADDR_MODE.ABX):
             // OPCODE: 7D
+            srcByte = me._RAM[ ( (me._PC + 2) << 4 | (me._PC + 1) ) + me._X ];
             //  BYTES: 3
             // CYCLES: 4 (Add 1 if page boundary is crossed)
+            me._PC += 3;
+            me._CYCLES += 3;
             break;
+
         case(this._ADDR_MODE.ABY):
             // OPCODE: 79
+            srcByte = me._RAM[ ( (me._PC + 2) << 4 | (me._PC + 1) ) + me._Y];
             //  BYTES: 3
             // CYCLES: 4 (Add 1 if page boundary is crossed)
+            me._PC += 3;
+            me._CYCLES += 4;
             break;
+
         case(this._ADDR_MODE.INX):
             // OPCODE: 61
+
             //  BYTES: 2
             // CYCLES: 6
             break;
+
         case(this._ADDR_MODE.INY):
             // OPCODE: 71
             //  BYTES: 2
             // CYCLES: 5 (Add 1 if page boundary is crossed)
             break;
+
+        default:
+            throw "ADC invalid memory mode";
+            break;
     }
+
+    temp = srcByte + me._A + (me._IF_CARRY() ? 1 : 0);
+
 };
 
 MOS6502.prototype.AND = function(ADDR_MODE) {
