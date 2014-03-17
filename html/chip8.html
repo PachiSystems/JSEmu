@@ -1,26 +1,43 @@
 <!DOCTYPE html>
 <html>
     <head>
-        <style>
-            #chip8Screen {
-                width: 640px;
-                height: 320px;
-                position: absolute;
-                margin: auto;
-                top: 0;
-                right: 0;
-                bottom: 0;
-                left: 0;
-            }
-        </style>
+
+        <meta http-equiv="x-ua-compatible" content="IE=edge">
+
+        <!-- Stylesheets -->
+        <link rel="stylesheet" href="../css/CHIP8.css" type="text/css">
+
+        <!-- Libraries -->
         <script type="text/javascript" src="../libs/jquery-1.10.2.min.js"></script>
+
+        <!-- Emulation files -->
         <script type="text/javascript" src="../js/chip8/polyfill.js"></script>
         <script type="text/javascript" src="../js/chip8/chip8.js"></script>
         <script type="text/javascript" src="../js/chip8/display.js"></script>
     </head>
     <body>
-    <canvas id="chip8Screen" width="640" height="320"></canvas><br>
-    <input type="text" name="ipadinput" value="" /><br>
+
+    <canvas id="chip8Screen" width="640" height="320"></canvas>
+
+    <div class="keypad">
+        <div class="keypad-button">1</div>
+        <div class="keypad-button">2</div>
+        <div class="keypad-button">3</div>
+        <div class="keypad-button">C</div>
+        <div class="keypad-button">4</div>
+        <div class="keypad-button">5</div>
+        <div class="keypad-button">6</div>
+        <div class="keypad-button">D</div>
+        <div class="keypad-button">7</div>
+        <div class="keypad-button">8</div>
+        <div class="keypad-button">9</div>
+        <div class="keypad-button">E</div>
+        <div class="keypad-button">A</div>
+        <div class="keypad-button">0</div>
+        <div class="keypad-button">B</div>
+        <div class="keypad-button">F</div>
+    </div>
+
     Controls: Left = Q, Right = E, Fire = W
     <script>
 

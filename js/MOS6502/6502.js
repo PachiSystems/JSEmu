@@ -77,6 +77,9 @@ var MOS6502 = function() {
      * operate in exactly the same way, just differing in where data is stored and read, it made sense to pass the
      * addressing mode as a param and have this to check within the block. If it doesn't work, I'll refactor it a bit.
      * I am also open to suggestions as this emulation malarkey is all new to me.
+     *
+     * Moving from a simple integer to a function that will return the operand. It seems that the addressing mode is
+     * only responsible to obtaining the operand for working on and not for directing where the result will be saved.
      */
     this._ADDR_MODE = {
            ACC : 0,  // Accumulator
@@ -133,6 +136,10 @@ MOS6502.prototype._SET_SIGN = function(value) { ( (value & 0x80) >> 7 === 1) ? t
 
 // For now, the memory addressing mode (if any) is included in parens. This needs to be addressed properly.
 // (forgive the pun).
+
+/*
+    TODO: How about making a variable for the address of the operand and then a switch for the address mode that set the operand properly?
+ */
 MOS6502.prototype.opcodeMap = {
     // 0x0X
     0x00 : MOS6502.BRK(),
@@ -516,15 +523,21 @@ MOS6502.prototype.ADC = function (ADDR_MODE) {
 
         case(this._ADDR_MODE.INX):
             // OPCODE: 61
+            var zpa = me._RAM[ me._PC+1 ] + me._RAM[ me._X ]
+            srcByte = me._RAM[ ( me._RAM[zpa << 4] ) | me._RAM[(zpa + 1)] ];
 
             //  BYTES: 2
             // CYCLES: 6
+            me._PC += 2;
+            me._CYCLES += 6;
             break;
 
         case(this._ADDR_MODE.INY):
             // OPCODE: 71
             //  BYTES: 2
             // CYCLES: 5 (Add 1 if page boundary is crossed)
+            me._PC += 2;
+            me._CYCLES = 5;
             break;
 
         default:

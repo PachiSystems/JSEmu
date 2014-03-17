@@ -1,0 +1,40 @@
+/* Stylesheet for CHIP8 emulator */
+
+body, html {
+    width: 100%;
+    height: 100%;
+    padding: 0;
+    margin: 0;
+}
+
+/* Mobile devices */
+@media (max-width: 480px) {
+
+    #chip8Screen {
+        width: 480px;
+        height: 240px;
+        position: fixed;
+        top: 0;
+        left: 0;
+    }
+
+    .keypad {
+        position: fixed;
+        top: 0;
+        left: 0;
+        height: 100%;
+        padding-top: 240px;
+    }
+
+}
+
+#chip8Screen {
+    width: 640px;
+    height: 320px;
+    position: absolute;
+    margin: auto;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: 0;
+}
