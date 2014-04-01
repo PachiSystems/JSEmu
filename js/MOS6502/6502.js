@@ -532,8 +532,23 @@ MOS6502.prototype.ADC = function (ADDR_MODE) {
             break;
     }
 
-    temp = srcByte + me._A + (me._IF_CARRY() ? 1 : 0);
+    var temp = srcByte + me._A + (me._IF_CARRY() ? 1 : 0);
 
+    if( me._IF_DECIMAL() ) {
+        if ( ( ( me._A & 0xF) + (srcByte & 0XF) + (me._IF_CARRY() ? 1 : 0) ) > 9 ) {
+            temp += 6;
+        }
+        me._SET_SIGN(temp);
+        me._SET_OVERFLOW( !( (me._A ^ srcByte) & 0x80) && ( ( me._A ^ temp) & 0x80) );
+        if ( temp > 0x99) {
+            temp += 96;
+        }
+        me._SET_CARRY(temp & 0x99);
+    } else {
+       me._SET_SIGN(temp);
+       me._SET_OVERFLOW( !( (me._A ^ srcByte) & 0x80) && ( ( me._A ^ temp) & 0x80) );
+       me._SET_CARRY(temp > 0xFF);
+    }
 };
 
 MOS6502.prototype.AND = function(ADDR_MODE) {
