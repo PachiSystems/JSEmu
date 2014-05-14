@@ -82,20 +82,19 @@ var MOS6502 = function() {
      * only responsible to obtaining the operand for working on and not for directing where the result will be saved.
      */
     this._ADDR_MODE = {
-           ACC : 0,  // Accumulator
-           IMM : 1,  // Immediate
-            ZP : 2,  // Zero Page
-           ZPX : 3,  // Zero Page, X
-           ZPY : 4,  // Zero Page, Y
-           ABS : 5,  // Absolute
-           ABX : 6,  // Absolute, X
-           ABY : 7,  // Absolute, Y
-           IMP : 8,  // Implied
-           REL : 9,  // Relative
-           INX : 10, // (Indirect, X)
-           INY : 11, // (Indirect), Y
-           ABI : 12, // Absolute Indirect
-           IND : 13  // Indirect
+           ACC : 0,  // Accumulator Addressing (op. No operand, but works with Accumulator value).
+           REL : 1,  // Relative Addressing (op | offset. Normally used in branches. Second byte contains an offset for branching.)
+           IMM : 2,  // Immediate Addressing (op | operand. Operand is in the second byte).
+           ABS : 3,  // Absolute Addressing (op | low | high. Operand at that address.)
+            ZP : 4,  // Zero Page Addressing (op | low. Operand in zero page at byte referenced)
+           ABX : 5,  // Absolute Indexed by X (op | low | high. Operand is located at address given PLUS the offest stored in the X register.)
+           ABY : 6,  // Absolute Indexed by Y (op | low | high. Operand is located at address given PLUS the offest stored in the Y register.)
+           ZPX : 7,  // Zero Page Indexed by X (op | low. Operand is located at zp address PLUS the offset stored in the X register)
+           ZPY : 8,  // Zero Page Indexed by Y (op | low. Operand is located at zp address PLUS the offset stored in the Y register)
+           INX : 9,  // Indexed Indirect Addressing (op | low. Read address from given location in ZP offset by X. Operand as that address)
+           INY : 10, // Indirect Indexed Addressing (op | low. Read address from given location in ZP. Operand is at that address PLUS the offest stored in the Y register)
+           ABI : 11, // Absolute Indirect Addressing (op | low | high. Read the address from the given location. Reads TWO bytes)
+           IMP : 12 // Implied Addressing (No arguments, no operands... Just a single opcode... Don't really need this, but just to be complete...)
     }
 
 };
@@ -140,6 +139,7 @@ MOS6502.prototype._SET_SIGN = function(value) { ( (value & 0x80) >> 7 === 1) ? t
 /*
     TODO: How about making a variable for the address of the operand and then a switch for the address mode that set the operand properly?
  */
+
 MOS6502.prototype.opcodeMap = {
     // 0x0X
     0x00 : MOS6502.BRK(),
@@ -262,7 +262,7 @@ MOS6502.prototype.opcodeMap = {
     0x69 : MOS6502.ADC(this._ADDR_MODE.IMM),
     0x6A : MOS6502.ROR(this._ADDR_MODE.ACC),
     0x6B : "",
-    0x6C : MOS6502.JMP(this._ADDR_MODE.IND),
+    0x6C : MOS6502.JMP(this._ADDR_MODE.ABI),
     0x6D : MOS6502.ADC(this._ADDR_MODE.ABS),
     0x6E : MOS6502.ROR(this._ADDR_MODE.ABS),
     0x6F : "",
@@ -462,12 +462,13 @@ MOS6502.prototype.ADC = function (ADDR_MODE) {
      */
 
     var me = this,
-        temp, srcByte;
+        srcByte;
     // Switch here will dictate what he have in our temp value and source byte.
     switch (ADDR_MODE) {
-        case(this._ADDR_MODE.IMM):
+        case(me._ADDR_MODE.IMM):
             // OPCODE: 69
             // ADC #Oper
+            // Immediate Mode (Operand is in second byte of instruction).
             srcByte = me._RAM[me._PC + 1];
             //  BYTES: 2
             // CYCLES: 2
@@ -475,17 +476,19 @@ MOS6502.prototype.ADC = function (ADDR_MODE) {
             me._CYCLES += 2;
             break;
 
-        case(this._ADDR_MODE.ZP):
+        case(me._ADDR_MODE.ZP):
             // OPCODE: 65
             // ADC Oper
-            srcByte = me._RAM[me._PC + 1];
+            // Zero Page Addressing (Second byte is a Zero Page address)
+            var ZPADDR = me._RAM[ me._PC + 1 ];
+            srcByte = me._RAM[ ZPADDR ];
             //  BYTES: 2
             // CYCLES: 3
             me._PC += 2;
             me._CYCLES += 3;
             break;
 
-        case(this._ADDR_MODE.ZPX):
+        case(me._ADDR_MODE.ZPX):
             // OPCODE: 75
             srcByte = me._RAM[ (me._PC + 1) + me._X ];
             //  BYTES: 2
@@ -494,7 +497,7 @@ MOS6502.prototype.ADC = function (ADDR_MODE) {
             me._CYCLES += 4;
             break;
 
-        case(this._ADDR_MODE.ABS):
+        case(me._ADDR_MODE.ABS):
             // OPCODE: 60
             srcByte = me._RAM[ ( (me._PC + 2) << 4) | (me._PC + 1)];
             //  BYTES: 3
@@ -503,7 +506,7 @@ MOS6502.prototype.ADC = function (ADDR_MODE) {
             me._CYCLES += 4;
             break;
 
-        case(this._ADDR_MODE.ABX):
+        case(me._ADDR_MODE.ABX):
             // OPCODE: 7D
             srcByte = me._RAM[ ( (me._PC + 2) << 4 | (me._PC + 1) ) + me._X ];
             //  BYTES: 3
@@ -512,7 +515,7 @@ MOS6502.prototype.ADC = function (ADDR_MODE) {
             me._CYCLES += 3;
             break;
 
-        case(this._ADDR_MODE.ABY):
+        case(me._ADDR_MODE.ABY):
             // OPCODE: 79
             srcByte = me._RAM[ ( (me._PC + 2) << 4 | (me._PC + 1) ) + me._Y];
             //  BYTES: 3
@@ -521,7 +524,7 @@ MOS6502.prototype.ADC = function (ADDR_MODE) {
             me._CYCLES += 4;
             break;
 
-        case(this._ADDR_MODE.INX):
+        case(me._ADDR_MODE.INX):
             // OPCODE: 61
             var zpa = me._RAM[ me._PC+1 ] + me._RAM[ me._X ]
             srcByte = me._RAM[ ( me._RAM[zpa << 4] ) | me._RAM[(zpa + 1)] ];
@@ -532,7 +535,7 @@ MOS6502.prototype.ADC = function (ADDR_MODE) {
             me._CYCLES += 6;
             break;
 
-        case(this._ADDR_MODE.INY):
+        case(me._ADDR_MODE.INY):
             // OPCODE: 71
             //  BYTES: 2
             // CYCLES: 5 (Add 1 if page boundary is crossed)
@@ -565,10 +568,14 @@ MOS6502.prototype.ADC = function (ADDR_MODE) {
 };
 
 MOS6502.prototype.AND = function(ADDR_MODE) {
+    var srcByte;
+
     switch (ADDR_MODE) {
         case(this._ADDR_MODE.IMM):
+            srcByte =
             break;
         case(this._ADDR_MODE.ZP):
+            srcByte = me._RAM[me._PC + 1];
             break;
         case(this._ADDR_MODE.ZPX):
             break;
@@ -771,7 +778,7 @@ MOS6502.prototype.JMP = function(ADDR_MODE) {
     switch (ADDR_MODE) {
         case(this._ADDR_MODE.ABS):
             break;
-        case(this._ADDR_MODE.IND):
+        case(this._ADDR_MODE.ABI):
             break;
     }
 };
