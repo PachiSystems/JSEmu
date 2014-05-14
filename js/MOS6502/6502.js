@@ -94,7 +94,7 @@ var MOS6502 = function() {
            INX : 9,  // Indexed Indirect Addressing (op | low. Read address from given location in ZP offset by X. Operand as that address)
            INY : 10, // Indirect Indexed Addressing (op | low. Read address from given location in ZP. Operand is at that address PLUS the offest stored in the Y register)
            ABI : 11, // Absolute Indirect Addressing (op | low | high. Read the address from the given location. Reads TWO bytes)
-           IMP : 12 // Implied Addressing (No arguments, no operands... Just a single opcode... Don't really need this, but just to be complete...)
+           IMP : 12  // Implied Addressing (No arguments, no operands... Just a single opcode... Don't really need this, but just to be complete...)
     }
 
 };
