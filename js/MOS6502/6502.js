@@ -82,16 +82,16 @@ var MOS6502 = function() {
      * only responsible to obtaining the operand for working on and not for directing where the result will be saved.
      */
     this._ADDR_MODE = {
-           ACC : 0,  // Accumulator Addressing (op. No operand, but works with Accumulator value).
-           REL : 1,  // Relative Addressing (op | offset. Normally used in branches. Second byte contains an offset for branching.)
-           IMM : 2,  // Immediate Addressing (op | operand. Operand is in the second byte).
-           ABS : 3,  // Absolute Addressing (op | low | high. Operand at that address.)
+           ACC : 0,  // Accumulator Addressing (op. No operand, but works with Accumulator value)
+           REL : 1,  // Relative Addressing (op | offset. Normally used in branches. Second byte contains an offset for branching)
+           IMM : 2,  // Immediate Addressing (op | operand. Operand is in the second byte)
+           ABS : 3,  // Absolute Addressing (op | low | high. Operand at that address)
             ZP : 4,  // Zero Page Addressing (op | low. Operand in zero page at byte referenced)
-           ABX : 5,  // Absolute Indexed by X (op | low | high. Operand is located at address given PLUS the offest stored in the X register.)
-           ABY : 6,  // Absolute Indexed by Y (op | low | high. Operand is located at address given PLUS the offest stored in the Y register.)
+           ABX : 5,  // Absolute Indexed by X (op | low | high. Operand is located at address given PLUS the offest stored in the X register)
+           ABY : 6,  // Absolute Indexed by Y (op | low | high. Operand is located at address given PLUS the offest stored in the Y register)
            ZPX : 7,  // Zero Page Indexed by X (op | low. Operand is located at zp address PLUS the offset stored in the X register)
            ZPY : 8,  // Zero Page Indexed by Y (op | low. Operand is located at zp address PLUS the offset stored in the Y register)
-           INX : 9,  // Indexed Indirect Addressing (op | low. Read address from given location in ZP offset by X. Operand as that address)
+           INX : 9,  // Indexed Indirect Addressing (op | low. Read address from given location in ZP offset by X. Operand at that address)
            INY : 10, // Indirect Indexed Addressing (op | low. Read address from given location in ZP. Operand is at that address PLUS the offest stored in the Y register)
            ABI : 11, // Absolute Indirect Addressing (op | low | high. Read the address from the given location. Reads TWO bytes)
            IMP : 12  // Implied Addressing (No arguments, no operands... Just a single opcode... Don't really need this, but just to be complete...)
@@ -133,16 +133,117 @@ MOS6502.prototype._IF_SIGN = function() { return ((this._P & 0x80) >> 7 === 1); 
 
 MOS6502.prototype._SET_SIGN = function(value) { ( (value & 0x80) >> 7 === 1) ? this._P |= 0x80 : this._P &= 0x80; };
 
-// For now, the memory addressing mode (if any) is included in parens. This needs to be addressed properly.
-// (forgive the pun).
-
-/*
-    TODO: How about making a variable for the address of the operand and then a switch for the address mode that set the operand properly?
+MOS6502.prototype._MAKE_ADDRESS = function(byte1, byte2) { return (byte2 << 8) + byte1; };
+/**
+ * Addressing Mode Functions
+ *
+ * Each one of these is for the different addressing modes. It will return the correct operand required. Still a work
+ * in progress, but I think it might be easier than coding in the same stuff over and over again. I have also had to
+ * create functions which write to the correct addresses as well... This is heavily involved... What was I thinking?
  */
+
+/** Read Address **/
+MOS6502.prototype.ReadZeroPage = function(byte1) {
+    return this._RAM[ byte1 ];
+}
+
+MOS6502.prototype.ReadZeroPageX = function(byte1) {
+    return this._RAM[ 0xFF & ( byte1 + this._X ) ];
+}
+
+MOS6502.prototype.ReadZeroPageY = function(byte1) {
+    return this._RAM [ 0xFF & ( byte1 + this._Y ) ];
+}
+
+MOS6502.prototype.ReadAbsolute = function(byte1, byte2) {
+    return this._RAM[ this._MAKE_ADDRESS(byte1, byte2) ];
+}
+
+MOS6502.prototype.ReadAbsoluteX = function(byte1, byte2, checkpage) {
+    var me = this;
+    if(checkpage) {
+        if( ( me._MAKE_ADDRESS(byte1, byte2) & 0xFF00 ) !== ( me._MAKE_ADDRESS(byte1, byte2) + me._X) & 0xFF00 ) {
+            // Crossing page boundary. Add one cycle.
+            me._CYCLES += 1;
+        }
+    }
+    return me._RAM[ me._MAKE_ADDRESS(byte1, byte2) + me._X ];
+}
+
+MOS6502.prototype.ReadAbsoluteY = function(byte1, byte2, checkpage) {
+    var me = this;
+    if(checkpage) {
+        if( ( me._MAKE_ADDRESS(byte1, byte2) & 0xFF00 ) !== ( me._MAKE_ADDRESS(byte1, byte2) + me._Y) & 0xFF00 ) {
+            // Crossing page boundary. Add one cycle.
+            me._CYCLES += 1;
+        }
+    }
+    return me._RAM[ me._MAKE_ADDRESS(byte1, byte2) + me._Y ];
+}
+
+MOS6502.prototype.ReadIndirectX = function(byte1) {
+    var me = this,
+        OPER_ADDR = me._MAKE_ADDRESS( me._RAM[ 0xFF & (byte1 + me._X) ] , me._RAM[ 0xFF & (byte1 + me._X + 1) ]);
+    return me._RAM[ OPER_ADDR ];
+}
+
+MOS6502.prototype.ReadIndirectY = function(byte1, checkpage) {
+    var me = this,
+        OPER_ADDR = me._MAKE_ADDRESS( me._RAM[byte1] , me._RAM[byte1 + 1]);
+    if (checkpage) {
+        if(OPER_ADDR & 0xFF00 !== (OPER_ADDR + me._Y) & 0xFF00) {
+            // Crossing page boundary. Add one cycle.
+            me._CYCLES += 1;
+        }
+    }
+    return me._RAM[ OPER_ADDR + me._Y ];
+}
+
+/** Write Address **/
+MOS6502.prototype.WriteZeroPage = function(ZPADDR, DATA) {
+    this._RAM[ZPADDR & 0xFF] =  DATA & 0xFF;
+}
+
+MOS6502.prototype.WriteZeroPageX = function(ZPADDR, DATA) {
+    var me = this;
+    me._RAM[(ZPADDR + me._X) & 0xFF] =  DATA & 0xFF;
+}
+
+MOS6502.prototype.WriteZeroPageY = function(ZPADDR, DATA) {
+    var me = this;
+    me._RAM[(ZPADDR + me._Y) & 0xFF] = DATA & 0xFF;
+}
+
+MOS6502.prototype.WriteAbsolute = function(byte1, byte2, DATA) {
+    var me = this;
+    me._RAM[me._MAKE_ADDRESS(byte1,byte2)] = DATA 0xFF;
+}
+
+MOS6502.prototype.WriteAbsoluteX = function(byte1, byte2, DATA) {
+    var me = this;
+    me._RAM[me._MAKE_ADDRESS(byte1, byte2) + me._X] = DATA & 0xFF;
+}
+
+MOS6502.prototype.WriteAbsoluteY = function(byte1, byte2, DATA) {
+    var me = this;
+    me._RAM[me._MAKE_ADDRESS(byte1,byte2) + me._Y] = DATA & 0xFF;
+}
+
+MOS6502.prototype.WriteIndirectX = function(byte1, DATA) {
+    var me = this,
+        WRITE_ADDR = me._MAKE_ADDRESS(me._RAM[(byte1 + me._X) & 0xFF],me._RAM[(byte1 + me_X + 1) & 0xFF]);
+    me._RAM[ WRITE_ADDR ] = DATA & 0xFF;
+}
+
+MOS6502.prototype.WriteIndirectY = function(byte1, DATA) {
+    var me = this,
+        WRITE_ADDR = me._MAKE_ADDRESS(me._RAM[byte1 & 0xFF] , me._RAM[byte1 + 1 & 0xFF]);
+    me._RAM[WRITE_ADDR + me._Y ] = DATA & 0xFF;
+}
 
 MOS6502.prototype.opcodeMap = {
     // 0x0X
-    0x00 : MOS6502.BRK(),
+    0x00 : MOS6502.BRK(this._ADDR_MODE.IMP),
     0x01 : MOS6502.ORA(this._ADDR_MODE.INX),
     0x02 : "",
     0x03 : "",
@@ -160,7 +261,7 @@ MOS6502.prototype.opcodeMap = {
     0x0F : "",
 
     // 0x1X
-    0x10 : MOS6502.BPL(),
+    0x10 : MOS6502.BPL(this._ADDR_MODE.REL),
     0x11 : MOS6502.ORA(this._ADDR_MODE.INY),
     0x12 : "",
     0x13 : "",
@@ -168,7 +269,7 @@ MOS6502.prototype.opcodeMap = {
     0x15 : MOS6502.ORA(this._ADDR_MODE.ZPX),
     0x16 : MOS6502.ASL(this._ADDR_MODE.ZPX),
     0x17 : "",
-    0x18 : MOS6502.CLC(),
+    0x18 : MOS6502.CLC(this._ADDR_MODE.IMP),
     0x19 : MOS6502.ORA(this._ADDR_MODE.ABY),
     0x1A : "",
     0x1B : "",
@@ -178,7 +279,7 @@ MOS6502.prototype.opcodeMap = {
     0x1F : "",
 
     // 0x2X
-    0x20 : MOS6502.JSR(),
+    0x20 : MOS6502.JSR(this._ADDR_MODE.ABS),
     0x21 : MOS6502.AND(this._ADDR_MODE.INX),
     0x22 : "",
     0x23 : "",
@@ -196,7 +297,7 @@ MOS6502.prototype.opcodeMap = {
     0x2F : "",
 
     // 0x3X
-    0x30 : MOS6502.BMI(),
+    0x30 : MOS6502.BMI(this._ADDR_MODE.REL),
     0x31 : MOS6502.AND(this._ADDR_MODE.INY),
     0x32 : "",
     0x33 : "",
@@ -232,7 +333,7 @@ MOS6502.prototype.opcodeMap = {
     0x4F : "",
 
     // 0x5X
-    0x50 : MOS6502.BVC(),
+    0x50 : MOS6502.BVC(this._ADDR_MODE.IMP),
     0x51 : MOS6502.EOR(this._ADDR_MODE.INY),
     0x52 : "",
     0x53 : "",
@@ -240,7 +341,7 @@ MOS6502.prototype.opcodeMap = {
     0x55 : MOS6502.EOR(this._ADDR_MODE.ZPX),
     0x56 : MOS6502.LSR(this._ADDR_MODE.ZPX),
     0x57 : "",
-    0x58 : MOS6502.CLI(),
+    0x58 : MOS6502.CLI(this._ADDR_MODE.IMP),
     0x59 : MOS6502.EOR(this._ADDR_MODE.ABY),
     0x5A : "",
     0x5B : "",
@@ -268,7 +369,7 @@ MOS6502.prototype.opcodeMap = {
     0x6F : "",
 
     // 0x7X
-    0x70 : MOS6502.BVS(),
+    0x70 : MOS6502.BVS(this._ADDR_MODE.IMP),
     0x71 : MOS6502.ADC(this._ADDR_MODE.INY),
     0x72 : "",
     0x73 : "",
@@ -294,7 +395,7 @@ MOS6502.prototype.opcodeMap = {
     0x85 : MOS6502.STA(this._ADDR_MODE.ZP),
     0x86 : MOS6502.STX(this._ADDR_MODE.ZP),
     0x87 : "",
-    0x88 : MOS6502.DEY(),
+    0x88 : MOS6502.DEY(this._ADDR_MODE.IMP),
     0x89 : "",
     0x8A : MOS6502.TXA(),
     0x8B : "",
@@ -304,7 +405,7 @@ MOS6502.prototype.opcodeMap = {
     0x8F : "",
 
     // 0x9X
-    0x90 : MOS6502.BCC(),
+    0x90 : MOS6502.BCC(this._ADDR_MODE.REL),
     0x91 : MOS6502.STA(this._ADDR_MODE.INY),
     0x92 : "",
     0x93 : "",
@@ -340,7 +441,7 @@ MOS6502.prototype.opcodeMap = {
     0xAF : "",
 
     // 0xBX
-    0xB0 : MOS6502.BCS(),
+    0xB0 : MOS6502.BCS(this._ADDR_MODE.REL),
     0xB1 : MOS6502.LDA(this._ADDR_MODE.INY),
     0xB2 : "",
     0xB3 : "",
@@ -348,7 +449,7 @@ MOS6502.prototype.opcodeMap = {
     0xB5 : MOS6502.LDA(this._ADDR_MODE.ZPX),
     0xB6 : MOS6502.LDX(this._ADDR_MODE.ZPY),
     0xB7 : "",
-    0xB8 : MOS6502.CLV(),
+    0xB8 : MOS6502.CLV(this._ADDR_MODE.IMP),
     0xB9 : MOS6502.LDA(this._ADDR_MODE.ABY),
     0xBA : MOS6502.TSX(),
     0xBB : "",
@@ -366,9 +467,9 @@ MOS6502.prototype.opcodeMap = {
     0xC5 : MOS6502.CMP(this._ADDR_MODE.ZP),
     0xC6 : MOS6502.DEC(this._ADDR_MODE.ZP),
     0xC7 : "",
-    0xC8 : MOS6502.INY(),
+    0xC8 : MOS6502.INY(this._ADDR_MODE.IMP),
     0xC9 : MOS6502.CMP(this._ADDR_MODE.IMM),
-    0xCA : MOS6502.DEX(),
+    0xCA : MOS6502.DEX(this._ADDR_MODE.IMP),
     0xCB : "",
     0xCC : MOS6502.CPY(this._ADDR_MODE.ABS),
     0xCD : MOS6502.CMP(this._ADDR_MODE.ABS),
@@ -376,7 +477,7 @@ MOS6502.prototype.opcodeMap = {
     0xCF : "",
 
     // 0xDX
-    0xD0 : MOS6502.BNE(),
+    0xD0 : MOS6502.BNE(this._ADDR_MODE.REL),
     0xD1 : MOS6502.CMP(this._ADDR_MODE.INY),
     0xD2 : "",
     0xD3 : "",
@@ -384,7 +485,7 @@ MOS6502.prototype.opcodeMap = {
     0xD5 : MOS6502.CMP(this._ADDR_MODE.ZPX),
     0xD6 : MOS6502.DEC(this._ADDR_MODE.ZPX),
     0xD7 : "",
-    0xD8 : MOS6502.CLD(),
+    0xD8 : MOS6502.CLD(this._ADDR_MODE.IMP),
     0xD9 : MOS6502.CMP(this._ADDR_MODE.ABY),
     0xDA : "",
     0xDB : "",
@@ -402,7 +503,7 @@ MOS6502.prototype.opcodeMap = {
     0xE5 : MOS6502.SBC(this._ADDR_MODE.ZP),
     0xE6 : MOS6502.INC(this._ADDR_MODE.ZP),
     0xE7 : "",
-    0xE8 : MOS6502.INX(),
+    0xE8 : MOS6502.INX(this._ADDR_MODE.IMP),
     0xE9 : MOS6502.SBC(this._ADDR_MODE.IMM),
     0xEA : MOS6502.NOP(),
     0xEB : "",
@@ -412,7 +513,7 @@ MOS6502.prototype.opcodeMap = {
     0xEF : "",
 
     // 0xFX
-    0xF0 : MOS6502.BEQ(),
+    0xF0 : MOS6502.BEQ(this._ADDR_MODE.REL),
     0xF1 : MOS6502.SBC(this._ADDR_MODE.INY),
     0xF2 : "",
     0xF3 : "",
@@ -434,42 +535,15 @@ MOS6502.prototype.opcodeMap = {
 /* Placeholder functions for the instruction set. */
 
 MOS6502.prototype.ADC = function (ADDR_MODE) {
-    /* Add memory to accumulator with carry
-     *
-     * Affects:
-     * | | |     |
-     * N Z C I D V
-     *
-     * PSEUDO CODE:
-     *
-     * var temp = srcByte + Accumulator + (IF_CARRY() ? 1 : 0);
-     * if( IF_DECIMAL() ) {
-     *      if ( ( ( Accumulator & 0xF) + (srcByte & 0XF) + (IF_CARRY() ? 1 : 0) ) > 9 ) {
-     *          temp += 6;
-     *      }
-     *      SET_SIGN(temp);
-     *      SET_OVERFLOW( !( (Accumulator ^ srcByte) & 0x80) && ( ( Accumulator ^ temp) & 0x80) );
-     *      if ( temp > 0x99) {
-     *          temp += 96;
-     *      }
-     *      SET_CARRY(temp & 0x99);
-     * } else {
-     *      SET_SIGN(temp);
-     *      SET_OVERFLOW( !( (Accumulator  ^ srcByte) & 0x80) && ( ( Accumulator ^ temp) & 0x80) );
-     *      SET_CARRY(temp > 0xFF);
-     * }
-     *
-     */
+    // Add memory to accumulator with carry
 
-    var me = this,
-        srcByte;
-    // Switch here will dictate what he have in our temp value and source byte.
+    var me = this, OPER;
+
+    // Check which address mode the operand comes from.
     switch (ADDR_MODE) {
         case(me._ADDR_MODE.IMM):
-            // OPCODE: 69
-            // ADC #Oper
-            // Immediate Mode (Operand is in second byte of instruction).
-            srcByte = me._RAM[me._PC + 1];
+            // Immediate Addressing (op | operand. Operand is in the second byte)
+            OPER = me.Immediate();
             //  BYTES: 2
             // CYCLES: 2
             me._PC += 2;
@@ -477,11 +551,8 @@ MOS6502.prototype.ADC = function (ADDR_MODE) {
             break;
 
         case(me._ADDR_MODE.ZP):
-            // OPCODE: 65
-            // ADC Oper
-            // Zero Page Addressing (Second byte is a Zero Page address)
-            var ZPADDR = me._RAM[ me._PC + 1 ];
-            srcByte = me._RAM[ ZPADDR ];
+            // Zero Page Addressing (op | low. Operand in zero page at byte referenced)
+            OPER = me.ReadZeroPage( me._RAM[ me._PC + 1 ] );
             //  BYTES: 2
             // CYCLES: 3
             me._PC += 2;
@@ -489,8 +560,8 @@ MOS6502.prototype.ADC = function (ADDR_MODE) {
             break;
 
         case(me._ADDR_MODE.ZPX):
-            // OPCODE: 75
-            srcByte = me._RAM[ (me._PC + 1) + me._X ];
+            // Zero Page Indexed by X (op | low. Operand is located at zp address PLUS the offset stored in the X register)
+            OPER = me._RAM[ (me._PC + 1) + me._X ];
             //  BYTES: 2
             // CYCLES: 4
             me._PC += 2;
@@ -498,8 +569,8 @@ MOS6502.prototype.ADC = function (ADDR_MODE) {
             break;
 
         case(me._ADDR_MODE.ABS):
-            // OPCODE: 60
-            srcByte = me._RAM[ ( (me._PC + 2) << 4) | (me._PC + 1)];
+            // Absolute Addressing (op | low | high. Operand at that address)
+            OPER = me._RAM[ ( (me._PC + 2) << 4) | (me._PC + 1)];
             //  BYTES: 3
             // CYCLES: 4
             me._PC += 3;
@@ -507,17 +578,17 @@ MOS6502.prototype.ADC = function (ADDR_MODE) {
             break;
 
         case(me._ADDR_MODE.ABX):
-            // OPCODE: 7D
-            srcByte = me._RAM[ ( (me._PC + 2) << 4 | (me._PC + 1) ) + me._X ];
+            // Absolute Indexed by X (op | low | high. Operand is located at address given PLUS the offest stored in the X register)
+            OPER = me._RAM[ ( (me._PC + 2) << 4 | (me._PC + 1) ) + me._X ];
             //  BYTES: 3
             // CYCLES: 4 (Add 1 if page boundary is crossed)
             me._PC += 3;
-            me._CYCLES += 3;
+            me._CYCLES += 4;
             break;
 
         case(me._ADDR_MODE.ABY):
-            // OPCODE: 79
-            srcByte = me._RAM[ ( (me._PC + 2) << 4 | (me._PC + 1) ) + me._Y];
+            // Absolute Indexed by Y (op | low | high. Operand is located at address given PLUS the offest stored in the Y register)
+            OPER = me._RAM[ ( (me._PC + 2) << 4 | (me._PC + 1) ) + me._Y];
             //  BYTES: 3
             // CYCLES: 4 (Add 1 if page boundary is crossed)
             me._PC += 3;
@@ -525,9 +596,9 @@ MOS6502.prototype.ADC = function (ADDR_MODE) {
             break;
 
         case(me._ADDR_MODE.INX):
-            // OPCODE: 61
-            var zpa = me._RAM[ me._PC+1 ] + me._RAM[ me._X ]
-            srcByte = me._RAM[ ( me._RAM[zpa << 4] ) | me._RAM[(zpa + 1)] ];
+            // Indexed Indirect Addressing (op | low. Read address from given location in ZP offset by X. Operand at that address)
+            var ZPADDR = me._RAM[ me._PC + 1 ] + me._RAM[ me._X ]
+            OPER = me._RAM[ ( me._RAM[ZPADDR << 4] ) | me._RAM[(ZPADDR + 1)] ];
 
             //  BYTES: 2
             // CYCLES: 6
@@ -536,7 +607,7 @@ MOS6502.prototype.ADC = function (ADDR_MODE) {
             break;
 
         case(me._ADDR_MODE.INY):
-            // OPCODE: 71
+            // Indirect Indexed Addressing (op | low. Read address from given location in ZP. Operand is at that address PLUS the offest stored in the Y register)
             //  BYTES: 2
             // CYCLES: 5 (Add 1 if page boundary is crossed)
             me._PC += 2;
@@ -548,21 +619,21 @@ MOS6502.prototype.ADC = function (ADDR_MODE) {
             break;
     }
 
-    var temp = srcByte + me._A + (me._IF_CARRY() ? 1 : 0);
+    var temp = OPER + me._A + (me._IF_CARRY() ? 1 : 0);
 
     if( me._IF_DECIMAL() ) {
-        if ( ( ( me._A & 0xF) + (srcByte & 0XF) + (me._IF_CARRY() ? 1 : 0) ) > 9 ) {
+        if ( ( ( me._A & 0xF) + (OPER & 0XF) + (me._IF_CARRY() ? 1 : 0) ) > 9 ) {
             temp += 6;
         }
         me._SET_SIGN(temp);
-        me._SET_OVERFLOW( !( (me._A ^ srcByte) & 0x80) && ( ( me._A ^ temp) & 0x80) );
+        me._SET_OVERFLOW( !( (me._A ^ OPER) & 0x80) && ( ( me._A ^ temp) & 0x80) );
         if ( temp > 0x99) {
             temp += 96;
         }
         me._SET_CARRY(temp & 0x99);
     } else {
        me._SET_SIGN(temp);
-       me._SET_OVERFLOW( !( (me._A ^ srcByte) & 0x80) && ( ( me._A ^ temp) & 0x80) );
+       me._SET_OVERFLOW( !( (me._A ^ OPER) & 0x80) && ( ( me._A ^ temp) & 0x80) );
        me._SET_CARRY(temp > 0xFF);
     }
 };
@@ -572,22 +643,28 @@ MOS6502.prototype.AND = function(ADDR_MODE) {
 
     switch (ADDR_MODE) {
         case(this._ADDR_MODE.IMM):
-            srcByte =
+            // Immediate Addressing (op | operand. Operand is in the second byte)
             break;
         case(this._ADDR_MODE.ZP):
-            srcByte = me._RAM[me._PC + 1];
+            // Zero Page Addressing (op | low. Operand in zero page at byte referenced)
             break;
         case(this._ADDR_MODE.ZPX):
+            // Zero Page Indexed by X (op | low. Operand is located at zp address PLUS the offset stored in the X register)
             break;
         case(this._ADDR_MODE.ABS):
+            // Absolute Addressing (op | low | high. Operand at that address)
             break;
         case(this._ADDR_MODE.ABX):
+            // Absolute Indexed by X (op | low | high. Operand is located at address given PLUS the offest stored in the X register)
             break;
         case(this._ADDR_MODE.ABY):
+            // Absolute Indexed by Y (op | low | high. Operand is located at address given PLUS the offest stored in the Y register)
             break;
         case(this._ADDR_MODE.INX):
+            // Indexed Indirect Addressing (op | low. Read address from given location in ZP offset by X. Operand at that address)
             break;
         case(this._ADDR_MODE.INY):
+            // Indirect Indexed Addressing (op | low. Read address from given location in ZP. Operand is at that address PLUS the offest stored in the Y register)
             break;
     }
 };
@@ -607,16 +684,16 @@ MOS6502.prototype.ASL = function(ADDR_MODE) {
     }
 };
 
-MOS6502.prototype.BCC = function() {
-    // NO ADDR_MODE. (REL)
+MOS6502.prototype.BCC = function(ADDR_MODE) {
+    // Relative Addressing (op | offset. Normally used in branches. Second byte contains an offset for branching)
 };
 
-MOS6502.prototype.BCS = function() {
-    // No ADDR_MODE. (REL)
+MOS6502.prototype.BCS = function(ADDR_MODE) {
+    // Relative Addressing (op | offset. Normally used in branches. Second byte contains an offset for branching)
 };
 
-MOS6502.prototype.BEQ = function() {
-    // No ADDR_MODE. (REL)
+MOS6502.prototype.BEQ = function(ADDR_MODE) {
+    // Relative Addressing (op | offset. Normally used in branches. Second byte contains an offset for branching)
 };
 
 MOS6502.prototype.BIT = function(ADDR_MODE) {
@@ -628,44 +705,44 @@ MOS6502.prototype.BIT = function(ADDR_MODE) {
     }
 };
 
-MOS6502.prototype.BMI = function() {
-    // No ADDR_MODE. (REL)
+MOS6502.prototype.BMI = function(ADDR_MODE) {
+    // Relative Addressing (op | offset. Normally used in branches. Second byte contains an offset for branching)
 };
 
-MOS6502.prototype.BNE = function() {
-    // No ADDR_MODE. (REL)
+MOS6502.prototype.BNE = function(ADDR_MODE) {
+    // Relative Addressing (op | offset. Normally used in branches. Second byte contains an offset for branching)
 };
 
-MOS6502.prototype.BPL = function() {
-    // No ADDR_MODE. (REL)
+MOS6502.prototype.BPL = function(ADDR_MODE) {
+    // Relative Addressing (op | offset. Normally used in branches. Second byte contains an offset for branching)
 };
 
-MOS6502.prototype.BRK = function() {
-    // No ADDR_MODE. (IMP)
+MOS6502.prototype.BRK = function(ADDR_MODE) {
+    // Implied Addressing (No arguments, no operands... Just a single opcode... Don't really need this, but just to be complete...)
 };
 
-MOS6502.prototype.BVC = function() {
-    // No ADDR_MODE. (REL)
+MOS6502.prototype.BVC = function(ADDR_MODE) {
+    // Implied Addressing (No arguments, no operands... Just a single opcode... Don't really need this, but just to be complete...)
 };
 
-MOS6502.prototype.BVS = function() {
-    // No ADDR_MODE. (REL)
+MOS6502.prototype.BVS = function(ADDR_MODE) {
+    // Implied Addressing (No arguments, no operands... Just a single opcode... Don't really need this, but just to be complete...)
 };
 
-MOS6502.prototype.CLC = function() {
-    // No ADDR_MODE. (IMP)
+MOS6502.prototype.CLC = function(ADDR_MODE) {
+    // Implied Addressing (No arguments, no operands... Just a single opcode... Don't really need this, but just to be complete...)
 };
 
-MOS6502.prototype.CLD = function() {
-    // No ADDR_MODE. (IMP)
+MOS6502.prototype.CLD = function(ADDR_MODE) {
+    // Implied Addressing (No arguments, no operands... Just a single opcode... Don't really need this, but just to be complete...)
 };
 
-MOS6502.prototype.CLI = function() {
-    // No ADDR_MODE. (IMP)
+MOS6502.prototype.CLI = function(ADDR_MODE) {
+    // Implied Addressing (No arguments, no operands... Just a single opcode... Don't really need this, but just to be complete...)
 };
 
-MOS6502.prototype.CLV = function() {
-    // No ADDR_MODE. (IMP)
+MOS6502.prototype.CLV = function(ADDR_MODE) {
+    // Implied Addressing (No arguments, no operands... Just a single opcode... Don't really need this, but just to be complete...)
 };
 
 MOS6502.prototype.CMP = function(ADDR_MODE) {
@@ -724,12 +801,12 @@ MOS6502.prototype.DEC = function(ADDR_MODE) {
     }
 };
 
-MOS6502.prototype.DEX = function() {
-    // No ADDR_MODE. (IMP)
+MOS6502.prototype.DEX = function(ADDR_MODE) {
+    // Implied Addressing (No arguments, no operands... Just a single opcode... Don't really need this, but just to be complete...)
 };
 
-MOS6502.prototype.DEY = function() {
-    // No ADDR_MODE. (IMP)
+MOS6502.prototype.DEY = function(ADDR_MODE) {
+    // Implied Addressing (No arguments, no operands... Just a single opcode... Don't really need this, but just to be complete...)
 };
 
 MOS6502.prototype.EOR = function(ADDR_MODE) {
@@ -766,12 +843,12 @@ MOS6502.prototype.INC = function(ADDR_MODE) {
     }
 };
 
-MOS6502.prototype.INX = function() {
-    // No ADDR_MODE. (IMP)
+MOS6502.prototype.INX = function(ADDR_MODE) {
+    // Implied Addressing (No arguments, no operands... Just a single opcode... Don't really need this, but just to be complete...)
 };
 
-MOS6502.prototype.INY = function() {
-    // No ADDR_MODE. (IMP)
+MOS6502.prototype.INY = function(ADDR_MODE) {
+    // Implied Addressing (No arguments, no operands... Just a single opcode... Don't really need this, but just to be complete...)
 };
 
 MOS6502.prototype.JMP = function(ADDR_MODE) {
@@ -783,8 +860,8 @@ MOS6502.prototype.JMP = function(ADDR_MODE) {
     }
 };
 
-MOS6502.prototype.JSR = function() {
-    // No ADDR_MODE. (ABS)
+MOS6502.prototype.JSR = function(ADDR_MODE) {
+    // Absolute Addressing (op | low | high. Operand at that address)
 };
 
 MOS6502.prototype.LDA = function(ADDR_MODE) {
@@ -853,8 +930,8 @@ MOS6502.prototype.LSR = function(ADDR_MODE) {
     }
 };
 
-MOS6502.prototype.NOP = function() {
-    // No ADDR_MODE. (IMP)
+MOS6502.prototype.NOP = function(ADDR_MODE) {
+    // Implied Addressing (No arguments, no operands... Just a single opcode... Don't really need this, but just to be complete...)
 };
 
 MOS6502.prototype.ORA = function(ADDR_MODE) {
@@ -878,20 +955,20 @@ MOS6502.prototype.ORA = function(ADDR_MODE) {
     }
 };
 
-MOS6502.prototype.PHA = function() {
-    // No ADDR_MODE. (IMP)
+MOS6502.prototype.PHA = function(ADDR_MODE) {
+    // Implied Addressing (No arguments, no operands... Just a single opcode... Don't really need this, but just to be complete...)
 };
 
-MOS6502.prototype.PHP = function() {
-    // No ADDR_MODE. (IMP)
+MOS6502.prototype.PHP = function(ADDR_MODE) {
+    // Implied Addressing (No arguments, no operands... Just a single opcode... Don't really need this, but just to be complete...)
 };
 
-MOS6502.prototype.PLA = function() {
-    // No ADDR_MODE. (IMP)
+MOS6502.prototype.PLA = function(ADDR_MODE) {
+    // Implied Addressing (No arguments, no operands... Just a single opcode... Don't really need this, but just to be complete...)
 };
 
-MOS6502.prototype.PLP = function() {
-    // No ADDR_MODE. (IMP)
+MOS6502.prototype.PLP = function(ADDR_MODE) {
+    // Implied Addressing (No arguments, no operands... Just a single opcode... Don't really need this, but just to be complete...)
 };
 
 MOS6502.prototype.ROL = function(ADDR_MODE) {
@@ -908,6 +985,7 @@ MOS6502.prototype.ROL = function(ADDR_MODE) {
             break;
     }
 };
+
 MOS6502.prototype.ROR = function(ADDR_MODE) {
     switch (ADDR_MODE) {
         case(this._ADDR_MODE.ACC):
@@ -923,12 +1001,12 @@ MOS6502.prototype.ROR = function(ADDR_MODE) {
     }
 };
 
-MOS6502.prototype.RTI = function() {
-    // No ADDR_MODE. (IMP)
+MOS6502.prototype.RTI = function(ADDR_MODE) {
+    // Implied Addressing (No arguments, no operands... Just a single opcode... Don't really need this, but just to be complete...)
 };
 
-MOS6502.prototype.RTS = function() {
-    // No ADDR_MODE. (IMP)
+MOS6502.prototype.RTS = function(ADDR_MODE) {
+    // Implied Addressing (No arguments, no operands... Just a single opcode... Don't really need this, but just to be complete...)
 };
 
 MOS6502.prototype.SBC = function(ADDR_MODE) {
@@ -952,16 +1030,16 @@ MOS6502.prototype.SBC = function(ADDR_MODE) {
     }
 };
 
-MOS6502.prototype.SEC = function() {
-    // No ADDR_MODE. (IMP)
+MOS6502.prototype.SEC = function(ADDR_MODE) {
+    // Implied Addressing (No arguments, no operands... Just a single opcode... Don't really need this, but just to be complete...)
 };
 
-MOS6502.prototype.SED = function() {
-    // No ADDR_MODE. (IMP)
+MOS6502.prototype.SED = function(ADDR_MODE) {
+    // Implied Addressing (No arguments, no operands... Just a single opcode... Don't really need this, but just to be complete...)
 };
 
-MOS6502.prototype.SEI = function() {
-    // No ADDR_MODE. (IMP)
+MOS6502.prototype.SEI = function(ADDR_MODE) {
+    // Implied Addressing (No arguments, no operands... Just a single opcode... Don't really need this, but just to be complete...)
 };
 
 MOS6502.prototype.STA = function(ADDR_MODE) {
@@ -1005,26 +1083,26 @@ MOS6502.prototype.STY = function(ADDR_MODE) {
     }
 };
 
-MOS6502.prototype.TAX = function() {
-    // No ADDR_MODE. (IMP)
+MOS6502.prototype.TAX = function(ADDR_MODE) {
+    // Implied Addressing (No arguments, no operands... Just a single opcode... Don't really need this, but just to be complete...)
 };
 
-MOS6502.prototype.TAY = function() {
-    // No ADDR_MODE. (IMP)
+MOS6502.prototype.TAY = function(ADDR_MODE) {
+    // Implied Addressing (No arguments, no operands... Just a single opcode... Don't really need this, but just to be complete...)
 };
 
-MOS6502.prototype.TSX = function() {
-    // No ADDR_MODE. (IMP)
+MOS6502.prototype.TSX = function(ADDR_MODE) {
+    // Implied Addressing (No arguments, no operands... Just a single opcode... Don't really need this, but just to be complete...)
 };
 
-MOS6502.prototype.TXA = function() {
-    // No ADDR_MODE. (IMP)
+MOS6502.prototype.TXA = function(ADDR_MODE) {
+    // Implied Addressing (No arguments, no operands... Just a single opcode... Don't really need this, but just to be complete...)
 };
 
-MOS6502.prototype.TXS = function() {
-    // No ADDR_MODE. (IMP)
+MOS6502.prototype.TXS = function(ADDR_MODE) {
+    // Implied Addressing (No arguments, no operands... Just a single opcode... Don't really need this, but just to be complete...)
 };
 
-MOS6502.prototype.TYA = function() {
-    // No ADDR_MODE. (IMP)
+MOS6502.prototype.TYA = function(ADDR_MODE) {
+    // Implied Addressing (No arguments, no operands... Just a single opcode... Don't really need this, but just to be complete...)
 };
