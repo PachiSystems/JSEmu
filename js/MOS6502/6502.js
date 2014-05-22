@@ -216,7 +216,7 @@ MOS6502.prototype.WriteZeroPageY = function(ZPADDR, DATA) {
 
 MOS6502.prototype.WriteAbsolute = function(byte1, byte2, DATA) {
     var me = this;
-    me._RAM[me._MAKE_ADDRESS(byte1,byte2)] = DATA 0xFF;
+    me._RAM[me._MAKE_ADDRESS(byte1,byte2)] = DATA & 0xFF;
 }
 
 MOS6502.prototype.WriteAbsoluteX = function(byte1, byte2, DATA) {
@@ -537,86 +537,25 @@ MOS6502.prototype.opcodeMap = {
 MOS6502.prototype.ADC = function (ADDR_MODE) {
     // Add memory to accumulator with carry
 
-    var me = this, OPER;
+    var me = this,
+        opCode = me._RAM[ me._PC ],
+        byte1 = me._RAM[ me._PC + 1],
+        byte2 = me._RAM[ me._PC + 2],
+        OPER;
 
-    // Check which address mode the operand comes from.
-    switch (ADDR_MODE) {
-        case(me._ADDR_MODE.IMM):
-            // Immediate Addressing (op | operand. Operand is in the second byte)
-            OPER = me.Immediate();
-            //  BYTES: 2
-            // CYCLES: 2
-            me._PC += 2;
-            me._CYCLES += 2;
-            break;
+    switch (opCode) {
 
-        case(me._ADDR_MODE.ZP):
-            // Zero Page Addressing (op | low. Operand in zero page at byte referenced)
-            OPER = me.ReadZeroPage( me._RAM[ me._PC + 1 ] );
-            //  BYTES: 2
-            // CYCLES: 3
-            me._PC += 2;
-            me._CYCLES += 3;
-            break;
+        case (0x61): OPER = me.ReadIndirectX(byte1); break;
+        case (0x65): OPER = me.ReadZeroPage(byte1); break;
+        case (0x69): OPER = byte1; break;
+        case (0x6D): OPER = me.ReadAbsolute(byte1, byte2); break;
+        case (0x71): OPER = me.ReadIndirectY(byte1, true); break;
+        case (0x75): OPER = me.ReadZeroPageX(byte1); break;
+        case (0x79): OPER = me.ReadAbsoluteY(byte1, byte2, true); break;
+        case (0x7D): OPER = me.ReadAbsoluteX(byte1, byte2, true); break;
 
-        case(me._ADDR_MODE.ZPX):
-            // Zero Page Indexed by X (op | low. Operand is located at zp address PLUS the offset stored in the X register)
-            OPER = me._RAM[ (me._PC + 1) + me._X ];
-            //  BYTES: 2
-            // CYCLES: 4
-            me._PC += 2;
-            me._CYCLES += 4;
-            break;
+        default: console.error("Illegal ADC opcode passed. (" + opCode + ")" ); break;
 
-        case(me._ADDR_MODE.ABS):
-            // Absolute Addressing (op | low | high. Operand at that address)
-            OPER = me._RAM[ ( (me._PC + 2) << 4) | (me._PC + 1)];
-            //  BYTES: 3
-            // CYCLES: 4
-            me._PC += 3;
-            me._CYCLES += 4;
-            break;
-
-        case(me._ADDR_MODE.ABX):
-            // Absolute Indexed by X (op | low | high. Operand is located at address given PLUS the offest stored in the X register)
-            OPER = me._RAM[ ( (me._PC + 2) << 4 | (me._PC + 1) ) + me._X ];
-            //  BYTES: 3
-            // CYCLES: 4 (Add 1 if page boundary is crossed)
-            me._PC += 3;
-            me._CYCLES += 4;
-            break;
-
-        case(me._ADDR_MODE.ABY):
-            // Absolute Indexed by Y (op | low | high. Operand is located at address given PLUS the offest stored in the Y register)
-            OPER = me._RAM[ ( (me._PC + 2) << 4 | (me._PC + 1) ) + me._Y];
-            //  BYTES: 3
-            // CYCLES: 4 (Add 1 if page boundary is crossed)
-            me._PC += 3;
-            me._CYCLES += 4;
-            break;
-
-        case(me._ADDR_MODE.INX):
-            // Indexed Indirect Addressing (op | low. Read address from given location in ZP offset by X. Operand at that address)
-            var ZPADDR = me._RAM[ me._PC + 1 ] + me._RAM[ me._X ]
-            OPER = me._RAM[ ( me._RAM[ZPADDR << 4] ) | me._RAM[(ZPADDR + 1)] ];
-
-            //  BYTES: 2
-            // CYCLES: 6
-            me._PC += 2;
-            me._CYCLES += 6;
-            break;
-
-        case(me._ADDR_MODE.INY):
-            // Indirect Indexed Addressing (op | low. Read address from given location in ZP. Operand is at that address PLUS the offest stored in the Y register)
-            //  BYTES: 2
-            // CYCLES: 5 (Add 1 if page boundary is crossed)
-            me._PC += 2;
-            me._CYCLES = 5;
-            break;
-
-        default:
-            throw "ADC invalid memory mode";
-            break;
     }
 
     var temp = OPER + me._A + (me._IF_CARRY() ? 1 : 0);
@@ -635,6 +574,21 @@ MOS6502.prototype.ADC = function (ADDR_MODE) {
        me._SET_SIGN(temp);
        me._SET_OVERFLOW( !( (me._A ^ OPER) & 0x80) && ( ( me._A ^ temp) & 0x80) );
        me._SET_CARRY(temp > 0xFF);
+    }
+
+    switch (opCode) {
+
+        case (0x61): me._CYCLES += 6; me._PC += 2; break;
+        case (0x65): me._CYCLES += 3; me._PC += 2; break;
+        case (0x69): me._CYCLES += 2; me._PC += 2; break;
+        case (0x6D): me._CYCLES += 4; me._PC += 3; break;
+        case (0x71): me._CYCLES += 5; me._PC += 2; break;
+        case (0x75): me._CYCLES += 4; me._PC += 2; break;
+        case (0x79): me._CYCLES += 4; me._PC += 3; break;
+        case (0x7D): me._CYCLES += 4; me._PC += 3; break;
+
+        default: console.error("Illegal ADC opcode passed. (" + opCode + ")" ); break;
+
     }
 };
 
