@@ -48,27 +48,22 @@ QUnit.module ("OPCODE", {
         MOS6502.init();
     }
 });
-test("[0x00E0] - CLS", function() {
+test("Reading addressing modes", function() {
 
     /**
-     * 00E0 - CLS
-     * Clear the display.
+     * Read Zero Page
+     * Given a byte, it should read from 0x00-- in memory.
      */
-    MOS6502._RAM[0x200] = 0x00;
-    MOS6502._RAM[0x201] = 0xE0;
 
-    MOS6502.emulateCycle();
+    var randomByte = Math.floor(Math.random() * 255 - 1),
+        randomAddress = Math.floor(Math.random() * 255 - 1);
 
-    equal(graphicsEmpty,
-        true,
-        "Should clear the entire graphics buffer.");
+    MOS6502._RAM[randomAddress] = randomByte;
 
-    equal(chip8.drawflag,
-        true,
-        "Drawflag is set to true.");
+    MOS6502.ReadZeroPage(randomAddress);
 
-    equal(chip8.pc,
-        0x202,
-        "Program counter incremented from 0x200 to 0x202.");
+    equal(MOS6502.ReadZeroPage(randomAddress),
+        randomByte,
+        "Byte stored in ZeroPage address matches value.");
 
 });
