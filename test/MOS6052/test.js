@@ -71,6 +71,20 @@ test("Read Zero Page", function() {
 test("Read Zero Page X", function() {
     /**
      * Read Zero Page X
-     * Given
+     * Given a byte, it should read from 0x00-- in memory offset by the value in X.
      */
+
+    var randomByte = Math.floor(Math.random() * 255 - 1),
+        randomX = Math.floor(Math.random() * 255 - 1),
+        randomAddress = Math.floor(Math.random() * 255 - 1);
+
+    MOS6502._X = randomX;
+
+    // It should ALWAYS be in Zero Page. Even if it goes past the boundary.
+    MOS6502._RAM[ (0xFF & (randomX + randomAddress)) ] = randomByte;
+
+    equal(MOS6502.ReadZeroPageX(randomAddress),
+        randomByte,
+        "Byte stored in Zero Page (offset by X) matches value.");
+
 });
