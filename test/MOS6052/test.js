@@ -1,12 +1,12 @@
 var MOS6502 = new MOS6502(),
     $fixture = $( "#qunit-fixture" );
 
-MOS6502.beginEmulation("TEST_MODE",renderer);
+//MOS6502.beginEmulation("TEST_MODE",renderer);
 
 /**
  * CPU Tests
  * Check initialization has been performed correctly.
- */
+ *
 
 module("CPU");
 test("Initialization", function() {
@@ -37,18 +37,19 @@ test("Initialization", function() {
         0,
         "No opcode loaded.");
 });
+*/
 
 /**
  * OPCODE Tests
  * Each opcode should have its own test. Before each test is run, the emulator will be reset.
  */
 
-QUnit.module ("OPCODE", {
+QUnit.module ("Address Modes", {
     setup: function() {
-        MOS6502.init();
+        //MOS6502.init();
     }
 });
-test("Reading addressing modes", function() {
+test("Read Zero Page", function() {
 
     /**
      * Read Zero Page
@@ -66,4 +67,10 @@ test("Reading addressing modes", function() {
         randomByte,
         "Byte stored in ZeroPage address matches value.");
 
+});
+test("Read Zero Page X", function() {
+    /**
+     * Read Zero Page X
+     * Given
+     */
 });

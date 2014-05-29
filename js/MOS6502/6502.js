@@ -584,7 +584,7 @@ MOS6502.prototype.AND = function() {
 
     switch (opCode) {
         // Get Operand
-        case (0x): OPER = me; break;
+        case (0x00): OPER = me; break;
 
         default: console.error("Illegal ADC opcode passed. (" + opCode + ")" ); break;
 
@@ -594,7 +594,7 @@ MOS6502.prototype.AND = function() {
 
     switch (opCode) {
         // Increment cycles, pc and write operand.
-        case (0x): me._CYCLES += 0; me._PC += 0; break;
+        case (0x00): me._CYCLES += 0; me._PC += 0; break;
 
         default: console.error("Illegal ADC opcode passed. (" + opCode + ")" ); break;
 
@@ -611,7 +611,7 @@ MOS6502.prototype.ASL = function(ADDR_MODE) {
 
     switch (opCode) {
         // Get Operand
-        case (0x): OPER = me; break;
+        case (0x00): OPER = me; break;
 
         default: console.error("Illegal ADC opcode passed. (" + opCode + ")" ); break;
 
@@ -621,7 +621,7 @@ MOS6502.prototype.ASL = function(ADDR_MODE) {
 
     switch (opCode) {
         // Increment cycles, pc and write operand.
-        case (0x): me._CYCLES += 0; me._PC += 0; break;
+        case (0x00): me._CYCLES += 0; me._PC += 0; break;
 
         default: console.error("Illegal ADC opcode passed. (" + opCode + ")" ); break;
 
@@ -637,7 +637,7 @@ MOS6502.prototype.BCC = function(ADDR_MODE) {
 
     switch (opCode) {
         // Get Operand
-        case (0x): OPER = me; break;
+        case (0x00): OPER = me; break;
 
         default: console.error("Illegal ADC opcode passed. (" + opCode + ")" ); break;
 
@@ -647,7 +647,7 @@ MOS6502.prototype.BCC = function(ADDR_MODE) {
 
     switch (opCode) {
         // Increment cycles, pc and write operand.
-        case (0x): me._CYCLES += 0; me._PC += 0; break;
+        case (0x00): me._CYCLES += 0; me._PC += 0; break;
 
         default: console.error("Illegal ADC opcode passed. (" + opCode + ")" ); break;
 
@@ -663,7 +663,7 @@ MOS6502.prototype.BCS = function(ADDR_MODE) {
 
     switch (opCode) {
         // Get Operand
-        case (0x): OPER = me; break;
+        case (0x00): OPER = me; break;
 
         default: console.error("Illegal ADC opcode passed. (" + opCode + ")" ); break;
 
@@ -673,7 +673,7 @@ MOS6502.prototype.BCS = function(ADDR_MODE) {
 
     switch (opCode) {
         // Increment cycles, pc and write operand.
-        case (0x): me._CYCLES += 0; me._PC += 0; break;
+        case (0x00): me._CYCLES += 0; me._PC += 0; break;
 
         default: console.error("Illegal ADC opcode passed. (" + opCode + ")" ); break;
 
@@ -689,7 +689,7 @@ MOS6502.prototype.BEQ = function(ADDR_MODE) {
 
     switch (opCode) {
         // Get Operand
-        case (0x): OPER = me; break;
+        case (0x00): OPER = me; break;
 
         default: console.error("Illegal ADC opcode passed. (" + opCode + ")" ); break;
 
@@ -699,7 +699,7 @@ MOS6502.prototype.BEQ = function(ADDR_MODE) {
 
     switch (opCode) {
         // Increment cycles, pc and write operand.
-        case (0x): me._CYCLES += 0; me._PC += 0; break;
+        case (0x00): me._CYCLES += 0; me._PC += 0; break;
 
         default: console.error("Illegal ADC opcode passed. (" + opCode + ")" ); break;
 
@@ -715,7 +715,7 @@ MOS6502.prototype.BIT = function(ADDR_MODE) {
 
     switch (opCode) {
         // Get Operand
-        case (0x): OPER = me; break;
+        case (0x00): OPER = me; break;
 
         default: console.error("Illegal ADC opcode passed. (" + opCode + ")" ); break;
 
@@ -725,7 +725,7 @@ MOS6502.prototype.BIT = function(ADDR_MODE) {
 
     switch (opCode) {
         // Increment cycles, pc and write operand.
-        case (0x): me._CYCLES += 0; me._PC += 0; break;
+        case (0x00): me._CYCLES += 0; me._PC += 0; break;
 
         default: console.error("Illegal ADC opcode passed. (" + opCode + ")" ); break;
 
@@ -741,7 +741,7 @@ MOS6502.prototype.BMI = function(ADDR_MODE) {
 
     switch (opCode) {
         // Get Operand
-        case (0x): OPER = me; break;
+        case (0x00): OPER = me; break;
 
         default: console.error("Illegal ADC opcode passed. (" + opCode + ")" ); break;
 
@@ -751,7 +751,7 @@ MOS6502.prototype.BMI = function(ADDR_MODE) {
 
     switch (opCode) {
         // Increment cycles, pc and write operand.
-        case (0x): me._CYCLES += 0; me._PC += 0; break;
+        case (0x00): me._CYCLES += 0; me._PC += 0; break;
 
         default: console.error("Illegal ADC opcode passed. (" + opCode + ")" ); break;
 
@@ -767,7 +767,7 @@ MOS6502.prototype.BNE = function(ADDR_MODE) {
 
     switch (opCode) {
         // Get Operand
-        case (0x): OPER = me; break;
+        case (0x00): OPER = me; break;
 
         default: console.error("Illegal ADC opcode passed. (" + opCode + ")" ); break;
 
@@ -777,7 +777,7 @@ MOS6502.prototype.BNE = function(ADDR_MODE) {
 
     switch (opCode) {
         // Increment cycles, pc and write operand.
-        case (0x): me._CYCLES += 0; me._PC += 0; break;
+        case (0x00): me._CYCLES += 0; me._PC += 0; break;
 
         default: console.error("Illegal ADC opcode passed. (" + opCode + ")" ); break;
 
@@ -793,7 +793,7 @@ MOS6502.prototype.BPL = function(ADDR_MODE) {
 
     switch (opCode) {
         // Get Operand
-        case (0x): OPER = me; break;
+        case (0x00): OPER = me; break;
 
         default: console.error("Illegal ADC opcode passed. (" + opCode + ")" ); break;
 
@@ -803,7 +803,7 @@ MOS6502.prototype.BPL = function(ADDR_MODE) {
 
     switch (opCode) {
         // Increment cycles, pc and write operand.
-        case (0x): me._CYCLES += 0; me._PC += 0; break;
+        case (0x00): me._CYCLES += 0; me._PC += 0; break;
 
         default: console.error("Illegal ADC opcode passed. (" + opCode + ")" ); break;
 
@@ -819,7 +819,7 @@ MOS6502.prototype.BRK = function(ADDR_MODE) {
 
     switch (opCode) {
         // Get Operand
-        case (0x): OPER = me; break;
+        case (0x00): OPER = me; break;
 
         default: console.error("Illegal ADC opcode passed. (" + opCode + ")" ); break;
 
@@ -829,7 +829,7 @@ MOS6502.prototype.BRK = function(ADDR_MODE) {
 
     switch (opCode) {
         // Increment cycles, pc and write operand.
-        case (0x): me._CYCLES += 0; me._PC += 0; break;
+        case (0x00): me._CYCLES += 0; me._PC += 0; break;
 
         default: console.error("Illegal ADC opcode passed. (" + opCode + ")" ); break;
 
@@ -845,7 +845,7 @@ MOS6502.prototype.BVC = function(ADDR_MODE) {
 
     switch (opCode) {
         // Get Operand
-        case (0x): OPER = me; break;
+        case (0x00): OPER = me; break;
 
         default: console.error("Illegal ADC opcode passed. (" + opCode + ")" ); break;
 
@@ -855,7 +855,7 @@ MOS6502.prototype.BVC = function(ADDR_MODE) {
 
     switch (opCode) {
         // Increment cycles, pc and write operand.
-        case (0x): me._CYCLES += 0; me._PC += 0; break;
+        case (0x00): me._CYCLES += 0; me._PC += 0; break;
 
         default: console.error("Illegal ADC opcode passed. (" + opCode + ")" ); break;
 
@@ -871,7 +871,7 @@ MOS6502.prototype.BVS = function(ADDR_MODE) {
 
     switch (opCode) {
         // Get Operand
-        case (0x): OPER = me; break;
+        case (0x00): OPER = me; break;
 
         default: console.error("Illegal ADC opcode passed. (" + opCode + ")" ); break;
 
@@ -881,7 +881,7 @@ MOS6502.prototype.BVS = function(ADDR_MODE) {
 
     switch (opCode) {
         // Increment cycles, pc and write operand.
-        case (0x): me._CYCLES += 0; me._PC += 0; break;
+        case (0x00): me._CYCLES += 0; me._PC += 0; break;
 
         default: console.error("Illegal ADC opcode passed. (" + opCode + ")" ); break;
 
@@ -897,7 +897,7 @@ MOS6502.prototype.CLC = function(ADDR_MODE) {
 
     switch (opCode) {
         // Get Operand
-        case (0x): OPER = me; break;
+        case (0x00): OPER = me; break;
 
         default: console.error("Illegal ADC opcode passed. (" + opCode + ")" ); break;
 
@@ -907,7 +907,7 @@ MOS6502.prototype.CLC = function(ADDR_MODE) {
 
     switch (opCode) {
         // Increment cycles, pc and write operand.
-        case (0x): me._CYCLES += 0; me._PC += 0; break;
+        case (0x00): me._CYCLES += 0; me._PC += 0; break;
 
         default: console.error("Illegal ADC opcode passed. (" + opCode + ")" ); break;
 
@@ -923,7 +923,7 @@ MOS6502.prototype.CLD = function(ADDR_MODE) {
 
     switch (opCode) {
         // Get Operand
-        case (0x): OPER = me; break;
+        case (0x00): OPER = me; break;
 
         default: console.error("Illegal ADC opcode passed. (" + opCode + ")" ); break;
 
@@ -933,7 +933,7 @@ MOS6502.prototype.CLD = function(ADDR_MODE) {
 
     switch (opCode) {
         // Increment cycles, pc and write operand.
-        case (0x): me._CYCLES += 0; me._PC += 0; break;
+        case (0x00): me._CYCLES += 0; me._PC += 0; break;
 
         default: console.error("Illegal ADC opcode passed. (" + opCode + ")" ); break;
 
@@ -949,7 +949,7 @@ MOS6502.prototype.CLI = function(ADDR_MODE) {
 
     switch (opCode) {
         // Get Operand
-        case (0x): OPER = me; break;
+        case (0x00): OPER = me; break;
 
         default: console.error("Illegal ADC opcode passed. (" + opCode + ")" ); break;
 
@@ -959,7 +959,7 @@ MOS6502.prototype.CLI = function(ADDR_MODE) {
 
     switch (opCode) {
         // Increment cycles, pc and write operand.
-        case (0x): me._CYCLES += 0; me._PC += 0; break;
+        case (0x00): me._CYCLES += 0; me._PC += 0; break;
 
         default: console.error("Illegal ADC opcode passed. (" + opCode + ")" ); break;
 
@@ -975,7 +975,7 @@ MOS6502.prototype.CLV = function(ADDR_MODE) {
 
     switch (opCode) {
         // Get Operand
-        case (0x): OPER = me; break;
+        case (0x00): OPER = me; break;
 
         default: console.error("Illegal ADC opcode passed. (" + opCode + ")" ); break;
 
@@ -985,7 +985,7 @@ MOS6502.prototype.CLV = function(ADDR_MODE) {
 
     switch (opCode) {
         // Increment cycles, pc and write operand.
-        case (0x): me._CYCLES += 0; me._PC += 0; break;
+        case (0x00): me._CYCLES += 0; me._PC += 0; break;
 
         default: console.error("Illegal ADC opcode passed. (" + opCode + ")" ); break;
 
@@ -1001,7 +1001,7 @@ MOS6502.prototype.CMP = function(ADDR_MODE) {
 
     switch (opCode) {
         // Get Operand
-        case (0x): OPER = me; break;
+        case (0x00): OPER = me; break;
 
         default: console.error("Illegal ADC opcode passed. (" + opCode + ")" ); break;
 
@@ -1011,7 +1011,7 @@ MOS6502.prototype.CMP = function(ADDR_MODE) {
 
     switch (opCode) {
         // Increment cycles, pc and write operand.
-        case (0x): me._CYCLES += 0; me._PC += 0; break;
+        case (0x00): me._CYCLES += 0; me._PC += 0; break;
 
         default: console.error("Illegal ADC opcode passed. (" + opCode + ")" ); break;
 
@@ -1027,7 +1027,7 @@ MOS6502.prototype.CPX = function(ADDR_MODE) {
 
     switch (opCode) {
         // Get Operand
-        case (0x): OPER = me; break;
+        case (0x00): OPER = me; break;
 
         default: console.error("Illegal ADC opcode passed. (" + opCode + ")" ); break;
 
@@ -1037,7 +1037,7 @@ MOS6502.prototype.CPX = function(ADDR_MODE) {
 
     switch (opCode) {
         // Increment cycles, pc and write operand.
-        case (0x): me._CYCLES += 0; me._PC += 0; break;
+        case (0x00): me._CYCLES += 0; me._PC += 0; break;
 
         default: console.error("Illegal ADC opcode passed. (" + opCode + ")" ); break;
 
@@ -1053,7 +1053,7 @@ MOS6502.prototype.CPY = function(ADDR_MODE) {
 
     switch (opCode) {
         // Get Operand
-        case (0x): OPER = me; break;
+        case (0x00): OPER = me; break;
 
         default: console.error("Illegal ADC opcode passed. (" + opCode + ")" ); break;
 
@@ -1063,7 +1063,7 @@ MOS6502.prototype.CPY = function(ADDR_MODE) {
 
     switch (opCode) {
         // Increment cycles, pc and write operand.
-        case (0x): me._CYCLES += 0; me._PC += 0; break;
+        case (0x00): me._CYCLES += 0; me._PC += 0; break;
 
         default: console.error("Illegal ADC opcode passed. (" + opCode + ")" ); break;
 
@@ -1079,7 +1079,7 @@ MOS6502.prototype.DEC = function(ADDR_MODE) {
 
     switch (opCode) {
         // Get Operand
-        case (0x): OPER = me; break;
+        case (0x00): OPER = me; break;
 
         default: console.error("Illegal ADC opcode passed. (" + opCode + ")" ); break;
 
@@ -1089,7 +1089,7 @@ MOS6502.prototype.DEC = function(ADDR_MODE) {
 
     switch (opCode) {
         // Increment cycles, pc and write operand.
-        case (0x): me._CYCLES += 0; me._PC += 0; break;
+        case (0x00): me._CYCLES += 0; me._PC += 0; break;
 
         default: console.error("Illegal ADC opcode passed. (" + opCode + ")" ); break;
 
@@ -1105,7 +1105,7 @@ MOS6502.prototype.DEX = function(ADDR_MODE) {
 
     switch (opCode) {
         // Get Operand
-        case (0x): OPER = me; break;
+        case (0x00): OPER = me; break;
 
         default: console.error("Illegal ADC opcode passed. (" + opCode + ")" ); break;
 
@@ -1115,7 +1115,7 @@ MOS6502.prototype.DEX = function(ADDR_MODE) {
 
     switch (opCode) {
         // Increment cycles, pc and write operand.
-        case (0x): me._CYCLES += 0; me._PC += 0; break;
+        case (0x00): me._CYCLES += 0; me._PC += 0; break;
 
         default: console.error("Illegal ADC opcode passed. (" + opCode + ")" ); break;
 
@@ -1131,7 +1131,7 @@ MOS6502.prototype.DEY = function(ADDR_MODE) {
 
     switch (opCode) {
         // Get Operand
-        case (0x): OPER = me; break;
+        case (0x00): OPER = me; break;
 
         default: console.error("Illegal ADC opcode passed. (" + opCode + ")" ); break;
 
@@ -1141,7 +1141,7 @@ MOS6502.prototype.DEY = function(ADDR_MODE) {
 
     switch (opCode) {
         // Increment cycles, pc and write operand.
-        case (0x): me._CYCLES += 0; me._PC += 0; break;
+        case (0x00): me._CYCLES += 0; me._PC += 0; break;
 
         default: console.error("Illegal ADC opcode passed. (" + opCode + ")" ); break;
 
@@ -1157,7 +1157,7 @@ MOS6502.prototype.EOR = function(ADDR_MODE) {
 
     switch (opCode) {
         // Get Operand
-        case (0x): OPER = me; break;
+        case (0x00): OPER = me; break;
 
         default: console.error("Illegal ADC opcode passed. (" + opCode + ")" ); break;
 
@@ -1167,7 +1167,7 @@ MOS6502.prototype.EOR = function(ADDR_MODE) {
 
     switch (opCode) {
         // Increment cycles, pc and write operand.
-        case (0x): me._CYCLES += 0; me._PC += 0; break;
+        case (0x00): me._CYCLES += 0; me._PC += 0; break;
 
         default: console.error("Illegal ADC opcode passed. (" + opCode + ")" ); break;
 
@@ -1183,7 +1183,7 @@ MOS6502.prototype.INC = function(ADDR_MODE) {
 
     switch (opCode) {
         // Get Operand
-        case (0x): OPER = me; break;
+        case (0x00): OPER = me; break;
 
         default: console.error("Illegal ADC opcode passed. (" + opCode + ")" ); break;
 
@@ -1193,7 +1193,7 @@ MOS6502.prototype.INC = function(ADDR_MODE) {
 
     switch (opCode) {
         // Increment cycles, pc and write operand.
-        case (0x): me._CYCLES += 0; me._PC += 0; break;
+        case (0x00): me._CYCLES += 0; me._PC += 0; break;
 
         default: console.error("Illegal ADC opcode passed. (" + opCode + ")" ); break;
 
@@ -1209,7 +1209,7 @@ MOS6502.prototype.INX = function(ADDR_MODE) {
 
     switch (opCode) {
         // Get Operand
-        case (0x): OPER = me; break;
+        case (0x00): OPER = me; break;
 
         default: console.error("Illegal ADC opcode passed. (" + opCode + ")" ); break;
 
@@ -1219,7 +1219,7 @@ MOS6502.prototype.INX = function(ADDR_MODE) {
 
     switch (opCode) {
         // Increment cycles, pc and write operand.
-        case (0x): me._CYCLES += 0; me._PC += 0; break;
+        case (0x00): me._CYCLES += 0; me._PC += 0; break;
 
         default: console.error("Illegal ADC opcode passed. (" + opCode + ")" ); break;
 
@@ -1235,7 +1235,7 @@ MOS6502.prototype.INY = function(ADDR_MODE) {
 
     switch (opCode) {
         // Get Operand
-        case (0x): OPER = me; break;
+        case (0x00): OPER = me; break;
 
         default: console.error("Illegal ADC opcode passed. (" + opCode + ")" ); break;
 
@@ -1245,7 +1245,7 @@ MOS6502.prototype.INY = function(ADDR_MODE) {
 
     switch (opCode) {
         // Increment cycles, pc and write operand.
-        case (0x): me._CYCLES += 0; me._PC += 0; break;
+        case (0x00): me._CYCLES += 0; me._PC += 0; break;
 
         default: console.error("Illegal ADC opcode passed. (" + opCode + ")" ); break;
 
@@ -1261,7 +1261,7 @@ MOS6502.prototype.JMP = function(ADDR_MODE) {
 
     switch (opCode) {
         // Get Operand
-        case (0x): OPER = me; break;
+        case (0x00): OPER = me; break;
 
         default: console.error("Illegal ADC opcode passed. (" + opCode + ")" ); break;
 
@@ -1271,7 +1271,7 @@ MOS6502.prototype.JMP = function(ADDR_MODE) {
 
     switch (opCode) {
         // Increment cycles, pc and write operand.
-        case (0x): me._CYCLES += 0; me._PC += 0; break;
+        case (0x00): me._CYCLES += 0; me._PC += 0; break;
 
         default: console.error("Illegal ADC opcode passed. (" + opCode + ")" ); break;
 
@@ -1287,7 +1287,7 @@ MOS6502.prototype.JSR = function(ADDR_MODE) {
 
     switch (opCode) {
         // Get Operand
-        case (0x): OPER = me; break;
+        case (0x00): OPER = me; break;
 
         default: console.error("Illegal ADC opcode passed. (" + opCode + ")" ); break;
 
@@ -1297,7 +1297,7 @@ MOS6502.prototype.JSR = function(ADDR_MODE) {
 
     switch (opCode) {
         // Increment cycles, pc and write operand.
-        case (0x): me._CYCLES += 0; me._PC += 0; break;
+        case (0x00): me._CYCLES += 0; me._PC += 0; break;
 
         default: console.error("Illegal ADC opcode passed. (" + opCode + ")" ); break;
 
@@ -1313,7 +1313,7 @@ MOS6502.prototype.LDA = function(ADDR_MODE) {
 
     switch (opCode) {
         // Get Operand
-        case (0x): OPER = me; break;
+        case (0x00): OPER = me; break;
 
         default: console.error("Illegal ADC opcode passed. (" + opCode + ")" ); break;
 
@@ -1323,7 +1323,7 @@ MOS6502.prototype.LDA = function(ADDR_MODE) {
 
     switch (opCode) {
         // Increment cycles, pc and write operand.
-        case (0x): me._CYCLES += 0; me._PC += 0; break;
+        case (0x00): me._CYCLES += 0; me._PC += 0; break;
 
         default: console.error("Illegal ADC opcode passed. (" + opCode + ")" ); break;
 
@@ -1339,7 +1339,7 @@ MOS6502.prototype.LDX = function(ADDR_MODE) {
 
     switch (opCode) {
         // Get Operand
-        case (0x): OPER = me; break;
+        case (0x00): OPER = me; break;
 
         default: console.error("Illegal ADC opcode passed. (" + opCode + ")" ); break;
 
@@ -1349,7 +1349,7 @@ MOS6502.prototype.LDX = function(ADDR_MODE) {
 
     switch (opCode) {
         // Increment cycles, pc and write operand.
-        case (0x): me._CYCLES += 0; me._PC += 0; break;
+        case (0x00): me._CYCLES += 0; me._PC += 0; break;
 
         default: console.error("Illegal ADC opcode passed. (" + opCode + ")" ); break;
 
@@ -1365,7 +1365,7 @@ MOS6502.prototype.LDY = function(ADDR_MODE) {
 
     switch (opCode) {
         // Get Operand
-        case (0x): OPER = me; break;
+        case (0x00): OPER = me; break;
 
         default: console.error("Illegal ADC opcode passed. (" + opCode + ")" ); break;
 
@@ -1375,7 +1375,7 @@ MOS6502.prototype.LDY = function(ADDR_MODE) {
 
     switch (opCode) {
         // Increment cycles, pc and write operand.
-        case (0x): me._CYCLES += 0; me._PC += 0; break;
+        case (0x00): me._CYCLES += 0; me._PC += 0; break;
 
         default: console.error("Illegal ADC opcode passed. (" + opCode + ")" ); break;
 
@@ -1391,7 +1391,7 @@ MOS6502.prototype.LSR = function(ADDR_MODE) {
 
     switch (opCode) {
         // Get Operand
-        case (0x): OPER = me; break;
+        case (0x00): OPER = me; break;
 
         default: console.error("Illegal ADC opcode passed. (" + opCode + ")" ); break;
 
@@ -1401,7 +1401,7 @@ MOS6502.prototype.LSR = function(ADDR_MODE) {
 
     switch (opCode) {
         // Increment cycles, pc and write operand.
-        case (0x): me._CYCLES += 0; me._PC += 0; break;
+        case (0x00): me._CYCLES += 0; me._PC += 0; break;
 
         default: console.error("Illegal ADC opcode passed. (" + opCode + ")" ); break;
 
@@ -1417,7 +1417,7 @@ MOS6502.prototype.NOP = function(ADDR_MODE) {
 
     switch (opCode) {
         // Get Operand
-        case (0x): OPER = me; break;
+        case (0x00): OPER = me; break;
 
         default: console.error("Illegal ADC opcode passed. (" + opCode + ")" ); break;
 
@@ -1427,7 +1427,7 @@ MOS6502.prototype.NOP = function(ADDR_MODE) {
 
     switch (opCode) {
         // Increment cycles, pc and write operand.
-        case (0x): me._CYCLES += 0; me._PC += 0; break;
+        case (0x00): me._CYCLES += 0; me._PC += 0; break;
 
         default: console.error("Illegal ADC opcode passed. (" + opCode + ")" ); break;
 
@@ -1443,7 +1443,7 @@ MOS6502.prototype.ORA = function(ADDR_MODE) {
 
     switch (opCode) {
         // Get Operand
-        case (0x): OPER = me; break;
+        case (0x00): OPER = me; break;
 
         default: console.error("Illegal ADC opcode passed. (" + opCode + ")" ); break;
 
@@ -1453,7 +1453,7 @@ MOS6502.prototype.ORA = function(ADDR_MODE) {
 
     switch (opCode) {
         // Increment cycles, pc and write operand.
-        case (0x): me._CYCLES += 0; me._PC += 0; break;
+        case (0x00): me._CYCLES += 0; me._PC += 0; break;
 
         default: console.error("Illegal ADC opcode passed. (" + opCode + ")" ); break;
 
@@ -1469,7 +1469,7 @@ MOS6502.prototype.PHA = function(ADDR_MODE) {
 
     switch (opCode) {
         // Get Operand
-        case (0x): OPER = me; break;
+        case (0x00): OPER = me; break;
 
         default: console.error("Illegal ADC opcode passed. (" + opCode + ")" ); break;
 
@@ -1479,7 +1479,7 @@ MOS6502.prototype.PHA = function(ADDR_MODE) {
 
     switch (opCode) {
         // Increment cycles, pc and write operand.
-        case (0x): me._CYCLES += 0; me._PC += 0; break;
+        case (0x00): me._CYCLES += 0; me._PC += 0; break;
 
         default: console.error("Illegal ADC opcode passed. (" + opCode + ")" ); break;
 
@@ -1495,7 +1495,7 @@ MOS6502.prototype.PHP = function(ADDR_MODE) {
 
     switch (opCode) {
         // Get Operand
-        case (0x): OPER = me; break;
+        case (0x00): OPER = me; break;
 
         default: console.error("Illegal ADC opcode passed. (" + opCode + ")" ); break;
 
@@ -1505,7 +1505,7 @@ MOS6502.prototype.PHP = function(ADDR_MODE) {
 
     switch (opCode) {
         // Increment cycles, pc and write operand.
-        case (0x): me._CYCLES += 0; me._PC += 0; break;
+        case (0x00): me._CYCLES += 0; me._PC += 0; break;
 
         default: console.error("Illegal ADC opcode passed. (" + opCode + ")" ); break;
 
@@ -1521,7 +1521,7 @@ MOS6502.prototype.PLA = function(ADDR_MODE) {
 
     switch (opCode) {
         // Get Operand
-        case (0x): OPER = me; break;
+        case (0x00): OPER = me; break;
 
         default: console.error("Illegal ADC opcode passed. (" + opCode + ")" ); break;
 
@@ -1531,7 +1531,7 @@ MOS6502.prototype.PLA = function(ADDR_MODE) {
 
     switch (opCode) {
         // Increment cycles, pc and write operand.
-        case (0x): me._CYCLES += 0; me._PC += 0; break;
+        case (0x00): me._CYCLES += 0; me._PC += 0; break;
 
         default: console.error("Illegal ADC opcode passed. (" + opCode + ")" ); break;
 
@@ -1547,7 +1547,7 @@ MOS6502.prototype.PLP = function(ADDR_MODE) {
 
     switch (opCode) {
         // Get Operand
-        case (0x): OPER = me; break;
+        case (0x00): OPER = me; break;
 
         default: console.error("Illegal ADC opcode passed. (" + opCode + ")" ); break;
 
@@ -1557,7 +1557,7 @@ MOS6502.prototype.PLP = function(ADDR_MODE) {
 
     switch (opCode) {
         // Increment cycles, pc and write operand.
-        case (0x): me._CYCLES += 0; me._PC += 0; break;
+        case (0x00): me._CYCLES += 0; me._PC += 0; break;
 
         default: console.error("Illegal ADC opcode passed. (" + opCode + ")" ); break;
 
@@ -1573,7 +1573,7 @@ MOS6502.prototype.ROL = function(ADDR_MODE) {
 
     switch (opCode) {
         // Get Operand
-        case (0x): OPER = me; break;
+        case (0x00): OPER = me; break;
 
         default: console.error("Illegal ADC opcode passed. (" + opCode + ")" ); break;
 
@@ -1583,7 +1583,7 @@ MOS6502.prototype.ROL = function(ADDR_MODE) {
 
     switch (opCode) {
         // Increment cycles, pc and write operand.
-        case (0x): me._CYCLES += 0; me._PC += 0; break;
+        case (0x00): me._CYCLES += 0; me._PC += 0; break;
 
         default: console.error("Illegal ADC opcode passed. (" + opCode + ")" ); break;
 
@@ -1599,7 +1599,7 @@ MOS6502.prototype.ROR = function(ADDR_MODE) {
 
     switch (opCode) {
         // Get Operand
-        case (0x): OPER = me; break;
+        case (0x00): OPER = me; break;
 
         default: console.error("Illegal ADC opcode passed. (" + opCode + ")" ); break;
 
@@ -1609,7 +1609,7 @@ MOS6502.prototype.ROR = function(ADDR_MODE) {
 
     switch (opCode) {
         // Increment cycles, pc and write operand.
-        case (0x): me._CYCLES += 0; me._PC += 0; break;
+        case (0x00): me._CYCLES += 0; me._PC += 0; break;
 
         default: console.error("Illegal ADC opcode passed. (" + opCode + ")" ); break;
 
@@ -1625,7 +1625,7 @@ MOS6502.prototype.RTI = function(ADDR_MODE) {
 
     switch (opCode) {
         // Get Operand
-        case (0x): OPER = me; break;
+        case (0x00): OPER = me; break;
 
         default: console.error("Illegal ADC opcode passed. (" + opCode + ")" ); break;
 
@@ -1635,7 +1635,7 @@ MOS6502.prototype.RTI = function(ADDR_MODE) {
 
     switch (opCode) {
         // Increment cycles, pc and write operand.
-        case (0x): me._CYCLES += 0; me._PC += 0; break;
+        case (0x00): me._CYCLES += 0; me._PC += 0; break;
 
         default: console.error("Illegal ADC opcode passed. (" + opCode + ")" ); break;
 
@@ -1651,7 +1651,7 @@ MOS6502.prototype.RTS = function(ADDR_MODE) {
 
     switch (opCode) {
         // Get Operand
-        case (0x): OPER = me; break;
+        case (0x00): OPER = me; break;
 
         default: console.error("Illegal ADC opcode passed. (" + opCode + ")" ); break;
 
@@ -1661,7 +1661,7 @@ MOS6502.prototype.RTS = function(ADDR_MODE) {
 
     switch (opCode) {
         // Increment cycles, pc and write operand.
-        case (0x): me._CYCLES += 0; me._PC += 0; break;
+        case (0x00): me._CYCLES += 0; me._PC += 0; break;
 
         default: console.error("Illegal ADC opcode passed. (" + opCode + ")" ); break;
 
@@ -1677,7 +1677,7 @@ MOS6502.prototype.SBC = function(ADDR_MODE) {
 
     switch (opCode) {
         // Get Operand
-        case (0x): OPER = me; break;
+        case (0x00): OPER = me; break;
 
         default: console.error("Illegal ADC opcode passed. (" + opCode + ")" ); break;
 
@@ -1687,7 +1687,7 @@ MOS6502.prototype.SBC = function(ADDR_MODE) {
 
     switch (opCode) {
         // Increment cycles, pc and write operand.
-        case (0x): me._CYCLES += 0; me._PC += 0; break;
+        case (0x00): me._CYCLES += 0; me._PC += 0; break;
 
         default: console.error("Illegal ADC opcode passed. (" + opCode + ")" ); break;
 
@@ -1703,7 +1703,7 @@ MOS6502.prototype.SEC = function(ADDR_MODE) {
 
     switch (opCode) {
         // Get Operand
-        case (0x): OPER = me; break;
+        case (0x00): OPER = me; break;
 
         default: console.error("Illegal ADC opcode passed. (" + opCode + ")" ); break;
 
@@ -1713,7 +1713,7 @@ MOS6502.prototype.SEC = function(ADDR_MODE) {
 
     switch (opCode) {
         // Increment cycles, pc and write operand.
-        case (0x): me._CYCLES += 0; me._PC += 0; break;
+        case (0x00): me._CYCLES += 0; me._PC += 0; break;
 
         default: console.error("Illegal ADC opcode passed. (" + opCode + ")" ); break;
 
@@ -1729,7 +1729,7 @@ MOS6502.prototype.SED = function(ADDR_MODE) {
 
     switch (opCode) {
         // Get Operand
-        case (0x): OPER = me; break;
+        case (0x00): OPER = me; break;
 
         default: console.error("Illegal ADC opcode passed. (" + opCode + ")" ); break;
 
@@ -1739,7 +1739,7 @@ MOS6502.prototype.SED = function(ADDR_MODE) {
 
     switch (opCode) {
         // Increment cycles, pc and write operand.
-        case (0x): me._CYCLES += 0; me._PC += 0; break;
+        case (0x00): me._CYCLES += 0; me._PC += 0; break;
 
         default: console.error("Illegal ADC opcode passed. (" + opCode + ")" ); break;
 
@@ -1755,7 +1755,7 @@ MOS6502.prototype.SEI = function(ADDR_MODE) {
 
     switch (opCode) {
         // Get Operand
-        case (0x): OPER = me; break;
+        case (0x00): OPER = me; break;
 
         default: console.error("Illegal ADC opcode passed. (" + opCode + ")" ); break;
 
@@ -1765,7 +1765,7 @@ MOS6502.prototype.SEI = function(ADDR_MODE) {
 
     switch (opCode) {
         // Increment cycles, pc and write operand.
-        case (0x): me._CYCLES += 0; me._PC += 0; break;
+        case (0x00): me._CYCLES += 0; me._PC += 0; break;
 
         default: console.error("Illegal ADC opcode passed. (" + opCode + ")" ); break;
 
@@ -1781,7 +1781,7 @@ MOS6502.prototype.STA = function(ADDR_MODE) {
 
     switch (opCode) {
         // Get Operand
-        case (0x): OPER = me; break;
+        case (0x00): OPER = me; break;
 
         default: console.error("Illegal ADC opcode passed. (" + opCode + ")" ); break;
 
@@ -1791,7 +1791,7 @@ MOS6502.prototype.STA = function(ADDR_MODE) {
 
     switch (opCode) {
         // Increment cycles, pc and write operand.
-        case (0x): me._CYCLES += 0; me._PC += 0; break;
+        case (0x00): me._CYCLES += 0; me._PC += 0; break;
 
         default: console.error("Illegal ADC opcode passed. (" + opCode + ")" ); break;
 
@@ -1807,7 +1807,7 @@ MOS6502.prototype.STX = function(ADDR_MODE) {
 
     switch (opCode) {
         // Get Operand
-        case (0x): OPER = me; break;
+        case (0x00): OPER = me; break;
 
         default: console.error("Illegal ADC opcode passed. (" + opCode + ")" ); break;
 
@@ -1817,7 +1817,7 @@ MOS6502.prototype.STX = function(ADDR_MODE) {
 
     switch (opCode) {
         // Increment cycles, pc and write operand.
-        case (0x): me._CYCLES += 0; me._PC += 0; break;
+        case (0x00): me._CYCLES += 0; me._PC += 0; break;
 
         default: console.error("Illegal ADC opcode passed. (" + opCode + ")" ); break;
 
@@ -1833,7 +1833,7 @@ MOS6502.prototype.STY = function(ADDR_MODE) {
 
     switch (opCode) {
         // Get Operand
-        case (0x): OPER = me; break;
+        case (0x00): OPER = me; break;
 
         default: console.error("Illegal ADC opcode passed. (" + opCode + ")" ); break;
 
@@ -1843,7 +1843,7 @@ MOS6502.prototype.STY = function(ADDR_MODE) {
 
     switch (opCode) {
         // Increment cycles, pc and write operand.
-        case (0x): me._CYCLES += 0; me._PC += 0; break;
+        case (0x00): me._CYCLES += 0; me._PC += 0; break;
 
         default: console.error("Illegal ADC opcode passed. (" + opCode + ")" ); break;
 
@@ -1859,7 +1859,7 @@ MOS6502.prototype.TAX = function(ADDR_MODE) {
 
     switch (opCode) {
         // Get Operand
-        case (0x): OPER = me; break;
+        case (0x00): OPER = me; break;
 
         default: console.error("Illegal ADC opcode passed. (" + opCode + ")" ); break;
 
@@ -1869,7 +1869,7 @@ MOS6502.prototype.TAX = function(ADDR_MODE) {
 
     switch (opCode) {
         // Increment cycles, pc and write operand.
-        case (0x): me._CYCLES += 0; me._PC += 0; break;
+        case (0x00): me._CYCLES += 0; me._PC += 0; break;
 
         default: console.error("Illegal ADC opcode passed. (" + opCode + ")" ); break;
 
@@ -1885,7 +1885,7 @@ MOS6502.prototype.TAY = function(ADDR_MODE) {
 
     switch (opCode) {
         // Get Operand
-        case (0x): OPER = me; break;
+        case (0x00): OPER = me; break;
 
         default: console.error("Illegal ADC opcode passed. (" + opCode + ")" ); break;
 
@@ -1895,7 +1895,7 @@ MOS6502.prototype.TAY = function(ADDR_MODE) {
 
     switch (opCode) {
         // Increment cycles, pc and write operand.
-        case (0x): me._CYCLES += 0; me._PC += 0; break;
+        case (0x00): me._CYCLES += 0; me._PC += 0; break;
 
         default: console.error("Illegal ADC opcode passed. (" + opCode + ")" ); break;
 
@@ -1911,7 +1911,7 @@ MOS6502.prototype.TSX = function(ADDR_MODE) {
 
     switch (opCode) {
         // Get Operand
-        case (0x): OPER = me; break;
+        case (0x00): OPER = me; break;
 
         default: console.error("Illegal ADC opcode passed. (" + opCode + ")" ); break;
 
@@ -1921,7 +1921,7 @@ MOS6502.prototype.TSX = function(ADDR_MODE) {
 
     switch (opCode) {
         // Increment cycles, pc and write operand.
-        case (0x): me._CYCLES += 0; me._PC += 0; break;
+        case (0x00): me._CYCLES += 0; me._PC += 0; break;
 
         default: console.error("Illegal ADC opcode passed. (" + opCode + ")" ); break;
 
@@ -1937,7 +1937,7 @@ MOS6502.prototype.TXA = function(ADDR_MODE) {
 
     switch (opCode) {
         // Get Operand
-        case (0x): OPER = me; break;
+        case (0x00): OPER = me; break;
 
         default: console.error("Illegal ADC opcode passed. (" + opCode + ")" ); break;
 
@@ -1947,7 +1947,7 @@ MOS6502.prototype.TXA = function(ADDR_MODE) {
 
     switch (opCode) {
         // Increment cycles, pc and write operand.
-        case (0x): me._CYCLES += 0; me._PC += 0; break;
+        case (0x00): me._CYCLES += 0; me._PC += 0; break;
 
         default: console.error("Illegal ADC opcode passed. (" + opCode + ")" ); break;
 
@@ -1963,7 +1963,7 @@ MOS6502.prototype.TXS = function(ADDR_MODE) {
 
     switch (opCode) {
         // Get Operand
-        case (0x): OPER = me; break;
+        case (0x00): OPER = me; break;
 
         default: console.error("Illegal ADC opcode passed. (" + opCode + ")" ); break;
 
@@ -1973,7 +1973,7 @@ MOS6502.prototype.TXS = function(ADDR_MODE) {
 
     switch (opCode) {
         // Increment cycles, pc and write operand.
-        case (0x): me._CYCLES += 0; me._PC += 0; break;
+        case (0x00): me._CYCLES += 0; me._PC += 0; break;
 
         default: console.error("Illegal ADC opcode passed. (" + opCode + ")" ); break;
 
@@ -1989,7 +1989,7 @@ MOS6502.prototype.TYA = function(ADDR_MODE) {
 
     switch (opCode) {
         // Get Operand
-        case (0x): OPER = me; break;
+        case (0x00): OPER = me; break;
 
         default: console.error("Illegal ADC opcode passed. (" + opCode + ")" ); break;
 
@@ -1999,7 +1999,7 @@ MOS6502.prototype.TYA = function(ADDR_MODE) {
 
     switch (opCode) {
         // Increment cycles, pc and write operand.
-        case (0x): me._CYCLES += 0; me._PC += 0; break;
+        case (0x00): me._CYCLES += 0; me._PC += 0; break;
 
         default: console.error("Illegal ADC opcode passed. (" + opCode + ")" ); break;
 

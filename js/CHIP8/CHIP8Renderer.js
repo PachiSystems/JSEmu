@@ -3,7 +3,7 @@ var Chip8Display = function() {};
 Chip8Display.prototype = {
 
     init: function(canvasID) {
-        this.context = document.getElementById(canvasID).getContext('2d');
+        this.context = document.getElementById(canvasID).getContext('2d') || {fillRect:function(){}};
         this.width = 64;
         this.height = 32;
         this.context.fillStyle = '#FFF';
@@ -18,7 +18,7 @@ Chip8Display.prototype = {
         /**
          * Drawing shizzles!... Badly!
          * There must be some way to not have to itterate through the WHOLE array every time... This is moved from the
-         * chip8.js in order to have a little more separation.
+         * CHIP8.js in order to have a little more separation.
          */
         var me = this,
             i, len,
@@ -53,4 +53,8 @@ Chip8Display.prototype = {
         this.context.fillRect(0, 0, this.width * this.scaleX, this.height * this.scaleY);
     }
 
+};
+
+if (typeof module !== 'undefined' && module.exports != null) {
+    module.exports.Chip8Display = Chip8Display;
 }
