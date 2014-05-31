@@ -372,7 +372,7 @@ MOS6502.prototype.emulateCycle = function() {
             console.error("Illegal OPCODE: " + OPCODE);
             break;
     }
-}
+};
 
 // Some special functions for checking and setting/toggling flags and statuses.
 MOS6502.prototype._IF_CARRY = function(){ return (this._P & 0x01 === 1); };
@@ -416,101 +416,101 @@ MOS6502.prototype._MAKE_ADDRESS = function(byte1, byte2) { return (byte2 << 8) +
 /** Read Address **/
 MOS6502.prototype.ReadZeroPage = function(byte1) {
     return this._RAM[ byte1 ];
-}
+};
 
 MOS6502.prototype.ReadZeroPageX = function(byte1) {
     return this._RAM[ 0xFF & ( byte1 + this._X ) ];
-}
+};
 
 MOS6502.prototype.ReadZeroPageY = function(byte1) {
     return this._RAM [ 0xFF & ( byte1 + this._Y ) ];
-}
+};
 
 MOS6502.prototype.ReadAbsolute = function(byte1, byte2) {
     return this._RAM[ this._MAKE_ADDRESS(byte1, byte2) ];
-}
+};
 
 MOS6502.prototype.ReadAbsoluteX = function(byte1, byte2, checkpage) {
     var me = this;
     if(checkpage) {
-        if( ( me._MAKE_ADDRESS(byte1, byte2) & 0xFF00 ) !== ( me._MAKE_ADDRESS(byte1, byte2) + me._X) & 0xFF00 ) {
+        if( ( 0xFF00 & ( me._MAKE_ADDRESS(byte1, byte2) ) ) !== ( 0xFF00 & ( me._MAKE_ADDRESS(byte1, byte2) + me._X) ) ) {
             // Crossing page boundary. Add one cycle.
             me._CYCLES += 1;
         }
     }
     return me._RAM[ me._MAKE_ADDRESS(byte1, byte2) + me._X ];
-}
+};
 
 MOS6502.prototype.ReadAbsoluteY = function(byte1, byte2, checkpage) {
     var me = this;
     if(checkpage) {
-        if( ( me._MAKE_ADDRESS(byte1, byte2) & 0xFF00 ) !== ( me._MAKE_ADDRESS(byte1, byte2) + me._Y) & 0xFF00 ) {
+        if( ( 0xFF00 & ( me._MAKE_ADDRESS(byte1, byte2) ) ) !== ( 0xFF00 & ( me._MAKE_ADDRESS(byte1, byte2) + me._Y) ) ) {
             // Crossing page boundary. Add one cycle.
             me._CYCLES += 1;
         }
     }
     return me._RAM[ me._MAKE_ADDRESS(byte1, byte2) + me._Y ];
-}
+};
 
 MOS6502.prototype.ReadIndirectX = function(byte1) {
     var me = this,
         OPER_ADDR = me._MAKE_ADDRESS( me._RAM[ 0xFF & (byte1 + me._X) ] , me._RAM[ 0xFF & (byte1 + me._X + 1) ]);
     return me._RAM[ OPER_ADDR ];
-}
+};
 
 MOS6502.prototype.ReadIndirectY = function(byte1, checkpage) {
     var me = this,
         OPER_ADDR = me._MAKE_ADDRESS( me._RAM[byte1] , me._RAM[byte1 + 1]);
     if (checkpage) {
-        if(OPER_ADDR & 0xFF00 !== (OPER_ADDR + me._Y) & 0xFF00) {
+        if( (0xFF00 & OPER_ADDR) !== ( 0xFF00 & ( OPER_ADDR + me._Y) ) ) {
             // Crossing page boundary. Add one cycle.
             me._CYCLES += 1;
         }
     }
     return me._RAM[ OPER_ADDR + me._Y ];
-}
+};
 
 /** Write Address **/
 MOS6502.prototype.WriteZeroPage = function(ZPADDR, DATA) {
     this._RAM[ZPADDR & 0xFF] =  DATA & 0xFF;
-}
+};
 
 MOS6502.prototype.WriteZeroPageX = function(ZPADDR, DATA) {
     var me = this;
     me._RAM[(ZPADDR + me._X) & 0xFF] =  DATA & 0xFF;
-}
+};
 
 MOS6502.prototype.WriteZeroPageY = function(ZPADDR, DATA) {
     var me = this;
     me._RAM[(ZPADDR + me._Y) & 0xFF] = DATA & 0xFF;
-}
+};
 
 MOS6502.prototype.WriteAbsolute = function(byte1, byte2, DATA) {
     var me = this;
     me._RAM[me._MAKE_ADDRESS(byte1,byte2)] = DATA & 0xFF;
-}
+};
 
 MOS6502.prototype.WriteAbsoluteX = function(byte1, byte2, DATA) {
     var me = this;
     me._RAM[me._MAKE_ADDRESS(byte1, byte2) + me._X] = DATA & 0xFF;
-}
+};
 
 MOS6502.prototype.WriteAbsoluteY = function(byte1, byte2, DATA) {
     var me = this;
     me._RAM[me._MAKE_ADDRESS(byte1,byte2) + me._Y] = DATA & 0xFF;
-}
+};
 
 MOS6502.prototype.WriteIndirectX = function(byte1, DATA) {
     var me = this,
         WRITE_ADDR = me._MAKE_ADDRESS(me._RAM[(byte1 + me._X) & 0xFF],me._RAM[(byte1 + me_X + 1) & 0xFF]);
     me._RAM[ WRITE_ADDR ] = DATA & 0xFF;
-}
+};
 
 MOS6502.prototype.WriteIndirectY = function(byte1, DATA) {
     var me = this,
         WRITE_ADDR = me._MAKE_ADDRESS(me._RAM[byte1 & 0xFF] , me._RAM[byte1 + 1 & 0xFF]);
     me._RAM[WRITE_ADDR + me._Y ] = DATA & 0xFF;
-}
+};
 
 /* Placeholder functions for the instruction set. */
 
