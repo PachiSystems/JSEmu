@@ -4,20 +4,22 @@ var MOS6502 = new MOS6502(),
 //MOS6502.beginEmulation("TEST_MODE",renderer);
 
 /**
- * CPU Tests
- * Check initialization has been performed correctly.
+ * Utiliity Methods
+ * These methods are used to set flags in the CPU and to create 16-bit addresses. MOS6502 is little endian.
  */
 
-module("Utility Functions");
+module("Utility Methods");
 test("Make Address", function() {
+
+    /**
+     * _MAKE_ADDRESS
+     * Given two bytes, it should return a 16-bit address. MOS6502 is little endian.
+     */
 
     var addressByte1 = 0xFF & (Math.floor(Math.random() * 255 - 1)),
         addressByte2 = 0xFF & (Math.floor(Math.random() * 255 - 1)),
         fullAddress = (addressByte2 << 8) + addressByte1;
 
-    /**
-     * Given two bytes, it should return a 16-bit address.
-     */
     equal(MOS6502._MAKE_ADDRESS(addressByte1,addressByte2),
         fullAddress,
         "16-bit address calculated from two bytes in a little endian way.");
@@ -25,15 +27,11 @@ test("Make Address", function() {
 });
 
 /**
- * OPCODE Tests
- * Each opcode should have its own test. Before each test is run, the emulator will be reset.
+ * Addressing Modes
+ * The addressing modes are crucial to the instruction getting and writing the correct operand in memory.
  */
 
-QUnit.module ("Address Modes", {
-    setup: function() {
-        //MOS6502.init();
-    }
-});
+module ("Address Modes");
 test("Read Zero Page", function() {
 
     /**
@@ -53,6 +51,7 @@ test("Read Zero Page", function() {
 });
 
 test("Read Zero Page X", function() {
+
     /**
      * Read Zero Page X
      * Given a byte, it should read from 0x00-- in memory offset by the value in X.
@@ -74,6 +73,7 @@ test("Read Zero Page X", function() {
 });
 
 test("Read Zero Page Y", function() {
+
     /**
      * Read Zero Page Y
      * Given a byte, it should read from 0x00-- in memory offset by the value in Y.
@@ -94,14 +94,15 @@ test("Read Zero Page Y", function() {
 });
 
 test("Read Absolute", function(){
-    var randomByte = Math.floor(Math.random() * 255) + 1,
-        randomAddress1 = Math.floor(Math.random() * 255) + 1,
-        randomAddress2 = Math.floor(Math.random() * 255) + 1;
 
     /**
      * Read Absolute
      * Given two bytes, it should read from the address created by combining those two bytes.
      */
+
+    var randomByte = Math.floor(Math.random() * 255) + 1,
+        randomAddress1 = Math.floor(Math.random() * 255) + 1,
+        randomAddress2 = Math.floor(Math.random() * 255) + 1;
 
     MOS6502._RAM[ MOS6502._MAKE_ADDRESS(randomAddress1, randomAddress2) ] = randomByte;
 
@@ -112,15 +113,16 @@ test("Read Absolute", function(){
 });
 
 test("Read Absolute X (check page false)", function(){
-    var randomByte = Math.floor(Math.random() * 255) + 1,
-        randomX = 200,
-        randomAddress1 = 200,
-        randomAddress2 = 200;
 
     /**
      * Read Absolute X (Check Page False)
      * Shouldn't matter if it crosses page boundary. All it needs to do is get the right operand from a 16-bit address.
      */
+
+    var randomByte = Math.floor(Math.random() * 255) + 1,
+        randomX = 200,
+        randomAddress1 = 200,
+        randomAddress2 = 200;
 
     MOS6502._X = randomX;
 
@@ -171,15 +173,16 @@ test("Read Absolute X (check page true)", function(){
 });
 
 test("Read Absolute Y (check page false)", function(){
-    var randomByte = Math.floor(Math.random() * 255) + 1,
-        randomY = 200,
-        randomAddress1 = 200,
-        randomAddress2 = 200;
 
     /**
      * Read Absolute Y (Check Page False)
      * Shouldn't matter if it crosses page boundary. All it needs to do is get the right operand from a 16-bit address.
      */
+
+    var randomByte = Math.floor(Math.random() * 255) + 1,
+        randomY = 200,
+        randomAddress1 = 200,
+        randomAddress2 = 200;
 
     MOS6502._Y = randomY;
 
@@ -197,15 +200,16 @@ test("Read Absolute Y (check page false)", function(){
 });
 
 test("Read Absolute Y (check page true)", function(){
-    var randomByte = Math.floor(Math.random() * 255) + 1,
-        randomY = 200,
-        randomAddress1 = 200,
-        randomAddress2 = 200;
 
     /**
      * Read Absolute Y (Check Page True)
      * It needs to do is get the right operand from a 16-bit address. If it crosses a page boundary, it should add a cycle.
      */
+
+    var randomByte = Math.floor(Math.random() * 255) + 1,
+        randomY = 200,
+        randomAddress1 = 200,
+        randomAddress2 = 200;
 
     MOS6502._Y = randomY;
 
@@ -223,6 +227,12 @@ test("Read Absolute Y (check page true)", function(){
 });
 
 test("Read Indirect X", function(){
+
+    /**
+     * Read Indirect X
+     * Address in Zero Page, offset by X gives first byte of address, +1 for second byte. Little endian.
+     */
+
     var randomByte = Math.floor(Math.random() * 255) + 1,
         randomX = Math.floor(Math.random() * 255) + 1,
         randomZP = Math.floor(Math.random() * 255) + 1,
@@ -236,11 +246,6 @@ test("Read Indirect X", function(){
     var addressByte1 = MOS6502._RAM[0xFF & (randomZP + randomX)],
         addressByte2 = MOS6502._RAM[0xFF & (randomZP + randomX + 1)];
 
-    /**
-     * Read Indirect X
-     * Address in Zero Page, offset by X gives first byte of address, +1 for second byte. Little endian.
-     */
-
     MOS6502._RAM[ MOS6502._MAKE_ADDRESS(randomAddress1,randomAddress2) ] = randomByte;
     MOS6502._X = randomX;
 
@@ -251,6 +256,12 @@ test("Read Indirect X", function(){
 });
 
 test("Read Indirect Y (check page false)", function(){
+
+    /**
+     * Read Indirect Y (Check Page False)
+     * The operand is stored at the zero page address given, offest by Y.
+     */
+
     var randomByte = Math.floor(Math.random() * 255) + 1,
         randomY = 200,
         randomZP = 200,
@@ -266,11 +277,6 @@ test("Read Indirect Y (check page false)", function(){
 
     MOS6502._Y = randomY;
     MOS6502._CYCLES = 0;
-
-    /**
-     * Read Indirect Y (Check Page False)
-     * The operand is stored at the zero page address given, offest by Y.
-     */
 
     equal(MOS6502.ReadIndirectY(randomZP, false),
         randomByte,
@@ -283,6 +289,12 @@ test("Read Indirect Y (check page false)", function(){
 });
 
 test("Read Indirect Y (check page true)", function(){
+
+    /**
+     * Read Indirect Y (Check Page True)
+     * The operand is stored at the zero page address given, offest by Y. If page boundary is crossed, it should increment the CYCLES by 1.
+     */
+
     var randomByte = Math.floor(Math.random() * 255) + 1,
         randomY = 200,
         randomZP = 200,
@@ -298,11 +310,6 @@ test("Read Indirect Y (check page true)", function(){
 
     MOS6502._Y = randomY;
     MOS6502._CYCLES = 0;
-
-    /**
-     * Read Indirect Y (Check Page True)
-     * The operand is stored at the zero page address given, offest by Y. If page boundary is crossed, it should increment the CYCLES by 1.
-     */
 
     equal(MOS6502.ReadIndirectY(randomZP, true),
         randomByte,
