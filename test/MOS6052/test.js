@@ -356,7 +356,7 @@ test("If / Set Sign", function() {
  * The addressing modes are crucial to the instruction getting and writing the correct operand in memory.
  */
 
-module ("Address Modes");
+module ("Addressing Modes");
 test("Read Zero Page", function() {
 
     /**
@@ -643,4 +643,177 @@ test("Read Indirect Y (check page true)", function(){
     equal(MOS6502._CYCLES,
         1,
         "Page boundary crossed. One cycle added.");
+});
+
+test("Write Zero Page", function() {
+
+    /**
+     * Write Zero Page
+     * Given a byte of data and a ZP address, it should write to that address.
+     */
+
+    var randomData = Math.floor(Math.random() * 255) + 1,
+        randomZP = Math.floor(Math.random() * 255) + 1;
+
+    MOS6502.WriteZeroPage(randomZP, randomData);
+
+    equal(MOS6502._RAM[0xFF & randomZP],
+        randomData,
+        "Successfully written to zero page.");
+
+});
+
+test("Write Zero Page X", function() {
+
+    /**
+     * Write Zero Page X
+     * Given a byte of data and a ZP address, it should write to that address offset by the X register.
+     */
+
+    var randomData = Math.floor(Math.random() * 255) + 1,
+        randomX = Math.floor(Math.random() * 255) + 1,
+        randomZP = Math.floor(Math.random() * 255) + 1;
+
+    MOS6502._X = randomX;
+    MOS6502.WriteZeroPageX(randomZP, randomData);
+
+    equal(MOS6502._RAM[0xFF & (randomZP + randomX)],
+        randomData,
+        "Successfully written to zero page offset by X.");
+
+});
+
+test("Write Zero Page Y", function() {
+
+    /**
+     * Write Zero Page Y
+     * Given a byte of data and a ZP address, it should write to that address offset by the Y register.
+     */
+
+    var randomData = Math.floor(Math.random() * 255) + 1,
+        randomY = Math.floor(Math.random() * 255) + 1,
+        randomZP = Math.floor(Math.random() * 255) + 1;
+
+    MOS6502._Y = randomY;
+    MOS6502.WriteZeroPageY(randomZP, randomData);
+
+    equal(MOS6502._RAM[0xFF & (randomZP + randomY)],
+        randomData,
+        "Successfully written to zero page offset by Y.");
+
+});
+
+test("Write Absolute", function() {
+
+    /**
+     * Write Absolute
+     * Given a byte of data and a little endian address, it should write to that address.
+     */
+
+    var randomData = Math.floor(Math.random() * 255) + 1,
+        randomAddress1 = Math.floor(Math.random() * 255) + 1,
+        randomAddress2 = Math.floor(Math.random() * 255) + 1;
+
+    MOS6502.WriteAbsolute(randomAddress1, randomAddress2, randomData);
+
+    equal(MOS6502._RAM[ MOS6502._MAKE_ADDRESS(randomAddress1, randomAddress2)],
+        randomData,
+        "Successfully written to absolute address.");
+
+});
+
+test("Write Absolute X", function() {
+
+    /**
+     * Write Absolute X
+     * Given a byte of data and a little endian address, it should write to that address offset by the X register value.
+     */
+
+    var randomData = Math.floor(Math.random() * 255) + 1,
+        randomX = Math.floor(Math.random() * 255) + 1,
+        randomAddress1 = Math.floor(Math.random() * 255) + 1,
+        randomAddress2 = Math.floor(Math.random() * 255) + 1;
+
+    MOS6502._X = randomX;
+    MOS6502.WriteAbsoluteX(randomAddress1, randomAddress2, randomData);
+
+    equal(MOS6502._RAM[ MOS6502._MAKE_ADDRESS(randomAddress1, randomAddress2) + randomX],
+        randomData,
+        "Successfully written to absolute address offset by X.");
+
+});
+
+test("Write Absolute Y", function() {
+
+    /**
+     * Write Absolute Y
+     * Given a byte of data and a little endian address, it should write to that address offset by the Y register value.
+     */
+
+    var randomData = Math.floor(Math.random() * 255) + 1,
+        randomY = Math.floor(Math.random() * 255) + 1,
+        randomAddress1 = Math.floor(Math.random() * 255) + 1,
+        randomAddress2 = Math.floor(Math.random() * 255) + 1;
+
+    MOS6502._Y = randomY;
+    MOS6502.WriteAbsoluteY(randomAddress1, randomAddress2, randomData);
+
+    equal(MOS6502._RAM[ MOS6502._MAKE_ADDRESS(randomAddress1, randomAddress2) + randomY],
+        randomData,
+        "Successfully written to absolute address offset by Y.");
+
+});
+
+test("Write Indirect X", function() {
+
+    /**
+     * Write Indirect X
+     * Given a byte of data and a zero page address, it should write to the address pointed to in zero page offset by
+     * the X register and zero page + 1 offset by the value in the X register. (Offset happens in zero page).
+     */
+
+    var randomData = Math.floor(Math.random() * 255) + 1,
+        randomX = Math.floor(Math.random() * 255) + 1,
+        randomZP = Math.floor(Math.random() * 255) + 1,
+        randomAddress1 = Math.floor(Math.random() * 255) + 1,
+        randomAddress2 = Math.floor(Math.random() * 255) + 1;
+
+    MOS6502._RAM[0xFF & (randomZP + randomX)] = randomAddress1;
+    MOS6502._RAM[0xFF & (randomZP + randomX + 1)] = randomAddress2;
+
+    MOS6502._X = randomX;
+
+    MOS6502.WriteIndirectX(randomZP, randomData);
+
+    equal(MOS6502._RAM[ MOS6502._MAKE_ADDRESS(randomAddress1, randomAddress2)],
+        randomData,
+        "Successfully written to indirect address offset by X in zero page.");
+
+});
+
+test("Write Indirect Y", function() {
+
+    /**
+     * Write Indirect Y
+     * Given a byte of data and a zero page address, it should write to the address pointed to in zero page and zero
+     * page + 1 offset by the value in the Y register. (Offset happens after address is loaded).
+     */
+
+    var randomData = Math.floor(Math.random() * 255) + 1,
+        randomY = Math.floor(Math.random() * 255) + 1,
+        randomZP = Math.floor(Math.random() * 255) + 1,
+        randomAddress1 = Math.floor(Math.random() * 255) + 1,
+        randomAddress2 = Math.floor(Math.random() * 255) + 1;
+
+    MOS6502._RAM[0xFF & (randomZP)] = randomAddress1;
+    MOS6502._RAM[0xFF & (randomZP + 1)] = randomAddress2;
+
+    MOS6502._Y = randomY;
+
+    MOS6502.WriteIndirectY(randomZP, randomData);
+
+    equal(MOS6502._RAM[ MOS6502._MAKE_ADDRESS(randomAddress1, randomAddress2) + randomY],
+        randomData,
+        "Successfully written to indirect address offset by X in zero page.");
+
 });

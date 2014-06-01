@@ -502,13 +502,13 @@ MOS6502.prototype.WriteAbsoluteY = function(byte1, byte2, DATA) {
 
 MOS6502.prototype.WriteIndirectX = function(byte1, DATA) {
     var me = this,
-        WRITE_ADDR = me._MAKE_ADDRESS(me._RAM[(byte1 + me._X) & 0xFF],me._RAM[(byte1 + me_X + 1) & 0xFF]);
+        WRITE_ADDR = me._MAKE_ADDRESS(me._RAM[(byte1 + me._X) & 0xFF],me._RAM[(byte1 + me._X + 1) & 0xFF]);
     me._RAM[ WRITE_ADDR ] = DATA & 0xFF;
 };
 
 MOS6502.prototype.WriteIndirectY = function(byte1, DATA) {
     var me = this,
-        WRITE_ADDR = me._MAKE_ADDRESS(me._RAM[byte1 & 0xFF] , me._RAM[byte1 + 1 & 0xFF]);
+        WRITE_ADDR = me._MAKE_ADDRESS(me._RAM[0xFF & byte1] , me._RAM[0xFF & (byte1 + 1)]);
     me._RAM[WRITE_ADDR + me._Y ] = DATA & 0xFF;
 };
 
