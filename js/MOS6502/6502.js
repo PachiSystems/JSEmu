@@ -377,31 +377,31 @@ MOS6502.prototype.emulateCycle = function() {
 // Some special functions for checking and setting/toggling flags and statuses.
 MOS6502.prototype._IF_CARRY = function(){ return (this._P & 0x01 === 1); };
 
-MOS6502.prototype._SET_CARRY = function(condition) { (condition) ? this._P |= 0x01 : this._P &= 0x01; };
+MOS6502.prototype._SET_CARRY = function(condition) { (condition) ? this._P |= 0x01 : this._P &= ~(0x01); };
 
 MOS6502.prototype._IF_ZERO = function() { return ((this._P & 0x02) >> 1 === 1); };
 
-MOS6502.prototype._SET_ZERO = function(value) { (value == 0) ? this._P |= 0x02 : this._P &= 0x02;};
+MOS6502.prototype._SET_ZERO = function(value) { (value === 0) ? this._P |= 0x02 : this._P &= ~(0x02);};
 
 MOS6502.prototype._IF_INTERRUPT = function() { return ((this._P & 0x04) >> 2 === 1); };
 
-MOS6502.prototype._SET_INTERRUPT = function(condition) { (condition) ? this._P |= 0x04 : this._P &= 0x04; };
+MOS6502.prototype._SET_INTERRUPT = function(condition) { (condition) ? this._P |= 0x04 : this._P &= ~(0x04); };
 
 MOS6502.prototype._IF_DECIMAL = function() { return ((this._P & 0x08) >> 3 === 1); };
 
-MOS6502.prototype._SET_DECIMAL = function(condition) { (condition) ? this._P |= 0x0 : this._P &= 0x0; };
+MOS6502.prototype._SET_DECIMAL = function(condition) { (condition) ? this._P |= 0x08 : this._P &= ~(0x08); };
 
 MOS6502.prototype._IF_BREAK = function() { return ((this._P & 0x10) >> 4 === 1); };
 
-MOS6502.prototype._SET_BREAK = function(condition) { (condition) ? this._P |= 0x10 : this._P &= 0x10; };
+MOS6502.prototype._SET_BREAK = function(condition) { (condition) ? this._P |= 0x10 : this._P &= ~(0x10); };
 
 MOS6502.prototype._IF_OVERFLOW = function() { return ((this._P & 0x40) >> 6 === 1); };
 
-MOS6502.prototype._SET_OVERFLOW = function(condition) { (condition) ? this._P |= 0x40 : this._P &= 0x40; };
+MOS6502.prototype._SET_OVERFLOW = function(condition) { (condition) ? this._P |= 0x40 : this._P &= ~(0x40); };
 
 MOS6502.prototype._IF_SIGN = function() { return ((this._P & 0x80) >> 7 === 1); };
 
-MOS6502.prototype._SET_SIGN = function(value) { ( (value & 0x80) >> 7 === 1) ? this._P |= 0x80 : this._P &= 0x80; };
+MOS6502.prototype._SET_SIGN = function(value) { ( (value & 0x80) >> 7 === 1) ? this._P |= 0x80 : this._P &= ~(0x80); };
 
 MOS6502.prototype._MAKE_ADDRESS = function(byte1, byte2) { return (byte2 << 8) + byte1; };
 

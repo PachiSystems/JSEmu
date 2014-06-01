@@ -26,6 +26,331 @@ test("Make Address", function() {
 
 });
 
+test("If / Set Carry", function() {
+
+    /**
+     * _SET_CARRY
+     * This should set the carry flag in the P register.
+     */
+
+    /**
+     * _IF_CARRY
+     * This should return true if the carry flag is set in the P register.
+     */
+
+    // Make sure it's all empty first.
+    MOS6502._P = 0x20;
+
+    equal(MOS6502._IF_CARRY(),
+        false,
+        "Carry flag not set.");
+
+    // Now we'll try to set the carry flag.
+    MOS6502._SET_CARRY(true);
+
+    equal(MOS6502._IF_CARRY(),
+        true,
+        "_IF_CARRY detected carry flag set");
+
+    equal(MOS6502._P,
+        0x21,
+        "P register correctly set.");
+
+    // Now try to unset the carry flag.
+    MOS6502._SET_CARRY(false);
+
+    equal(MOS6502._IF_CARRY(),
+        false,
+        "_IF_CARRY detected carry flag not set.");
+
+    equal(MOS6502._P,
+        0x20,
+        "P register set to correct value.");
+
+});
+
+test("If / Set Zero", function() {
+
+    /**
+     * _SET_ZERO
+     * This should set the zero flag in the P register.
+     */
+
+    /**
+     * _IF_ZERO
+     * This should return true if the zero flag is set in the P register.
+     */
+
+        // Make sure it's all empty first.
+    MOS6502._P = 0x20;
+
+    equal(MOS6502._IF_ZERO(),
+        false,
+        "Zero flag not set.");
+
+    // Now we'll try to set the zero flag.
+    MOS6502._SET_ZERO(0);
+
+    equal(MOS6502._IF_ZERO(),
+        true,
+        "_IF_ZERO detected zero flag set");
+
+    equal(MOS6502._P,
+        0x22,
+        "P register correctly set.");
+
+    // Now try to unset the zero flag.
+    MOS6502._SET_ZERO(1);
+
+    equal(MOS6502._IF_ZERO(),
+        false,
+        "_IF_ZERO detected zero flag not set.");
+
+    equal(MOS6502._P,
+        0x20,
+        "P register set to correct value.");
+
+});
+
+test("If / Set Interrupt", function() {
+
+    /**
+     * _SET_INTERRUPT
+     * This should set the interrupt flag in the P register.
+     */
+
+    /**
+     * _IF_INTERRUPT
+     * This should return true if the interrupt flag is set in the P register.
+     */
+
+        // Make sure it's all empty first.
+    MOS6502._P = 0x20;
+
+    equal(MOS6502._IF_INTERRUPT(),
+        false,
+        "Interrupt flag not set.");
+
+    // Now we'll try to set the zero flag.
+    MOS6502._SET_INTERRUPT(true);
+
+    equal(MOS6502._IF_INTERRUPT(),
+        true,
+        "_IF_INTERRUPT detected interrupt flag set");
+
+    equal(MOS6502._P,
+        0x24,
+        "P register correctly set.");
+
+    // Now try to unset the zero flag.
+    MOS6502._SET_INTERRUPT(false);
+
+    equal(MOS6502._IF_INTERRUPT(),
+        false,
+        "_IF_INTERRUPT detected interrupt flag not set.");
+
+    equal(MOS6502._P,
+        0x20,
+        "P register set to correct value.");
+
+});
+
+test("If / Set Decimal", function() {
+
+    /**
+     * _SET_DECIMAL
+     * This should set the decimal flag in the P register.
+     */
+
+    /**
+     * _IF_DECIMAL
+     * This should return true if the decimal flag is set in the P register.
+     */
+
+        // Make sure it's all empty first.
+    MOS6502._P = 0x20;
+
+    console.log("P = " + MOS6502._P.toString(16));
+
+    equal(MOS6502._IF_DECIMAL(),
+        false,
+        "Decimal flag not set.");
+
+    // Now we'll try to set the zero flag.
+    MOS6502._SET_DECIMAL(true);
+
+    console.log("P = " + MOS6502._P.toString(16));
+
+    equal(MOS6502._IF_DECIMAL(),
+        true,
+        "_IF_DECIMAL detected decimal flag set");
+
+    equal(MOS6502._P,
+        0x28,
+        "P register correctly set.");
+
+    // Now try to unset the zero flag.
+    MOS6502._SET_DECIMAL(false);
+
+    console.log("P = " + MOS6502._P.toString(16));
+
+    equal(MOS6502._IF_DECIMAL(),
+        false,
+        "_IF_DECIMAL detected decimal flag not set.");
+
+    equal(MOS6502._P,
+        0x20,
+        "P register set to correct value.");
+
+});
+
+test("If / Set Break", function() {
+
+    /**
+     * _SET_BREAK
+     * This should set the break flag in the P register.
+     */
+
+    /**
+     * _IF_BREAK
+     * This should return true if the break flag is set in the P register.
+     */
+
+        // Make sure it's all empty first.
+    MOS6502._P = 0x20;
+
+    console.log("P = " + MOS6502._P.toString(16));
+
+    equal(MOS6502._IF_BREAK(),
+        false,
+        "Break flag not set.");
+
+    // Now we'll try to set the zero flag.
+    MOS6502._SET_BREAK(true);
+
+    console.log("P = " + MOS6502._P.toString(16));
+
+    equal(MOS6502._IF_BREAK(),
+        true,
+        "_IF_BREAK detected break flag set");
+
+    equal(MOS6502._P,
+        0x30,
+        "P register correctly set.");
+
+    // Now try to unset the zero flag.
+    MOS6502._SET_BREAK(false);
+
+    console.log("P = " + MOS6502._P.toString(16));
+
+    equal(MOS6502._IF_BREAK(),
+        false,
+        "_IF_BREAK detected break flag not set.");
+
+    equal(MOS6502._P,
+        0x20,
+        "P register set to correct value.");
+
+});
+
+test("If / Set Overflow", function() {
+
+    /**
+     * _SET_OVERFLOW
+     * This should set the break flag in the P register.
+     */
+
+    /**
+     * _IF_OVERFLOW
+     * This should return true if the break flag is set in the P register.
+     */
+
+        // Make sure it's all empty first.
+    MOS6502._P = 0x20;
+
+    console.log("P = " + MOS6502._P.toString(16));
+
+    equal(MOS6502._IF_OVERFLOW(),
+        false,
+        "Overflow flag not set.");
+
+    // Now we'll try to set the zero flag.
+    MOS6502._SET_OVERFLOW(true);
+
+    console.log("P = " + MOS6502._P.toString(16));
+
+    equal(MOS6502._IF_OVERFLOW(),
+        true,
+        "_IF_OVERFLOW detected overflow flag set");
+
+    equal(MOS6502._P,
+        0x60,
+        "P register correctly set.");
+
+    // Now try to unset the zero flag.
+    MOS6502._SET_OVERFLOW(false);
+
+    console.log("P = " + MOS6502._P.toString(16));
+
+    equal(MOS6502._IF_OVERFLOW(),
+        false,
+        "_IF_OVERFLOW detected overflow flag not set.");
+
+    equal(MOS6502._P,
+        0x20,
+        "P register set to correct value.");
+
+});
+
+test("If / Set Sign", function() {
+
+    /**
+     * _SET_SIGN
+     * This should set the sign flag in the P register.
+     */
+
+    /**
+     * _IF_SIGN
+     * This should return true if the sign flag is set in the P register.
+     */
+
+        // Make sure it's all empty first.
+    MOS6502._P = 0x20;
+
+    console.log("P = " + MOS6502._P.toString(16));
+
+    equal(MOS6502._IF_SIGN(),
+        false,
+        "Overflow flag not set.");
+
+    // Now we'll try to set the zero flag.
+    MOS6502._SET_SIGN(0x80);
+
+    console.log("P = " + MOS6502._P.toString(16));
+
+    equal(MOS6502._IF_SIGN(),
+        true,
+        "_IF_SIGN detected sign flag set");
+
+    equal(MOS6502._P,
+        0xA0,
+        "P register correctly set.");
+
+    // Now try to unset the zero flag.
+    MOS6502._SET_SIGN(0x00);
+
+    console.log("P = " + MOS6502._P.toString(16));
+
+    equal(MOS6502._IF_SIGN(),
+        false,
+        "_IF_SIGN detected sign flag not set.");
+
+    equal(MOS6502._P,
+        0x20,
+        "P register set to correct value.");
+
+});
+
 /**
  * Addressing Modes
  * The addressing modes are crucial to the instruction getting and writing the correct operand in memory.
