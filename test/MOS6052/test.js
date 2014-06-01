@@ -1,7 +1,5 @@
-var MOS6502 = new MOS6502(),
-    $fixture = $( "#qunit-fixture" );
-
-//MOS6502.beginEmulation("TEST_MODE",renderer);
+var MOS6502 = new MOS6502();
+    //$fixture = $( "#qunit-fixture" );
 
 /**
  * Utiliity Methods
@@ -9,6 +7,21 @@ var MOS6502 = new MOS6502(),
  */
 
 module("Utility Methods");
+
+test("CPU initialisation", function() {
+    /**
+     * CPU Start Up
+     *
+     * According to 6502 Programmer's Reference, this is how the CPU should initialise:
+     * 1. Processor sets INTERRUPT to false an places the RESET Vector address in the PC.
+     * 2. CPU executes whatever it finds there.
+     * 3. Programmer should init the stack, init I/O, enable interrupts and set arithmetic mode.
+     *
+     * In this case, the only thing that needs doing, really, is to grab the address in the RESET vector and set the PC
+     * and stack pointer to the right place.
+     */
+});
+
 test("Make Address", function() {
 
     /**
@@ -817,3 +830,6 @@ test("Write Indirect Y", function() {
         "Successfully written to indirect address offset by X in zero page.");
 
 });
+
+module ("OPCODEs");
+

@@ -67,10 +67,84 @@ var MOS6502 = function() {
      * 0x0100 - 0x01FF = Stack
      * 0x0200 - 0x3FFF = RAM
      * 0x4000 - 0x7FFF = I/O Devices
-     * 0x8000 - 0xFFFF = ROM
+     * 0x8000 - 0xFFF9 = ROM
+     *
+     * 0xFFFA = Vector address for NMI (low byte)
+     * 0xFFFB = Vector address for NMI (high byte)
+     * 0xFFFC = Vector address for RESET (low byte)
+     * 0xFFFD = Vector address for RESET (high byte)
+     * 0xFFFE = Vector address for IRQ & BRK (low byte)
+     * 0xFFFF = Vector address for IRQ & BRK (high byte)
      */
     this._RAM = new Uint8Array(0xFFFF);  // 64k of RAM.
 
+};
+
+MOS6502.prototype.init = function(romImage) {
+    /**
+     * CPU Start Up
+     *
+     * According to 6502 Programmer's Reference, this is how the CPU should initialise:
+     * 1. Processor sets INTERRUPT to false an places the RESET Vector address in the PC.
+     * 2. CPU executes whatever it finds there.
+     * 3. Programmer should init the stack, init I/O, enable interrupts and set arithmetic mode.
+     *
+     * In this case, the only thing that needs doing, really, is to load the ROM, grab the address in the RESET
+     * vector and set the PC and stack pointer to the right place.
+     */
+
+    var me = this;
+
+    me.loadImage(romImage);
+
+    me._PC = me._MAKE_ADDRESS( me._RAM[0xFFFC], me._RAM[0xFFFD] );
+
+};
+
+MOS6502.prototype.loadImage = function (romImage) {
+    var xhr = new XMLHttpRequest(),
+        me = this,
+        i, len;
+
+    /**
+     * GAME LOADING
+     * Load the program into ROM memory. Check to make sure it's not too big as well...
+     */
+    xhr.open("GET",romImage);
+    xhr.responseType = "arraybuffer";
+
+    xhr.onload = function() {
+
+        var program = new Uint8Array(xhr.response);
+
+        if (program.length <= (0x7FFF)) {
+
+            for (i = 0; i < program.length; i++) {
+
+                me.memory[(i + 0x8000)] = program[i];
+
+            }
+
+            // Emulation loop to trigger once our ROM has finished loading.
+
+            // There's some problem with speed here... I'm assuming it's to do with the way that the loop processes
+            // a fairly big array rather inefficiently... Perhaps I should find another way to run the loop...
+
+            requestAnimFrame(function cpuCycle() {
+                me.emulateCycle();
+
+                requestAnimFrame(cpuCycle);
+
+            });
+
+        } else {
+
+            console.error("This program will not fit into MOS6502 memory.");
+
+        }
+
+    };
+    xhr.send();
 };
 
 MOS6502.prototype.emulateCycle = function() {
