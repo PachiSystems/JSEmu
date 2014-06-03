@@ -20,6 +20,9 @@ test("CPU initialisation", function() {
      * In this case, the only thing that needs doing, really, is to grab the address in the RESET vector and set the PC
      * and stack pointer to the right place.
      */
+
+    MOS6502.init("TEST_MODE");
+
     equal(true,true,"Not implemented. True for CI build passing.")
 });
 
@@ -834,3 +837,6 @@ test("Write Indirect Y", function() {
 
 module ("OPCODEs");
 
+test("Automated ROM test", function() {
+    equal(true,true,"This is going to break so much very soon...")
+});

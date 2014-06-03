@@ -80,7 +80,7 @@ var MOS6502 = function() {
 
 };
 
-MOS6502.prototype.init = function(romImage) {
+MOS6502.prototype.init = function() {
     /**
      * CPU Start Up
      *
@@ -98,10 +98,21 @@ MOS6502.prototype.init = function(romImage) {
     me.loadImage(romImage);
 
     me._PC = me._MAKE_ADDRESS( me._RAM[0xFFFC], me._RAM[0xFFFD] );
+};
+
+MOS6502.prototype.beginEmulation = function(romImage, renderer) {
+    var me = this;
+
+    me.renderer = renderer;
+
+
 
 };
 
 MOS6502.prototype.loadImage = function (romImage) {
+
+    if (romImage == "TEST_MODE") return;
+
     var xhr = new XMLHttpRequest(),
         me = this,
         i, len;
