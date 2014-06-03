@@ -95,18 +95,24 @@ MOS6502.prototype.init = function() {
 
     var me = this;
 
-    me.loadImage(romImage);
+    // Blank out the stack.
+    for(var i = 0x0100; i <= 0x01F; i++) {
+        me._RAM[i] = 0;
+    }
 
-    me._PC = me._MAKE_ADDRESS( me._RAM[0xFFFC], me._RAM[0xFFFD] );
+    // Set INTERRUPT to false
+    me._SET_INTERRUPT(false);
+
 };
 
 MOS6502.prototype.beginEmulation = function(romImage, renderer) {
     var me = this;
 
+    // Set the rendering engine of this CPU.
     me.renderer = renderer;
 
-
-
+    // Load the romImage and then commence execution on successful load.
+    me.loadImage(romImage);
 };
 
 MOS6502.prototype.loadImage = function (romImage) {
@@ -136,12 +142,13 @@ MOS6502.prototype.loadImage = function (romImage) {
 
             }
 
+            // Place address from the RESET vector into the PC ready to commence emulation.
+            me._PC = me._MAKE_ADDRESS( me._RAM[0xFFFC], me._RAM[0xFFFD] );
+
             // Emulation loop to trigger once our ROM has finished loading.
 
-            // There's some problem with speed here... I'm assuming it's to do with the way that the loop processes
-            // a fairly big array rather inefficiently... Perhaps I should find another way to run the loop...
-
             requestAnimFrame(function cpuCycle() {
+
                 me.emulateCycle();
 
                 requestAnimFrame(cpuCycle);
@@ -600,6 +607,28 @@ MOS6502.prototype.WriteIndirectY = function(byte1, DATA) {
 /* Placeholder functions for the instruction set. */
 
 MOS6502.prototype.ADC = function () {
+    /**
+
+     ADC               Add memory to accumulator with carry                ADC
+
+     Operation:  A + M + C -> A, C                         N Z C I D V
+                                                           / / / _ _ /
+     (Ref: 2.2.1)
+     +----------------+-----------------------+---------+---------+----------+
+     | Addressing Mode| Assembly Language Form| OP CODE |No. Bytes|No. Cycles|
+     +----------------+-----------------------+---------+---------+----------+
+     |  Immediate     |   ADC #Oper           |    69   |    2    |    2     |
+     |  Zero Page     |   ADC Oper            |    65   |    2    |    3     |
+     |  Zero Page,X   |   ADC Oper,X          |    75   |    2    |    4     |
+     |  Absolute      |   ADC Oper            |    60   |    3    |    4     |
+     |  Absolute,X    |   ADC Oper,X          |    7D   |    3    |    4*    |
+     |  Absolute,Y    |   ADC Oper,Y          |    79   |    3    |    4*    |
+     |  (Indirect,X)  |   ADC (Oper,X)        |    61   |    2    |    6     |
+     |  (Indirect),Y  |   ADC (Oper),Y        |    71   |    2    |    5*    |
+     +----------------+-----------------------+---------+---------+----------+
+     * Add 1 if page boundary is crossed.
+
+     */
     // Add memory to accumulator with carry
 
     var me = this,
@@ -636,6 +665,7 @@ MOS6502.prototype.ADC = function () {
         }
         me._SET_CARRY(temp & 0x99);
     } else {
+       me._SET_ZERO(temp & 0xFF);
        me._SET_SIGN(temp);
        me._SET_OVERFLOW( !( (me._A ^ OPER) & 0x80) && ( ( me._A ^ temp) & 0x80) );
        me._SET_CARRY(temp > 0xFF);
@@ -654,12 +684,35 @@ MOS6502.prototype.ADC = function () {
         case (0x79): me._CYCLES += 4; me._PC += 3; break;
         case (0x7D): me._CYCLES += 4; me._PC += 3; break;
 
-        default: console.error("Illegal ADC opcode passed. (" + opCode + ")" ); break;
+        default: console.error("Illegal ADC opcode passed. (0x" + opCode.toString(16) + ")" ); break;
 
     }
 };
 
 MOS6502.prototype.AND = function() {
+
+    /**
+
+     AND                  "AND" memory with accumulator                    AND
+
+     Operation:  A /\ M -> A                               N Z C I D V
+                                                           / / _ _ _ _
+     (Ref: 2.2.3.0)
+     +----------------+-----------------------+---------+---------+----------+
+     | Addressing Mode| Assembly Language Form| OP CODE |No. Bytes|No. Cycles|
+     +----------------+-----------------------+---------+---------+----------+
+     |  Immediate     |   AND #Oper           |    29   |    2    |    2     |
+     |  Zero Page     |   AND Oper            |    25   |    2    |    3     |
+     |  Zero Page,X   |   AND Oper,X          |    35   |    2    |    4     |
+     |  Absolute      |   AND Oper            |    2D   |    3    |    4     |
+     |  Absolute,X    |   AND Oper,X          |    3D   |    3    |    4*    |
+     |  Absolute,Y    |   AND Oper,Y          |    39   |    3    |    4*    |
+     |  (Indirect,X)  |   AND (Oper,X)        |    21   |    2    |    6     |
+     |  (Indirect,Y)  |   AND (Oper),Y        |    31   |    2    |    5     |
+     +----------------+-----------------------+---------+---------+----------+
+     * Add 1 if page boundary is crossed.
+
+     */
 
     var me = this,
         opCode = me._RAM[ me._PC ],
@@ -669,19 +722,36 @@ MOS6502.prototype.AND = function() {
 
     switch (opCode) {
         // Get Operand
-        case (0x00): OPER = me; break;
+        case (0x21): OPER = me.ReadIndirectX(byte1); break;
+        case (0x25): OPER = me.ReadZeroPage(byte1); break;
+        case (0x29): OPER = byte1; break;
+        case (0x2D): OPER = me.ReadAbsolute(byte1, byte2); break;
+        case (0x31): OPER = me.ReadIndirectY(byte1,false);
+        case (0x35): OPER = me.ReadZeroPageX(byte1); break;
+        case (0x39): OPER = me.ReadAbsoluteY(byte1,byte2,true); break;
+        case (0x3D): OPER = me.ReadAbsoluteX(byte1,byte2,true); break;
 
-        default: console.error("Illegal ADC opcode passed. (" + opCode + ")" ); break;
+        default: console.error("Illegal ADC opcode passed. (0x" + opCode.toSrting(16) + ")" ); break;
 
     }
 
-    // Implementation of instruction here
+    OPER &= me._A;
+    me._SET_SIGN(OPER);
+    me._SET_ZERO(OPER);
+    me._A = OPER;
 
     switch (opCode) {
-        // Increment cycles, pc and write operand.
-        case (0x00): me._CYCLES += 0; me._PC += 0; break;
+        // Get Operand
+        case (0x21): me._PC += 2; me._CYCLES += 6; break;
+        case (0x25): me._PC += 2; me._CYCLES += 3; break;
+        case (0x29): me._PC += 2; me._CYCLES += 2; break;
+        case (0x2D): me._PC += 3; me._CYCLES += 4; break;
+        case (0x31): me._PC += 2; me._CYCLES += 5; break;
+        case (0x35): me._PC += 2; me._CYCLES += 4; break;
+        case (0x39): me._PC += 3; me._CYCLES += 4; break;
+        case (0x3D): me._PC += 3; me._CYCLES += 4; break;
 
-        default: console.error("Illegal ADC opcode passed. (" + opCode + ")" ); break;
+        default: console.error("Illegal AND opcode passed. (0x" + opCode.toSrting(16) + ")" ); break;
 
     }
 
