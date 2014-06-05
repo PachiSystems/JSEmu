@@ -639,7 +639,7 @@ MOS6502.prototype.ADC = function ADC() {
         OPER;
 
     switch (opCode) {
-
+        // Get the operand to work on.
         case (0x61): OPER = me.ReadIndirectX(byte1); break;
         case (0x65): OPER = me.ReadZeroPage(byte1); break;
         case (0x69): OPER = byte1; break;
@@ -649,27 +649,35 @@ MOS6502.prototype.ADC = function ADC() {
         case (0x79): OPER = me.ReadAbsoluteY(byte1, byte2, true); break;
         case (0x7D): OPER = me.ReadAbsoluteX(byte1, byte2, true); break;
 
-        default: console.error("Illegal ADC opcode passed. (" + opCode + ")" ); break;
+        default: console.error("Illegal ADC opcode passed. (0x" + opCode.toString(16) + ")" ); break;
 
     }
 
+    // Store Operand + accumulator. Plus one if carry flag is set.
     var temp = OPER + me._A + (me._IF_CARRY() ? 1 : 0);
 
     if( me._IF_DECIMAL() ) {
-        if ( ( ( me._A & 0xF) + (OPER & 0XF) + (me._IF_CARRY() ? 1 : 0) ) > 9 ) {
+
+        if ( ( ( me._A & 0xF) + (OPER & 0xF) + (me._IF_CARRY() ? 1 : 0) ) > 9 ) {
             temp += 6;
         }
+
         me._SET_SIGN(temp);
         me._SET_OVERFLOW( !( (me._A ^ OPER) & 0x80 ) && ( ( me._A ^ temp) & 0x80) );
+
         if ( temp > 0x99) {
             temp += 96;
         }
+
         me._SET_CARRY(temp & 0x99);
+
     } else {
+
        me._SET_ZERO(temp & 0xFF);
        me._SET_SIGN(temp);
        me._SET_OVERFLOW( !( (me._A ^ OPER) & 0x80) && ( ( me._A ^ temp) & 0x80) );
        me._SET_CARRY(temp > 0xFF);
+
     }
 
     me._A = temp & 0xFF;
@@ -732,17 +740,24 @@ MOS6502.prototype.AND = function AND() {
         case (0x39): OPER = me.ReadAbsoluteY(byte1,byte2,true); break;
         case (0x3D): OPER = me.ReadAbsoluteX(byte1,byte2,true); break;
 
-        default: console.error("Illegal ADC opcode passed. (0x" + opCode.toSrting(16) + ")" ); break;
+        default: console.error("Illegal AND opcode passed. (0x" + opCode.toSrting(16) + ")" ); break;
 
     }
 
+    // This is easy. Bitwise AND with the accumulator.
     OPER &= me._A;
+
+    // Set the sign flag if needed.
     me._SET_SIGN(OPER);
+
+    // Set the zero flag if needed.
     me._SET_ZERO(OPER);
+
+    // Store the value in the accumulator.
     me._A = OPER;
 
     switch (opCode) {
-        // Get Operand
+        // Increment the Program Counter and cycles.
         case (0x21): me._PC += 2; me._CYCLES += 6; break;
         case (0x25): me._PC += 2; me._CYCLES += 3; break;
         case (0x29): me._PC += 2; me._CYCLES += 2; break;
@@ -795,7 +810,7 @@ MOS6502.prototype.ASL = function ASL() {
         case (0x0E): OPER = me.ReadAbsolute(byte1,byte2); break;
         case (0x1E): OPER = me.ReadAbsoluteX(byte1,byte2,false); break;
 
-        default: console.error("Illegal ADC opcode passed. (" + opCode + ")" ); break;
+        default: console.error("Illegal ADC opcode passed. (0x" + opCode.toString(16) + ")" ); break;
 
     }
 
@@ -813,7 +828,7 @@ MOS6502.prototype.ASL = function ASL() {
         case (0x0E): me.WriteAbsolute(byte1,byte2,OPER); me._PC += 3; me._CYCLES += 6; break;
         case (0x1E): me.WriteAbsoluteX(byte1,byte2,OPER); me._PC += 3; me._CYCLES += 7; break;
 
-        default: console.error("Illegal ADC opcode passed. (" + opCode + ")" ); break;
+        default: console.error("Illegal ADC opcode passed. (0x" + opCode.toString(16) + ")" ); break;
 
     }
 };
@@ -838,7 +853,6 @@ MOS6502.prototype.BCC = function BCC() {
     var me = this,
         opCode = me._RAM[ me._PC ],
         byte1 = me._RAM[ me._PC + 1],
-        byte2 = me._RAM[ me._PC + 2],
         OPER;
 
     switch (opCode) {
@@ -858,21 +872,142 @@ MOS6502.prototype.BCC = function BCC() {
 
         me._CYCLES += ( (me._PC & 0xFF00) !=  (me._PC + relAddress) & 0xFF00) ? 2 : 1;
 
-        me._PC += relAddress;
+        me._PC += relAddress; // The switch is going to add two to this...
     }
 
     switch (opCode) {
         // Increment cycles, pc and write operand.
 
         // Always uses two cycles. Adds one if successful, add an extra one if crossing boundary.
-        case (0x90): me._CYCLES += 2; me._PC += 2; break;
+        case (0x90): me._CYCLES += 2; break;
 
-        default: console.error("Illegal BCC opcode passed. (" + opCode + ")" ); break;
+        default: console.error("Illegal BCC opcode passed. (0x" + opCode.toString(16) + ")" ); break;
 
     }
 };
 
-MOS6502.prototype.BCS = function(ADDR_MODE) {
+MOS6502.prototype.BCS = function() {
+
+    /**
+
+     BCS                      BCS Branch on carry set                      BCS
+
+     Operation:  Branch on C = 1                           N Z C I D V
+                                                           _ _ _ _ _ _
+     (Ref: 4.1.1.4)
+     +----------------+-----------------------+---------+---------+----------+
+     | Addressing Mode| Assembly Language Form| OP CODE |No. Bytes|No. Cycles|
+     +----------------+-----------------------+---------+---------+----------+
+     |  Relative      |   BCS Oper            |    B0   |    2    |    2*    |
+     +----------------+-----------------------+---------+---------+----------+
+     * Add 1 if branch occurs to same  page.
+     * Add 2 if branch occurs to next  page.
+
+     */
+    var me = this,
+        opCode = me._RAM[ me._PC ],
+        byte1 = me._RAM[ me._PC + 1],
+        OPER;
+
+    switch (opCode) {
+        // Get Operand
+        case (0xB0): OPER = byte1; break;
+
+        default: console.error("Illegal BCS opcode passed. (0x" + opCode.toString(16) + ")" ); break;
+
+    }
+
+    if (me._IF_CARRY()) {
+
+        // So... Since there are no signed numbers in JS... We have to work it out.
+        var relAddress = ( (OPER + 2) < 0x80 ) ? me._PC += OPER + 2 : me._PC += OPER + 2 - 256;
+
+        me._CYCLES += ( (me._PC & 0xFF00) !=  (me._PC + relAddress) & 0xFF00) ? 2 : 1;
+
+        me._PC += relAddress; // The switch is going to add two to this...
+    }
+
+    switch (opCode) {
+        // Increment cycles, pc and write operand.
+        case (0xB0): me._CYCLES += 2; break;
+
+        default: console.error("Illegal BCS opcode passed. (0x" + opCode.toString(16) + ")" ); break;
+
+    }
+};
+
+MOS6502.prototype.BEQ = function() {
+
+    /**
+
+     BEQ                    BEQ Branch on result zero                      BEQ
+                                                           N Z C I D V
+     Operation:  Branch on Z = 1                           _ _ _ _ _ _
+     (Ref: 4.1.1.5)
+     +----------------+-----------------------+---------+---------+----------+
+     | Addressing Mode| Assembly Language Form| OP CODE |No. Bytes|No. Cycles|
+     +----------------+-----------------------+---------+---------+----------+
+     |  Relative      |   BEQ Oper            |    F0   |    2    |    2*    |
+     +----------------+-----------------------+---------+---------+----------+
+     * Add 1 if branch occurs to same  page.
+     * Add 2 if branch occurs to next  page.
+
+     */
+
+    var me = this,
+        opCode = me._RAM[ me._PC ],
+        byte1 = me._RAM[ me._PC + 1],
+        OPER;
+
+    switch (opCode) {
+        // Get Operand
+        case (0xF0): OPER = byte1; break;
+
+        default: console.error("Illegal BEQ opcode passed. (0x" + opCode + ")" ); break;
+
+    }
+
+    if(me._IF_ZERO()) {
+
+        // So... Since there are no signed numbers in JS... We have to work it out.
+        var relAddress = ( (OPER + 2) < 0x80 ) ? me._PC += OPER + 2 : me._PC += OPER + 2 - 256;
+
+        me._CYCLES += ( (me._PC & 0xFF00) !=  (me._PC + relAddress) & 0xFF00) ? 2 : 1;
+
+        me._PC += relAddress; // The switch is going to add two to this...
+
+    }
+
+    switch (opCode) {
+        // Increment cycles, pc and write operand.
+        case (0xF0): me._CYCLES += 2; break;
+
+        default: console.error("Illegal BEQ opcode passed. (0x" + opCode + ")" ); break;
+
+    }
+};
+
+MOS6502.prototype.BIT = function() {
+
+    /**
+
+     BIT             BIT Test bits in memory with accumulator              BIT
+
+     Operation:  A /\ M, M7 -> N, M6 -> V
+
+     Bit 6 and 7 are transferred to the status register.        N Z C I D V
+     If the result of A /\ M is zero then Z = 1, otherwise      M7/ _ _ _ M6
+     Z = 0
+     (Ref: 4.2.1.1)
+     +----------------+-----------------------+---------+---------+----------+
+     | Addressing Mode| Assembly Language Form| OP CODE |No. Bytes|No. Cycles|
+     +----------------+-----------------------+---------+---------+----------+
+     |  Zero Page     |   BIT Oper            |    24   |    2    |    3     |
+     |  Absolute      |   BIT Oper            |    2C   |    3    |    4     |
+     +----------------+-----------------------+---------+---------+----------+
+
+
+     */
     var me = this,
         opCode = me._RAM[ me._PC ],
         byte1 = me._RAM[ me._PC + 1],
@@ -881,331 +1016,493 @@ MOS6502.prototype.BCS = function(ADDR_MODE) {
 
     switch (opCode) {
         // Get Operand
-        case (0x00): OPER = me; break;
+        case (0x24): OPER = me.ReadZeroPage(byte1); break;
+        case (0x2C): OPER = me.ReadAbsolute(byte1,byte2); break;
 
-        default: console.error("Illegal ADC opcode passed. (" + opCode + ")" ); break;
+        default: console.error("Illegal BIT opcode passed. (0x" + opCode.toString(16) + ")" ); break;
 
     }
 
-    // Implementation of instruction here
+    me._SET_SIGN(OPER);
+    me._SET_OVERFLOW(0x40 & OPER); // Copy bit 6 to overflow flag.
+    me._SET_ZERO(OPER & me._A);
 
     switch (opCode) {
         // Increment cycles, pc and write operand.
-        case (0x00): me._CYCLES += 0; me._PC += 0; break;
+        case (0x24): me._CYCLES += 3; me._PC += 2; break;
+        case (0x2C): me._CYCLES += 4; me._PC += 3; break;
 
-        default: console.error("Illegal ADC opcode passed. (" + opCode + ")" ); break;
+        default: console.error("Illegal BIT opcode passed. (0x" + opCode.toString(16) + ")" ); break;
 
     }
 };
 
-MOS6502.prototype.BEQ = function(ADDR_MODE) {
+MOS6502.prototype.BMI = function() {
+
+    /**
+
+     BMI                    BMI Branch on result minus                     BMI
+
+     Operation:  Branch on N = 1                           N Z C I D V
+                                                           _ _ _ _ _ _
+     (Ref: 4.1.1.1)
+     +----------------+-----------------------+---------+---------+----------+
+     | Addressing Mode| Assembly Language Form| OP CODE |No. Bytes|No. Cycles|
+     +----------------+-----------------------+---------+---------+----------+
+     |  Relative      |   BMI Oper            |    30   |    2    |    2*    |
+     +----------------+-----------------------+---------+---------+----------+
+     * Add 1 if branch occurs to same page.
+     * Add 1 if branch occurs to different page.
+
+
+     */
+
     var me = this,
         opCode = me._RAM[ me._PC ],
         byte1 = me._RAM[ me._PC + 1],
-        byte2 = me._RAM[ me._PC + 2],
         OPER;
 
     switch (opCode) {
         // Get Operand
-        case (0x00): OPER = me; break;
+        case (0x30): OPER = byte1; break;
 
-        default: console.error("Illegal ADC opcode passed. (" + opCode + ")" ); break;
+        default: console.error("Illegal BMI opcode passed. (0x" + opCode.toString(16) + ")" ); break;
 
     }
 
-    // Implementation of instruction here
+    if(me._IF_SIGN()) {
+
+        // So... Since there are no signed numbers in JS... We have to work it out.
+        var relAddress = ( (OPER + 2) < 0x80 ) ? me._PC += OPER + 2 : me._PC += OPER + 2 - 256;
+
+        me._CYCLES += ( (me._PC & 0xFF00) !=  (me._PC + relAddress) & 0xFF00) ? 1 : 1;
+
+        me._PC += relAddress; // The switch is going to add two to this...
+
+    }
 
     switch (opCode) {
         // Increment cycles, pc and write operand.
-        case (0x00): me._CYCLES += 0; me._PC += 0; break;
+        case (0x30): me._CYCLES += 2; break;
 
-        default: console.error("Illegal ADC opcode passed. (" + opCode + ")" ); break;
+        default: console.error("Illegal BMI opcode passed. (0x" + opCode.toString(16) + ")" ); break;
 
     }
 };
 
-MOS6502.prototype.BIT = function(ADDR_MODE) {
+MOS6502.prototype.BNE = function() {
+
+    /**
+
+     BNE                   BNE Branch on result not zero                   BNE
+
+     Operation:  Branch on Z = 0                           N Z C I D V
+                                                           _ _ _ _ _ _
+     (Ref: 4.1.1.6)
+     +----------------+-----------------------+---------+---------+----------+
+     | Addressing Mode| Assembly Language Form| OP CODE |No. Bytes|No. Cycles|
+     +----------------+-----------------------+---------+---------+----------+
+     |  Relative      |   BMI Oper            |    D0   |    2    |    2*    |
+     +----------------+-----------------------+---------+---------+----------+
+     * Add 1 if branch occurs to same page.
+     * Add 2 if branch occurs to different page.
+
+     */
+
     var me = this,
         opCode = me._RAM[ me._PC ],
         byte1 = me._RAM[ me._PC + 1],
-        byte2 = me._RAM[ me._PC + 2],
         OPER;
 
     switch (opCode) {
         // Get Operand
-        case (0x00): OPER = me; break;
+        case (0xD0): OPER = byte1; break;
 
-        default: console.error("Illegal ADC opcode passed. (" + opCode + ")" ); break;
+        default: console.error("Illegal BNE opcode passed. (0x" + opCode.toString(16) + ")" ); break;
 
     }
 
-    // Implementation of instruction here
+    if(!me._IF_ZERO()) {
+
+        // So... Since there are no signed numbers in JS... We have to work it out.
+        var relAddress = ( (OPER + 2) < 0x80 ) ? me._PC += OPER + 2 : me._PC += OPER + 2 - 256;
+
+        me._CYCLES += ( (me._PC & 0xFF00) !=  (me._PC + relAddress) & 0xFF00) ? 2 : 1;
+
+        me._PC += relAddress; // The switch is going to add two to this...
+
+    }
 
     switch (opCode) {
         // Increment cycles, pc and write operand.
-        case (0x00): me._CYCLES += 0; me._PC += 0; break;
+        case (0xD0): me._CYCLES += 2; break;
 
-        default: console.error("Illegal ADC opcode passed. (" + opCode + ")" ); break;
+        default: console.error("Illegal BNE opcode passed. (0x" + opCode.toString(16) + ")" ); break;
 
     }
 };
 
-MOS6502.prototype.BMI = function(ADDR_MODE) {
+MOS6502.prototype.BPL = function() {
+
+    /**
+
+     BPL                     BPL Branch on result plus                     BPL
+
+     Operation:  Branch on N = 0                           N Z C I D V
+                                                           _ _ _ _ _ _
+     (Ref: 4.1.1.2)
+     +----------------+-----------------------+---------+---------+----------+
+     | Addressing Mode| Assembly Language Form| OP CODE |No. Bytes|No. Cycles|
+     +----------------+-----------------------+---------+---------+----------+
+     |  Relative      |   BPL Oper            |    10   |    2    |    2*    |
+     +----------------+-----------------------+---------+---------+----------+
+     * Add 1 if branch occurs to same page.
+     * Add 2 if branch occurs to different page.
+
+     */
+
     var me = this,
         opCode = me._RAM[ me._PC ],
         byte1 = me._RAM[ me._PC + 1],
-        byte2 = me._RAM[ me._PC + 2],
         OPER;
 
     switch (opCode) {
         // Get Operand
-        case (0x00): OPER = me; break;
+        case (0x10): OPER = byte1; break;
 
-        default: console.error("Illegal ADC opcode passed. (" + opCode + ")" ); break;
+        default: console.error("Illegal BPL opcode passed. (0x" + opCode.toString(16) + ")" ); break;
 
     }
 
-    // Implementation of instruction here
+    if(!me._IF_SIGN()) {
+
+        // So... Since there are no signed numbers in JS... We have to work it out.
+        var relAddress = ( (OPER + 2) < 0x80 ) ? me._PC += OPER + 2 : me._PC += OPER + 2 - 256;
+
+        me._CYCLES += ( (me._PC & 0xFF00) !=  (me._PC + relAddress) & 0xFF00) ? 2 : 1;
+
+        me._PC += relAddress; // The switch is going to add two to this...
+
+    }
 
     switch (opCode) {
         // Increment cycles, pc and write operand.
-        case (0x00): me._CYCLES += 0; me._PC += 0; break;
+        case (0x10): me._CYCLES += 2; break;
 
-        default: console.error("Illegal ADC opcode passed. (" + opCode + ")" ); break;
+        default: console.error("Illegal BPL opcode passed. (0x" + opCode.toString(16) + ")" ); break;
 
     }
 };
 
-MOS6502.prototype.BNE = function(ADDR_MODE) {
+MOS6502.prototype.BRK = function() {
+
+    /**
+
+     BRK                          BRK Force Break                          BRK
+
+     Operation:  Forced Interrupt PC + 2 toS P toS         N Z C I D V
+                                                           _ _ _ 1 _ _
+     (Ref: 9.11)
+     +----------------+-----------------------+---------+---------+----------+
+     | Addressing Mode| Assembly Language Form| OP CODE |No. Bytes|No. Cycles|
+     +----------------+-----------------------+---------+---------+----------+
+     |  Implied       |   BRK                 |    00   |    1    |    7     |
+     +----------------+-----------------------+---------+---------+----------+
+     1. A BRK command cannot be masked by setting I.
+
+     */
+
+    var me = this,
+        opCode = me._RAM[ me._PC ];
+
+    switch (opCode) {
+        // Get Operand
+        case (0x00): break;
+
+        default: console.error("Illegal BRK opcode passed. (0x" + opCode.toString(16) + ")" ); break;
+
+    }
+
+    me._PC++;
+
+    // Push return address onto the stack.
+    me._STACK.push( (me._PC >> 8) & 0xFF);
+    me._STACK.push( me._PC & 0xFF );
+
+    me._SET_BREAK((1));
+
+    // Push the status register onto the stack.
+    me._STACK.push( me._P );
+
+    me._SET_INTERRUPT((1));
+
+    me._PC = me._MAKE_ADDRESS( me._RAM[0xFFFE], me._RAM[0xFFFF]);
+
+    switch (opCode) {
+        // Increment cycles, pc and write operand.
+        case (0x00): me._CYCLES += 7; break;
+
+        default: console.error("Illegal BRK opcode passed. (0x" + opCode.toString(16) + ")" ); break;
+
+    }
+
+};
+
+MOS6502.prototype.BVC = function() {
+
+    /**
+
+     BVC                   BVC Branch on overflow clear                    BVC
+
+     Operation:  Branch on V = 0                           N Z C I D V
+                                                           _ _ _ _ _ _
+     (Ref: 4.1.1.8)
+     +----------------+-----------------------+---------+---------+----------+
+     | Addressing Mode| Assembly Language Form| OP CODE |No. Bytes|No. Cycles|
+     +----------------+-----------------------+---------+---------+----------+
+     |  Relative      |   BVC Oper            |    50   |    2    |    2*    |
+     +----------------+-----------------------+---------+---------+----------+
+     * Add 1 if branch occurs to same page.
+     * Add 2 if branch occurs to different page.
+
+     */
+
     var me = this,
         opCode = me._RAM[ me._PC ],
         byte1 = me._RAM[ me._PC + 1],
-        byte2 = me._RAM[ me._PC + 2],
         OPER;
 
     switch (opCode) {
         // Get Operand
-        case (0x00): OPER = me; break;
+        case (0x50): OPER = byte1; break;
 
-        default: console.error("Illegal ADC opcode passed. (" + opCode + ")" ); break;
+        default: console.error("Illegal BVC opcode passed. (0x" + opCode.toString(16) + ")" ); break;
 
     }
 
-    // Implementation of instruction here
+    if(!me._IF_OVERFLOW()) {
+
+        // So... Since there are no signed numbers in JS... We have to work it out.
+        var relAddress = ( (OPER + 2) < 0x80 ) ? me._PC += OPER + 2 : me._PC += OPER + 2 - 256;
+
+        me._CYCLES += ( (me._PC & 0xFF00) !=  (me._PC + relAddress) & 0xFF00) ? 2 : 1;
+
+        me._PC += relAddress; // The switch is going to add two to this...
+
+    }
 
     switch (opCode) {
         // Increment cycles, pc and write operand.
-        case (0x00): me._CYCLES += 0; me._PC += 0; break;
+        case (0x50): me._CYCLES += 2; break;
 
-        default: console.error("Illegal ADC opcode passed. (" + opCode + ")" ); break;
+        default: console.error("Illegal BVC opcode passed. (0x" + opCode.toString(16) + ")" ); break;
 
     }
 };
 
-MOS6502.prototype.BPL = function(ADDR_MODE) {
+MOS6502.prototype.BVS = function() {
+
+    /**
+
+     BVS                    BVS Branch on overflow set                     BVS
+
+     Operation:  Branch on V = 1                           N Z C I D V
+                                                           _ _ _ _ _ _
+     (Ref: 4.1.1.7)
+     +----------------+-----------------------+---------+---------+----------+
+     | Addressing Mode| Assembly Language Form| OP CODE |No. Bytes|No. Cycles|
+     +----------------+-----------------------+---------+---------+----------+
+     |  Relative      |   BVS Oper            |    70   |    2    |    2*    |
+     +----------------+-----------------------+---------+---------+----------+
+     * Add 1 if branch occurs to same page.
+     * Add 2 if branch occurs to different page.
+
+     */
     var me = this,
         opCode = me._RAM[ me._PC ],
         byte1 = me._RAM[ me._PC + 1],
-        byte2 = me._RAM[ me._PC + 2],
         OPER;
 
     switch (opCode) {
         // Get Operand
-        case (0x00): OPER = me; break;
+        case (0x70): OPER = byte1; break;
 
-        default: console.error("Illegal ADC opcode passed. (" + opCode + ")" ); break;
+        default: console.error("Illegal ADC opcode passed. (0x" + opCode.toString(16) + ")" ); break;
 
     }
 
-    // Implementation of instruction here
+    if(me._IF_OVERFLOW()) {
+
+        // So... Since there are no signed numbers in JS... We have to work it out.
+        var relAddress = ( (OPER + 2) < 0x80 ) ? me._PC += OPER + 2 : me._PC += OPER + 2 - 256;
+
+        me._CYCLES += ( (me._PC & 0xFF00) !=  (me._PC + relAddress) & 0xFF00) ? 2 : 1;
+
+        me._PC += relAddress; // The switch is going to add two to this...
+
+    }
 
     switch (opCode) {
         // Increment cycles, pc and write operand.
-        case (0x00): me._CYCLES += 0; me._PC += 0; break;
+        case (0x70): me._CYCLES += 2; break;
 
-        default: console.error("Illegal ADC opcode passed. (" + opCode + ")" ); break;
+        default: console.error("Illegal ADC opcode passed. (0x" + opCode.toString(16) + ")" ); break;
 
     }
 };
 
-MOS6502.prototype.BRK = function(ADDR_MODE) {
+MOS6502.prototype.CLC = function() {
+
+    /**
+
+     CLC                       CLC Clear carry flag                        CLC
+
+     Operation:  0 -> C                                    N Z C I D V
+                                                           _ _ 0 _ _ _
+     (Ref: 3.0.2)
+     +----------------+-----------------------+---------+---------+----------+
+     | Addressing Mode| Assembly Language Form| OP CODE |No. Bytes|No. Cycles|
+     +----------------+-----------------------+---------+---------+----------+
+     |  Implied       |   CLC                 |    18   |    1    |    2     |
+     +----------------+-----------------------+---------+---------+----------+
+
+     */
+
     var me = this,
-        opCode = me._RAM[ me._PC ],
-        byte1 = me._RAM[ me._PC + 1],
-        byte2 = me._RAM[ me._PC + 2],
-        OPER;
+        opCode = me._RAM[ me._PC ];
 
     switch (opCode) {
         // Get Operand
-        case (0x00): OPER = me; break;
+        case (0x18): break;
 
-        default: console.error("Illegal ADC opcode passed. (" + opCode + ")" ); break;
+        default: console.error("Illegal CLC opcode passed. (0x" + opCode.toString(16) + ")" ); break;
 
     }
 
-    // Implementation of instruction here
+    me._SET_CARRY(0);
 
     switch (opCode) {
         // Increment cycles, pc and write operand.
-        case (0x00): me._CYCLES += 0; me._PC += 0; break;
+        case (0x18): me._CYCLES += 2; me._PC += 1; break;
 
-        default: console.error("Illegal ADC opcode passed. (" + opCode + ")" ); break;
+        default: console.error("Illegal CLC opcode passed. (0x" + opCode.toString(16) + ")" ); break;
 
     }
 };
 
-MOS6502.prototype.BVC = function(ADDR_MODE) {
+MOS6502.prototype.CLD = function() {
+
+    /**
+
+     CLD                      CLD Clear decimal mode                       CLD
+
+     Operation:  0 -> D                                    N A C I D V
+                                                           _ _ _ _ 0 _
+     (Ref: 3.3.2)
+     +----------------+-----------------------+---------+---------+----------+
+     | Addressing Mode| Assembly Language Form| OP CODE |No. Bytes|No. Cycles|
+     +----------------+-----------------------+---------+---------+----------+
+     |  Implied       |   CLD                 |    D8   |    1    |    2     |
+     +----------------+-----------------------+---------+---------+----------+
+
+     */
+
     var me = this,
-        opCode = me._RAM[ me._PC ],
-        byte1 = me._RAM[ me._PC + 1],
-        byte2 = me._RAM[ me._PC + 2],
-        OPER;
+        opCode = me._RAM[ me._PC ];
 
     switch (opCode) {
         // Get Operand
-        case (0x00): OPER = me; break;
+        case (0xD8): break;
 
-        default: console.error("Illegal ADC opcode passed. (" + opCode + ")" ); break;
+        default: console.error("Illegal CLD opcode passed. (0x" + opCode.toString(16) + ")" ); break;
 
     }
 
-    // Implementation of instruction here
+    me._SET_DECIMAL(0);
 
     switch (opCode) {
         // Increment cycles, pc and write operand.
-        case (0x00): me._CYCLES += 0; me._PC += 0; break;
+        case (0xD8): me._CYCLES += 2; me._PC += 1; break;
 
-        default: console.error("Illegal ADC opcode passed. (" + opCode + ")" ); break;
+        default: console.error("Illegal CLD opcode passed. (0x" + opCode.toString(16) + ")" ); break;
 
     }
 };
 
-MOS6502.prototype.BVS = function(ADDR_MODE) {
+MOS6502.prototype.CLI = function() {
+
+    /**
+
+     CLI                  CLI Clear interrupt disable bit                  CLI
+
+     Operation: 0 -> I                                     N Z C I D V
+                                                           _ _ _ 0 _ _
+     (Ref: 3.2.2)
+     +----------------+-----------------------+---------+---------+----------+
+     | Addressing Mode| Assembly Language Form| OP CODE |No. Bytes|No. Cycles|
+     +----------------+-----------------------+---------+---------+----------+
+     |  Implied       |   CLI                 |    58   |    1    |    2     |
+     +----------------+-----------------------+---------+---------+----------+
+
+     */
+
     var me = this,
-        opCode = me._RAM[ me._PC ],
-        byte1 = me._RAM[ me._PC + 1],
-        byte2 = me._RAM[ me._PC + 2],
-        OPER;
+        opCode = me._RAM[ me._PC ];
 
     switch (opCode) {
         // Get Operand
-        case (0x00): OPER = me; break;
+        case (0x58): break;
 
-        default: console.error("Illegal ADC opcode passed. (" + opCode + ")" ); break;
+        default: console.error("Illegal CLI opcode passed. (0x" + opCode.toString(16) + ")" ); break;
 
     }
 
-    // Implementation of instruction here
+    me._SET_INTERRUPT(0);
 
     switch (opCode) {
         // Increment cycles, pc and write operand.
-        case (0x00): me._CYCLES += 0; me._PC += 0; break;
+        case (0x58): me._CYCLES += 2; me._PC += 1; break;
 
-        default: console.error("Illegal ADC opcode passed. (" + opCode + ")" ); break;
+        default: console.error("Illegal CLI opcode passed. (0x" + opCode.toString(16) + ")" ); break;
 
     }
 };
 
-MOS6502.prototype.CLC = function(ADDR_MODE) {
+MOS6502.prototype.CLV = function() {
+
+    /**
+
+     CLV                      CLV Clear overflow flag                      CLV
+
+     Operation: 0 -> V                                     N Z C I D V
+                                                           _ _ _ _ _ 0
+     (Ref: 3.6.1)
+     +----------------+-----------------------+---------+---------+----------+
+     | Addressing Mode| Assembly Language Form| OP CODE |No. Bytes|No. Cycles|
+     +----------------+-----------------------+---------+---------+----------+
+     |  Implied       |   CLV                 |    B8   |    1    |    2     |
+     +----------------+-----------------------+---------+---------+----------+
+
+     */
+
     var me = this,
-        opCode = me._RAM[ me._PC ],
-        byte1 = me._RAM[ me._PC + 1],
-        byte2 = me._RAM[ me._PC + 2],
-        OPER;
+        opCode = me._RAM[ me._PC ];
 
     switch (opCode) {
         // Get Operand
-        case (0x00): OPER = me; break;
+        case (0xB8): break;
 
-        default: console.error("Illegal ADC opcode passed. (" + opCode + ")" ); break;
+        default: console.error("Illegal CLV opcode passed. (0x" + opCode.toString(16) + ")" ); break;
 
     }
 
-    // Implementation of instruction here
+    me._SET_OVERFLOW(0);
 
     switch (opCode) {
         // Increment cycles, pc and write operand.
-        case (0x00): me._CYCLES += 0; me._PC += 0; break;
+        case (0xB8): me._CYCLES += 2; me._PC += 1; break;
 
-        default: console.error("Illegal ADC opcode passed. (" + opCode + ")" ); break;
-
-    }
-};
-
-MOS6502.prototype.CLD = function(ADDR_MODE) {
-    var me = this,
-        opCode = me._RAM[ me._PC ],
-        byte1 = me._RAM[ me._PC + 1],
-        byte2 = me._RAM[ me._PC + 2],
-        OPER;
-
-    switch (opCode) {
-        // Get Operand
-        case (0x00): OPER = me; break;
-
-        default: console.error("Illegal ADC opcode passed. (" + opCode + ")" ); break;
-
-    }
-
-    // Implementation of instruction here
-
-    switch (opCode) {
-        // Increment cycles, pc and write operand.
-        case (0x00): me._CYCLES += 0; me._PC += 0; break;
-
-        default: console.error("Illegal ADC opcode passed. (" + opCode + ")" ); break;
-
-    }
-};
-
-MOS6502.prototype.CLI = function(ADDR_MODE) {
-    var me = this,
-        opCode = me._RAM[ me._PC ],
-        byte1 = me._RAM[ me._PC + 1],
-        byte2 = me._RAM[ me._PC + 2],
-        OPER;
-
-    switch (opCode) {
-        // Get Operand
-        case (0x00): OPER = me; break;
-
-        default: console.error("Illegal ADC opcode passed. (" + opCode + ")" ); break;
-
-    }
-
-    // Implementation of instruction here
-
-    switch (opCode) {
-        // Increment cycles, pc and write operand.
-        case (0x00): me._CYCLES += 0; me._PC += 0; break;
-
-        default: console.error("Illegal ADC opcode passed. (" + opCode + ")" ); break;
-
-    }
-};
-
-MOS6502.prototype.CLV = function(ADDR_MODE) {
-    var me = this,
-        opCode = me._RAM[ me._PC ],
-        byte1 = me._RAM[ me._PC + 1],
-        byte2 = me._RAM[ me._PC + 2],
-        OPER;
-
-    switch (opCode) {
-        // Get Operand
-        case (0x00): OPER = me; break;
-
-        default: console.error("Illegal ADC opcode passed. (" + opCode + ")" ); break;
-
-    }
-
-    // Implementation of instruction here
-
-    switch (opCode) {
-        // Increment cycles, pc and write operand.
-        case (0x00): me._CYCLES += 0; me._PC += 0; break;
-
-        default: console.error("Illegal ADC opcode passed. (" + opCode + ")" ); break;
+        default: console.error("Illegal CLV opcode passed. (0x" + opCode.toString(16) + ")" ); break;
 
     }
 };
@@ -1221,7 +1518,7 @@ MOS6502.prototype.CMP = function(ADDR_MODE) {
         // Get Operand
         case (0x00): OPER = me; break;
 
-        default: console.error("Illegal ADC opcode passed. (" + opCode + ")" ); break;
+        default: console.error("Illegal ADC opcode passed. (0x" + opCode.toString(16) + ")" ); break;
 
     }
 
@@ -1231,7 +1528,7 @@ MOS6502.prototype.CMP = function(ADDR_MODE) {
         // Increment cycles, pc and write operand.
         case (0x00): me._CYCLES += 0; me._PC += 0; break;
 
-        default: console.error("Illegal ADC opcode passed. (" + opCode + ")" ); break;
+        default: console.error("Illegal ADC opcode passed. (0x" + opCode.toString(16) + ")" ); break;
 
     }
 };
@@ -1247,7 +1544,7 @@ MOS6502.prototype.CPX = function(ADDR_MODE) {
         // Get Operand
         case (0x00): OPER = me; break;
 
-        default: console.error("Illegal ADC opcode passed. (" + opCode + ")" ); break;
+        default: console.error("Illegal ADC opcode passed. (0x" + opCode.toString(16) + ")" ); break;
 
     }
 
@@ -1257,7 +1554,7 @@ MOS6502.prototype.CPX = function(ADDR_MODE) {
         // Increment cycles, pc and write operand.
         case (0x00): me._CYCLES += 0; me._PC += 0; break;
 
-        default: console.error("Illegal ADC opcode passed. (" + opCode + ")" ); break;
+        default: console.error("Illegal ADC opcode passed. (0x" + opCode.toString(16) + ")" ); break;
 
     }
 };
@@ -1273,7 +1570,7 @@ MOS6502.prototype.CPY = function(ADDR_MODE) {
         // Get Operand
         case (0x00): OPER = me; break;
 
-        default: console.error("Illegal ADC opcode passed. (" + opCode + ")" ); break;
+        default: console.error("Illegal ADC opcode passed. (0x" + opCode.toString(16) + ")" ); break;
 
     }
 
@@ -1283,7 +1580,7 @@ MOS6502.prototype.CPY = function(ADDR_MODE) {
         // Increment cycles, pc and write operand.
         case (0x00): me._CYCLES += 0; me._PC += 0; break;
 
-        default: console.error("Illegal ADC opcode passed. (" + opCode + ")" ); break;
+        default: console.error("Illegal ADC opcode passed. (0x" + opCode.toString(16) + ")" ); break;
 
     }
 };
@@ -1299,7 +1596,7 @@ MOS6502.prototype.DEC = function(ADDR_MODE) {
         // Get Operand
         case (0x00): OPER = me; break;
 
-        default: console.error("Illegal ADC opcode passed. (" + opCode + ")" ); break;
+        default: console.error("Illegal ADC opcode passed. (0x" + opCode.toString(16) + ")" ); break;
 
     }
 
@@ -1309,7 +1606,7 @@ MOS6502.prototype.DEC = function(ADDR_MODE) {
         // Increment cycles, pc and write operand.
         case (0x00): me._CYCLES += 0; me._PC += 0; break;
 
-        default: console.error("Illegal ADC opcode passed. (" + opCode + ")" ); break;
+        default: console.error("Illegal ADC opcode passed. (0x" + opCode.toString(16) + ")" ); break;
 
     }
 };
@@ -1325,7 +1622,7 @@ MOS6502.prototype.DEX = function(ADDR_MODE) {
         // Get Operand
         case (0x00): OPER = me; break;
 
-        default: console.error("Illegal ADC opcode passed. (" + opCode + ")" ); break;
+        default: console.error("Illegal ADC opcode passed. (0x" + opCode.toString(16) + ")" ); break;
 
     }
 
@@ -1335,7 +1632,7 @@ MOS6502.prototype.DEX = function(ADDR_MODE) {
         // Increment cycles, pc and write operand.
         case (0x00): me._CYCLES += 0; me._PC += 0; break;
 
-        default: console.error("Illegal ADC opcode passed. (" + opCode + ")" ); break;
+        default: console.error("Illegal ADC opcode passed. (0x" + opCode.toString(16) + ")" ); break;
 
     }
 };
@@ -1351,7 +1648,7 @@ MOS6502.prototype.DEY = function(ADDR_MODE) {
         // Get Operand
         case (0x00): OPER = me; break;
 
-        default: console.error("Illegal ADC opcode passed. (" + opCode + ")" ); break;
+        default: console.error("Illegal ADC opcode passed. (0x" + opCode.toString(16) + ")" ); break;
 
     }
 
@@ -1361,7 +1658,7 @@ MOS6502.prototype.DEY = function(ADDR_MODE) {
         // Increment cycles, pc and write operand.
         case (0x00): me._CYCLES += 0; me._PC += 0; break;
 
-        default: console.error("Illegal ADC opcode passed. (" + opCode + ")" ); break;
+        default: console.error("Illegal ADC opcode passed. (0x" + opCode.toString(16) + ")" ); break;
 
     }
 };
@@ -1377,7 +1674,7 @@ MOS6502.prototype.EOR = function(ADDR_MODE) {
         // Get Operand
         case (0x00): OPER = me; break;
 
-        default: console.error("Illegal ADC opcode passed. (" + opCode + ")" ); break;
+        default: console.error("Illegal ADC opcode passed. (0x" + opCode.toString(16) + ")" ); break;
 
     }
 
@@ -1387,7 +1684,7 @@ MOS6502.prototype.EOR = function(ADDR_MODE) {
         // Increment cycles, pc and write operand.
         case (0x00): me._CYCLES += 0; me._PC += 0; break;
 
-        default: console.error("Illegal ADC opcode passed. (" + opCode + ")" ); break;
+        default: console.error("Illegal ADC opcode passed. (0x" + opCode.toString(16) + ")" ); break;
 
     }
 };
@@ -1403,7 +1700,7 @@ MOS6502.prototype.INC = function(ADDR_MODE) {
         // Get Operand
         case (0x00): OPER = me; break;
 
-        default: console.error("Illegal ADC opcode passed. (" + opCode + ")" ); break;
+        default: console.error("Illegal ADC opcode passed. (0x" + opCode.toString(16) + ")" ); break;
 
     }
 
@@ -1413,7 +1710,7 @@ MOS6502.prototype.INC = function(ADDR_MODE) {
         // Increment cycles, pc and write operand.
         case (0x00): me._CYCLES += 0; me._PC += 0; break;
 
-        default: console.error("Illegal ADC opcode passed. (" + opCode + ")" ); break;
+        default: console.error("Illegal ADC opcode passed. (0x" + opCode.toString(16) + ")" ); break;
 
     }
 };
@@ -1429,7 +1726,7 @@ MOS6502.prototype.INX = function(ADDR_MODE) {
         // Get Operand
         case (0x00): OPER = me; break;
 
-        default: console.error("Illegal ADC opcode passed. (" + opCode + ")" ); break;
+        default: console.error("Illegal ADC opcode passed. (0x" + opCode.toString(16) + ")" ); break;
 
     }
 
@@ -1439,7 +1736,7 @@ MOS6502.prototype.INX = function(ADDR_MODE) {
         // Increment cycles, pc and write operand.
         case (0x00): me._CYCLES += 0; me._PC += 0; break;
 
-        default: console.error("Illegal ADC opcode passed. (" + opCode + ")" ); break;
+        default: console.error("Illegal ADC opcode passed. (0x" + opCode.toString(16) + ")" ); break;
 
     }
 };
@@ -1455,7 +1752,7 @@ MOS6502.prototype.INY = function(ADDR_MODE) {
         // Get Operand
         case (0x00): OPER = me; break;
 
-        default: console.error("Illegal ADC opcode passed. (" + opCode + ")" ); break;
+        default: console.error("Illegal ADC opcode passed. (0x" + opCode.toString(16) + ")" ); break;
 
     }
 
@@ -1465,7 +1762,7 @@ MOS6502.prototype.INY = function(ADDR_MODE) {
         // Increment cycles, pc and write operand.
         case (0x00): me._CYCLES += 0; me._PC += 0; break;
 
-        default: console.error("Illegal ADC opcode passed. (" + opCode + ")" ); break;
+        default: console.error("Illegal ADC opcode passed. (0x" + opCode.toString(16) + ")" ); break;
 
     }
 };
@@ -1481,7 +1778,7 @@ MOS6502.prototype.JMP = function(ADDR_MODE) {
         // Get Operand
         case (0x00): OPER = me; break;
 
-        default: console.error("Illegal ADC opcode passed. (" + opCode + ")" ); break;
+        default: console.error("Illegal ADC opcode passed. (0x" + opCode.toString(16) + ")" ); break;
 
     }
 
@@ -1491,7 +1788,7 @@ MOS6502.prototype.JMP = function(ADDR_MODE) {
         // Increment cycles, pc and write operand.
         case (0x00): me._CYCLES += 0; me._PC += 0; break;
 
-        default: console.error("Illegal ADC opcode passed. (" + opCode + ")" ); break;
+        default: console.error("Illegal ADC opcode passed. (0x" + opCode.toString(16) + ")" ); break;
 
     }
 };
@@ -1507,7 +1804,7 @@ MOS6502.prototype.JSR = function(ADDR_MODE) {
         // Get Operand
         case (0x00): OPER = me; break;
 
-        default: console.error("Illegal ADC opcode passed. (" + opCode + ")" ); break;
+        default: console.error("Illegal ADC opcode passed. (0x" + opCode.toString(16) + ")" ); break;
 
     }
 
@@ -1517,7 +1814,7 @@ MOS6502.prototype.JSR = function(ADDR_MODE) {
         // Increment cycles, pc and write operand.
         case (0x00): me._CYCLES += 0; me._PC += 0; break;
 
-        default: console.error("Illegal ADC opcode passed. (" + opCode + ")" ); break;
+        default: console.error("Illegal ADC opcode passed. (0x" + opCode.toString(16) + ")" ); break;
 
     }
 };
@@ -1533,7 +1830,7 @@ MOS6502.prototype.LDA = function(ADDR_MODE) {
         // Get Operand
         case (0x00): OPER = me; break;
 
-        default: console.error("Illegal ADC opcode passed. (" + opCode + ")" ); break;
+        default: console.error("Illegal ADC opcode passed. (0x" + opCode.toString(16) + ")" ); break;
 
     }
 
@@ -1543,7 +1840,7 @@ MOS6502.prototype.LDA = function(ADDR_MODE) {
         // Increment cycles, pc and write operand.
         case (0x00): me._CYCLES += 0; me._PC += 0; break;
 
-        default: console.error("Illegal ADC opcode passed. (" + opCode + ")" ); break;
+        default: console.error("Illegal ADC opcode passed. (0x" + opCode.toString(16) + ")" ); break;
 
     }
 };
@@ -1559,7 +1856,7 @@ MOS6502.prototype.LDX = function(ADDR_MODE) {
         // Get Operand
         case (0x00): OPER = me; break;
 
-        default: console.error("Illegal ADC opcode passed. (" + opCode + ")" ); break;
+        default: console.error("Illegal ADC opcode passed. (0x" + opCode.toString(16) + ")" ); break;
 
     }
 
@@ -1569,7 +1866,7 @@ MOS6502.prototype.LDX = function(ADDR_MODE) {
         // Increment cycles, pc and write operand.
         case (0x00): me._CYCLES += 0; me._PC += 0; break;
 
-        default: console.error("Illegal ADC opcode passed. (" + opCode + ")" ); break;
+        default: console.error("Illegal ADC opcode passed. (0x" + opCode.toString(16) + ")" ); break;
 
     }
 };
@@ -1585,7 +1882,7 @@ MOS6502.prototype.LDY = function(ADDR_MODE) {
         // Get Operand
         case (0x00): OPER = me; break;
 
-        default: console.error("Illegal ADC opcode passed. (" + opCode + ")" ); break;
+        default: console.error("Illegal ADC opcode passed. (0x" + opCode.toString(16) + ")" ); break;
 
     }
 
@@ -1595,7 +1892,7 @@ MOS6502.prototype.LDY = function(ADDR_MODE) {
         // Increment cycles, pc and write operand.
         case (0x00): me._CYCLES += 0; me._PC += 0; break;
 
-        default: console.error("Illegal ADC opcode passed. (" + opCode + ")" ); break;
+        default: console.error("Illegal ADC opcode passed. (0x" + opCode.toString(16) + ")" ); break;
 
     }
 };
@@ -1611,7 +1908,7 @@ MOS6502.prototype.LSR = function(ADDR_MODE) {
         // Get Operand
         case (0x00): OPER = me; break;
 
-        default: console.error("Illegal ADC opcode passed. (" + opCode + ")" ); break;
+        default: console.error("Illegal ADC opcode passed. (0x" + opCode.toString(16) + ")" ); break;
 
     }
 
@@ -1621,7 +1918,7 @@ MOS6502.prototype.LSR = function(ADDR_MODE) {
         // Increment cycles, pc and write operand.
         case (0x00): me._CYCLES += 0; me._PC += 0; break;
 
-        default: console.error("Illegal ADC opcode passed. (" + opCode + ")" ); break;
+        default: console.error("Illegal ADC opcode passed. (0x" + opCode.toString(16) + ")" ); break;
 
     }
 };
@@ -1637,7 +1934,7 @@ MOS6502.prototype.NOP = function(ADDR_MODE) {
         // Get Operand
         case (0x00): OPER = me; break;
 
-        default: console.error("Illegal ADC opcode passed. (" + opCode + ")" ); break;
+        default: console.error("Illegal ADC opcode passed. (0x" + opCode.toString(16) + ")" ); break;
 
     }
 
@@ -1647,7 +1944,7 @@ MOS6502.prototype.NOP = function(ADDR_MODE) {
         // Increment cycles, pc and write operand.
         case (0x00): me._CYCLES += 0; me._PC += 0; break;
 
-        default: console.error("Illegal ADC opcode passed. (" + opCode + ")" ); break;
+        default: console.error("Illegal ADC opcode passed. (0x" + opCode.toString(16) + ")" ); break;
 
     }
 };
@@ -1663,7 +1960,7 @@ MOS6502.prototype.ORA = function(ADDR_MODE) {
         // Get Operand
         case (0x00): OPER = me; break;
 
-        default: console.error("Illegal ADC opcode passed. (" + opCode + ")" ); break;
+        default: console.error("Illegal ADC opcode passed. (0x" + opCode.toString(16) + ")" ); break;
 
     }
 
@@ -1673,7 +1970,7 @@ MOS6502.prototype.ORA = function(ADDR_MODE) {
         // Increment cycles, pc and write operand.
         case (0x00): me._CYCLES += 0; me._PC += 0; break;
 
-        default: console.error("Illegal ADC opcode passed. (" + opCode + ")" ); break;
+        default: console.error("Illegal ADC opcode passed. (0x" + opCode.toString(16) + ")" ); break;
 
     }
 };
@@ -1689,7 +1986,7 @@ MOS6502.prototype.PHA = function(ADDR_MODE) {
         // Get Operand
         case (0x00): OPER = me; break;
 
-        default: console.error("Illegal ADC opcode passed. (" + opCode + ")" ); break;
+        default: console.error("Illegal ADC opcode passed. (0x" + opCode.toString(16) + ")" ); break;
 
     }
 
@@ -1699,7 +1996,7 @@ MOS6502.prototype.PHA = function(ADDR_MODE) {
         // Increment cycles, pc and write operand.
         case (0x00): me._CYCLES += 0; me._PC += 0; break;
 
-        default: console.error("Illegal ADC opcode passed. (" + opCode + ")" ); break;
+        default: console.error("Illegal ADC opcode passed. (0x" + opCode.toString(16) + ")" ); break;
 
     }
 };
@@ -1715,7 +2012,7 @@ MOS6502.prototype.PHP = function(ADDR_MODE) {
         // Get Operand
         case (0x00): OPER = me; break;
 
-        default: console.error("Illegal ADC opcode passed. (" + opCode + ")" ); break;
+        default: console.error("Illegal ADC opcode passed. (0x" + opCode.toString(16) + ")" ); break;
 
     }
 
@@ -1725,7 +2022,7 @@ MOS6502.prototype.PHP = function(ADDR_MODE) {
         // Increment cycles, pc and write operand.
         case (0x00): me._CYCLES += 0; me._PC += 0; break;
 
-        default: console.error("Illegal ADC opcode passed. (" + opCode + ")" ); break;
+        default: console.error("Illegal ADC opcode passed. (0x" + opCode.toString(16) + ")" ); break;
 
     }
 };
@@ -1741,7 +2038,7 @@ MOS6502.prototype.PLA = function(ADDR_MODE) {
         // Get Operand
         case (0x00): OPER = me; break;
 
-        default: console.error("Illegal ADC opcode passed. (" + opCode + ")" ); break;
+        default: console.error("Illegal ADC opcode passed. (0x" + opCode.toString(16) + ")" ); break;
 
     }
 
@@ -1751,7 +2048,7 @@ MOS6502.prototype.PLA = function(ADDR_MODE) {
         // Increment cycles, pc and write operand.
         case (0x00): me._CYCLES += 0; me._PC += 0; break;
 
-        default: console.error("Illegal ADC opcode passed. (" + opCode + ")" ); break;
+        default: console.error("Illegal ADC opcode passed. (0x" + opCode.toString(16) + ")" ); break;
 
     }
 };
@@ -1767,7 +2064,7 @@ MOS6502.prototype.PLP = function(ADDR_MODE) {
         // Get Operand
         case (0x00): OPER = me; break;
 
-        default: console.error("Illegal ADC opcode passed. (" + opCode + ")" ); break;
+        default: console.error("Illegal ADC opcode passed. (0x" + opCode.toString(16) + ")" ); break;
 
     }
 
@@ -1777,7 +2074,7 @@ MOS6502.prototype.PLP = function(ADDR_MODE) {
         // Increment cycles, pc and write operand.
         case (0x00): me._CYCLES += 0; me._PC += 0; break;
 
-        default: console.error("Illegal ADC opcode passed. (" + opCode + ")" ); break;
+        default: console.error("Illegal ADC opcode passed. (0x" + opCode.toString(16) + ")" ); break;
 
     }
 };
@@ -1793,7 +2090,7 @@ MOS6502.prototype.ROL = function(ADDR_MODE) {
         // Get Operand
         case (0x00): OPER = me; break;
 
-        default: console.error("Illegal ADC opcode passed. (" + opCode + ")" ); break;
+        default: console.error("Illegal ADC opcode passed. (0x" + opCode.toString(16) + ")" ); break;
 
     }
 
@@ -1803,7 +2100,7 @@ MOS6502.prototype.ROL = function(ADDR_MODE) {
         // Increment cycles, pc and write operand.
         case (0x00): me._CYCLES += 0; me._PC += 0; break;
 
-        default: console.error("Illegal ADC opcode passed. (" + opCode + ")" ); break;
+        default: console.error("Illegal ADC opcode passed. (0x" + opCode.toString(16) + ")" ); break;
 
     }
 };
@@ -1819,7 +2116,7 @@ MOS6502.prototype.ROR = function(ADDR_MODE) {
         // Get Operand
         case (0x00): OPER = me; break;
 
-        default: console.error("Illegal ADC opcode passed. (" + opCode + ")" ); break;
+        default: console.error("Illegal ADC opcode passed. (0x" + opCode.toString(16) + ")" ); break;
 
     }
 
@@ -1829,7 +2126,7 @@ MOS6502.prototype.ROR = function(ADDR_MODE) {
         // Increment cycles, pc and write operand.
         case (0x00): me._CYCLES += 0; me._PC += 0; break;
 
-        default: console.error("Illegal ADC opcode passed. (" + opCode + ")" ); break;
+        default: console.error("Illegal ADC opcode passed. (0x" + opCode.toString(16) + ")" ); break;
 
     }
 };
@@ -1845,7 +2142,7 @@ MOS6502.prototype.RTI = function(ADDR_MODE) {
         // Get Operand
         case (0x00): OPER = me; break;
 
-        default: console.error("Illegal ADC opcode passed. (" + opCode + ")" ); break;
+        default: console.error("Illegal ADC opcode passed. (0x" + opCode.toString(16) + ")" ); break;
 
     }
 
@@ -1855,7 +2152,7 @@ MOS6502.prototype.RTI = function(ADDR_MODE) {
         // Increment cycles, pc and write operand.
         case (0x00): me._CYCLES += 0; me._PC += 0; break;
 
-        default: console.error("Illegal ADC opcode passed. (" + opCode + ")" ); break;
+        default: console.error("Illegal ADC opcode passed. (0x" + opCode.toString(16) + ")" ); break;
 
     }
 };
@@ -1871,7 +2168,7 @@ MOS6502.prototype.RTS = function(ADDR_MODE) {
         // Get Operand
         case (0x00): OPER = me; break;
 
-        default: console.error("Illegal ADC opcode passed. (" + opCode + ")" ); break;
+        default: console.error("Illegal ADC opcode passed. (0x" + opCode.toString(16) + ")" ); break;
 
     }
 
@@ -1881,7 +2178,7 @@ MOS6502.prototype.RTS = function(ADDR_MODE) {
         // Increment cycles, pc and write operand.
         case (0x00): me._CYCLES += 0; me._PC += 0; break;
 
-        default: console.error("Illegal ADC opcode passed. (" + opCode + ")" ); break;
+        default: console.error("Illegal ADC opcode passed. (0x" + opCode.toString(16) + ")" ); break;
 
     }
 };
@@ -1897,7 +2194,7 @@ MOS6502.prototype.SBC = function(ADDR_MODE) {
         // Get Operand
         case (0x00): OPER = me; break;
 
-        default: console.error("Illegal ADC opcode passed. (" + opCode + ")" ); break;
+        default: console.error("Illegal ADC opcode passed. (0x" + opCode.toString(16) + ")" ); break;
 
     }
 
@@ -1907,7 +2204,7 @@ MOS6502.prototype.SBC = function(ADDR_MODE) {
         // Increment cycles, pc and write operand.
         case (0x00): me._CYCLES += 0; me._PC += 0; break;
 
-        default: console.error("Illegal ADC opcode passed. (" + opCode + ")" ); break;
+        default: console.error("Illegal ADC opcode passed. (0x" + opCode.toString(16) + ")" ); break;
 
     }
 };
@@ -1923,7 +2220,7 @@ MOS6502.prototype.SEC = function(ADDR_MODE) {
         // Get Operand
         case (0x00): OPER = me; break;
 
-        default: console.error("Illegal ADC opcode passed. (" + opCode + ")" ); break;
+        default: console.error("Illegal ADC opcode passed. (0x" + opCode.toString(16) + ")" ); break;
 
     }
 
@@ -1933,7 +2230,7 @@ MOS6502.prototype.SEC = function(ADDR_MODE) {
         // Increment cycles, pc and write operand.
         case (0x00): me._CYCLES += 0; me._PC += 0; break;
 
-        default: console.error("Illegal ADC opcode passed. (" + opCode + ")" ); break;
+        default: console.error("Illegal ADC opcode passed. (0x" + opCode.toString(16) + ")" ); break;
 
     }
 };
@@ -1949,7 +2246,7 @@ MOS6502.prototype.SED = function(ADDR_MODE) {
         // Get Operand
         case (0x00): OPER = me; break;
 
-        default: console.error("Illegal ADC opcode passed. (" + opCode + ")" ); break;
+        default: console.error("Illegal ADC opcode passed. (0x" + opCode.toString(16) + ")" ); break;
 
     }
 
@@ -1959,7 +2256,7 @@ MOS6502.prototype.SED = function(ADDR_MODE) {
         // Increment cycles, pc and write operand.
         case (0x00): me._CYCLES += 0; me._PC += 0; break;
 
-        default: console.error("Illegal ADC opcode passed. (" + opCode + ")" ); break;
+        default: console.error("Illegal ADC opcode passed. (0x" + opCode.toString(16) + ")" ); break;
 
     }
 };
@@ -1975,7 +2272,7 @@ MOS6502.prototype.SEI = function(ADDR_MODE) {
         // Get Operand
         case (0x00): OPER = me; break;
 
-        default: console.error("Illegal ADC opcode passed. (" + opCode + ")" ); break;
+        default: console.error("Illegal ADC opcode passed. (0x" + opCode.toString(16) + ")" ); break;
 
     }
 
@@ -1985,7 +2282,7 @@ MOS6502.prototype.SEI = function(ADDR_MODE) {
         // Increment cycles, pc and write operand.
         case (0x00): me._CYCLES += 0; me._PC += 0; break;
 
-        default: console.error("Illegal ADC opcode passed. (" + opCode + ")" ); break;
+        default: console.error("Illegal ADC opcode passed. (0x" + opCode.toString(16) + ")" ); break;
 
     }
 };
@@ -2001,7 +2298,7 @@ MOS6502.prototype.STA = function(ADDR_MODE) {
         // Get Operand
         case (0x00): OPER = me; break;
 
-        default: console.error("Illegal ADC opcode passed. (" + opCode + ")" ); break;
+        default: console.error("Illegal ADC opcode passed. (0x" + opCode.toString(16) + ")" ); break;
 
     }
 
@@ -2011,7 +2308,7 @@ MOS6502.prototype.STA = function(ADDR_MODE) {
         // Increment cycles, pc and write operand.
         case (0x00): me._CYCLES += 0; me._PC += 0; break;
 
-        default: console.error("Illegal ADC opcode passed. (" + opCode + ")" ); break;
+        default: console.error("Illegal ADC opcode passed. (0x" + opCode.toString(16) + ")" ); break;
 
     }
 };
@@ -2027,7 +2324,7 @@ MOS6502.prototype.STX = function(ADDR_MODE) {
         // Get Operand
         case (0x00): OPER = me; break;
 
-        default: console.error("Illegal ADC opcode passed. (" + opCode + ")" ); break;
+        default: console.error("Illegal ADC opcode passed. (0x" + opCode.toString(16) + ")" ); break;
 
     }
 
@@ -2037,7 +2334,7 @@ MOS6502.prototype.STX = function(ADDR_MODE) {
         // Increment cycles, pc and write operand.
         case (0x00): me._CYCLES += 0; me._PC += 0; break;
 
-        default: console.error("Illegal ADC opcode passed. (" + opCode + ")" ); break;
+        default: console.error("Illegal ADC opcode passed. (0x" + opCode.toString(16) + ")" ); break;
 
     }
 };
@@ -2053,7 +2350,7 @@ MOS6502.prototype.STY = function(ADDR_MODE) {
         // Get Operand
         case (0x00): OPER = me; break;
 
-        default: console.error("Illegal ADC opcode passed. (" + opCode + ")" ); break;
+        default: console.error("Illegal ADC opcode passed. (0x" + opCode.toString(16) + ")" ); break;
 
     }
 
@@ -2063,7 +2360,7 @@ MOS6502.prototype.STY = function(ADDR_MODE) {
         // Increment cycles, pc and write operand.
         case (0x00): me._CYCLES += 0; me._PC += 0; break;
 
-        default: console.error("Illegal ADC opcode passed. (" + opCode + ")" ); break;
+        default: console.error("Illegal ADC opcode passed. (0x" + opCode.toString(16) + ")" ); break;
 
     }
 };
@@ -2079,7 +2376,7 @@ MOS6502.prototype.TAX = function(ADDR_MODE) {
         // Get Operand
         case (0x00): OPER = me; break;
 
-        default: console.error("Illegal ADC opcode passed. (" + opCode + ")" ); break;
+        default: console.error("Illegal ADC opcode passed. (0x" + opCode.toString(16) + ")" ); break;
 
     }
 
@@ -2089,7 +2386,7 @@ MOS6502.prototype.TAX = function(ADDR_MODE) {
         // Increment cycles, pc and write operand.
         case (0x00): me._CYCLES += 0; me._PC += 0; break;
 
-        default: console.error("Illegal ADC opcode passed. (" + opCode + ")" ); break;
+        default: console.error("Illegal ADC opcode passed. (0x" + opCode.toString(16) + ")" ); break;
 
     }
 };
@@ -2105,7 +2402,7 @@ MOS6502.prototype.TAY = function(ADDR_MODE) {
         // Get Operand
         case (0x00): OPER = me; break;
 
-        default: console.error("Illegal ADC opcode passed. (" + opCode + ")" ); break;
+        default: console.error("Illegal ADC opcode passed. (0x" + opCode.toString(16) + ")" ); break;
 
     }
 
@@ -2115,7 +2412,7 @@ MOS6502.prototype.TAY = function(ADDR_MODE) {
         // Increment cycles, pc and write operand.
         case (0x00): me._CYCLES += 0; me._PC += 0; break;
 
-        default: console.error("Illegal ADC opcode passed. (" + opCode + ")" ); break;
+        default: console.error("Illegal ADC opcode passed. (0x" + opCode.toString(16) + ")" ); break;
 
     }
 };
@@ -2131,7 +2428,7 @@ MOS6502.prototype.TSX = function(ADDR_MODE) {
         // Get Operand
         case (0x00): OPER = me; break;
 
-        default: console.error("Illegal ADC opcode passed. (" + opCode + ")" ); break;
+        default: console.error("Illegal ADC opcode passed. (0x" + opCode.toString(16) + ")" ); break;
 
     }
 
@@ -2141,7 +2438,7 @@ MOS6502.prototype.TSX = function(ADDR_MODE) {
         // Increment cycles, pc and write operand.
         case (0x00): me._CYCLES += 0; me._PC += 0; break;
 
-        default: console.error("Illegal ADC opcode passed. (" + opCode + ")" ); break;
+        default: console.error("Illegal ADC opcode passed. (0x" + opCode.toString(16) + ")" ); break;
 
     }
 };
@@ -2157,7 +2454,7 @@ MOS6502.prototype.TXA = function(ADDR_MODE) {
         // Get Operand
         case (0x00): OPER = me; break;
 
-        default: console.error("Illegal ADC opcode passed. (" + opCode + ")" ); break;
+        default: console.error("Illegal ADC opcode passed. (0x" + opCode.toString(16) + ")" ); break;
 
     }
 
@@ -2167,7 +2464,7 @@ MOS6502.prototype.TXA = function(ADDR_MODE) {
         // Increment cycles, pc and write operand.
         case (0x00): me._CYCLES += 0; me._PC += 0; break;
 
-        default: console.error("Illegal ADC opcode passed. (" + opCode + ")" ); break;
+        default: console.error("Illegal ADC opcode passed. (0x" + opCode.toString(16) + ")" ); break;
 
     }
 };
@@ -2183,7 +2480,7 @@ MOS6502.prototype.TXS = function(ADDR_MODE) {
         // Get Operand
         case (0x00): OPER = me; break;
 
-        default: console.error("Illegal ADC opcode passed. (" + opCode + ")" ); break;
+        default: console.error("Illegal ADC opcode passed. (0x" + opCode.toString(16) + ")" ); break;
 
     }
 
@@ -2193,7 +2490,7 @@ MOS6502.prototype.TXS = function(ADDR_MODE) {
         // Increment cycles, pc and write operand.
         case (0x00): me._CYCLES += 0; me._PC += 0; break;
 
-        default: console.error("Illegal ADC opcode passed. (" + opCode + ")" ); break;
+        default: console.error("Illegal ADC opcode passed. (0x" + opCode.toString(16) + ")" ); break;
 
     }
 };
@@ -2209,7 +2506,7 @@ MOS6502.prototype.TYA = function(ADDR_MODE) {
         // Get Operand
         case (0x00): OPER = me; break;
 
-        default: console.error("Illegal ADC opcode passed. (" + opCode + ")" ); break;
+        default: console.error("Illegal ADC opcode passed. (0x" + opCode.toString(16) + ")" ); break;
 
     }
 
@@ -2219,7 +2516,7 @@ MOS6502.prototype.TYA = function(ADDR_MODE) {
         // Increment cycles, pc and write operand.
         case (0x00): me._CYCLES += 0; me._PC += 0; break;
 
-        default: console.error("Illegal ADC opcode passed. (" + opCode + ")" ); break;
+        default: console.error("Illegal ADC opcode passed. (0x" + opCode.toString(16) + ")" ); break;
 
     }
 };
