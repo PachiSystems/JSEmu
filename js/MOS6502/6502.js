@@ -497,6 +497,7 @@ MOS6502.prototype._SET_SIGN = function(value) { ( (value & 0x80) >> 7 === 1) ? t
 
 MOS6502.prototype._MAKE_ADDRESS = function(byte1, byte2) { return (byte2 << 8) + byte1; };
 
+
 /**
  * Addressing Mode Functions
  *
@@ -606,7 +607,7 @@ MOS6502.prototype.WriteIndirectY = function(byte1, DATA) {
 
 /* Placeholder functions for the instruction set. */
 
-MOS6502.prototype.ADC = function () {
+MOS6502.prototype.ADC = function ADC() {
     /**
 
      ADC               Add memory to accumulator with carry                ADC
@@ -659,7 +660,7 @@ MOS6502.prototype.ADC = function () {
             temp += 6;
         }
         me._SET_SIGN(temp);
-        me._SET_OVERFLOW( !( (me._A ^ OPER) & 0x80) && ( ( me._A ^ temp) & 0x80) );
+        me._SET_OVERFLOW( !( (me._A ^ OPER) & 0x80 ) && ( ( me._A ^ temp) & 0x80) );
         if ( temp > 0x99) {
             temp += 96;
         }
@@ -689,7 +690,7 @@ MOS6502.prototype.ADC = function () {
     }
 };
 
-MOS6502.prototype.AND = function() {
+MOS6502.prototype.AND = function AND() {
 
     /**
 
@@ -726,7 +727,7 @@ MOS6502.prototype.AND = function() {
         case (0x25): OPER = me.ReadZeroPage(byte1); break;
         case (0x29): OPER = byte1; break;
         case (0x2D): OPER = me.ReadAbsolute(byte1, byte2); break;
-        case (0x31): OPER = me.ReadIndirectY(byte1,false);
+        case (0x31): OPER = me.ReadIndirectY(byte1,false); break;
         case (0x35): OPER = me.ReadZeroPageX(byte1); break;
         case (0x39): OPER = me.ReadAbsoluteY(byte1,byte2,true); break;
         case (0x3D): OPER = me.ReadAbsoluteX(byte1,byte2,true); break;
@@ -757,7 +758,29 @@ MOS6502.prototype.AND = function() {
 
 };
 
-MOS6502.prototype.ASL = function(ADDR_MODE) {
+MOS6502.prototype.ASL = function ASL() {
+
+    /**
+
+     ASL          ASL Shift Left One Bit (Memory or Accumulator)           ASL
+                      +-+-+-+-+-+-+-+-+
+     Operation:  C <- |7|6|5|4|3|2|1|0| <- 0
+                      +-+-+-+-+-+-+-+-+                    N Z C I D V
+                                                           / / / _ _ _
+     (Ref: 10.2)
+     +----------------+-----------------------+---------+---------+----------+
+     | Addressing Mode| Assembly Language Form| OP CODE |No. Bytes|No. Cycles|
+     +----------------+-----------------------+---------+---------+----------+
+     |  Accumulator   |   ASL A               |    0A   |    1    |    2     |
+     |  Zero Page     |   ASL Oper            |    06   |    2    |    5     |
+     |  Zero Page,X   |   ASL Oper,X          |    16   |    2    |    6     |
+     |  Absolute      |   ASL Oper            |    0E   |    3    |    6     |
+     |  Absolute, X   |   ASL Oper,X          |    1E   |    3    |    7     |
+     +----------------+-----------------------+---------+---------+----------+
+
+
+     */
+
     var me = this,
         opCode = me._RAM[ me._PC ],
         byte1 = me._RAM[ me._PC + 1],
@@ -766,24 +789,52 @@ MOS6502.prototype.ASL = function(ADDR_MODE) {
 
     switch (opCode) {
         // Get Operand
-        case (0x00): OPER = me; break;
+        case (0x0A): OPER = me._A; break;
+        case (0x06): OPER = me.ReadZeroPage(byte1); break;
+        case (0x16): OPER = me.ReadZeroPageX(byte1); break;
+        case (0x0E): OPER = me.ReadAbsolute(byte1,byte2); break;
+        case (0x1E): OPER = me.ReadAbsoluteX(byte1,byte2,false); break;
 
         default: console.error("Illegal ADC opcode passed. (" + opCode + ")" ); break;
 
     }
 
-    // Implementation of instruction here
+    me._SET_CARRY(src & 0x80);
+    OPER <<= 1;
+    OPER &= 0xFF;
+    me._SET_SIGN(OPER);
+    me._SET_ZERO(OPER);
 
     switch (opCode) {
-        // Increment cycles, pc and write operand.
-        case (0x00): me._CYCLES += 0; me._PC += 0; break;
+        // Get Operand
+        case (0x0A): me._A = OPER; me._PC += 1; me._CYCLES += 2; break;
+        case (0x06): me.WriteZeroPage(OPER); me._PC += 2; me._CYCLES += 5; break;
+        case (0x16): me.WriteZeroPageX(OPER); me._PC += 2; me._CYCLES += 6; break;
+        case (0x0E): me.WriteAbsolute(byte1,byte2,OPER); me._PC += 3; me._CYCLES += 6; break;
+        case (0x1E): me.WriteAbsoluteX(byte1,byte2,OPER); me._PC += 3; me._CYCLES += 7; break;
 
         default: console.error("Illegal ADC opcode passed. (" + opCode + ")" ); break;
 
     }
 };
 
-MOS6502.prototype.BCC = function(ADDR_MODE) {
+MOS6502.prototype.BCC = function BCC() {
+
+    /**
+
+     BCC                     BCC Branch on Carry Clear                     BCC
+                                                           N Z C I D V
+     Operation:  Branch on C = 0                           _ _ _ _ _ _
+     (Ref: 4.1.1.3)
+     +----------------+-----------------------+---------+---------+----------+
+     | Addressing Mode| Assembly Language Form| OP CODE |No. Bytes|No. Cycles|
+     +----------------+-----------------------+---------+---------+----------+
+     |  Relative      |   BCC Oper            |    90   |    2    |    2*    |
+     +----------------+-----------------------+---------+---------+----------+
+     * Add 1 if branch occurs to same page.
+     * Add 2 if branch occurs to different page.
+
+     */
     var me = this,
         opCode = me._RAM[ me._PC ],
         byte1 = me._RAM[ me._PC + 1],
@@ -791,20 +842,32 @@ MOS6502.prototype.BCC = function(ADDR_MODE) {
         OPER;
 
     switch (opCode) {
-        // Get Operand
-        case (0x00): OPER = me; break;
+        // Since there isn't an operand to use, just check for legal opcode.
+        case (0x90): OPER = byte1; break;
 
-        default: console.error("Illegal ADC opcode passed. (" + opCode + ")" ); break;
+        default: console.error("Illegal BCC opcode passed. (0x" + opCode.toString(16) + ")" ); break;
 
     }
 
-    // Implementation of instruction here
+    // This is a peculiar one. The address it jumps to is relative to
+
+    if (!me._IF_CARRY()) {
+
+        // So... Since there are no signed numbers in JS... We have to work it out.
+        var relAddress = ( (OPER + 2) < 0x80 ) ? me._PC += OPER + 2 : me._PC += OPER + 2 - 256;
+
+        me._CYCLES += ( (me._PC & 0xFF00) !=  (me._PC + relAddress) & 0xFF00) ? 2 : 1;
+
+        me._PC += relAddress;
+    }
 
     switch (opCode) {
         // Increment cycles, pc and write operand.
-        case (0x00): me._CYCLES += 0; me._PC += 0; break;
 
-        default: console.error("Illegal ADC opcode passed. (" + opCode + ")" ); break;
+        // Always uses two cycles. Adds one if successful, add an extra one if crossing boundary.
+        case (0x90): me._CYCLES += 2; me._PC += 2; break;
+
+        default: console.error("Illegal BCC opcode passed. (" + opCode + ")" ); break;
 
     }
 };
