@@ -1817,7 +1817,31 @@ MOS6502.prototype.DEY = function() {
     }
 };
 
-MOS6502.prototype.EOR = function(ADDR_MODE) {
+MOS6502.prototype.EOR = function() {
+
+    /**
+
+     EOR            EOR "Exclusive-Or" memory with accumulator             EOR
+
+     Operation:  A EOR M -> A                              N Z C I D V
+                                                           / / _ _ _ _
+     (Ref: 2.2.3.2)
+     +----------------+-----------------------+---------+---------+----------+
+     | Addressing Mode| Assembly Language Form| OP CODE |No. Bytes|No. Cycles|
+     +----------------+-----------------------+---------+---------+----------+
+     |  Immediate     |   EOR #Oper           |    49   |    2    |    2     |
+     |  Zero Page     |   EOR Oper            |    45   |    2    |    3     |
+     |  Zero Page,X   |   EOR Oper,X          |    55   |    2    |    4     |
+     |  Absolute      |   EOR Oper            |    40   |    3    |    4     |
+     |  Absolute,X    |   EOR Oper,X          |    5D   |    3    |    4*    |
+     |  Absolute,Y    |   EOR Oper,Y          |    59   |    3    |    4*    |
+     |  (Indirect,X)  |   EOR (Oper,X)        |    41   |    2    |    6     |
+     |  (Indirect),Y  |   EOR (Oper),Y        |    51   |    2    |    5*    |
+     +----------------+-----------------------+---------+---------+----------+
+     * Add 1 if page boundary is crossed.
+
+     */
+
     var me = this,
         opCode = me._RAM[ me._PC ],
         byte1 = me._RAM[ me._PC + 1],
@@ -1826,19 +1850,36 @@ MOS6502.prototype.EOR = function(ADDR_MODE) {
 
     switch (opCode) {
         // Get Operand
-        case (0x00): OPER = me; break;
+        case (0x49): OPER = byte1; break;
+        case (0x45): OPER = me.ReadZeroPage(byte1); break;
+        case (0x55): OPER = me.ReadZeroPageX(byte1); break;
+        case (0x40): OPER = me.ReadAbsolute(byte1,byte2); break;
+        case (0x5D): OPER = me.ReadAbsoluteX(byte1,byte2,true); break;
+        case (0x59): OPER = me.ReadAbsoluteY(byte1,byte2,true); break;
+        case (0x41): OPER = me.ReadIndirectX(byte1); break;
+        case (0x51): OPER = me.ReadIndirectY(byte1,true); break;
 
-        default: console.error("Illegal ADC opcode passed. (0x" + opCode.toString(16) + ")" ); break;
+        default: console.error("Illegal EOR opcode passed. (0x" + opCode.toString(16) + ")" ); break;
 
     }
 
-    // Implementation of instruction here
+    OPER ^= me._A;
+    me._SET_SIGN(OPER);
+    me._SET_ZERO(OPER);
+    me._A = OPER;
 
     switch (opCode) {
         // Increment cycles, pc and write operand.
-        case (0x00): me._CYCLES += 0; me._PC += 0; break;
+        case (0x49): me._CYCLES += 2; me._PC += 2; break;
+        case (0x45): me._CYCLES += 3; me._PC += 2; break;
+        case (0x55): me._CYCLES += 4; me._PC += 2; break;
+        case (0x40): me._CYCLES += 4; me._PC += 3; break;
+        case (0x5D): me._CYCLES += 4; me._PC += 3; break;
+        case (0x59): me._CYCLES += 4; me._PC += 3; break;
+        case (0x41): me._CYCLES += 6; me._PC += 2; break;
+        case (0x51): me._CYCLES += 5; me._PC += 2; break;
 
-        default: console.error("Illegal ADC opcode passed. (0x" + opCode.toString(16) + ")" ); break;
+        default: console.error("Illegal EOR opcode passed. (0x" + opCode.toString(16) + ")" ); break;
 
     }
 };
