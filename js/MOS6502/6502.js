@@ -1884,7 +1884,25 @@ MOS6502.prototype.EOR = function() {
     }
 };
 
-MOS6502.prototype.INC = function(ADDR_MODE) {
+MOS6502.prototype.INC = function() {
+
+    /**
+
+     INC                    INC Increment memory by one                    INC
+                                                           N Z C I D V
+     Operation:  M + 1 -> M                                / / _ _ _ _
+     (Ref: 10.6)
+     +----------------+-----------------------+---------+---------+----------+
+     | Addressing Mode| Assembly Language Form| OP CODE |No. Bytes|No. Cycles|
+     +----------------+-----------------------+---------+---------+----------+
+     |  Zero Page     |   INC Oper            |    E6   |    2    |    5     |
+     |  Zero Page,X   |   INC Oper,X          |    F6   |    2    |    6     |
+     |  Absolute      |   INC Oper            |    EE   |    3    |    6     |
+     |  Absolute,X    |   INC Oper,X          |    FE   |    3    |    7     |
+     +----------------+-----------------------+---------+---------+----------+
+
+     */
+
     var me = this,
         opCode = me._RAM[ me._PC ],
         byte1 = me._RAM[ me._PC + 1],
@@ -1893,24 +1911,48 @@ MOS6502.prototype.INC = function(ADDR_MODE) {
 
     switch (opCode) {
         // Get Operand
-        case (0x00): OPER = me; break;
+        case (0xE6): OPER = me.ReadZeroPage(byte1); break;
+        case (0xF6): OPER = me.ReadZeroPageX(byte1); break;
+        case (0xEE): OPER = me.ReadAbsolute(byte1,byte2); break;
+        case (0xFE): OPER = me.ReadAbsoluteX(byte1,byte2,false); break;
 
-        default: console.error("Illegal ADC opcode passed. (0x" + opCode.toString(16) + ")" ); break;
+        default: console.error("Illegal INC opcode passed. (0x" + opCode.toString(16) + ")" ); break;
 
     }
 
-    // Implementation of instruction here
+    OPER = (OPER + 1) & 0xFF;
+    me._SET_SIGN(OPER);
+    me._SET_ZERO(OPER);
+
 
     switch (opCode) {
         // Increment cycles, pc and write operand.
-        case (0x00): me._CYCLES += 0; me._PC += 0; break;
+        case (0xE6): me.WriteZeroPage(byte1,OPER); me._CYCLES += 5; me._PC += 2; break;
+        case (0xF6): me.WriteZeroPageX(byte1,OPER); me._CYCLES += 6; me._PC += 2; break;
+        case (0xEE): me.WriteAbsolute(byte1,byte2,OPER); me._CYCLES += 6; me._PC += 3; break;
+        case (0xFE): me.WriteAbsoluteX(byte1,byte2,OPER); me._CYCLES += 7; me._PC += 3; break;
 
-        default: console.error("Illegal ADC opcode passed. (0x" + opCode.toString(16) + ")" ); break;
+        default: console.error("Illegal INC opcode passed. (0x" + opCode.toString(16) + ")" ); break;
 
     }
 };
 
-MOS6502.prototype.INX = function(ADDR_MODE) {
+MOS6502.prototype.INX = function() {
+
+    /**
+
+     INX                    INX Increment Index X by one                   INX
+                                                           N Z C I D V
+     Operation:  X + 1 -> X                                / / _ _ _ _
+     (Ref: 7.4)
+     +----------------+-----------------------+---------+---------+----------+
+     | Addressing Mode| Assembly Language Form| OP CODE |No. Bytes|No. Cycles|
+     +----------------+-----------------------+---------+---------+----------+
+     |  Implied       |   INX                 |    E8   |    1    |    2     |
+     +----------------+-----------------------+---------+---------+----------+
+
+     */
+
     var me = this,
         opCode = me._RAM[ me._PC ],
         byte1 = me._RAM[ me._PC + 1],
@@ -1919,24 +1961,43 @@ MOS6502.prototype.INX = function(ADDR_MODE) {
 
     switch (opCode) {
         // Get Operand
-        case (0x00): OPER = me; break;
+        case (0xE8): OPER = me._X; break;
 
-        default: console.error("Illegal ADC opcode passed. (0x" + opCode.toString(16) + ")" ); break;
+        default: console.error("Illegal INX opcode passed. (0x" + opCode.toString(16) + ")" ); break;
 
     }
 
-    // Implementation of instruction here
+    OPER = (OPER + 1) & 0xFF;
+    me._SET_SIGN(OPER);
+    me._SET_ZERO(OPER);
+    me._X= OPER;
 
     switch (opCode) {
         // Increment cycles, pc and write operand.
-        case (0x00): me._CYCLES += 0; me._PC += 0; break;
+        case (0xE8): me._CYCLES += 2; me._PC += 1; break;
 
-        default: console.error("Illegal ADC opcode passed. (0x" + opCode.toString(16) + ")" ); break;
+        default: console.error("Illegal INX opcode passed. (0x" + opCode.toString(16) + ")" ); break;
 
     }
 };
 
-MOS6502.prototype.INY = function(ADDR_MODE) {
+MOS6502.prototype.INY = function() {
+
+    /**
+
+     INY                    INY Increment Index Y by one                   INY
+
+     Operation:  X + 1 -> X                                N Z C I D V
+                                                           / / _ _ _ _
+     (Ref: 7.5)
+     +----------------+-----------------------+---------+---------+----------+
+     | Addressing Mode| Assembly Language Form| OP CODE |No. Bytes|No. Cycles|
+     +----------------+-----------------------+---------+---------+----------+
+     |  Implied       |   INY                 |    C8   |    1    |    2     |
+     +----------------+-----------------------+---------+---------+----------+
+
+     */
+
     var me = this,
         opCode = me._RAM[ me._PC ],
         byte1 = me._RAM[ me._PC + 1],
@@ -1945,19 +2006,22 @@ MOS6502.prototype.INY = function(ADDR_MODE) {
 
     switch (opCode) {
         // Get Operand
-        case (0x00): OPER = me; break;
+        case (0xC8): OPER = me._Y; break;
 
-        default: console.error("Illegal ADC opcode passed. (0x" + opCode.toString(16) + ")" ); break;
+        default: console.error("Illegal INY opcode passed. (0x" + opCode.toString(16) + ")" ); break;
 
     }
 
-    // Implementation of instruction here
+    OPER = (OPER + 1) & 0xFF;
+    me._SET_SIGN(OPER);
+    me._SET_ZERO(OPER);
+    me._Y = OPER;
 
     switch (opCode) {
         // Increment cycles, pc and write operand.
-        case (0x00): me._CYCLES += 0; me._PC += 0; break;
+        case (0xC8): me._CYCLES += 0; me._PC += 0; break;
 
-        default: console.error("Illegal ADC opcode passed. (0x" + opCode.toString(16) + ")" ); break;
+        default: console.error("Illegal INY opcode passed. (0x" + opCode.toString(16) + ")" ); break;
 
     }
 };
