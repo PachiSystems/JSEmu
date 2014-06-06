@@ -2026,7 +2026,24 @@ MOS6502.prototype.INY = function() {
     }
 };
 
-MOS6502.prototype.JMP = function(ADDR_MODE) {
+MOS6502.prototype.JMP = function() {
+
+    /**
+
+     JMP                     JMP Jump to new location                      JMP
+
+     Operation:  (PC + 1) -> PCL                           N Z C I D V
+                 (PC + 2) -> PCH   (Ref: 4.0.2)            _ _ _ _ _ _
+     (Ref: 9.8.1)
+     +----------------+-----------------------+---------+---------+----------+
+     | Addressing Mode| Assembly Language Form| OP CODE |No. Bytes|No. Cycles|
+     +----------------+-----------------------+---------+---------+----------+
+     |  Absolute      |   JMP Oper            |    4C   |    3    |    3     |
+     |  Indirect      |   JMP (Oper)          |    6C   |    3    |    5     |
+     +----------------+-----------------------+---------+---------+----------+
+
+     */
+
     var me = this,
         opCode = me._RAM[ me._PC ],
         byte1 = me._RAM[ me._PC + 1],
@@ -2035,50 +2052,58 @@ MOS6502.prototype.JMP = function(ADDR_MODE) {
 
     switch (opCode) {
         // Get Operand
-        case (0x00): OPER = me; break;
+        case (0x4C):
+            me._PC = me._MAKE_ADDRESS(byte1,byte2);
+            me._CYCLES += 3;
+            break;
+        case (0x6C):
+            me._PC = me._MAKE_ADDRESS(me._RAM[byte1],me._RAM[byte2]);
+            me._CYCLES += 5;
+            break;
 
-        default: console.error("Illegal ADC opcode passed. (0x" + opCode.toString(16) + ")" ); break;
-
-    }
-
-    // Implementation of instruction here
-
-    switch (opCode) {
-        // Increment cycles, pc and write operand.
-        case (0x00): me._CYCLES += 0; me._PC += 0; break;
-
-        default: console.error("Illegal ADC opcode passed. (0x" + opCode.toString(16) + ")" ); break;
+        default: console.error("Illegal JMP opcode passed. (0x" + opCode.toString(16) + ")" ); break;
 
     }
+
 };
 
-MOS6502.prototype.JSR = function(ADDR_MODE) {
+MOS6502.prototype.JSR = function() {
+
+    /**
+
+     JSR          JSR Jump to new location saving return address           JSR
+
+     Operation:  PC + 2 toS, (PC + 1) -> PCL               N Z C I D V
+                             (PC + 2) -> PCH               _ _ _ _ _ _
+     (Ref: 8.1)
+     +----------------+-----------------------+---------+---------+----------+
+     | Addressing Mode| Assembly Language Form| OP CODE |No. Bytes|No. Cycles|
+     +----------------+-----------------------+---------+---------+----------+
+     |  Absolute      |   JSR Oper            |    20   |    3    |    6     |
+     +----------------+-----------------------+---------+---------+----------+
+
+     */
+
     var me = this,
         opCode = me._RAM[ me._PC ],
-        byte1 = me._RAM[ me._PC + 1],
-        byte2 = me._RAM[ me._PC + 2],
-        OPER;
+        byte1 = me._RAM[ me._PC + 1 ],
+        byte2 = me._RAM[ me._PC + 2 ];
 
     switch (opCode) {
         // Get Operand
-        case (0x00): OPER = me; break;
+        case (0x20):
+            me._STACK.push(me._PC + 3);
+            me._PC = me._MAKE_ADDRESS(byte1,byte2);
+            me._CYCLES += 6;
+            break;
 
-        default: console.error("Illegal ADC opcode passed. (0x" + opCode.toString(16) + ")" ); break;
-
-    }
-
-    // Implementation of instruction here
-
-    switch (opCode) {
-        // Increment cycles, pc and write operand.
-        case (0x00): me._CYCLES += 0; me._PC += 0; break;
-
-        default: console.error("Illegal ADC opcode passed. (0x" + opCode.toString(16) + ")" ); break;
+        default: console.error("Illegal JSR opcode passed. (0x" + opCode.toString(16) + ")" ); break;
 
     }
 };
 
-MOS6502.prototype.LDA = function(ADDR_MODE) {
+MOS6502.prototype.LDA = function() {
+
     var me = this,
         opCode = me._RAM[ me._PC ],
         byte1 = me._RAM[ me._PC + 1],
