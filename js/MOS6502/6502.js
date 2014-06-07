@@ -2092,7 +2092,7 @@ MOS6502.prototype.JSR = function() {
     switch (opCode) {
         // Get Operand
         case (0x20):
-            me._STACK.push(me._PC + 3);
+            me._STACK.push(me._PC + 2);
             me._PC = me._MAKE_ADDRESS(byte1,byte2);
             me._CYCLES += 6;
             break;
@@ -2104,6 +2104,29 @@ MOS6502.prototype.JSR = function() {
 
 MOS6502.prototype.LDA = function() {
 
+    /**
+
+     LDA                  LDA Load accumulator with memory                 LDA
+
+     Operation:  M -> A                                    N Z C I D V
+                                                           / / _ _ _ _
+     (Ref: 2.1.1)
+     +----------------+-----------------------+---------+---------+----------+
+     | Addressing Mode| Assembly Language Form| OP CODE |No. Bytes|No. Cycles|
+     +----------------+-----------------------+---------+---------+----------+
+     |  Immediate     |   LDA #Oper           |    A9   |    2    |    2     |
+     |  Zero Page     |   LDA Oper            |    A5   |    2    |    3     |
+     |  Zero Page,X   |   LDA Oper,X          |    B5   |    2    |    4     |
+     |  Absolute      |   LDA Oper            |    AD   |    3    |    4     |
+     |  Absolute,X    |   LDA Oper,X          |    BD   |    3    |    4*    |
+     |  Absolute,Y    |   LDA Oper,Y          |    B9   |    3    |    4*    |
+     |  (Indirect,X)  |   LDA (Oper,X)        |    A1   |    2    |    6     |
+     |  (Indirect),Y  |   LDA (Oper),Y        |    B1   |    2    |    5*    |
+     +----------------+-----------------------+---------+---------+----------+
+     * Add 1 if page boundary is crossed.
+
+     */
+
     var me = this,
         opCode = me._RAM[ me._PC ],
         byte1 = me._RAM[ me._PC + 1],
@@ -2112,24 +2135,61 @@ MOS6502.prototype.LDA = function() {
 
     switch (opCode) {
         // Get Operand
-        case (0x00): OPER = me; break;
+        case (0xA9): OPER = byte1; break;
+        case (0xA5): OPER = me.ReadZeroPage(byte1); break;
+        case (0xB5): OPER = me.ReadZeroPageX(byte1); break;
+        case (0xAD): OPER = me.ReadAbsolute(byte1,byte2); break;
+        case (0xBD): OPER = me.ReadAbsoluteX(byte1,byte2,true); break;
+        case (0xB9): OPER = me.ReadAbsoluteY(byte1,byte2,true); break;
+        case (0xA1): OPER = me.ReadIndirectX(byte1); break;
+        case (0xB1): OPER = me.ReadIndirectY(byte1,true); break;
 
-        default: console.error("Illegal ADC opcode passed. (0x" + opCode.toString(16) + ")" ); break;
+        default: console.error("Illegal LDA opcode passed. (0x" + opCode.toString(16) + ")" ); break;
 
     }
 
-    // Implementation of instruction here
+    me._SET_SIGN(OPER);
+    me._SET_ZERO(OPER);
+    me._A = OPER;
 
     switch (opCode) {
         // Increment cycles, pc and write operand.
-        case (0x00): me._CYCLES += 0; me._PC += 0; break;
+        case (0xA9): me._CYCLES += 2; me._PC += 2; break;
+        case (0xA5): me._CYCLES += 3; me._PC += 2; break;
+        case (0xB5): me._CYCLES += 4; me._PC += 2; break;
+        case (0xAD): me._CYCLES += 4; me._PC += 3; break;
+        case (0xBD): me._CYCLES += 4; me._PC += 3; break;
+        case (0xB9): me._CYCLES += 4; me._PC += 3; break;
+        case (0xA1): me._CYCLES += 6; me._PC += 2; break;
+        case (0xB1): me._CYCLES += 5; me._PC += 2; break;
 
-        default: console.error("Illegal ADC opcode passed. (0x" + opCode.toString(16) + ")" ); break;
+        default: console.error("Illegal LDA opcode passed. (0x" + opCode.toString(16) + ")" ); break;
 
     }
 };
 
-MOS6502.prototype.LDX = function(ADDR_MODE) {
+MOS6502.prototype.LDX = function() {
+
+    /**
+
+     LDX                   LDX Load index X with memory                    LDX
+
+     Operation:  M -> X                                    N Z C I D V
+                                                           / / _ _ _ _
+     (Ref: 7.0)
+     +----------------+-----------------------+---------+---------+----------+
+     | Addressing Mode| Assembly Language Form| OP CODE |No. Bytes|No. Cycles|
+     +----------------+-----------------------+---------+---------+----------+
+     |  Immediate     |   LDX #Oper           |    A2   |    2    |    2     |
+     |  Zero Page     |   LDX Oper            |    A6   |    2    |    3     |
+     |  Zero Page,Y   |   LDX Oper,Y          |    B6   |    2    |    4     |
+     |  Absolute      |   LDX Oper            |    AE   |    3    |    4     |
+     |  Absolute,Y    |   LDX Oper,Y          |    BE   |    3    |    4*    |
+     +----------------+-----------------------+---------+---------+----------+
+     * Add 1 when page boundary is crossed.
+
+     */
+
     var me = this,
         opCode = me._RAM[ me._PC ],
         byte1 = me._RAM[ me._PC + 1],
@@ -2138,24 +2198,54 @@ MOS6502.prototype.LDX = function(ADDR_MODE) {
 
     switch (opCode) {
         // Get Operand
-        case (0x00): OPER = me; break;
+        case (0xA2): OPER = byte1; break;
+        case (0xA6): OPER = me.ReadZeroPage(byte1); break;
+        case (0xB6): OPER = me.ReadZeroPageY(byte1); break;
+        case (0xAE): OPER = me.ReadAbsolute(byte1,byte2); break;
+        case (0xBE): OPER = me.ReadAbsoluteY(byte1,byte2,true); break;
 
-        default: console.error("Illegal ADC opcode passed. (0x" + opCode.toString(16) + ")" ); break;
+        default: console.error("Illegal LDX opcode passed. (0x" + opCode.toString(16) + ")" ); break;
 
     }
 
-    // Implementation of instruction here
+    me._SET_SIGN(OPER);
+    me._SET_ZERO(OPER);
+    me._X = OPER;
 
     switch (opCode) {
         // Increment cycles, pc and write operand.
-        case (0x00): me._CYCLES += 0; me._PC += 0; break;
+        case (0xA2): me._CYCLES += 2; me._PC += 2; break;
+        case (0xA6): me._CYCLES += 3; me._PC += 2; break;
+        case (0xB6): me._CYCLES += 4; me._PC += 2; break;
+        case (0xAE): me._CYCLES += 4; me._PC += 3; break;
+        case (0xBE): me._CYCLES += 4; me._PC += 3; break;
 
-        default: console.error("Illegal ADC opcode passed. (0x" + opCode.toString(16) + ")" ); break;
+        default: console.error("Illegal LDX opcode passed. (0x" + opCode.toString(16) + ")" ); break;
 
     }
 };
 
-MOS6502.prototype.LDY = function(ADDR_MODE) {
+MOS6502.prototype.LDY = function() {
+
+    /**
+
+     LDY                   LDY Load index Y with memory                    LDY
+                                                           N Z C I D V
+     Operation:  M -> Y                                    / / _ _ _ _
+     (Ref: 7.1)
+     +----------------+-----------------------+---------+---------+----------+
+     | Addressing Mode| Assembly Language Form| OP CODE |No. Bytes|No. Cycles|
+     +----------------+-----------------------+---------+---------+----------+
+     |  Immediate     |   LDY #Oper           |    A0   |    2    |    2     |
+     |  Zero Page     |   LDY Oper            |    A4   |    2    |    3     |
+     |  Zero Page,X   |   LDY Oper,X          |    B4   |    2    |    4     |
+     |  Absolute      |   LDY Oper            |    AC   |    3    |    4     |
+     |  Absolute,X    |   LDY Oper,X          |    BC   |    3    |    4*    |
+     +----------------+-----------------------+---------+---------+----------+
+     * Add 1 when page boundary is crossed.
+
+     */
+
     var me = this,
         opCode = me._RAM[ me._PC ],
         byte1 = me._RAM[ me._PC + 1],
@@ -2164,24 +2254,55 @@ MOS6502.prototype.LDY = function(ADDR_MODE) {
 
     switch (opCode) {
         // Get Operand
-        case (0x00): OPER = me; break;
+        case (0xA0): OPER = byte1; break;
+        case (0xA4): OPER = me.ReadZeroPage(byte1); break;
+        case (0xB4): OPER = me.ReadZeroPageX(byte1); break;
+        case (0xAC): OPER = me.ReadAbsolute(byte1,byte2); break;
+        case (0xBC): OPER = me.ReadAbsoluteX(byte1,byte2,true); break;
 
-        default: console.error("Illegal ADC opcode passed. (0x" + opCode.toString(16) + ")" ); break;
+        default: console.error("Illegal LDY opcode passed. (0x" + opCode.toString(16) + ")" ); break;
 
     }
 
-    // Implementation of instruction here
+    me._SET_SIGN(OPER);
+    me._SET_ZERO(OPER);
+    me._Y = OPER;
 
     switch (opCode) {
         // Increment cycles, pc and write operand.
-        case (0x00): me._CYCLES += 0; me._PC += 0; break;
+        case (0xA0): me._CYCLES += 2; me._PC += 2; break;
+        case (0xA4): me._CYCLES += 3; me._PC += 2; break;
+        case (0xB4): me._CYCLES += 4; me._PC += 2; break;
+        case (0xAC): me._CYCLES += 4; me._PC += 3; break;
+        case (0xBC): me._CYCLES += 4; me._PC += 3; break;
 
-        default: console.error("Illegal ADC opcode passed. (0x" + opCode.toString(16) + ")" ); break;
+        default: console.error("Illegal LDY opcode passed. (0x" + opCode.toString(16) + ")" ); break;
 
     }
 };
 
-MOS6502.prototype.LSR = function(ADDR_MODE) {
+MOS6502.prototype.LSR = function() {
+
+    /**
+
+     LSR          LSR Shift right one bit (memory or accumulator)          LSR
+
+                      +-+-+-+-+-+-+-+-+
+     Operation:  0 -> |7|6|5|4|3|2|1|0| -> C               N Z C I D V
+                      +-+-+-+-+-+-+-+-+                    0 / / _ _ _
+     (Ref: 10.1)
+     +----------------+-----------------------+---------+---------+----------+
+     | Addressing Mode| Assembly Language Form| OP CODE |No. Bytes|No. Cycles|
+     +----------------+-----------------------+---------+---------+----------+
+     |  Accumulator   |   LSR A               |    4A   |    1    |    2     |
+     |  Zero Page     |   LSR Oper            |    46   |    2    |    5     |
+     |  Zero Page,X   |   LSR Oper,X          |    56   |    2    |    6     |
+     |  Absolute      |   LSR Oper            |    4E   |    3    |    6     |
+     |  Absolute,X    |   LSR Oper,X          |    5E   |    3    |    7     |
+     +----------------+-----------------------+---------+---------+----------+
+
+     */
+
     var me = this,
         opCode = me._RAM[ me._PC ],
         byte1 = me._RAM[ me._PC + 1],
@@ -2190,24 +2311,87 @@ MOS6502.prototype.LSR = function(ADDR_MODE) {
 
     switch (opCode) {
         // Get Operand
-        case (0x00): OPER = me; break;
+        case (0x4A): OPER = me._A; break;
+        case (0x46): OPER = me.ReadZeroPage(byte1); break;
+        case (0x56): OPER = me.ReadZeroPageX(byte1); break;
+        case (0x4E): OPER = me.ReadAbsolute(byte1,byte2); break;
+        case (0x5E): OPER = me.ReadAbsoluteX(byte1,byte2,false); break;
 
-        default: console.error("Illegal ADC opcode passed. (0x" + opCode.toString(16) + ")" ); break;
+        default: console.error("Illegal LSR opcode passed. (0x" + opCode.toString(16) + ")" ); break;
 
     }
 
-    // Implementation of instruction here
+    me._SET_CARRY(OPER & 0x01);
+    OPER >>= 1;
+    me._SET_SIGN(OPER);
+    me._SET_ZERO(OPER);
 
     switch (opCode) {
         // Increment cycles, pc and write operand.
-        case (0x00): me._CYCLES += 0; me._PC += 0; break;
+        case (0x4A): me._A = OPER; me._CYCLES += 2; me._PC += 1; break;
+        case (0x46): me.WriteZeroPage(byte1,OPER); me._CYCLES += 5; me._PC += 2; break;
+        case (0x56): me.WriteZeroPageX(byte1,OPER); me._CYCLES += 6; me._PC += 2; break;
+        case (0x4E): me.WriteAbsolute(byte1,byte2,OPER); me._CYCLES += 6; me._PC += 3; break;
+        case (0x5E): me.WriteAbsoluteX(byte1,byte2,OPER); me._CYCLES += 7; me._PC += 3; break;
 
-        default: console.error("Illegal ADC opcode passed. (0x" + opCode.toString(16) + ")" ); break;
+        default: console.error("Illegal LSR opcode passed. (0x" + opCode.toString(16) + ")" ); break;
 
     }
 };
 
-MOS6502.prototype.NOP = function(ADDR_MODE) {
+MOS6502.prototype.NOP = function() {
+
+    /**
+
+     NOP                         NOP No operation                          NOP
+                                                           N Z C I D V
+     Operation:  No Operation (2 cycles)                   _ _ _ _ _ _
+
+     +----------------+-----------------------+---------+---------+----------+
+     | Addressing Mode| Assembly Language Form| OP CODE |No. Bytes|No. Cycles|
+     +----------------+-----------------------+---------+---------+----------+
+     |  Implied       |   NOP                 |    EA   |    1    |    2     |
+     +----------------+-----------------------+---------+---------+----------+
+
+     */
+
+    var me = this,
+        opCode = me._RAM[ me._PC ];
+
+    switch (opCode) {
+        // Get Operand
+        case (0xEA): me._PC += 1; me._CYCLES += 2; break;
+
+        default: console.error("Illegal NOP opcode passed. (0x" + opCode.toString(16) + ")" ); break;
+
+    }
+};
+
+MOS6502.prototype.ORA = function() {
+
+    /**
+
+     ORA                 ORA "OR" memory with accumulator                  ORA
+
+     Operation: A V M -> A                                 N Z C I D V
+                                                           / / _ _ _ _
+     (Ref: 2.2.3.1)
+     +----------------+-----------------------+---------+---------+----------+
+     | Addressing Mode| Assembly Language Form| OP CODE |No. Bytes|No. Cycles|
+     +----------------+-----------------------+---------+---------+----------+
+     |  Immediate     |   ORA #Oper           |    09   |    2    |    2     |
+     |  Zero Page     |   ORA Oper            |    05   |    2    |    3     |
+     |  Zero Page,X   |   ORA Oper,X          |    15   |    2    |    4     |
+     |  Absolute      |   ORA Oper            |    0D   |    3    |    4     |
+     |  Absolute,X    |   ORA Oper,X          |    10   |    3    |    4*    |
+     |  Absolute,Y    |   ORA Oper,Y          |    19   |    3    |    4*    |
+     |  (Indirect,X)  |   ORA (Oper,X)        |    01   |    2    |    6     |
+     |  (Indirect),Y  |   ORA (Oper),Y        |    11   |    2    |    5     |
+     +----------------+-----------------------+---------+---------+----------+
+     * Add 1 on page crossing
+
+     */
+
     var me = this,
         opCode = me._RAM[ me._PC ],
         byte1 = me._RAM[ me._PC + 1],
@@ -2216,50 +2400,41 @@ MOS6502.prototype.NOP = function(ADDR_MODE) {
 
     switch (opCode) {
         // Get Operand
-        case (0x00): OPER = me; break;
+        case (0x09): OPER = byte1; break;
+        case (0x05): OPER = me.ReadZeroPage(byte1); break;
+        case (0x15): OPER = me.ReadZeroPageX(byte1); break;
+        case (0x0D): OPER = me.ReadAbsolute(byte1,byte2); break;
+        case (0x10): OPER = me.ReadAbsoluteX(byte1,byte2,true); break;
+        case (0x19): OPER = me.ReadAbsoluteY(byte1,byte2,true); break;
+        case (0x01): OPER = me.ReadIndirectX(byte1); break;
+        case (0x11): OPER = me.ReadIndirectY(byte1,false); break;
 
-        default: console.error("Illegal ADC opcode passed. (0x" + opCode.toString(16) + ")" ); break;
+        default: console.error("Illegal ORA opcode passed. (0x" + opCode.toString(16) + ")" ); break;
 
     }
 
-    // Implementation of instruction here
+    OPER |= me._A;
+    me._SET_SIGN(byte1);
+    me._SET_ZERO(byte1);
+    me._A = OPER;
 
     switch (opCode) {
         // Increment cycles, pc and write operand.
-        case (0x00): me._CYCLES += 0; me._PC += 0; break;
+        case (0x09): me._CYCLES += 2; me._PC += 2; break;
+        case (0x05): me._CYCLES += 3; me._PC += 2; break;
+        case (0x15): me._CYCLES += 4; me._PC += 2; break;
+        case (0x0D): me._CYCLES += 4; me._PC += 3; break;
+        case (0x10): me._CYCLES += 4; me._PC += 3; break;
+        case (0x19): me._CYCLES += 4; me._PC += 3; break;
+        case (0x01): me._CYCLES += 6; me._PC += 2; break;
+        case (0x11): me._CYCLES += 5; me._PC += 2; break;
 
-        default: console.error("Illegal ADC opcode passed. (0x" + opCode.toString(16) + ")" ); break;
+        default: console.error("Illegal ORA opcode passed. (0x" + opCode.toString(16) + ")" ); break;
 
     }
 };
 
-MOS6502.prototype.ORA = function(ADDR_MODE) {
-    var me = this,
-        opCode = me._RAM[ me._PC ],
-        byte1 = me._RAM[ me._PC + 1],
-        byte2 = me._RAM[ me._PC + 2],
-        OPER;
-
-    switch (opCode) {
-        // Get Operand
-        case (0x00): OPER = me; break;
-
-        default: console.error("Illegal ADC opcode passed. (0x" + opCode.toString(16) + ")" ); break;
-
-    }
-
-    // Implementation of instruction here
-
-    switch (opCode) {
-        // Increment cycles, pc and write operand.
-        case (0x00): me._CYCLES += 0; me._PC += 0; break;
-
-        default: console.error("Illegal ADC opcode passed. (0x" + opCode.toString(16) + ")" ); break;
-
-    }
-};
-
-MOS6502.prototype.PHA = function(ADDR_MODE) {
+MOS6502.prototype.PHA = function() {
     var me = this,
         opCode = me._RAM[ me._PC ],
         byte1 = me._RAM[ me._PC + 1],
