@@ -497,6 +497,43 @@ MOS6502.prototype._SET_SIGN = function(value) { ( (value & 0x80) >> 7 === 1) ? t
 
 MOS6502.prototype._MAKE_ADDRESS = function(byte1, byte2) { return (byte2 << 8) + byte1; };
 
+MOS6502.prototype._PUSH = function(byte) {
+    /**
+     Stack Push
+     
+     Decided that instead of an array, we will actually use the proper memory address. Mostly because there are a couple
+     of instructions that operate on the Stack Pointer, which doesn't get changed anywhere.
+     */
+        
+    var me = this,
+        SP = me._SP;
+
+    me._RAM[ SP ] = (byte & 0xFF);
+    SP--;
+    if (SP < 0x0100) SP = 0x01FF;
+    me._SP = SP;
+};
+
+MOS6502.prototype._PULL = function() {
+    /**
+     Stack Pull
+     
+     Since we're going to use the actual memory to run the stack, then we'll need a way to pull things off. I might
+     change the implementation of these to go back to an array in the future depending on performance.
+     */
+        
+    var me = this,
+        SP = me._SP,
+        OPER;
+    
+    OPER = me._RAM[ SP ];
+    SP++;
+    if (SP > 0x01FF) SP = 0x0100;
+    me._SP = SP;
+    return OPER;
+    
+};
+
 
 /**
  * Addressing Mode Functions
@@ -1143,13 +1180,13 @@ MOS6502.prototype.BRK = function() {
     me._PC++;
 
     // Push return address onto the stack.
-    me._STACK.push( (me._PC >> 8) & 0xFF);
-    me._STACK.push( me._PC & 0xFF );
+    me._PUSH( (me._PC >> 8) & 0xFF);
+    me._PUSH( me._PC & 0xFF );
 
     me._SET_BREAK((1));
 
     // Push the status register onto the stack.
-    me._STACK.push( me._P );
+    me._PUSH( me._P );
 
     me._SET_INTERRUPT((1));
 
@@ -1885,7 +1922,7 @@ MOS6502.prototype.JSR = function() {
     switch (opCode) {
         // Get Operand
         case (0x20):
-            me._STACK.push(me._PC + 2);
+            me._PUSH(me._PC + 2);
             me._PC = me._MAKE_ADDRESS(byte1,byte2);
             me._CYCLES += 6;
             break;
@@ -2199,7 +2236,7 @@ MOS6502.prototype.PHA = function() {
 
     switch (opCode) {
         // Get Operand
-        case (0x46): me._STACK.push(me._A); me._CYCLES += 3; me._PC += 1; break;
+        case (0x46): me._PUSH(me._A); me._CYCLES += 3; me._PC += 1; break;
 
         default: console.error("Illegal ADC opcode passed. (0x" + opCode.toString(16) + ")" ); break;
 
@@ -2230,7 +2267,7 @@ MOS6502.prototype.PHP = function() {
     switch (opCode) {
         // Get Operand
         case (0x08):
-            me._STACK.push(me._P);
+            me._PUSH(me._P);
             me._CYCLES += 3;
             me._PC += 1;
             break;
@@ -2265,7 +2302,7 @@ MOS6502.prototype.PLA = function() {
     switch (opCode) {
         // Get Operand
         case (0x68):
-            OPER = me._STACK.pop();
+            OPER = me._PULL();
             me._SET_SIGN(OPER);
             me._SET_ZERO(OPER);
             me._CYCLES += 4;
@@ -2302,7 +2339,7 @@ MOS6502.prototype.PLP = function() {
     switch (opCode) {
         // Get Operand
         case (0x28):
-            me._P = me._STACK.pop();
+            me._P = me._PULL();
             me._CYCLES += 4;
             me._PC += 1;
             break;
@@ -2461,10 +2498,10 @@ MOS6502.prototype.RTI = function() {
     switch (opCode) {
         // Get Operand
         case (0x4D):
-            me._P = me._STACK.pop();
+            me._P = me._PULL();
 
-            var ADDR = me._STACK.pop();
-            ADDR |= (me._STACK.pop() << 8);
+            var ADDR = me._PULL();
+            ADDR |= (me._PULL() << 8);
 
             me._CYCLES += 6;
             me._PC = ADDR;
@@ -2499,8 +2536,8 @@ MOS6502.prototype.RTS = function() {
     switch (opCode) {
         // Get Operand
         case (0x60):
-            var ADDR = me._STACK.pop();
-            ADDR |= ( (me._STACK.pop() << 8 ) + 1 );
+            var ADDR = me._PULL();
+            ADDR |= ( (me._PULL() << 8 ) + 1 );
 
             me._CYCLES += 6;
             me._PC += ADDR;
