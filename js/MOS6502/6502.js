@@ -52,7 +52,11 @@ var MOS6502 = function() {
     this._P = 0x20; // Bit 5 is supposed to be always at logical 1...
 
     /* Stack */
-    this._STACK = new Uint8Array(0xFF);  // Thinking to put this in the RAM where it's supposed to be...
+    /* I am using the actualy memory for the stack from 0x0100 to 0x01FF. Might implement an array in the future if
+     * there are any obvious performance issues.
+     */
+
+    //this._STACK = new Uint8Array(0xFF);  // Thinking to put this in the RAM where it's supposed to be...
     this._SP = 0x01FF;  // For some reason the stack starts at the end and works backwards according to docs...
 
     /* Program Counter */
@@ -117,7 +121,7 @@ MOS6502.prototype.beginEmulation = function(romImage, renderer) {
 
 MOS6502.prototype.loadImage = function (romImage) {
 
-    if (romImage == "TEST_MODE") return;
+    //if (romImage == "TEST_MODE") return;
 
     var xhr = new XMLHttpRequest(),
         me = this,
@@ -127,18 +131,26 @@ MOS6502.prototype.loadImage = function (romImage) {
      * GAME LOADING
      * Load the program into ROM memory. Check to make sure it's not too big as well...
      */
-    xhr.open("GET",romImage);
+    if (romImage == "TEST_MODE") {
+        xhr.open("GET","../roms/MOS6502/TestSuite.bin");
+    } else {
+        xhr.open("GET",romImage);
+    }
     xhr.responseType = "arraybuffer";
 
     xhr.onload = function() {
 
         var program = new Uint8Array(xhr.response);
 
-        if (program.length <= (0x7FFF)) {
+        //if (program.length <= (0x7FFF)) {
 
-            for (i = 0; i < program.length; i++) {
+            for (i = 0, len = program.length; i < len; i++) {
 
-                me.memory[(i + 0x8000)] = program[i];
+                if (romImage == "TEST_MODE") {
+                    me._RAM[(i + 0x4000)] = program[i];
+                } else {
+                    me._RAM[(i + 0x8000)] = program[i];
+                }
 
             }
 
@@ -149,17 +161,20 @@ MOS6502.prototype.loadImage = function (romImage) {
 
             requestAnimFrame(function cpuCycle() {
 
+                console.log("PC: 0x" + me._PC.toString(16));
+                console.log("OPCODE: 0x" + me._RAM[me._PC].toString(16));
+
                 me.emulateCycle();
 
                 requestAnimFrame(cpuCycle);
 
             });
 
-        } else {
+        /*} else {
 
             console.error("This program will not fit into MOS6502 memory.");
 
-        }
+        }*/
 
     };
     xhr.send();
@@ -403,7 +418,7 @@ MOS6502.prototype.emulateCycle = function() {
         case (0xCB) : break;  // Future expansion
         case (0xCC) : me.CPY(); break;
         case (0xCD) : me.CMP(); break;
-        case (0xCE) : me.DEX(); break;
+        case (0xCE) : me.DEC(); break;
         case (0xCF) : break;  // Future expansion
 
         // 0xD0 - 0xDF
@@ -658,7 +673,7 @@ MOS6502.prototype.ADC = function ADC() {
      |  Immediate     |   ADC #Oper           |    69   |    2    |    2     |
      |  Zero Page     |   ADC Oper            |    65   |    2    |    3     |
      |  Zero Page,X   |   ADC Oper,X          |    75   |    2    |    4     |
-     |  Absolute      |   ADC Oper            |    60   |    3    |    4     |
+     |  Absolute      |   ADC Oper            |    6D   |    3    |    4     |
      |  Absolute,X    |   ADC Oper,X          |    7D   |    3    |    4*    |
      |  Absolute,Y    |   ADC Oper,Y          |    79   |    3    |    4*    |
      |  (Indirect,X)  |   ADC (Oper,X)        |    61   |    2    |    6     |
@@ -680,7 +695,7 @@ MOS6502.prototype.ADC = function ADC() {
         case (0x69): OPER = byte1; me._CYCLES += 2; me._PC += 2; break;
         case (0x65): OPER = me.ReadZeroPage(byte1); me._CYCLES += 3; me._PC += 2; break;
         case (0x75): OPER = me.ReadZeroPageX(byte1); me._CYCLES += 4; me._PC += 2; break;
-        case (0x60): OPER = me.ReadAbsolute(byte1, byte2); me._CYCLES += 4; me._PC += 3; break;
+        case (0x6D): OPER = me.ReadAbsolute(byte1, byte2); me._CYCLES += 4; me._PC += 3; break;
         case (0x7D): OPER = me.ReadAbsoluteX(byte1, byte2, true); me._CYCLES += 4; me._PC += 3; break;
         case (0x79): OPER = me.ReadAbsoluteY(byte1, byte2, true); me._CYCLES += 4; me._PC += 3; break;
         case (0x61): OPER = me.ReadIndirectX(byte1); me._CYCLES += 6; me._PC += 2; break;
@@ -821,7 +836,7 @@ MOS6502.prototype.ASL = function ASL() {
 
     }
 
-    me._SET_CARRY(src & 0x80);
+    me._SET_CARRY(OPER & 0x80);
     OPER <<= 1;
     OPER &= 0xFF;
     me._SET_SIGN(OPER);
@@ -949,9 +964,11 @@ MOS6502.prototype.BEQ = function() {
         byte1 = me._RAM[ me._PC + 1],
         OPER;
 
+    console.log("BEQ");
+
     switch (opCode) {
         // Get Operand
-        case (0xF0): OPER = byte1; me._CYCLES += 2; break;
+        case (0xF0): OPER = byte1 & 0xFF; me._CYCLES += 2; break;
 
         default: console.error("Illegal BEQ opcode passed. (0x" + opCode + ")" ); break;
 
@@ -959,13 +976,29 @@ MOS6502.prototype.BEQ = function() {
 
     if(me._IF_ZERO()) {
 
+        console.log("ZERO");
+
+        console.log("OPER at start: 0x" + OPER);
+
         // So... Since there are no signed numbers in JS... We have to work it out.
-        var relAddress = ( (OPER + 2) < 0x80 ) ? me._PC += OPER + 2 : me._PC += OPER + 2 - 256;
+        var relAddress = ( (OPER & 0xFF) < 0x80 ) ? OPER : OPER - 256;
+
+        console.log("relAddress: "+relAddress);
+        console.log("OPER: 0x"+OPER.toString(16));
+        console.log("PC: 0x" + me._PC.toString(16));
+        console.log("Cycles before add: "+me._CYCLES);
 
         me._CYCLES += ( (me._PC & 0xFF00) !=  (me._PC + relAddress) & 0xFF00) ? 2 : 1;
 
-        me._PC += relAddress; // The switch is going to add two to this...
+        console.log("Cycles after add: "+me._CYCLES);
 
+        me._PC += relAddress;
+
+        console.log("PC: 0x"+me._PC.toString(16));
+
+    } else {
+        me._CYCLES += 2;
+        me._PC += 2;
     }
 
 };
@@ -1054,6 +1087,9 @@ MOS6502.prototype.BMI = function() {
 
         me._PC += relAddress; // The switch is going to add two to this...
 
+    } else {
+        me._CYCLES += 2;
+        me._PC += 2;
     }
 
 };
@@ -1099,6 +1135,9 @@ MOS6502.prototype.BNE = function() {
 
         me._PC += relAddress; // The switch is going to add two to this...
 
+    } else {
+        me._CYCLES += 2;
+        me._PC += 2;
     }
 
 };
@@ -1144,6 +1183,9 @@ MOS6502.prototype.BPL = function() {
 
         me._PC += relAddress; // The switch is going to add two to this...
 
+    } else {
+        me._CYCLES += 2;
+        me._PC += 2;
     }
 
 };
@@ -1235,6 +1277,9 @@ MOS6502.prototype.BVC = function() {
 
         me._PC += relAddress; // The switch is going to add two to this...
 
+    } else {
+        me._CYCLES += 2;
+        me._PC += 2;
     }
 
 };
@@ -1279,6 +1324,9 @@ MOS6502.prototype.BVS = function() {
 
         me._PC += relAddress; // The switch is going to add two to this...
 
+    } else {
+        me._CYCLES += 2;
+        me._PC += 2;
     }
 
 };
@@ -1690,7 +1738,7 @@ MOS6502.prototype.EOR = function() {
      |  Immediate     |   EOR #Oper           |    49   |    2    |    2     |
      |  Zero Page     |   EOR Oper            |    45   |    2    |    3     |
      |  Zero Page,X   |   EOR Oper,X          |    55   |    2    |    4     |
-     |  Absolute      |   EOR Oper            |    40   |    3    |    4     |
+     |  Absolute      |   EOR Oper            |    4D   |    3    |    4     |
      |  Absolute,X    |   EOR Oper,X          |    5D   |    3    |    4*    |
      |  Absolute,Y    |   EOR Oper,Y          |    59   |    3    |    4*    |
      |  (Indirect,X)  |   EOR (Oper,X)        |    41   |    2    |    6     |
@@ -1711,7 +1759,7 @@ MOS6502.prototype.EOR = function() {
         case (0x49): OPER = byte1; me._CYCLES += 2; me._PC += 2; break;
         case (0x45): OPER = me.ReadZeroPage(byte1); me._CYCLES += 3; me._PC += 2; break;
         case (0x55): OPER = me.ReadZeroPageX(byte1); me._CYCLES += 4; me._PC += 2; break;
-        case (0x40): OPER = me.ReadAbsolute(byte1,byte2); me._CYCLES += 4; me._PC += 3; break;
+        case (0x4D): OPER = me.ReadAbsolute(byte1,byte2); me._CYCLES += 4; me._PC += 3; break;
         case (0x5D): OPER = me.ReadAbsoluteX(byte1,byte2,true); me._CYCLES += 4; me._PC += 3; break;
         case (0x59): OPER = me.ReadAbsoluteY(byte1,byte2,true); me._CYCLES += 4; me._PC += 3; break;
         case (0x41): OPER = me.ReadIndirectX(byte1); me._CYCLES += 6; me._PC += 2; break;
@@ -1799,8 +1847,6 @@ MOS6502.prototype.INX = function() {
 
     var me = this,
         opCode = me._RAM[ me._PC ],
-        byte1 = me._RAM[ me._PC + 1],
-        byte2 = me._RAM[ me._PC + 2],
         OPER;
 
     switch (opCode) {
@@ -1837,8 +1883,6 @@ MOS6502.prototype.INY = function() {
 
     var me = this,
         opCode = me._RAM[ me._PC ],
-        byte1 = me._RAM[ me._PC + 1],
-        byte2 = me._RAM[ me._PC + 2],
         OPER;
 
     switch (opCode) {
@@ -1877,8 +1921,7 @@ MOS6502.prototype.JMP = function() {
     var me = this,
         opCode = me._RAM[ me._PC ],
         byte1 = me._RAM[ me._PC + 1],
-        byte2 = me._RAM[ me._PC + 2],
-        OPER;
+        byte2 = me._RAM[ me._PC + 2];
 
     switch (opCode) {
         // Get Operand
@@ -2177,7 +2220,7 @@ MOS6502.prototype.ORA = function() {
      |  Zero Page     |   ORA Oper            |    05   |    2    |    3     |
      |  Zero Page,X   |   ORA Oper,X          |    15   |    2    |    4     |
      |  Absolute      |   ORA Oper            |    0D   |    3    |    4     |
-     |  Absolute,X    |   ORA Oper,X          |    10   |    3    |    4*    |
+     |  Absolute,X    |   ORA Oper,X          |    1D   |    3    |    4*    |
      |  Absolute,Y    |   ORA Oper,Y          |    19   |    3    |    4*    |
      |  (Indirect,X)  |   ORA (Oper,X)        |    01   |    2    |    6     |
      |  (Indirect),Y  |   ORA (Oper),Y        |    11   |    2    |    5     |
@@ -2198,7 +2241,7 @@ MOS6502.prototype.ORA = function() {
         case (0x05): OPER = me.ReadZeroPage(byte1); me._CYCLES += 3; me._PC += 2; break;
         case (0x15): OPER = me.ReadZeroPageX(byte1); me._CYCLES += 4; me._PC += 2; break;
         case (0x0D): OPER = me.ReadAbsolute(byte1,byte2); me._CYCLES += 4; me._PC += 3; break;
-        case (0x10): OPER = me.ReadAbsoluteX(byte1,byte2,true); me._CYCLES += 4; me._PC += 3; break;
+        case (0x1D): OPER = me.ReadAbsoluteX(byte1,byte2,true); me._CYCLES += 4; me._PC += 3; break;
         case (0x19): OPER = me.ReadAbsoluteY(byte1,byte2,true); me._CYCLES += 4; me._PC += 3; break;
         case (0x01): OPER = me.ReadIndirectX(byte1); me._CYCLES += 6; me._PC += 2; break;
         case (0x11): OPER = me.ReadIndirectY(byte1,false); me._CYCLES += 5; me._PC += 2; break;
@@ -2487,7 +2530,7 @@ MOS6502.prototype.RTI = function() {
      +----------------+-----------------------+---------+---------+----------+
      | Addressing Mode| Assembly Language Form| OP CODE |No. Bytes|No. Cycles|
      +----------------+-----------------------+---------+---------+----------+
-     |  Implied       |   RTI                 |    4D   |    1    |    6     |
+     |  Implied       |   RTI                 |    40   |    1    |    6     |
      +----------------+-----------------------+---------+---------+----------+
 
      */
@@ -2497,7 +2540,7 @@ MOS6502.prototype.RTI = function() {
 
     switch (opCode) {
         // Get Operand
-        case (0x4D):
+        case (0x40):
             me._P = me._PULL();
 
             var ADDR = me._PULL();

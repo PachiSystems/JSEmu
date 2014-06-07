@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html>
+<head>
+
+    <meta http-equiv="x-ua-compatible" content="IE=edge">
+
+    <!-- Stylesheets -->
+    <link rel="stylesheet" href="../css/CHIP8.css" type="text/css">
+
+    <!-- Libraries -->
+    <script type="text/javascript" src="../libs/jquery-1.10.2.min.js"></script>
+
+    <!-- Emulation files -->
+    <script type="text/javascript" src="../libs/animPolyfill.js"></script>
+    <script type="text/javascript" src="../js/MOS6502/6502.js"></script>
+</head>
+<body>
+
+
+<script>
+
+    $(function() {
+
+        emu = new MOS6502();
+
+        emu.beginEmulation("TEST_MODE");
+
+    });
+
+</script>
+</body>
+</html>
