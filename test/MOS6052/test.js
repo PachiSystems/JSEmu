@@ -1,12 +1,15 @@
 var MOS6502 = new MOS6502();
-    //$fixture = $( "#qunit-fixture" );
 
 /**
  * Utiliity Methods
  * These methods are used to set flags in the CPU and to create 16-bit addresses. MOS6502 is little endian.
  */
 
-module("Utility Methods");
+QUnit.module("Utility Methods", {
+    setup: function() {
+        MOS6502.init();
+    }
+});
 
 test("CPU initialisation", function() {
     /**
@@ -835,8 +838,1438 @@ test("Write Indirect Y", function() {
 
 });
 
-module ("OPCODEs");
+QUnit.module ("OPCODE", {
+    setup: function() {
+        MOS6502.init();
+    }
+});
 
-test("Automated ROM test", function() {
-    equal(true,true,"This is going to break so much very soon...")
+// ORA Tests
+
+test("0x09 - ORA (Immediate)", function() {
+    /**
+     * ORA
+     * Memory mode: Immediate
+     * "OR" memory with Accumulator.
+     *
+     * Pre-state:
+     *     PC = 0x4000
+     * CYCLES = 0
+     *      P = 0x20
+     *      A = 0x3C
+     * 0x4000 = 0x09
+     * 0x4001 = 0x1E
+     *
+     * Post-state:
+     *     PC = 0x4002
+     * CYCLES = 2
+     *      P = 0x20 (No change to register)
+     *      A = 0x3E
+     */
+    MOS6502._PC = 0x4000;
+    MOS6502._CYCLES = 0;
+    MOS6502._P = 0x20;
+    MOS6502._A = 0x3C;
+    MOS6502._RAM[0x4000] = 0x09;
+    MOS6502._RAM[0x4001] = 0x1E;
+
+    MOS6502.emulateCycle();
+
+    equal(MOS6502._PC,
+        0x4002,
+        "PC incremented correctly.");
+
+    equal(MOS6502._CYCLES,
+        2,
+        "CYCLES incremented correctly.");
+
+    equal(MOS6502._P,
+        0x20,
+        "Status register set correctly.");
+
+    equal(MOS6502._A,
+        0x3E,
+        "Accumulator set correctly.");
+});
+
+test("0x05 - ORA (Zero Page)", function() {
+    /**
+     * ORA
+     * Memory mode: Zero Page
+     * "OR" memory with Accumulator.
+     *
+     * Pre-state:
+     *     PC = 0x4000
+     * CYCLES = 0
+     *      P = 0x20
+     *      A = 0x3C
+     * 0x4000 = 0x05
+     * 0x4001 = 0x40
+     * 0x0040 = 0x1E
+     *
+     * Post-state:
+     *     PC = 0x4002
+     * CYCLES = 6
+     *      P = 0x20 (No change to register)
+     *      A = 0x3E
+     */
+    MOS6502._PC = 0x4000;
+    MOS6502._CYCLES = 0;
+    MOS6502._P = 0x20;
+    MOS6502._A = 0x3C;
+    MOS6502._RAM[0x4000] = 0x05;
+    MOS6502._RAM[0x4001] = 0x40;
+    MOS6502._RAM[0x0040] = 0x1E;
+
+    MOS6502.emulateCycle();
+
+    equal(MOS6502._PC,
+        0x4002,
+        "PC incremented correctly.");
+
+    equal(MOS6502._CYCLES,
+        3,
+        "CYCLES incremented correctly.");
+
+    equal(MOS6502._P,
+        0x20,
+        "Status register set correctly.");
+
+    equal(MOS6502._A,
+        0x3E,
+        "Accumulator set correctly.");
+
+});
+
+test("0x15 - ORA (Zero Page, X)", function() {
+    /**
+     * ORA
+     * Memory mode: Zero Page, X
+     * "OR" memory with Accumulator.
+     *
+     * Pre-state:
+     *     PC = 0x4000
+     * CYCLES = 0
+     *      P = 0x20
+     *      X = 0x50
+     *      A = 0x3C
+     * 0x4000 = 0x01
+     * 0x4001 = 0x40
+     * 0x0090 = 0x1E
+     *
+     * Post-state:
+     *     PC = 0x4002
+     * CYCLES = 4
+     *      P = 0x20 (No change to register)
+     *      A = 0x3E
+     */
+    MOS6502._PC = 0x4000;
+    MOS6502._CYCLES = 0;
+    MOS6502._P = 0x20;
+    MOS6502._X = 0x50;
+    MOS6502._A = 0x3C;
+    MOS6502._RAM[0x4000] = 0x15;
+    MOS6502._RAM[0x4001] = 0x40;
+    MOS6502._RAM[0x0090] = 0x1E;
+
+    MOS6502.emulateCycle();
+
+    equal(MOS6502._PC,
+        0x4002,
+        "PC incremented correctly.");
+
+    equal(MOS6502._CYCLES,
+        4,
+        "CYCLES incremented correctly.");
+
+    equal(MOS6502._P,
+        0x20,
+        "Status register set correctly.");
+
+    equal(MOS6502._A,
+        0x3E,
+        "Accumulator set correctly.");
+});
+
+test("0x0D - ORA (Absolute)", function() {
+    /**
+     * ORA
+     * Memory mode: Absolute
+     * "OR" memory with Accumulator.
+     *
+     * Pre-state:
+     *     PC = 0x4000
+     * CYCLES = 0
+     *      P = 0x20
+     *      X = 0x50
+     *      A = 0x3C
+     * 0x4000 = 0x0D
+     * 0x4001 = 0x21
+     * 0x4002 = 0x32
+     * 0x3221 = 0x1E
+     *
+     * Post-state:
+     *     PC = 0x4003
+     * CYCLES = 4
+     *      P = 0x20 (No change to register)
+     *      A = 0x3E
+     */
+    MOS6502._PC = 0x4000;
+    MOS6502._CYCLES = 0;
+    MOS6502._P = 0x20;
+    MOS6502._X = 0x50;
+    MOS6502._A = 0x3C;
+    MOS6502._RAM[0x4000] = 0x0D;
+    MOS6502._RAM[0x4001] = 0x21;
+    MOS6502._RAM[0x4002] = 0x32;
+    MOS6502._RAM[0x3221] = 0x1E;
+
+    MOS6502.emulateCycle();
+
+    equal(MOS6502._PC,
+        0x4003,
+        "PC incremented correctly.");
+
+    equal(MOS6502._CYCLES,
+        4,
+        "CYCLES incremented correctly.");
+
+    equal(MOS6502._P,
+        0x20,
+        "Status register set correctly.");
+
+    equal(MOS6502._A,
+        0x3E,
+        "Accumulator set correctly.");
+});
+
+test("0x1D - ORA (Absolute, X)", function() {
+    /**
+     * ORA
+     * Memory mode: Absolute, X
+     * "OR" memory with Accumulator.
+     *
+     * Pre-state:
+     *     PC = 0x4000
+     * CYCLES = 0
+     *      P = 0x20
+     *      X = 0x80
+     *      A = 0x3C
+     * 0x4000 = 0x1D
+     * 0x4001 = 0x80
+     * 0x4002 = 0x21
+     * 0x2200 = 0x1E
+     *
+     * Post-state:
+     *     PC = 0x4003
+     * CYCLES = 5
+     *      P = 0x20 (No change to register)
+     *      A = 0x3E
+     */
+    MOS6502._PC = 0x4000;
+    MOS6502._CYCLES = 0;
+    MOS6502._P = 0x20;
+    MOS6502._X = 0x80;
+    MOS6502._A = 0x3C;
+    MOS6502._RAM[0x4000] = 0x1D;
+    MOS6502._RAM[0x4001] = 0x80;
+    MOS6502._RAM[0x4002] = 0x21;
+    MOS6502._RAM[0x2200] = 0x1E;
+
+    MOS6502.emulateCycle();
+
+    equal(MOS6502._PC,
+        0x4003,
+        "PC incremented correctly.");
+
+    equal(MOS6502._CYCLES,
+        5,
+        "CYCLES incremented correctly.");
+
+    equal(MOS6502._P,
+        0x20,
+        "Status register set correctly.");
+
+    equal(MOS6502._A,
+        0x3E,
+        "Accumulator set correctly.");
+
+});
+
+test("0x19 - ORA (Absolute, Y)", function() {
+    /**
+     * ORA
+     * Memory mode: Absolute, Y
+     * "OR" memory with Accumulator.
+     *
+     * Pre-state:
+     *     PC = 0x4000
+     * CYCLES = 0
+     *      P = 0x20
+     *      Y = 0x80
+     *      A = 0x3C
+     * 0x4000 = 0x1D
+     * 0x4001 = 0x80
+     * 0x4002 = 0x21
+     * 0x2200 = 0x1E
+     *
+     * Post-state:
+     *     PC = 0x4003
+     * CYCLES = 5
+     *      P = 0x20 (No change to register)
+     *      A = 0x3E
+     */
+    MOS6502._PC = 0x4000;
+    MOS6502._CYCLES = 0;
+    MOS6502._P = 0x20;
+    MOS6502._Y = 0x80;
+    MOS6502._A = 0x3C;
+    MOS6502._RAM[0x4000] = 0x1D;
+    MOS6502._RAM[0x4001] = 0x80;
+    MOS6502._RAM[0x4002] = 0x21;
+    MOS6502._RAM[0x2200] = 0x1E;
+
+    MOS6502.emulateCycle();
+
+    equal(MOS6502._PC,
+        0x4003,
+        "PC incremented correctly.");
+
+    equal(MOS6502._CYCLES,
+        5,
+        "CYCLES incremented correctly.");
+
+    equal(MOS6502._P,
+        0x20,
+        "Status register set correctly.");
+
+    equal(MOS6502._A,
+        0x3E,
+        "Accumulator set correctly.");
+
+});
+
+test("0x01 - ORA (Indirect, X)", function() {
+    /**
+     * ORA
+     * Memory mode: Indirect, X
+     * "OR" memory with Accumulator.
+     *
+     * Pre-state:
+     *     PC = 0x4000
+     * CYCLES = 0
+     *      P = 0x20
+     *      X = 0x50
+     *      A = 0x3C
+     * 0x4000 = 0x01
+     * 0x4001 = 0x40
+     * 0x0090 = 0x21
+     * 0x0091 = 0x32
+     * 0x3221 = 0x1E
+     *
+     * Post-state:
+     *     PC = 0x4002
+     * CYCLES = 6
+     *      P = 0x20 (No change to register)
+     *      A = 0x3E
+     */
+    MOS6502._PC = 0x4000;
+    MOS6502._CYCLES = 0;
+    MOS6502._P = 0x20;
+    MOS6502._X = 0x50;
+    MOS6502._A = 0x3C;
+    MOS6502._RAM[0x4000] = 0x01;
+    MOS6502._RAM[0x4001] = 0x40;
+    MOS6502._RAM[0x0090] = 0x21;
+    MOS6502._RAM[0x0091] = 0x32;
+    MOS6502._RAM[0x3221] = 0x1E;
+
+    MOS6502.emulateCycle();
+
+    equal(MOS6502._PC,
+        0x4002,
+        "PC incremented correctly.");
+
+    equal(MOS6502._CYCLES,
+        6,
+        "CYCLES incremented correctly.");
+
+    equal(MOS6502._P,
+        0x20,
+        "Status register set correctly.");
+
+    equal(MOS6502._A,
+        0x3E,
+        "Accumulator set correctly.");
+
+});
+
+test("0x11 - ORA (Indirect, Y)", function() {
+    /**
+     * ORA
+     * Memory mode: Indirect, Y
+     * "OR" memory with Accumulator.
+     *
+     * Pre-state:
+     *     PC = 0x4000
+     * CYCLES = 0
+     *      P = 0x20
+     *      Y = 0x80
+     *      A = 0x3C
+     * 0x4000 = 0x11
+     * 0x4001 = 0x40
+     * 0x0040 = 0x21
+     * 0x0041 = 0x32
+     * 0x3221 = 0x1E
+     *
+     * Post-state:
+     *     PC = 0x4003
+     * CYCLES = 5
+     *      P = 0x20 (No change to register)
+     *      A = 0x3E
+     */
+    MOS6502._PC = 0x4000;
+    MOS6502._CYCLES = 0;
+    MOS6502._P = 0x20;
+    MOS6502._Y = 0x80;
+    MOS6502._A = 0x3C;
+    MOS6502._RAM[0x4000] = 0x11;
+    MOS6502._RAM[0x4001] = 0x40;
+    MOS6502._RAM[0x0040] = 0x81;
+    MOS6502._RAM[0x0041] = 0x32;
+    MOS6502._RAM[0x3301] = 0x1E;
+
+    MOS6502.emulateCycle();
+
+    equal(MOS6502._PC,
+        0x4002,
+        "PC incremented correctly.");
+
+    equal(MOS6502._CYCLES,
+        5,
+        "CYCLES incremented correctly.");
+
+    equal(MOS6502._P,
+        0x20,
+        "Status register set correctly.");
+
+    equal(MOS6502._A,
+        0x3E,
+        "Accumulator set correctly.");
+
+});
+
+test("0x00 - BRK (Implied)", function() {
+    /**
+     * BRK
+     * Pre-state:
+     *          PC = 0x4000
+     *      CYCLES = 0
+     *           P = 0x20
+     *      0x4000 = 0x00
+     *      0xFFFE = 0x40
+     *      0xFFFF = 0x40
+     *
+     * Post-state:
+     *          PC = 0x4040
+     *      CYCLES = 7
+     *           P = 0x34 (Break & Interrupt set)
+     */
+
+    MOS6502._PC = 0x4000;
+    MOS6502._CYCLES = 0;
+    MOS6502._P = 0x20;
+    MOS6502._RAM[0x4000] = 0x00;
+    MOS6502._RAM[0xFFFE] = 0x40;
+    MOS6502._RAM[0xFFFF] = 0x40;
+
+    MOS6502.emulateCycle();
+
+    equal(MOS6502._PC,
+        0x4040,
+        "PC set correctly.");
+
+    equal(MOS6502._CYCLES,
+        7,
+        "CYCLES incremented correctly.");
+
+    equal(MOS6502._P,
+        0x34,
+        "Status Register set correctly.");
+});
+
+test("0x - ", function() {
+    equal(true,true,"Test not implemented");
+});
+
+test("0x - ", function() {
+    equal(true,true,"Test not implemented");
+});
+
+test("0x - ", function() {
+    equal(true,true,"Test not implemented");
+});
+
+test("0x - ", function() {
+    equal(true,true,"Test not implemented");
+});
+
+test("0x - ", function() {
+    equal(true,true,"Test not implemented");
+});
+
+test("0x - ", function() {
+    equal(true,true,"Test not implemented");
+});
+
+test("0x - ", function() {
+    equal(true,true,"Test not implemented");
+});
+
+test("0x - ", function() {
+    equal(true,true,"Test not implemented");
+});
+
+test("0x - ", function() {
+    equal(true,true,"Test not implemented");
+});
+
+test("0x - ", function() {
+    equal(true,true,"Test not implemented");
+});
+
+test("0x - ", function() {
+    equal(true,true,"Test not implemented");
+});
+
+test("0x - ", function() {
+    equal(true,true,"Test not implemented");
+});
+
+test("0x - ", function() {
+    equal(true,true,"Test not implemented");
+});
+
+test("0x - ", function() {
+    equal(true,true,"Test not implemented");
+});
+
+test("0x - ", function() {
+    equal(true,true,"Test not implemented");
+});
+
+test("0x - ", function() {
+    equal(true,true,"Test not implemented");
+});
+
+test("0x - ", function() {
+    equal(true,true,"Test not implemented");
+});
+
+test("0x - ", function() {
+    equal(true,true,"Test not implemented");
+});
+
+test("0x - ", function() {
+    equal(true,true,"Test not implemented");
+});
+
+test("0x - ", function() {
+    equal(true,true,"Test not implemented");
+});
+
+test("0x - ", function() {
+    equal(true,true,"Test not implemented");
+});
+
+test("0x - ", function() {
+    equal(true,true,"Test not implemented");
+});
+
+test("0x - ", function() {
+    equal(true,true,"Test not implemented");
+});
+
+test("0x - ", function() {
+    equal(true,true,"Test not implemented");
+});
+
+test("0x - ", function() {
+    equal(true,true,"Test not implemented");
+});
+
+test("0x - ", function() {
+    equal(true,true,"Test not implemented");
+});
+
+test("0x - ", function() {
+    equal(true,true,"Test not implemented");
+});
+
+test("0x - ", function() {
+    equal(true,true,"Test not implemented");
+});
+
+test("0x - ", function() {
+    equal(true,true,"Test not implemented");
+});
+
+test("0x - ", function() {
+    equal(true,true,"Test not implemented");
+});
+
+test("0x - ", function() {
+    equal(true,true,"Test not implemented");
+});
+
+test("0x - ", function() {
+    equal(true,true,"Test not implemented");
+});
+
+test("0x - ", function() {
+    equal(true,true,"Test not implemented");
+});
+
+test("0x - ", function() {
+    equal(true,true,"Test not implemented");
+});
+
+test("0x - ", function() {
+    equal(true,true,"Test not implemented");
+});
+
+test("0x - ", function() {
+    equal(true,true,"Test not implemented");
+});
+
+test("0x - ", function() {
+    equal(true,true,"Test not implemented");
+});
+
+test("0x - ", function() {
+    equal(true,true,"Test not implemented");
+});
+
+test("0x - ", function() {
+    equal(true,true,"Test not implemented");
+});
+
+test("0x - ", function() {
+    equal(true,true,"Test not implemented");
+});
+
+test("0x - ", function() {
+    equal(true,true,"Test not implemented");
+});
+
+test("0x - ", function() {
+    equal(true,true,"Test not implemented");
+});
+
+test("0x - ", function() {
+    equal(true,true,"Test not implemented");
+});
+
+test("0x - ", function() {
+    equal(true,true,"Test not implemented");
+});
+
+test("0x - ", function() {
+    equal(true,true,"Test not implemented");
+});
+
+test("0x - ", function() {
+    equal(true,true,"Test not implemented");
+});
+
+test("0x - ", function() {
+    equal(true,true,"Test not implemented");
+});
+
+test("0x - ", function() {
+    equal(true,true,"Test not implemented");
+});
+
+test("0x - ", function() {
+    equal(true,true,"Test not implemented");
+});
+
+test("0x - ", function() {
+    equal(true,true,"Test not implemented");
+});
+
+test("0x - ", function() {
+    equal(true,true,"Test not implemented");
+});
+
+test("0x - ", function() {
+    equal(true,true,"Test not implemented");
+});
+
+test("0x - ", function() {
+    equal(true,true,"Test not implemented");
+});
+
+test("0x - ", function() {
+    equal(true,true,"Test not implemented");
+});
+
+test("0x - ", function() {
+    equal(true,true,"Test not implemented");
+});
+
+test("0x - ", function() {
+    equal(true,true,"Test not implemented");
+});
+
+test("0x - ", function() {
+    equal(true,true,"Test not implemented");
+});
+
+test("0x - ", function() {
+    equal(true,true,"Test not implemented");
+});
+
+test("0x - ", function() {
+    equal(true,true,"Test not implemented");
+});
+
+test("0x - ", function() {
+    equal(true,true,"Test not implemented");
+});
+
+test("0x - ", function() {
+    equal(true,true,"Test not implemented");
+});
+
+test("0x - ", function() {
+    equal(true,true,"Test not implemented");
+});
+
+test("0x - ", function() {
+    equal(true,true,"Test not implemented");
+});
+
+test("0x - ", function() {
+    equal(true,true,"Test not implemented");
+});
+
+test("0x - ", function() {
+    equal(true,true,"Test not implemented");
+});
+
+test("0x - ", function() {
+    equal(true,true,"Test not implemented");
+});
+
+test("0x - ", function() {
+    equal(true,true,"Test not implemented");
+});
+
+test("0x - ", function() {
+    equal(true,true,"Test not implemented");
+});
+
+test("0x - ", function() {
+    equal(true,true,"Test not implemented");
+});
+
+test("0x - ", function() {
+    equal(true,true,"Test not implemented");
+});
+
+test("0x - ", function() {
+    equal(true,true,"Test not implemented");
+});
+
+test("0x - ", function() {
+    equal(true,true,"Test not implemented");
+});
+
+test("0x - ", function() {
+    equal(true,true,"Test not implemented");
+});
+
+test("0x - ", function() {
+    equal(true,true,"Test not implemented");
+});
+
+test("0x - ", function() {
+    equal(true,true,"Test not implemented");
+});
+
+test("0x - ", function() {
+    equal(true,true,"Test not implemented");
+});
+
+test("0x - ", function() {
+    equal(true,true,"Test not implemented");
+});
+
+test("0x - ", function() {
+    equal(true,true,"Test not implemented");
+});
+
+test("0x - ", function() {
+    equal(true,true,"Test not implemented");
+});
+
+test("0x - ", function() {
+    equal(true,true,"Test not implemented");
+});
+
+test("0x - ", function() {
+    equal(true,true,"Test not implemented");
+});
+
+test("0x - ", function() {
+    equal(true,true,"Test not implemented");
+});
+
+test("0x - ", function() {
+    equal(true,true,"Test not implemented");
+});
+
+test("0x - ", function() {
+    equal(true,true,"Test not implemented");
+});
+
+test("0x - ", function() {
+    equal(true,true,"Test not implemented");
+});
+
+test("0x - ", function() {
+    equal(true,true,"Test not implemented");
+});
+
+test("0x - ", function() {
+    equal(true,true,"Test not implemented");
+});
+
+test("0x - ", function() {
+    equal(true,true,"Test not implemented");
+});
+
+test("0x - ", function() {
+    equal(true,true,"Test not implemented");
+});
+
+test("0x - ", function() {
+    equal(true,true,"Test not implemented");
+});
+
+test("0x - ", function() {
+    equal(true,true,"Test not implemented");
+});
+
+test("0x - ", function() {
+    equal(true,true,"Test not implemented");
+});
+
+test("0x - ", function() {
+    equal(true,true,"Test not implemented");
+});
+
+test("0x - ", function() {
+    equal(true,true,"Test not implemented");
+});
+
+test("0x - ", function() {
+    equal(true,true,"Test not implemented");
+});
+
+test("0x - ", function() {
+    equal(true,true,"Test not implemented");
+});
+
+test("0x - ", function() {
+    equal(true,true,"Test not implemented");
+});
+
+test("0x - ", function() {
+    equal(true,true,"Test not implemented");
+});
+
+test("0x - ", function() {
+    equal(true,true,"Test not implemented");
+});
+
+test("0x - ", function() {
+    equal(true,true,"Test not implemented");
+});
+
+test("0x - ", function() {
+    equal(true,true,"Test not implemented");
+});
+
+test("0x - ", function() {
+    equal(true,true,"Test not implemented");
+});
+
+test("0x - ", function() {
+    equal(true,true,"Test not implemented");
+});
+
+test("0x - ", function() {
+    equal(true,true,"Test not implemented");
+});
+
+test("0x - ", function() {
+    equal(true,true,"Test not implemented");
+});
+
+test("0x - ", function() {
+    equal(true,true,"Test not implemented");
+});
+
+test("0x - ", function() {
+    equal(true,true,"Test not implemented");
+});
+
+test("0x - ", function() {
+    equal(true,true,"Test not implemented");
+});
+
+test("0x - ", function() {
+    equal(true,true,"Test not implemented");
+});
+
+test("0x - ", function() {
+    equal(true,true,"Test not implemented");
+});
+
+test("0x - ", function() {
+    equal(true,true,"Test not implemented");
+});
+
+test("0x - ", function() {
+    equal(true,true,"Test not implemented");
+});
+
+test("0x - ", function() {
+    equal(true,true,"Test not implemented");
+});
+
+test("0x - ", function() {
+    equal(true,true,"Test not implemented");
+});
+
+test("0x - ", function() {
+    equal(true,true,"Test not implemented");
+});
+
+test("0x - ", function() {
+    equal(true,true,"Test not implemented");
+});
+
+test("0x - ", function() {
+    equal(true,true,"Test not implemented");
+});
+
+test("0x - ", function() {
+    equal(true,true,"Test not implemented");
+});
+
+test("0x - ", function() {
+    equal(true,true,"Test not implemented");
+});
+
+test("0x - ", function() {
+    equal(true,true,"Test not implemented");
+});
+
+test("0x - ", function() {
+    equal(true,true,"Test not implemented");
+});
+
+test("0x - ", function() {
+    equal(true,true,"Test not implemented");
+});
+
+test("0x - ", function() {
+    equal(true,true,"Test not implemented");
+});
+
+test("0x - ", function() {
+    equal(true,true,"Test not implemented");
+});
+
+test("0x - ", function() {
+    equal(true,true,"Test not implemented");
+});
+
+test("0x - ", function() {
+    equal(true,true,"Test not implemented");
+});
+
+test("0x - ", function() {
+    equal(true,true,"Test not implemented");
+});
+
+test("0x - ", function() {
+    equal(true,true,"Test not implemented");
+});
+
+test("0x - ", function() {
+    equal(true,true,"Test not implemented");
+});
+
+test("0x - ", function() {
+    equal(true,true,"Test not implemented");
+});
+
+test("0x - ", function() {
+    equal(true,true,"Test not implemented");
+});
+
+test("0x - ", function() {
+    equal(true,true,"Test not implemented");
+});
+
+test("0x - ", function() {
+    equal(true,true,"Test not implemented");
+});
+
+test("0x - ", function() {
+    equal(true,true,"Test not implemented");
+});
+
+test("0x - ", function() {
+    equal(true,true,"Test not implemented");
+});
+
+test("0x - ", function() {
+    equal(true,true,"Test not implemented");
+});
+
+test("0x - ", function() {
+    equal(true,true,"Test not implemented");
+});
+
+test("0x - ", function() {
+    equal(true,true,"Test not implemented");
+});
+
+test("0x - ", function() {
+    equal(true,true,"Test not implemented");
+});
+
+test("0x - ", function() {
+    equal(true,true,"Test not implemented");
+});
+
+test("0x - ", function() {
+    equal(true,true,"Test not implemented");
+});
+
+test("0x - ", function() {
+    equal(true,true,"Test not implemented");
+});
+
+test("0x - ", function() {
+    equal(true,true,"Test not implemented");
+});
+
+test("0x - ", function() {
+    equal(true,true,"Test not implemented");
+});
+
+test("0x - ", function() {
+    equal(true,true,"Test not implemented");
+});
+
+test("0x - ", function() {
+    equal(true,true,"Test not implemented");
+});
+
+test("0x - ", function() {
+    equal(true,true,"Test not implemented");
+});
+
+test("0x - ", function() {
+    equal(true,true,"Test not implemented");
+});
+
+test("0x - ", function() {
+    equal(true,true,"Test not implemented");
+});
+
+test("0x - ", function() {
+    equal(true,true,"Test not implemented");
+});
+
+test("0x - ", function() {
+    equal(true,true,"Test not implemented");
+});
+
+test("0x - ", function() {
+    equal(true,true,"Test not implemented");
+});
+
+test("0x - ", function() {
+    equal(true,true,"Test not implemented");
+});
+
+test("0x - ", function() {
+    equal(true,true,"Test not implemented");
+});
+
+test("0x - ", function() {
+    equal(true,true,"Test not implemented");
+});
+
+test("0x - ", function() {
+    equal(true,true,"Test not implemented");
+});
+
+test("0x - ", function() {
+    equal(true,true,"Test not implemented");
+});
+
+test("0x - ", function() {
+    equal(true,true,"Test not implemented");
+});
+
+test("0x - ", function() {
+    equal(true,true,"Test not implemented");
+});
+
+test("0x - ", function() {
+    equal(true,true,"Test not implemented");
+});
+
+test("0x - ", function() {
+    equal(true,true,"Test not implemented");
+});
+
+test("0x - ", function() {
+    equal(true,true,"Test not implemented");
+});
+
+test("0x - ", function() {
+    equal(true,true,"Test not implemented");
+});
+
+test("0x - ", function() {
+    equal(true,true,"Test not implemented");
+});
+
+test("0x - ", function() {
+    equal(true,true,"Test not implemented");
+});
+
+test("0x - ", function() {
+    equal(true,true,"Test not implemented");
+});
+
+test("0x - ", function() {
+    equal(true,true,"Test not implemented");
+});
+
+test("0x - ", function() {
+    equal(true,true,"Test not implemented");
+});
+
+test("0x - ", function() {
+    equal(true,true,"Test not implemented");
+});
+
+test("0x - ", function() {
+    equal(true,true,"Test not implemented");
+});
+
+test("0x - ", function() {
+    equal(true,true,"Test not implemented");
+});
+
+test("0x - ", function() {
+    equal(true,true,"Test not implemented");
+});
+
+test("0x - ", function() {
+    equal(true,true,"Test not implemented");
+});
+
+test("0x - ", function() {
+    equal(true,true,"Test not implemented");
+});
+
+test("0x - ", function() {
+    equal(true,true,"Test not implemented");
+});
+
+test("0x - ", function() {
+    equal(true,true,"Test not implemented");
+});
+
+test("0x - ", function() {
+    equal(true,true,"Test not implemented");
+});
+
+test("0x - ", function() {
+    equal(true,true,"Test not implemented");
+});
+
+test("0x - ", function() {
+    equal(true,true,"Test not implemented");
+});
+
+test("0x - ", function() {
+    equal(true,true,"Test not implemented");
+});
+
+test("0x - ", function() {
+    equal(true,true,"Test not implemented");
+});
+
+test("0x - ", function() {
+    equal(true,true,"Test not implemented");
+});
+
+test("0x - ", function() {
+    equal(true,true,"Test not implemented");
+});
+
+test("0x - ", function() {
+    equal(true,true,"Test not implemented");
+});
+
+test("0x - ", function() {
+    equal(true,true,"Test not implemented");
+});
+
+test("0x - ", function() {
+    equal(true,true,"Test not implemented");
+});
+
+test("0x - ", function() {
+    equal(true,true,"Test not implemented");
+});
+
+test("0x - ", function() {
+    equal(true,true,"Test not implemented");
+});
+
+test("0x - ", function() {
+    equal(true,true,"Test not implemented");
+});
+
+test("0x - ", function() {
+    equal(true,true,"Test not implemented");
+});
+
+test("0x - ", function() {
+    equal(true,true,"Test not implemented");
+});
+
+test("0x - ", function() {
+    equal(true,true,"Test not implemented");
+});
+
+test("0x - ", function() {
+    equal(true,true,"Test not implemented");
+});
+
+test("0x - ", function() {
+    equal(true,true,"Test not implemented");
+});
+
+test("0x - ", function() {
+    equal(true,true,"Test not implemented");
+});
+
+test("0x - ", function() {
+    equal(true,true,"Test not implemented");
+});
+
+test("0x - ", function() {
+    equal(true,true,"Test not implemented");
+});
+
+test("0x - ", function() {
+    equal(true,true,"Test not implemented");
+});
+
+test("0x - ", function() {
+    equal(true,true,"Test not implemented");
+});
+
+test("0x - ", function() {
+    equal(true,true,"Test not implemented");
+});
+
+test("0x - ", function() {
+    equal(true,true,"Test not implemented");
+});
+
+test("0x - ", function() {
+    equal(true,true,"Test not implemented");
+});
+
+test("0x - ", function() {
+    equal(true,true,"Test not implemented");
+});
+
+test("0x - ", function() {
+    equal(true,true,"Test not implemented");
+});
+
+test("0x - ", function() {
+    equal(true,true,"Test not implemented");
+});
+
+test("0x - ", function() {
+    equal(true,true,"Test not implemented");
+});
+
+test("0x - ", function() {
+    equal(true,true,"Test not implemented");
+});
+
+test("0x - ", function() {
+    equal(true,true,"Test not implemented");
+});
+
+test("0x - ", function() {
+    equal(true,true,"Test not implemented");
+});
+
+test("0x - ", function() {
+    equal(true,true,"Test not implemented");
+});
+
+test("0x - ", function() {
+    equal(true,true,"Test not implemented");
+});
+
+test("0x - ", function() {
+    equal(true,true,"Test not implemented");
+});
+
+test("0x - ", function() {
+    equal(true,true,"Test not implemented");
+});
+
+test("0x - ", function() {
+    equal(true,true,"Test not implemented");
+});
+
+test("0x - ", function() {
+    equal(true,true,"Test not implemented");
+});
+
+test("0x - ", function() {
+    equal(true,true,"Test not implemented");
+});
+
+test("0x - ", function() {
+    equal(true,true,"Test not implemented");
+});
+
+test("0x - ", function() {
+    equal(true,true,"Test not implemented");
+});
+
+test("0x - ", function() {
+    equal(true,true,"Test not implemented");
+});
+
+test("0x - ", function() {
+    equal(true,true,"Test not implemented");
+});
+
+test("0x - ", function() {
+    equal(true,true,"Test not implemented");
+});
+
+test("0x - ", function() {
+    equal(true,true,"Test not implemented");
+});
+
+test("0x - ", function() {
+    equal(true,true,"Test not implemented");
+});
+
+test("0x - ", function() {
+    equal(true,true,"Test not implemented");
+});
+
+test("0x - ", function() {
+    equal(true,true,"Test not implemented");
+});
+
+test("0x - ", function() {
+    equal(true,true,"Test not implemented");
+});
+
+test("0x - ", function() {
+    equal(true,true,"Test not implemented");
+});
+
+test("0x - ", function() {
+    equal(true,true,"Test not implemented");
+});
+
+test("0x - ", function() {
+    equal(true,true,"Test not implemented");
+});
+
+test("0x - ", function() {
+    equal(true,true,"Test not implemented");
+});
+
+test("0x - ", function() {
+    equal(true,true,"Test not implemented");
+});
+
+test("0x - ", function() {
+    equal(true,true,"Test not implemented");
+});
+
+test("0x - ", function() {
+    equal(true,true,"Test not implemented");
+});
+
+test("0x - ", function() {
+    equal(true,true,"Test not implemented");
+});
+
+test("0x - ", function() {
+    equal(true,true,"Test not implemented");
+});
+
+test("0x - ", function() {
+    equal(true,true,"Test not implemented");
+});
+
+test("0x - ", function() {
+    equal(true,true,"Test not implemented");
+});
+
+test("0x - ", function() {
+    equal(true,true,"Test not implemented");
+});
+
+test("0x - ", function() {
+    equal(true,true,"Test not implemented");
+});
+
+test("0x - ", function() {
+    equal(true,true,"Test not implemented");
+});
+
+test("0x - ", function() {
+    equal(true,true,"Test not implemented");
+});
+
+test("0x - ", function() {
+    equal(true,true,"Test not implemented");
+});
+
+test("0x - ", function() {
+    equal(true,true,"Test not implemented");
+});
+
+test("0x - ", function() {
+    equal(true,true,"Test not implemented");
 });

@@ -24,9 +24,9 @@ var MOS6502 = function() {
     // Let's map out parts of the processor...
 
     /* Interrupts */
-    this._RES = false;
-    this._IRQ = false;
-    this._NMI = false;
+    //this._RES = false;
+    //this._IRQ = false;
+    //this._NMI = false;
 
     /* Registers */
     this._X = 0x00; // X Register
@@ -80,7 +80,9 @@ var MOS6502 = function() {
      * 0xFFFE = Vector address for IRQ & BRK (low byte)
      * 0xFFFF = Vector address for IRQ & BRK (high byte)
      */
-    this._RAM = new Uint8Array(0xFFFF);  // 64k of RAM.
+    this._RAM = new Uint8Array(0x10000);  // 64k of RAM.
+
+    this._NUM_INSTRUCTIONS = 0;
 
 };
 
@@ -121,7 +123,7 @@ MOS6502.prototype.beginEmulation = function(romImage, renderer) {
 
 MOS6502.prototype.loadImage = function (romImage) {
 
-    //if (romImage == "TEST_MODE") return;
+    if (romImage === undefined) return;
 
     var xhr = new XMLHttpRequest(),
         me = this,
@@ -154,15 +156,20 @@ MOS6502.prototype.loadImage = function (romImage) {
 
             }
 
-            // Place address from the RESET vector into the PC ready to commence emulation.
-            me._PC = me._MAKE_ADDRESS( me._RAM[0xFFFC], me._RAM[0xFFFD] );
+        // Place address from the RESET vector into the PC ready to commence emulation.
+        me._PC = me._MAKE_ADDRESS( me._RAM[0xFFFC], me._RAM[0xFFFD] );
 
             // Emulation loop to trigger once our ROM has finished loading.
 
             requestAnimFrame(function cpuCycle() {
 
-                console.log("PC: 0x" + me._PC.toString(16));
-                console.log("OPCODE: 0x" + me._RAM[me._PC].toString(16));
+                if(me._PC !== 0x45C0) {
+                    console.log("PC: 0x" + me._PC.toString(16));
+                    console.log("OPCODE: 0x" + me._RAM[me._PC].toString(16));
+                    console.log(me._NUM_INSTRUCTIONS++);
+                } else {
+                    console.log((me._RAM[0x0210] === 0xFF) ? "All tests passed" : "Test failed: " + me._RAM[0x0210]);
+                }
 
                 me.emulateCycle();
 
@@ -476,7 +483,7 @@ MOS6502.prototype.emulateCycle = function() {
         case (0xFF) : break;  // Future expansion
 
         default:
-            console.error("Illegal OPCODE: " + OPCODE);
+            console.error("Illegal OPCODE: 0x" + OPCODE.toString(16));
             break;
     }
 };
@@ -832,14 +839,16 @@ MOS6502.prototype.ASL = function ASL() {
         case (0x0E): OPER = me.ReadAbsolute(byte1,byte2); break;
         case (0x1E): OPER = me.ReadAbsoluteX(byte1,byte2,false); break;
 
-        default: console.error("Illegal ADC opcode passed. (0x" + opCode.toString(16) + ")" ); break;
+        default: console.error("Illegal ASL opcode passed. (0x" + opCode.toString(16) + ")" ); break;
 
     }
 
     me._SET_CARRY(OPER & 0x80);
+
     OPER <<= 1;
     OPER &= 0xFF;
-    me._SET_SIGN(OPER);
+
+    me._SET_SIGN(OPER & 0x80);
     me._SET_ZERO(OPER);
 
     switch (opCode) {
@@ -850,7 +859,7 @@ MOS6502.prototype.ASL = function ASL() {
         case (0x0E): me.WriteAbsolute(byte1,byte2,OPER); me._PC += 3; me._CYCLES += 6; break;
         case (0x1E): me.WriteAbsoluteX(byte1,byte2,OPER); me._PC += 3; me._CYCLES += 7; break;
 
-        default: console.error("Illegal ADC opcode passed. (0x" + opCode.toString(16) + ")" ); break;
+        default: console.error("Illegal ASL opcode passed. (0x" + opCode.toString(16) + ")" ); break;
 
     }
 };
@@ -964,8 +973,6 @@ MOS6502.prototype.BEQ = function() {
         byte1 = me._RAM[ me._PC + 1],
         OPER;
 
-    console.log("BEQ");
-
     switch (opCode) {
         // Get Operand
         case (0xF0): OPER = byte1 & 0xFF; me._CYCLES += 2; break;
@@ -976,25 +983,12 @@ MOS6502.prototype.BEQ = function() {
 
     if(me._IF_ZERO()) {
 
-        console.log("ZERO");
-
-        console.log("OPER at start: 0x" + OPER);
-
         // So... Since there are no signed numbers in JS... We have to work it out.
         var relAddress = ( (OPER & 0xFF) < 0x80 ) ? OPER : OPER - 256;
 
-        console.log("relAddress: "+relAddress);
-        console.log("OPER: 0x"+OPER.toString(16));
-        console.log("PC: 0x" + me._PC.toString(16));
-        console.log("Cycles before add: "+me._CYCLES);
-
         me._CYCLES += ( (me._PC & 0xFF00) !=  (me._PC + relAddress) & 0xFF00) ? 2 : 1;
 
-        console.log("Cycles after add: "+me._CYCLES);
-
         me._PC += relAddress;
-
-        console.log("PC: 0x"+me._PC.toString(16));
 
     } else {
         me._CYCLES += 2;
@@ -1219,7 +1213,7 @@ MOS6502.prototype.BRK = function() {
 
     }
 
-    me._PC++;
+    me._PC += 1;
 
     // Push return address onto the stack.
     me._PUSH( (me._PC >> 8) & 0xFF);
@@ -2158,9 +2152,13 @@ MOS6502.prototype.LSR = function() {
 
     }
 
+    OPER &= 0xFF;
+
     me._SET_CARRY(OPER & 0x01);
+
     OPER >>= 1;
-    me._SET_SIGN(OPER);
+
+    me._SET_SIGN(0);
     me._SET_ZERO(OPER);
 
     switch (opCode) {
@@ -2251,8 +2249,8 @@ MOS6502.prototype.ORA = function() {
     }
 
     OPER |= me._A;
-    me._SET_SIGN(byte1);
-    me._SET_ZERO(byte1);
+    me._SET_SIGN(OPER);
+    me._SET_ZERO(OPER);
     me._A = OPER;
 
 };
@@ -2421,6 +2419,7 @@ MOS6502.prototype.ROL = function() {
         opCode = me._RAM[ me._PC ],
         byte1 = me._RAM[ me._PC + 1],
         byte2 = me._RAM[ me._PC + 2],
+        carry = 0,
         OPER;
 
     switch (opCode) {
@@ -2435,10 +2434,10 @@ MOS6502.prototype.ROL = function() {
 
     }
 
-    OPER <<= 1;
-    if (me._SET_CARRY()) OPER |= 0x1;
-    me._SET_CARRY(OPER > 0xFF);
-    OPER &= 0xFF;
+    if( me._IF_CARRY() ) carry = 1;
+    me._SET_CARRY( (OPER >> 7) & 0x01);
+    OPER = ( (OPER << 1) & 0xFF ) + carry;
+
     me._SET_SIGN(OPER);
     me._SET_ZERO(OPER);
 
@@ -2486,6 +2485,7 @@ MOS6502.prototype.ROR = function() {
         opCode = me._RAM[ me._PC ],
         byte1 = me._RAM[ me._PC + 1],
         byte2 = me._RAM[ me._PC + 2],
+        carry,
         OPER;
 
     switch (opCode) {
@@ -2500,9 +2500,10 @@ MOS6502.prototype.ROR = function() {
 
     }
 
-    if (me._IF_CARRY()) OPER |= 0x100;
-    me._SET_CARRY(OPER & 0x01);
-    OPER >>= 1;
+    carry = (me._IF_CARRY()) ? 0x80 : 0;
+    me._SET_CARRY(OPER & 0x1);
+    OPER = ((OPER >> 1) + carry) & 0xFF;
+
     me._SET_SIGN(OPER);
     me._SET_ZERO(OPER);
 
