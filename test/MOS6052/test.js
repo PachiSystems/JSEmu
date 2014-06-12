@@ -190,16 +190,12 @@ test("If / Set Decimal", function() {
         // Make sure it's all empty first.
     MOS6502._P = 0x20;
 
-    console.log("P = " + MOS6502._P.toString(16));
-
     equal(MOS6502._IF_DECIMAL(),
         false,
         "Decimal flag not set.");
 
     // Now we'll try to set the zero flag.
     MOS6502._SET_DECIMAL(true);
-
-    console.log("P = " + MOS6502._P.toString(16));
 
     equal(MOS6502._IF_DECIMAL(),
         true,
@@ -211,8 +207,6 @@ test("If / Set Decimal", function() {
 
     // Now try to unset the zero flag.
     MOS6502._SET_DECIMAL(false);
-
-    console.log("P = " + MOS6502._P.toString(16));
 
     equal(MOS6502._IF_DECIMAL(),
         false,
@@ -239,16 +233,12 @@ test("If / Set Break", function() {
         // Make sure it's all empty first.
     MOS6502._P = 0x20;
 
-    console.log("P = " + MOS6502._P.toString(16));
-
     equal(MOS6502._IF_BREAK(),
         false,
         "Break flag not set.");
 
     // Now we'll try to set the zero flag.
     MOS6502._SET_BREAK(true);
-
-    console.log("P = " + MOS6502._P.toString(16));
 
     equal(MOS6502._IF_BREAK(),
         true,
@@ -260,8 +250,6 @@ test("If / Set Break", function() {
 
     // Now try to unset the zero flag.
     MOS6502._SET_BREAK(false);
-
-    console.log("P = " + MOS6502._P.toString(16));
 
     equal(MOS6502._IF_BREAK(),
         false,
@@ -288,16 +276,12 @@ test("If / Set Overflow", function() {
         // Make sure it's all empty first.
     MOS6502._P = 0x20;
 
-    console.log("P = " + MOS6502._P.toString(16));
-
     equal(MOS6502._IF_OVERFLOW(),
         false,
         "Overflow flag not set.");
 
     // Now we'll try to set the zero flag.
     MOS6502._SET_OVERFLOW(true);
-
-    console.log("P = " + MOS6502._P.toString(16));
 
     equal(MOS6502._IF_OVERFLOW(),
         true,
@@ -309,8 +293,6 @@ test("If / Set Overflow", function() {
 
     // Now try to unset the zero flag.
     MOS6502._SET_OVERFLOW(false);
-
-    console.log("P = " + MOS6502._P.toString(16));
 
     equal(MOS6502._IF_OVERFLOW(),
         false,
@@ -337,7 +319,6 @@ test("If / Set Sign", function() {
         // Make sure it's all empty first.
     MOS6502._P = 0x20;
 
-    console.log("P = " + MOS6502._P.toString(16));
 
     equal(MOS6502._IF_SIGN(),
         false,
@@ -345,8 +326,6 @@ test("If / Set Sign", function() {
 
     // Now we'll try to set the zero flag.
     MOS6502._SET_SIGN(0x80);
-
-    console.log("P = " + MOS6502._P.toString(16));
 
     equal(MOS6502._IF_SIGN(),
         true,
@@ -358,8 +337,6 @@ test("If / Set Sign", function() {
 
     // Now try to unset the zero flag.
     MOS6502._SET_SIGN(0x00);
-
-    console.log("P = " + MOS6502._P.toString(16));
 
     equal(MOS6502._IF_SIGN(),
         false,
