@@ -859,414 +859,1486 @@ QUnit.module ("Instruction - ORA", {
 
 test("0x09 - ORA (Immediate)", function() {
     /**
-     * ORA
-     * Memory mode: Immediate
-     * "OR" memory with Accumulator.
-     *
-     * Pre-state:
-     *     PC = 0x4000
-     * CYCLES = 0
-     *      P = 0x20
-     *      A = 0x3C
-     * 0x4000 = 0x09
-     * 0x4001 = 0x1E
-     *
-     * Post-state:
-     *     PC = 0x4002
-     * CYCLES = 2
-     *      P = 0x20 (No change to register)
-     *      A = 0x3E
+     *    Instruction = ORA
+     * Affected Flags = Sign & Zero
+     *    Total Tests = 3
      */
-    MOS6502._PC = 0x4000;
-    MOS6502._CYCLES = 0;
+    var OPCODE = 0x09,
+        CycleCost = 2,
+        BytesUsed = 2,
+        PCStart = 0x4000,
+        OperandAddress = PCStart + 1;
+
+    MOS6502._RAM[PCStart] = OPCODE;
+
+    /**
+     * Test 1: Set Sign
+     *
+     * Before ORA Applied:
+     *         Operand: 01010101 (85)
+     *     Accumulator: 10000000 (128)
+     * Status Register: 00100000 (32)
+     *
+     * After ORA Applied:
+     *     Accumulator: 11010101 (213)
+     * Status Register: 10100000 (160)
+     */
+
+    MOS6502._PC = PCStart;
+    MOS6502._RAM[OperandAddress] = 85;
+    MOS6502._A = 128;
     MOS6502._P = 0x20;
-    MOS6502._A = 0x3C;
-    MOS6502._RAM[0x4000] = 0x09;
-    MOS6502._RAM[0x4001] = 0x1E;
+    MOS6502._CYCLES = 0;
 
     MOS6502.emulateCycle();
 
-    equal(MOS6502._PC,
-        0x4002,
-        "PC incremented correctly.");
-
-    equal(MOS6502._CYCLES,
-        2,
-        "CYCLES incremented correctly.");
-
-    equal(MOS6502._P,
-        0x20,
-        "Status register set correctly.");
 
     equal(MOS6502._A,
-        0x3E,
-        "Accumulator set correctly.");
+        213,
+        "Set sign: Accumulator set correctly.");
+
+    equal(MOS6502._P,
+        160,
+        "Set sign: Status register set correctly.");
+
+    equal(MOS6502._PC,
+        PCStart + BytesUsed,
+        "Set sign: PC incremented correctly.");
+
+    equal(MOS6502._CYCLES,
+        CycleCost,
+        "Set sign: CYCLES incremented correctly.");
+
+    /**
+     * Test 2: Set Zero
+     *
+     * Before ORA Applied:
+     *         Operand: 00000000 (0)
+     *     Accumulator: 00000000 (0)
+     * Status Register: 00100000 (32)
+     *
+     * After ORA Applied:
+     *     Accumulator: 00000000 (0)
+     * Status Register: 00100010 (34)
+     */
+
+    MOS6502._PC = PCStart;
+    MOS6502._RAM[OperandAddress] = 0;
+    MOS6502._A = 0;
+    MOS6502._P = 0x20;
+    MOS6502._CYCLES = 0;
+
+    MOS6502.emulateCycle();
+
+
+    equal(MOS6502._A,
+        0,
+        "Set zero: Accumulator set correctly.");
+
+    equal(MOS6502._P,
+        34,
+        "Set zero: Status register set correctly.");
+
+    equal(MOS6502._PC,
+            PCStart + BytesUsed,
+        "Set zero: PC incremented correctly.");
+
+    equal(MOS6502._CYCLES,
+        CycleCost,
+        "Set zero: CYCLES incremented correctly.");
+
+    /**
+     * Test 3: Set None
+     *
+     * Before ORA Applied:
+     *         Operand: 01100110 (102)
+     *     Accumulator: 01100001 (97)
+     * Status Register: 00100000 (32)
+     *
+     * After ORA Applied:
+     *     Accumulator: 01100111 (103)
+     * Status Register: 00100000 (32)
+     */
+
+    MOS6502._PC = PCStart;
+    MOS6502._RAM[OperandAddress] = 102;
+    MOS6502._A = 97;
+    MOS6502._P = 0x20;
+    MOS6502._CYCLES = 0;
+
+    MOS6502.emulateCycle();
+
+
+    equal(MOS6502._A,
+        103,
+        "Set none: Accumulator set correctly.");
+
+    equal(MOS6502._P,
+        32,
+        "Set none: Status register set correctly.");
+
+    equal(MOS6502._PC,
+            PCStart + BytesUsed,
+        "Set none: PC incremented correctly.");
+
+    equal(MOS6502._CYCLES,
+        CycleCost,
+        "Set none: CYCLES incremented correctly.");
 });
 
 test("0x05 - ORA (Zero Page)", function() {
     /**
-     * ORA
-     * Memory mode: Zero Page
-     * "OR" memory with Accumulator.
-     *
-     * Pre-state:
-     *     PC = 0x4000
-     * CYCLES = 0
-     *      P = 0x20
-     *      A = 0x3C
-     * 0x4000 = 0x05
-     * 0x4001 = 0x40
-     * 0x0040 = 0x1E
-     *
-     * Post-state:
-     *     PC = 0x4002
-     * CYCLES = 6
-     *      P = 0x20 (No change to register)
-     *      A = 0x3E
+     *    Instruction = ORA
+     * Affected Flags = Sign & Zero
+     *    Total Tests = 3
      */
-    MOS6502._PC = 0x4000;
-    MOS6502._CYCLES = 0;
+    var OPCODE = 0x05,
+        ZPAddress = 0x20,
+        CycleCost = 3,
+        BytesUsed = 2,
+        PCStart = 0x4000,
+        OperandAddress = ZPAddress;
+
+    MOS6502._RAM[PCStart] = OPCODE;
+    MOS6502._RAM[PCStart + 1] = ZPAddress;
+
+    /**
+     * Test 1: Set Sign
+     *
+     * Before ORA Applied:
+     *         Operand: 01010101 (85)
+     *     Accumulator: 10000000 (128)
+     * Status Register: 00100000 (32)
+     *
+     * After ORA Applied:
+     *     Accumulator: 11010101 (213)
+     * Status Register: 10100000 (160)
+     */
+
+    MOS6502._PC = PCStart;
+    MOS6502._RAM[OperandAddress] = 85;
+    MOS6502._A = 128;
     MOS6502._P = 0x20;
-    MOS6502._A = 0x3C;
-    MOS6502._RAM[0x4000] = 0x05;
-    MOS6502._RAM[0x4001] = 0x40;
-    MOS6502._RAM[0x0040] = 0x1E;
+    MOS6502._CYCLES = 0;
 
     MOS6502.emulateCycle();
 
-    equal(MOS6502._PC,
-        0x4002,
-        "PC incremented correctly.");
-
-    equal(MOS6502._CYCLES,
-        3,
-        "CYCLES incremented correctly.");
-
-    equal(MOS6502._P,
-        0x20,
-        "Status register set correctly.");
 
     equal(MOS6502._A,
-        0x3E,
-        "Accumulator set correctly.");
+        213,
+        "Set sign: Accumulator set correctly.");
+
+    equal(MOS6502._P,
+        160,
+        "Set sign: Status register set correctly.");
+
+    equal(MOS6502._PC,
+            PCStart + BytesUsed,
+        "Set sign: PC incremented correctly.");
+
+    equal(MOS6502._CYCLES,
+        CycleCost,
+        "Set sign: CYCLES incremented correctly.");
+
+    /**
+     * Test 2: Set Zero
+     *
+     * Before ORA Applied:
+     *         Operand: 00000000 (0)
+     *     Accumulator: 00000000 (0)
+     * Status Register: 00100000 (32)
+     *
+     * After ORA Applied:
+     *     Accumulator: 00000000 (0)
+     * Status Register: 00100010 (34)
+     */
+
+    MOS6502._PC = PCStart;
+    MOS6502._RAM[OperandAddress] = 0;
+    MOS6502._A = 0;
+    MOS6502._P = 0x20;
+    MOS6502._CYCLES = 0;
+
+    MOS6502.emulateCycle();
+
+
+    equal(MOS6502._A,
+        0,
+        "Set zero: Accumulator set correctly.");
+
+    equal(MOS6502._P,
+        34,
+        "Set zero: Status register set correctly.");
+
+    equal(MOS6502._PC,
+            PCStart + BytesUsed,
+        "Set zero: PC incremented correctly.");
+
+    equal(MOS6502._CYCLES,
+        CycleCost,
+        "Set zero: CYCLES incremented correctly.");
+
+    /**
+     * Test 3: Set None
+     *
+     * Before ORA Applied:
+     *         Operand: 01100110 (102)
+     *     Accumulator: 01100001 (97)
+     * Status Register: 00100000 (32)
+     *
+     * After ORA Applied:
+     *     Accumulator: 01100111 (103)
+     * Status Register: 00100000 (32)
+     */
+
+    MOS6502._PC = PCStart;
+    MOS6502._RAM[OperandAddress] = 102;
+    MOS6502._A = 97;
+    MOS6502._P = 0x20;
+    MOS6502._CYCLES = 0;
+
+    MOS6502.emulateCycle();
+
+
+    equal(MOS6502._A,
+        103,
+        "Set none: Accumulator set correctly.");
+
+    equal(MOS6502._P,
+        32,
+        "Set none: Status register set correctly.");
+
+    equal(MOS6502._PC,
+            PCStart + BytesUsed,
+        "Set none: PC incremented correctly.");
+
+    equal(MOS6502._CYCLES,
+        CycleCost,
+        "Set none: CYCLES incremented correctly.");
 
 });
 
 test("0x15 - ORA (Zero Page, X)", function() {
     /**
-     * ORA
-     * Memory mode: Zero Page, X
-     * "OR" memory with Accumulator.
-     *
-     * Pre-state:
-     *     PC = 0x4000
-     * CYCLES = 0
-     *      P = 0x20
-     *      X = 0x50
-     *      A = 0x3C
-     * 0x4000 = 0x01
-     * 0x4001 = 0x40
-     * 0x0090 = 0x1E
-     *
-     * Post-state:
-     *     PC = 0x4002
-     * CYCLES = 4
-     *      P = 0x20 (No change to register)
-     *      A = 0x3E
+     *    Instruction = ORA
+     * Affected Flags = Sign & Zero
+     *    Total Tests = 3
      */
-    MOS6502._PC = 0x4000;
-    MOS6502._CYCLES = 0;
+    var OPCODE = 0x15,
+        ZPAddress = 0x20,
+        XRegister = 0x80,
+        CycleCost = 4,
+        BytesUsed = 2,
+        PCStart = 0x4000,
+        OperandAddress = (ZPAddress + XRegister) & 0xFF;
+
+    MOS6502._RAM[PCStart] = OPCODE;
+    MOS6502._RAM[PCStart + 1] = ZPAddress;
+    MOS6502._X = XRegister;
+
+    /**
+     * Test 1: Set Sign
+     *
+     * Before ORA Applied:
+     *         Operand: 01010101 (85)
+     *     Accumulator: 10000000 (128)
+     * Status Register: 00100000 (32)
+     *
+     * After ORA Applied:
+     *     Accumulator: 11010101 (213)
+     * Status Register: 10100000 (160)
+     */
+
+    MOS6502._PC = PCStart;
+    MOS6502._RAM[OperandAddress] = 85;
+    MOS6502._A = 128;
     MOS6502._P = 0x20;
-    MOS6502._X = 0x50;
-    MOS6502._A = 0x3C;
-    MOS6502._RAM[0x4000] = 0x15;
-    MOS6502._RAM[0x4001] = 0x40;
-    MOS6502._RAM[0x0090] = 0x1E;
+    MOS6502._CYCLES = 0;
 
     MOS6502.emulateCycle();
 
-    equal(MOS6502._PC,
-        0x4002,
-        "PC incremented correctly.");
-
-    equal(MOS6502._CYCLES,
-        4,
-        "CYCLES incremented correctly.");
-
-    equal(MOS6502._P,
-        0x20,
-        "Status register set correctly.");
 
     equal(MOS6502._A,
-        0x3E,
-        "Accumulator set correctly.");
+        213,
+        "Set sign: Accumulator set correctly.");
+
+    equal(MOS6502._P,
+        160,
+        "Set sign: Status register set correctly.");
+
+    equal(MOS6502._PC,
+            PCStart + BytesUsed,
+        "Set sign: PC incremented correctly.");
+
+    equal(MOS6502._CYCLES,
+        CycleCost,
+        "Set sign: CYCLES incremented correctly.");
+
+    /**
+     * Test 2: Set Zero
+     *
+     * Before ORA Applied:
+     *         Operand: 00000000 (0)
+     *     Accumulator: 00000000 (0)
+     * Status Register: 00100000 (32)
+     *
+     * After ORA Applied:
+     *     Accumulator: 00000000 (0)
+     * Status Register: 00100010 (34)
+     */
+
+    MOS6502._PC = PCStart;
+    MOS6502._RAM[OperandAddress] = 0;
+    MOS6502._A = 0;
+    MOS6502._P = 0x20;
+    MOS6502._CYCLES = 0;
+
+    MOS6502.emulateCycle();
+
+
+    equal(MOS6502._A,
+        0,
+        "Set zero: Accumulator set correctly.");
+
+    equal(MOS6502._P,
+        34,
+        "Set zero: Status register set correctly.");
+
+    equal(MOS6502._PC,
+            PCStart + BytesUsed,
+        "Set zero: PC incremented correctly.");
+
+    equal(MOS6502._CYCLES,
+        CycleCost,
+        "Set zero: CYCLES incremented correctly.");
+
+    /**
+     * Test 3: Set None
+     *
+     * Before ORA Applied:
+     *         Operand: 01100110 (102)
+     *     Accumulator: 01100001 (97)
+     * Status Register: 00100000 (32)
+     *
+     * After ORA Applied:
+     *     Accumulator: 01100111 (103)
+     * Status Register: 00100000 (32)
+     */
+
+    MOS6502._PC = PCStart;
+    MOS6502._RAM[OperandAddress] = 102;
+    MOS6502._A = 97;
+    MOS6502._P = 0x20;
+    MOS6502._CYCLES = 0;
+
+    MOS6502.emulateCycle();
+
+
+    equal(MOS6502._A,
+        103,
+        "Set none: Accumulator set correctly.");
+
+    equal(MOS6502._P,
+        32,
+        "Set none: Status register set correctly.");
+
+    equal(MOS6502._PC,
+            PCStart + BytesUsed,
+        "Set none: PC incremented correctly.");
+
+    equal(MOS6502._CYCLES,
+        CycleCost,
+        "Set none: CYCLES incremented correctly.");
 });
 
 test("0x0D - ORA (Absolute)", function() {
     /**
-     * ORA
-     * Memory mode: Absolute
-     * "OR" memory with Accumulator.
-     *
-     * Pre-state:
-     *     PC = 0x4000
-     * CYCLES = 0
-     *      P = 0x20
-     *      X = 0x50
-     *      A = 0x3C
-     * 0x4000 = 0x0D
-     * 0x4001 = 0x21
-     * 0x4002 = 0x32
-     * 0x3221 = 0x1E
-     *
-     * Post-state:
-     *     PC = 0x4003
-     * CYCLES = 4
-     *      P = 0x20 (No change to register)
-     *      A = 0x3E
+     *    Instruction = ORA
+     * Affected Flags = Sign & Zero
+     *    Total Tests = 3
      */
-    MOS6502._PC = 0x4000;
-    MOS6502._CYCLES = 0;
+    var OPCODE = 0x0D,
+        AddressByte1 = 0x21,
+        AddressByte2 = 0x31,
+        CycleCost = 4,
+        BytesUsed = 3,
+        PCStart = 0x4000,
+        OperandAddress = MOS6502._MAKE_ADDRESS(AddressByte1,AddressByte2);
+
+    MOS6502._RAM[PCStart] = OPCODE;
+    MOS6502._RAM[PCStart + 1] = AddressByte1;
+    MOS6502._RAM[PCStart + 2] = AddressByte2;
+
+    /**
+     * Test 1: Set Sign
+     *
+     * Before ORA Applied:
+     *         Operand: 01010101 (85)
+     *     Accumulator: 10000000 (128)
+     * Status Register: 00100000 (32)
+     *
+     * After ORA Applied:
+     *     Accumulator: 11010101 (213)
+     * Status Register: 10100000 (160)
+     */
+
+    MOS6502._PC = PCStart;
+    MOS6502._RAM[OperandAddress] = 85;
+    MOS6502._A = 128;
     MOS6502._P = 0x20;
-    MOS6502._X = 0x50;
-    MOS6502._A = 0x3C;
-    MOS6502._RAM[0x4000] = 0x0D;
-    MOS6502._RAM[0x4001] = 0x21;
-    MOS6502._RAM[0x4002] = 0x32;
-    MOS6502._RAM[0x3221] = 0x1E;
+    MOS6502._CYCLES = 0;
 
     MOS6502.emulateCycle();
 
-    equal(MOS6502._PC,
-        0x4003,
-        "PC incremented correctly.");
-
-    equal(MOS6502._CYCLES,
-        4,
-        "CYCLES incremented correctly.");
-
-    equal(MOS6502._P,
-        0x20,
-        "Status register set correctly.");
 
     equal(MOS6502._A,
-        0x3E,
-        "Accumulator set correctly.");
+        213,
+        "Set sign: Accumulator set correctly.");
+
+    equal(MOS6502._P,
+        160,
+        "Set sign: Status register set correctly.");
+
+    equal(MOS6502._PC,
+            PCStart + BytesUsed,
+        "Set sign: PC incremented correctly.");
+
+    equal(MOS6502._CYCLES,
+        CycleCost,
+        "Set sign: CYCLES incremented correctly.");
+
+    /**
+     * Test 2: Set Zero
+     *
+     * Before ORA Applied:
+     *         Operand: 00000000 (0)
+     *     Accumulator: 00000000 (0)
+     * Status Register: 00100000 (32)
+     *
+     * After ORA Applied:
+     *     Accumulator: 00000000 (0)
+     * Status Register: 00100010 (34)
+     */
+
+    MOS6502._PC = PCStart;
+    MOS6502._RAM[OperandAddress] = 0;
+    MOS6502._A = 0;
+    MOS6502._P = 0x20;
+    MOS6502._CYCLES = 0;
+
+    MOS6502.emulateCycle();
+
+
+    equal(MOS6502._A,
+        0,
+        "Set zero: Accumulator set correctly.");
+
+    equal(MOS6502._P,
+        34,
+        "Set zero: Status register set correctly.");
+
+    equal(MOS6502._PC,
+            PCStart + BytesUsed,
+        "Set zero: PC incremented correctly.");
+
+    equal(MOS6502._CYCLES,
+        CycleCost,
+        "Set zero: CYCLES incremented correctly.");
+
+    /**
+     * Test 3: Set None
+     *
+     * Before ORA Applied:
+     *         Operand: 01100110 (102)
+     *     Accumulator: 01100001 (97)
+     * Status Register: 00100000 (32)
+     *
+     * After ORA Applied:
+     *     Accumulator: 01100111 (103)
+     * Status Register: 00100000 (32)
+     */
+
+    MOS6502._PC = PCStart;
+    MOS6502._RAM[OperandAddress] = 102;
+    MOS6502._A = 97;
+    MOS6502._P = 0x20;
+    MOS6502._CYCLES = 0;
+
+    MOS6502.emulateCycle();
+
+
+    equal(MOS6502._A,
+        103,
+        "Set none: Accumulator set correctly.");
+
+    equal(MOS6502._P,
+        32,
+        "Set none: Status register set correctly.");
+
+    equal(MOS6502._PC,
+            PCStart + BytesUsed,
+        "Set none: PC incremented correctly.");
+
+    equal(MOS6502._CYCLES,
+        CycleCost,
+        "Set none: CYCLES incremented correctly.");
 });
 
-test("0x1D - ORA (Absolute, X)", function() {
+test("0x1D - ORA (Absolute, X) [Same Page]", function() {
     /**
-     * ORA
-     * Memory mode: Absolute, X
-     * "OR" memory with Accumulator.
-     *
-     * Pre-state:
-     *     PC = 0x4000
-     * CYCLES = 0
-     *      P = 0x20
-     *      X = 0x80
-     *      A = 0x3C
-     * 0x4000 = 0x1D
-     * 0x4001 = 0x80
-     * 0x4002 = 0x21
-     * 0x2200 = 0x1E
-     *
-     * Post-state:
-     *     PC = 0x4003
-     * CYCLES = 5
-     *      P = 0x20 (No change to register)
-     *      A = 0x3E
+     *    Instruction = ORA
+     * Affected Flags = Sign & Zero
+     *    Total Tests = 3
      */
-    MOS6502._PC = 0x4000;
-    MOS6502._CYCLES = 0;
+    var OPCODE = 0x1D,
+        XRegister = 0x80,
+        AddressByte1 = 0x21,
+        AddressByte2 = 0x31,
+        CycleCost = 4,
+        BytesUsed = 3,
+        PCStart = 0x4000,
+        OperandAddress = MOS6502._MAKE_ADDRESS(AddressByte1,AddressByte2) + XRegister;
+
+    MOS6502._RAM[PCStart] = OPCODE;
+    MOS6502._RAM[PCStart + 1] = AddressByte1;
+    MOS6502._RAM[PCStart + 2] = AddressByte2;
+    MOS6502._X = XRegister;
+
+    /**
+     * Test 1: Set Sign
+     *
+     * Before ORA Applied:
+     *         Operand: 01010101 (85)
+     *     Accumulator: 10000000 (128)
+     * Status Register: 00100000 (32)
+     *
+     * After ORA Applied:
+     *     Accumulator: 11010101 (213)
+     * Status Register: 10100000 (160)
+     */
+
+    MOS6502._PC = PCStart;
+    MOS6502._RAM[OperandAddress] = 85;
+    MOS6502._A = 128;
     MOS6502._P = 0x20;
-    MOS6502._X = 0x80;
-    MOS6502._A = 0x3C;
-    MOS6502._RAM[0x4000] = 0x1D;
-    MOS6502._RAM[0x4001] = 0x80;
-    MOS6502._RAM[0x4002] = 0x21;
-    MOS6502._RAM[0x2200] = 0x1E;
+    MOS6502._CYCLES = 0;
 
     MOS6502.emulateCycle();
 
-    equal(MOS6502._PC,
-        0x4003,
-        "PC incremented correctly.");
-
-    equal(MOS6502._CYCLES,
-        5,
-        "CYCLES incremented correctly.");
-
-    equal(MOS6502._P,
-        0x20,
-        "Status register set correctly.");
 
     equal(MOS6502._A,
-        0x3E,
-        "Accumulator set correctly.");
+        213,
+        "Set sign: Accumulator set correctly.");
+
+    equal(MOS6502._P,
+        160,
+        "Set sign: Status register set correctly.");
+
+    equal(MOS6502._PC,
+            PCStart + BytesUsed,
+        "Set sign: PC incremented correctly.");
+
+    equal(MOS6502._CYCLES,
+        CycleCost,
+        "Set sign: CYCLES incremented correctly.");
+
+    /**
+     * Test 2: Set Zero
+     *
+     * Before ORA Applied:
+     *         Operand: 00000000 (0)
+     *     Accumulator: 00000000 (0)
+     * Status Register: 00100000 (32)
+     *
+     * After ORA Applied:
+     *     Accumulator: 00000000 (0)
+     * Status Register: 00100010 (34)
+     */
+
+    MOS6502._PC = PCStart;
+    MOS6502._RAM[OperandAddress] = 0;
+    MOS6502._A = 0;
+    MOS6502._P = 0x20;
+    MOS6502._CYCLES = 0;
+
+    MOS6502.emulateCycle();
+
+
+    equal(MOS6502._A,
+        0,
+        "Set zero: Accumulator set correctly.");
+
+    equal(MOS6502._P,
+        34,
+        "Set zero: Status register set correctly.");
+
+    equal(MOS6502._PC,
+            PCStart + BytesUsed,
+        "Set zero: PC incremented correctly.");
+
+    equal(MOS6502._CYCLES,
+        CycleCost,
+        "Set zero: CYCLES incremented correctly.");
+
+    /**
+     * Test 3: Set None
+     *
+     * Before ORA Applied:
+     *         Operand: 01100110 (102)
+     *     Accumulator: 01100001 (97)
+     * Status Register: 00100000 (32)
+     *
+     * After ORA Applied:
+     *     Accumulator: 01100111 (103)
+     * Status Register: 00100000 (32)
+     */
+
+    MOS6502._PC = PCStart;
+    MOS6502._RAM[OperandAddress] = 102;
+    MOS6502._A = 97;
+    MOS6502._P = 0x20;
+    MOS6502._CYCLES = 0;
+
+    MOS6502.emulateCycle();
+
+
+    equal(MOS6502._A,
+        103,
+        "Set none: Accumulator set correctly.");
+
+    equal(MOS6502._P,
+        32,
+        "Set none: Status register set correctly.");
+
+    equal(MOS6502._PC,
+            PCStart + BytesUsed,
+        "Set none: PC incremented correctly.");
+
+    equal(MOS6502._CYCLES,
+        CycleCost,
+        "Set none: CYCLES incremented correctly.");
 
 });
 
-test("0x19 - ORA (Absolute, Y)", function() {
+test("0x1D - ORA (Absolute, X) [Page Boundary Crossed]", function() {
     /**
-     * ORA
-     * Memory mode: Absolute, Y
-     * "OR" memory with Accumulator.
-     *
-     * Pre-state:
-     *     PC = 0x4000
-     * CYCLES = 0
-     *      P = 0x20
-     *      Y = 0x80
-     *      A = 0x3C
-     * 0x4000 = 0x1D
-     * 0x4001 = 0x80
-     * 0x4002 = 0x21
-     * 0x2200 = 0x1E
-     *
-     * Post-state:
-     *     PC = 0x4003
-     * CYCLES = 5
-     *      P = 0x20 (No change to register)
-     *      A = 0x3E
+     *    Instruction = ORA
+     * Affected Flags = Sign & Zero
+     *    Total Tests = 3
      */
-    MOS6502._PC = 0x4000;
-    MOS6502._CYCLES = 0;
+    var OPCODE = 0x1D,
+        XRegister = 0x80,
+        AddressByte1 = 0x81,
+        AddressByte2 = 0x31,
+        CycleCost = 5,
+        BytesUsed = 3,
+        PCStart = 0x4000,
+        OperandAddress = MOS6502._MAKE_ADDRESS(AddressByte1,AddressByte2) + XRegister;
+
+    MOS6502._RAM[PCStart] = OPCODE;
+    MOS6502._RAM[PCStart + 1] = AddressByte1;
+    MOS6502._RAM[PCStart + 2] = AddressByte2;
+    MOS6502._X = XRegister;
+
+    /**
+     * Test 1: Set Sign
+     *
+     * Before ORA Applied:
+     *         Operand: 01010101 (85)
+     *     Accumulator: 10000000 (128)
+     * Status Register: 00100000 (32)
+     *
+     * After ORA Applied:
+     *     Accumulator: 11010101 (213)
+     * Status Register: 10100000 (160)
+     */
+
+    MOS6502._PC = PCStart;
+    MOS6502._RAM[OperandAddress] = 85;
+    MOS6502._A = 128;
     MOS6502._P = 0x20;
-    MOS6502._Y = 0x80;
-    MOS6502._A = 0x3C;
-    MOS6502._RAM[0x4000] = 0x1D;
-    MOS6502._RAM[0x4001] = 0x80;
-    MOS6502._RAM[0x4002] = 0x21;
-    MOS6502._RAM[0x2200] = 0x1E;
+    MOS6502._CYCLES = 0;
 
     MOS6502.emulateCycle();
 
-    equal(MOS6502._PC,
-        0x4003,
-        "PC incremented correctly.");
-
-    equal(MOS6502._CYCLES,
-        5,
-        "CYCLES incremented correctly.");
-
-    equal(MOS6502._P,
-        0x20,
-        "Status register set correctly.");
 
     equal(MOS6502._A,
-        0x3E,
-        "Accumulator set correctly.");
+        213,
+        "Set sign: Accumulator set correctly.");
+
+    equal(MOS6502._P,
+        160,
+        "Set sign: Status register set correctly.");
+
+    equal(MOS6502._PC,
+            PCStart + BytesUsed,
+        "Set sign: PC incremented correctly.");
+
+    equal(MOS6502._CYCLES,
+        CycleCost,
+        "Set sign: CYCLES incremented correctly.");
+
+    /**
+     * Test 2: Set Zero
+     *
+     * Before ORA Applied:
+     *         Operand: 00000000 (0)
+     *     Accumulator: 00000000 (0)
+     * Status Register: 00100000 (32)
+     *
+     * After ORA Applied:
+     *     Accumulator: 00000000 (0)
+     * Status Register: 00100010 (34)
+     */
+
+    MOS6502._PC = PCStart;
+    MOS6502._RAM[OperandAddress] = 0;
+    MOS6502._A = 0;
+    MOS6502._P = 0x20;
+    MOS6502._CYCLES = 0;
+
+    MOS6502.emulateCycle();
+
+
+    equal(MOS6502._A,
+        0,
+        "Set zero: Accumulator set correctly.");
+
+    equal(MOS6502._P,
+        34,
+        "Set zero: Status register set correctly.");
+
+    equal(MOS6502._PC,
+            PCStart + BytesUsed,
+        "Set zero: PC incremented correctly.");
+
+    equal(MOS6502._CYCLES,
+        CycleCost,
+        "Set zero: CYCLES incremented correctly.");
+
+    /**
+     * Test 3: Set None
+     *
+     * Before ORA Applied:
+     *         Operand: 01100110 (102)
+     *     Accumulator: 01100001 (97)
+     * Status Register: 00100000 (32)
+     *
+     * After ORA Applied:
+     *     Accumulator: 01100111 (103)
+     * Status Register: 00100000 (32)
+     */
+
+    MOS6502._PC = PCStart;
+    MOS6502._RAM[OperandAddress] = 102;
+    MOS6502._A = 97;
+    MOS6502._P = 0x20;
+    MOS6502._CYCLES = 0;
+
+    MOS6502.emulateCycle();
+
+
+    equal(MOS6502._A,
+        103,
+        "Set none: Accumulator set correctly.");
+
+    equal(MOS6502._P,
+        32,
+        "Set none: Status register set correctly.");
+
+    equal(MOS6502._PC,
+            PCStart + BytesUsed,
+        "Set none: PC incremented correctly.");
+
+    equal(MOS6502._CYCLES,
+        CycleCost,
+        "Set none: CYCLES incremented correctly.");
+
+});
+
+test("0x19 - ORA (Absolute, Y) [Same Page]", function() {
+    /**
+     *    Instruction = ORA
+     * Affected Flags = Sign & Zero
+     *    Total Tests = 3
+     */
+    var OPCODE = 0x1D,
+        YRegister = 0x80,
+        AddressByte1 = 0x21,
+        AddressByte2 = 0x31,
+        CycleCost = 4,
+        BytesUsed = 3,
+        PCStart = 0x4000,
+        OperandAddress = MOS6502._MAKE_ADDRESS(AddressByte1,AddressByte2) + YRegister;
+
+    MOS6502._RAM[PCStart] = OPCODE;
+    MOS6502._RAM[PCStart + 1] = AddressByte1;
+    MOS6502._RAM[PCStart + 2] = AddressByte2;
+    MOS6502._Y = YRegister;
+
+    /**
+     * Test 1: Set Sign
+     *
+     * Before ORA Applied:
+     *         Operand: 01010101 (85)
+     *     Accumulator: 10000000 (128)
+     * Status Register: 00100000 (32)
+     *
+     * After ORA Applied:
+     *     Accumulator: 11010101 (213)
+     * Status Register: 10100000 (160)
+     */
+
+    MOS6502._PC = PCStart;
+    MOS6502._RAM[OperandAddress] = 85;
+    MOS6502._A = 128;
+    MOS6502._P = 0x20;
+    MOS6502._CYCLES = 0;
+
+    MOS6502.emulateCycle();
+
+
+    equal(MOS6502._A,
+        213,
+        "Set sign: Accumulator set correctly.");
+
+    equal(MOS6502._P,
+        160,
+        "Set sign: Status register set correctly.");
+
+    equal(MOS6502._PC,
+            PCStart + BytesUsed,
+        "Set sign: PC incremented correctly.");
+
+    equal(MOS6502._CYCLES,
+        CycleCost,
+        "Set sign: CYCLES incremented correctly.");
+
+    /**
+     * Test 2: Set Zero
+     *
+     * Before ORA Applied:
+     *         Operand: 00000000 (0)
+     *     Accumulator: 00000000 (0)
+     * Status Register: 00100000 (32)
+     *
+     * After ORA Applied:
+     *     Accumulator: 00000000 (0)
+     * Status Register: 00100010 (34)
+     */
+
+    MOS6502._PC = PCStart;
+    MOS6502._RAM[OperandAddress] = 0;
+    MOS6502._A = 0;
+    MOS6502._P = 0x20;
+    MOS6502._CYCLES = 0;
+
+    MOS6502.emulateCycle();
+
+
+    equal(MOS6502._A,
+        0,
+        "Set zero: Accumulator set correctly.");
+
+    equal(MOS6502._P,
+        34,
+        "Set zero: Status register set correctly.");
+
+    equal(MOS6502._PC,
+            PCStart + BytesUsed,
+        "Set zero: PC incremented correctly.");
+
+    equal(MOS6502._CYCLES,
+        CycleCost,
+        "Set zero: CYCLES incremented correctly.");
+
+    /**
+     * Test 3: Set None
+     *
+     * Before ORA Applied:
+     *         Operand: 01100110 (102)
+     *     Accumulator: 01100001 (97)
+     * Status Register: 00100000 (32)
+     *
+     * After ORA Applied:
+     *     Accumulator: 01100111 (103)
+     * Status Register: 00100000 (32)
+     */
+
+    MOS6502._PC = PCStart;
+    MOS6502._RAM[OperandAddress] = 102;
+    MOS6502._A = 97;
+    MOS6502._P = 0x20;
+    MOS6502._CYCLES = 0;
+
+    MOS6502.emulateCycle();
+
+
+    equal(MOS6502._A,
+        103,
+        "Set none: Accumulator set correctly.");
+
+    equal(MOS6502._P,
+        32,
+        "Set none: Status register set correctly.");
+
+    equal(MOS6502._PC,
+            PCStart + BytesUsed,
+        "Set none: PC incremented correctly.");
+
+    equal(MOS6502._CYCLES,
+        CycleCost,
+        "Set none: CYCLES incremented correctly.");
+
+});
+
+test("0x19 - ORA (Absolute, Y) [Page Boundary Crossed]", function() {
+    /**
+     *    Instruction = ORA
+     * Affected Flags = Sign & Zero
+     *    Total Tests = 3
+     */
+    var OPCODE = 0x1D,
+        YRegister = 0x80,
+        AddressByte1 = 0x81,
+        AddressByte2 = 0x31,
+        CycleCost = 5,
+        BytesUsed = 3,
+        PCStart = 0x4000,
+        OperandAddress = MOS6502._MAKE_ADDRESS(AddressByte1,AddressByte2) + YRegister;
+
+    MOS6502._RAM[PCStart] = OPCODE;
+    MOS6502._RAM[PCStart + 1] = AddressByte1;
+    MOS6502._RAM[PCStart + 2] = AddressByte2;
+    MOS6502._Y = YRegister;
+
+    /**
+     * Test 1: Set Sign
+     *
+     * Before ORA Applied:
+     *         Operand: 01010101 (85)
+     *     Accumulator: 10000000 (128)
+     * Status Register: 00100000 (32)
+     *
+     * After ORA Applied:
+     *     Accumulator: 11010101 (213)
+     * Status Register: 10100000 (160)
+     */
+
+    MOS6502._PC = PCStart;
+    MOS6502._RAM[OperandAddress] = 85;
+    MOS6502._A = 128;
+    MOS6502._P = 0x20;
+    MOS6502._CYCLES = 0;
+
+    MOS6502.emulateCycle();
+
+
+    equal(MOS6502._A,
+        213,
+        "Set sign: Accumulator set correctly.");
+
+    equal(MOS6502._P,
+        160,
+        "Set sign: Status register set correctly.");
+
+    equal(MOS6502._PC,
+            PCStart + BytesUsed,
+        "Set sign: PC incremented correctly.");
+
+    equal(MOS6502._CYCLES,
+        CycleCost,
+        "Set sign: CYCLES incremented correctly.");
+
+    /**
+     * Test 2: Set Zero
+     *
+     * Before ORA Applied:
+     *         Operand: 00000000 (0)
+     *     Accumulator: 00000000 (0)
+     * Status Register: 00100000 (32)
+     *
+     * After ORA Applied:
+     *     Accumulator: 00000000 (0)
+     * Status Register: 00100010 (34)
+     */
+
+    MOS6502._PC = PCStart;
+    MOS6502._RAM[OperandAddress] = 0;
+    MOS6502._A = 0;
+    MOS6502._P = 0x20;
+    MOS6502._CYCLES = 0;
+
+    MOS6502.emulateCycle();
+
+
+    equal(MOS6502._A,
+        0,
+        "Set zero: Accumulator set correctly.");
+
+    equal(MOS6502._P,
+        34,
+        "Set zero: Status register set correctly.");
+
+    equal(MOS6502._PC,
+            PCStart + BytesUsed,
+        "Set zero: PC incremented correctly.");
+
+    equal(MOS6502._CYCLES,
+        CycleCost,
+        "Set zero: CYCLES incremented correctly.");
+
+    /**
+     * Test 3: Set None
+     *
+     * Before ORA Applied:
+     *         Operand: 01100110 (102)
+     *     Accumulator: 01100001 (97)
+     * Status Register: 00100000 (32)
+     *
+     * After ORA Applied:
+     *     Accumulator: 01100111 (103)
+     * Status Register: 00100000 (32)
+     */
+
+    MOS6502._PC = PCStart;
+    MOS6502._RAM[OperandAddress] = 102;
+    MOS6502._A = 97;
+    MOS6502._P = 0x20;
+    MOS6502._CYCLES = 0;
+
+    MOS6502.emulateCycle();
+
+
+    equal(MOS6502._A,
+        103,
+        "Set none: Accumulator set correctly.");
+
+    equal(MOS6502._P,
+        32,
+        "Set none: Status register set correctly.");
+
+    equal(MOS6502._PC,
+            PCStart + BytesUsed,
+        "Set none: PC incremented correctly.");
+
+    equal(MOS6502._CYCLES,
+        CycleCost,
+        "Set none: CYCLES incremented correctly.");
 
 });
 
 test("0x01 - ORA (Indirect, X)", function() {
     /**
-     * ORA
-     * Memory mode: Indirect, X
-     * "OR" memory with Accumulator.
-     *
-     * Pre-state:
-     *     PC = 0x4000
-     * CYCLES = 0
-     *      P = 0x20
-     *      X = 0x50
-     *      A = 0x3C
-     * 0x4000 = 0x01
-     * 0x4001 = 0x40
-     * 0x0090 = 0x21
-     * 0x0091 = 0x32
-     * 0x3221 = 0x1E
-     *
-     * Post-state:
-     *     PC = 0x4002
-     * CYCLES = 6
-     *      P = 0x20 (No change to register)
-     *      A = 0x3E
+     *    Instruction = ORA
+     * Affected Flags = Sign & Zero
+     *    Total Tests = 3
      */
-    MOS6502._PC = 0x4000;
-    MOS6502._CYCLES = 0;
+    var OPCODE = 0x01,
+        XRegister = 0x80,
+        ZPAddress = 0x21,
+        AddressByte1 = 0x21,
+        AddressByte2 = 0x31,
+        CycleCost = 6,
+        BytesUsed = 2,
+        PCStart = 0x4000,
+        OperandAddress = MOS6502._MAKE_ADDRESS(AddressByte1,AddressByte2);
+
+    MOS6502._RAM[PCStart] = OPCODE;
+    MOS6502._RAM[PCStart + 1] = ZPAddress;
+    MOS6502._RAM[ZPAddress + XRegister] = AddressByte1;
+    MOS6502._RAM[ZPAddress + XRegister + 1] = AddressByte2;
+    MOS6502._X = XRegister;
+
+    /**
+     * Test 1: Set Sign
+     *
+     * Before ORA Applied:
+     *         Operand: 01010101 (85)
+     *     Accumulator: 10000000 (128)
+     * Status Register: 00100000 (32)
+     *
+     * After ORA Applied:
+     *     Accumulator: 11010101 (213)
+     * Status Register: 10100000 (160)
+     */
+
+    MOS6502._PC = PCStart;
+    MOS6502._RAM[OperandAddress] = 85;
+    MOS6502._A = 128;
     MOS6502._P = 0x20;
-    MOS6502._X = 0x50;
-    MOS6502._A = 0x3C;
-    MOS6502._RAM[0x4000] = 0x01;
-    MOS6502._RAM[0x4001] = 0x40;
-    MOS6502._RAM[0x0090] = 0x21;
-    MOS6502._RAM[0x0091] = 0x32;
-    MOS6502._RAM[0x3221] = 0x1E;
+    MOS6502._CYCLES = 0;
 
     MOS6502.emulateCycle();
 
-    equal(MOS6502._PC,
-        0x4002,
-        "PC incremented correctly.");
-
-    equal(MOS6502._CYCLES,
-        6,
-        "CYCLES incremented correctly.");
-
-    equal(MOS6502._P,
-        0x20,
-        "Status register set correctly.");
 
     equal(MOS6502._A,
-        0x3E,
-        "Accumulator set correctly.");
+        213,
+        "Set sign: Accumulator set correctly.");
+
+    equal(MOS6502._P,
+        160,
+        "Set sign: Status register set correctly.");
+
+    equal(MOS6502._PC,
+            PCStart + BytesUsed,
+        "Set sign: PC incremented correctly.");
+
+    equal(MOS6502._CYCLES,
+        CycleCost,
+        "Set sign: CYCLES incremented correctly.");
+
+    /**
+     * Test 2: Set Zero
+     *
+     * Before ORA Applied:
+     *         Operand: 00000000 (0)
+     *     Accumulator: 00000000 (0)
+     * Status Register: 00100000 (32)
+     *
+     * After ORA Applied:
+     *     Accumulator: 00000000 (0)
+     * Status Register: 00100010 (34)
+     */
+
+    MOS6502._PC = PCStart;
+    MOS6502._RAM[OperandAddress] = 0;
+    MOS6502._A = 0;
+    MOS6502._P = 0x20;
+    MOS6502._CYCLES = 0;
+
+    MOS6502.emulateCycle();
+
+
+    equal(MOS6502._A,
+        0,
+        "Set zero: Accumulator set correctly.");
+
+    equal(MOS6502._P,
+        34,
+        "Set zero: Status register set correctly.");
+
+    equal(MOS6502._PC,
+            PCStart + BytesUsed,
+        "Set zero: PC incremented correctly.");
+
+    equal(MOS6502._CYCLES,
+        CycleCost,
+        "Set zero: CYCLES incremented correctly.");
+
+    /**
+     * Test 3: Set None
+     *
+     * Before ORA Applied:
+     *         Operand: 01100110 (102)
+     *     Accumulator: 01100001 (97)
+     * Status Register: 00100000 (32)
+     *
+     * After ORA Applied:
+     *     Accumulator: 01100111 (103)
+     * Status Register: 00100000 (32)
+     */
+
+    MOS6502._PC = PCStart;
+    MOS6502._RAM[OperandAddress] = 102;
+    MOS6502._A = 97;
+    MOS6502._P = 0x20;
+    MOS6502._CYCLES = 0;
+
+    MOS6502.emulateCycle();
+
+
+    equal(MOS6502._A,
+        103,
+        "Set none: Accumulator set correctly.");
+
+    equal(MOS6502._P,
+        32,
+        "Set none: Status register set correctly.");
+
+    equal(MOS6502._PC,
+            PCStart + BytesUsed,
+        "Set none: PC incremented correctly.");
+
+    equal(MOS6502._CYCLES,
+        CycleCost,
+        "Set none: CYCLES incremented correctly.");
 
 });
 
-test("0x11 - ORA (Indirect, Y)", function() {
+test("0x11 - ORA (Indirect, Y) [Same Page]", function() {
     /**
-     * ORA
-     * Memory mode: Indirect, Y
-     * "OR" memory with Accumulator.
-     *
-     * Pre-state:
-     *     PC = 0x4000
-     * CYCLES = 0
-     *      P = 0x20
-     *      Y = 0x80
-     *      A = 0x3C
-     * 0x4000 = 0x11
-     * 0x4001 = 0x40
-     * 0x0040 = 0x21
-     * 0x0041 = 0x32
-     * 0x3221 = 0x1E
-     *
-     * Post-state:
-     *     PC = 0x4003
-     * CYCLES = 5
-     *      P = 0x20 (No change to register)
-     *      A = 0x3E
+     *    Instruction = ORA
+     * Affected Flags = Sign & Zero
+     *    Total Tests = 3
      */
-    MOS6502._PC = 0x4000;
-    MOS6502._CYCLES = 0;
+    var OPCODE = 0x11,
+        YRegister = 0x80,
+        ZPAddress = 0x21,
+        AddressByte1 = 0x21,
+        AddressByte2 = 0x31,
+        CycleCost = 5,
+        BytesUsed = 2,
+        PCStart = 0x4000,
+        OperandAddress = MOS6502._MAKE_ADDRESS(AddressByte1,AddressByte2) + YRegister;
+
+    MOS6502._RAM[PCStart] = OPCODE;
+    MOS6502._RAM[PCStart + 1] = ZPAddress;
+    MOS6502._RAM[ZPAddress] = AddressByte1;
+    MOS6502._RAM[ZPAddress + 1] = AddressByte2;
+    MOS6502._Y = YRegister;
+
+    /**
+     * Test 1: Set Sign
+     *
+     * Before ORA Applied:
+     *         Operand: 01010101 (85)
+     *     Accumulator: 10000000 (128)
+     * Status Register: 00100000 (32)
+     *
+     * After ORA Applied:
+     *     Accumulator: 11010101 (213)
+     * Status Register: 10100000 (160)
+     */
+
+    MOS6502._PC = PCStart;
+    MOS6502._RAM[OperandAddress] = 85;
+    MOS6502._A = 128;
     MOS6502._P = 0x20;
-    MOS6502._Y = 0x80;
-    MOS6502._A = 0x3C;
-    MOS6502._RAM[0x4000] = 0x11;
-    MOS6502._RAM[0x4001] = 0x40;
-    MOS6502._RAM[0x0040] = 0x81;
-    MOS6502._RAM[0x0041] = 0x32;
-    MOS6502._RAM[0x3301] = 0x1E;
+    MOS6502._CYCLES = 0;
 
     MOS6502.emulateCycle();
 
-    equal(MOS6502._PC,
-        0x4002,
-        "PC incremented correctly.");
-
-    equal(MOS6502._CYCLES,
-        5,
-        "CYCLES incremented correctly.");
-
-    equal(MOS6502._P,
-        0x20,
-        "Status register set correctly.");
 
     equal(MOS6502._A,
-        0x3E,
-        "Accumulator set correctly.");
+        213,
+        "Set sign: Accumulator set correctly.");
+
+    equal(MOS6502._P,
+        160,
+        "Set sign: Status register set correctly.");
+
+    equal(MOS6502._PC,
+            PCStart + BytesUsed,
+        "Set sign: PC incremented correctly.");
+
+    equal(MOS6502._CYCLES,
+        CycleCost,
+        "Set sign: CYCLES incremented correctly.");
+
+    /**
+     * Test 2: Set Zero
+     *
+     * Before ORA Applied:
+     *         Operand: 00000000 (0)
+     *     Accumulator: 00000000 (0)
+     * Status Register: 00100000 (32)
+     *
+     * After ORA Applied:
+     *     Accumulator: 00000000 (0)
+     * Status Register: 00100010 (34)
+     */
+
+    MOS6502._PC = PCStart;
+    MOS6502._RAM[OperandAddress] = 0;
+    MOS6502._A = 0;
+    MOS6502._P = 0x20;
+    MOS6502._CYCLES = 0;
+
+    MOS6502.emulateCycle();
+
+
+    equal(MOS6502._A,
+        0,
+        "Set zero: Accumulator set correctly.");
+
+    equal(MOS6502._P,
+        34,
+        "Set zero: Status register set correctly.");
+
+    equal(MOS6502._PC,
+            PCStart + BytesUsed,
+        "Set zero: PC incremented correctly.");
+
+    equal(MOS6502._CYCLES,
+        CycleCost,
+        "Set zero: CYCLES incremented correctly.");
+
+    /**
+     * Test 3: Set None
+     *
+     * Before ORA Applied:
+     *         Operand: 01100110 (102)
+     *     Accumulator: 01100001 (97)
+     * Status Register: 00100000 (32)
+     *
+     * After ORA Applied:
+     *     Accumulator: 01100111 (103)
+     * Status Register: 00100000 (32)
+     */
+
+    MOS6502._PC = PCStart;
+    MOS6502._RAM[OperandAddress] = 102;
+    MOS6502._A = 97;
+    MOS6502._P = 0x20;
+    MOS6502._CYCLES = 0;
+
+    MOS6502.emulateCycle();
+
+
+    equal(MOS6502._A,
+        103,
+        "Set none: Accumulator set correctly.");
+
+    equal(MOS6502._P,
+        32,
+        "Set none: Status register set correctly.");
+
+    equal(MOS6502._PC,
+            PCStart + BytesUsed,
+        "Set none: PC incremented correctly.");
+
+    equal(MOS6502._CYCLES,
+        CycleCost,
+        "Set none: CYCLES incremented correctly.");
+
+});
+
+test("0x11 - ORA (Indirect, Y) [Page Boundary Crossed]", function() {
+    /**
+     *    Instruction = ORA
+     * Affected Flags = Sign & Zero
+     *    Total Tests = 3
+     */
+    var OPCODE = 0x11,
+        YRegister = 0x80,
+        ZPAddress = 0x21,
+        AddressByte1 = 0x81,
+        AddressByte2 = 0x31,
+        CycleCost = 5,
+        BytesUsed = 2,
+        PCStart = 0x4000,
+        OperandAddress = MOS6502._MAKE_ADDRESS(AddressByte1,AddressByte2) + YRegister;
+
+    MOS6502._RAM[PCStart] = OPCODE;
+    MOS6502._RAM[PCStart + 1] = ZPAddress;
+    MOS6502._RAM[ZPAddress] = AddressByte1;
+    MOS6502._RAM[ZPAddress + 1] = AddressByte2;
+    MOS6502._Y = YRegister;
+
+    /**
+     * Test 1: Set Sign
+     *
+     * Before ORA Applied:
+     *         Operand: 01010101 (85)
+     *     Accumulator: 10000000 (128)
+     * Status Register: 00100000 (32)
+     *
+     * After ORA Applied:
+     *     Accumulator: 11010101 (213)
+     * Status Register: 10100000 (160)
+     */
+
+    MOS6502._PC = PCStart;
+    MOS6502._RAM[OperandAddress] = 85;
+    MOS6502._A = 128;
+    MOS6502._P = 0x20;
+    MOS6502._CYCLES = 0;
+
+    MOS6502.emulateCycle();
+
+
+    equal(MOS6502._A,
+        213,
+        "Set sign: Accumulator set correctly.");
+
+    equal(MOS6502._P,
+        160,
+        "Set sign: Status register set correctly.");
+
+    equal(MOS6502._PC,
+            PCStart + BytesUsed,
+        "Set sign: PC incremented correctly.");
+
+    equal(MOS6502._CYCLES,
+        CycleCost,
+        "Set sign: CYCLES incremented correctly.");
+
+    /**
+     * Test 2: Set Zero
+     *
+     * Before ORA Applied:
+     *         Operand: 00000000 (0)
+     *     Accumulator: 00000000 (0)
+     * Status Register: 00100000 (32)
+     *
+     * After ORA Applied:
+     *     Accumulator: 00000000 (0)
+     * Status Register: 00100010 (34)
+     */
+
+    MOS6502._PC = PCStart;
+    MOS6502._RAM[OperandAddress] = 0;
+    MOS6502._A = 0;
+    MOS6502._P = 0x20;
+    MOS6502._CYCLES = 0;
+
+    MOS6502.emulateCycle();
+
+
+    equal(MOS6502._A,
+        0,
+        "Set zero: Accumulator set correctly.");
+
+    equal(MOS6502._P,
+        34,
+        "Set zero: Status register set correctly.");
+
+    equal(MOS6502._PC,
+            PCStart + BytesUsed,
+        "Set zero: PC incremented correctly.");
+
+    equal(MOS6502._CYCLES,
+        CycleCost,
+        "Set zero: CYCLES incremented correctly.");
+
+    /**
+     * Test 3: Set None
+     *
+     * Before ORA Applied:
+     *         Operand: 01100110 (102)
+     *     Accumulator: 01100001 (97)
+     * Status Register: 00100000 (32)
+     *
+     * After ORA Applied:
+     *     Accumulator: 01100111 (103)
+     * Status Register: 00100000 (32)
+     */
+
+    MOS6502._PC = PCStart;
+    MOS6502._RAM[OperandAddress] = 102;
+    MOS6502._A = 97;
+    MOS6502._P = 0x20;
+    MOS6502._CYCLES = 0;
+
+    MOS6502.emulateCycle();
+
+
+    equal(MOS6502._A,
+        103,
+        "Set none: Accumulator set correctly.");
+
+    equal(MOS6502._P,
+        32,
+        "Set none: Status register set correctly.");
+
+    equal(MOS6502._PC,
+            PCStart + BytesUsed,
+        "Set none: PC incremented correctly.");
+
+    equal(MOS6502._CYCLES,
+        CycleCost,
+        "Set none: CYCLES incremented correctly.");
 
 });
 
