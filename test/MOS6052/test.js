@@ -3507,3 +3507,60 @@ test("0x1E - ASL (Absolute, X)", function() {
         CycleCost,
         "Set none: Cycles set correctly.");
 });
+
+/*********************************************************************************************************************/
+
+QUnit.module("Instruction - PHP", {
+    setup: function() {
+        MOS6502.init();
+    }
+});
+
+test("0x08 - PHP (Implied)", function() {
+    /**
+     *    Instruction = PHP - Push status register on to the stack.
+     * Affected Flags = None
+     *    Total Tests = 1
+     */
+
+    var OPCODE = 0x08,
+        CycleCost = 3,
+        BytesUsed = 1,
+        PCStart = 0x4000,
+        StatusRegister = 32;
+
+    MOS6502._PC = PCStart;
+    MOS6502._RAM[PCStart] = OPCODE;
+    MOS6502._P = StatusRegister;
+    MOS6502._CYCLES = 0;
+
+    /**
+     * Test 1: Push status register onto the stack.
+     *
+     * Before PHP Applied:
+     *        0x1FFF = 0x00
+     * Stack Pointer = 0x01FF
+     *
+     * After PHP Applied:
+     *        0x1FFF = 0x32
+     * Stack Pointer = 0x01FE
+     */
+
+    MOS6502.emulateCycle();
+
+    equal(MOS6502._RAM[0x01FF],
+        32,
+        "Status register pushed to stack.");
+
+    equal(MOS6502._SP,
+        0x01FE,
+        "Stack Pointer set correctly.");
+
+    equal(MOS6502._PC,
+        PCStart + BytesUsed,
+        "Program Counter set correctly.");
+
+    equal(MOS6502._CYCLES,
+        CycleCost,
+        "Cycles set correctly.")
+});
