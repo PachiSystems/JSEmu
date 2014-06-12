@@ -371,12 +371,14 @@ test("If / Set Sign", function() {
 
 });
 
-/**
- * Addressing Modes
- * The addressing modes are crucial to the instruction getting and writing the correct operand in memory.
- */
+/*********************************************************************************************************************/
 
-module ("Addressing Modes");
+QUnit.module("Memory Modes - Read", {
+    setup: function() {
+        MOS6502.init();
+    }
+});
+
 test("Read Zero Page", function() {
 
     /**
@@ -665,6 +667,15 @@ test("Read Indirect Y (check page true)", function(){
         "Page boundary crossed. One cycle added.");
 });
 
+/*********************************************************************************************************************/
+
+QUnit.module("Memory Modes - Write", {
+    setup: function() {
+        MOS6502.init();
+    }
+});
+
+
 test("Write Zero Page", function() {
 
     /**
@@ -838,13 +849,13 @@ test("Write Indirect Y", function() {
 
 });
 
-QUnit.module ("OPCODE", {
+/*********************************************************************************************************************/
+
+QUnit.module ("Instruction - ORA", {
     setup: function() {
         MOS6502.init();
     }
 });
-
-// ORA Tests
 
 test("0x09 - ORA (Immediate)", function() {
     /**
@@ -1259,6 +1270,14 @@ test("0x11 - ORA (Indirect, Y)", function() {
 
 });
 
+/*********************************************************************************************************************/
+
+QUnit.module("Instruction - BRK", {
+    setup: function() {
+        MOS6502.init();
+    }
+});
+
 test("0x00 - BRK (Implied)", function() {
     /**
      * BRK
@@ -1298,978 +1317,1121 @@ test("0x00 - BRK (Implied)", function() {
         "Status Register set correctly.");
 });
 
-test("0x - ", function() {
-    equal(true,true,"Test not implemented");
-});
-
-test("0x - ", function() {
-    equal(true,true,"Test not implemented");
-});
-
-test("0x - ", function() {
-    equal(true,true,"Test not implemented");
-});
-
-test("0x - ", function() {
-    equal(true,true,"Test not implemented");
-});
-
-test("0x - ", function() {
-    equal(true,true,"Test not implemented");
-});
-
-test("0x - ", function() {
-    equal(true,true,"Test not implemented");
-});
-
-test("0x - ", function() {
-    equal(true,true,"Test not implemented");
-});
-
-test("0x - ", function() {
-    equal(true,true,"Test not implemented");
-});
-
-test("0x - ", function() {
-    equal(true,true,"Test not implemented");
-});
-
-test("0x - ", function() {
-    equal(true,true,"Test not implemented");
-});
-
-test("0x - ", function() {
-    equal(true,true,"Test not implemented");
-});
-
-test("0x - ", function() {
-    equal(true,true,"Test not implemented");
-});
-
-test("0x - ", function() {
-    equal(true,true,"Test not implemented");
-});
-
-test("0x - ", function() {
-    equal(true,true,"Test not implemented");
-});
-
-test("0x - ", function() {
-    equal(true,true,"Test not implemented");
-});
-
-test("0x - ", function() {
-    equal(true,true,"Test not implemented");
-});
-
-test("0x - ", function() {
-    equal(true,true,"Test not implemented");
-});
-
-test("0x - ", function() {
-    equal(true,true,"Test not implemented");
-});
-
-test("0x - ", function() {
-    equal(true,true,"Test not implemented");
-});
-
-test("0x - ", function() {
-    equal(true,true,"Test not implemented");
-});
-
-test("0x - ", function() {
-    equal(true,true,"Test not implemented");
-});
-
-test("0x - ", function() {
-    equal(true,true,"Test not implemented");
-});
-
-test("0x - ", function() {
-    equal(true,true,"Test not implemented");
-});
-
-test("0x - ", function() {
-    equal(true,true,"Test not implemented");
-});
-
-test("0x - ", function() {
-    equal(true,true,"Test not implemented");
-});
-
-test("0x - ", function() {
-    equal(true,true,"Test not implemented");
-});
-
-test("0x - ", function() {
-    equal(true,true,"Test not implemented");
-});
-
-test("0x - ", function() {
-    equal(true,true,"Test not implemented");
-});
-
-test("0x - ", function() {
-    equal(true,true,"Test not implemented");
-});
-
-test("0x - ", function() {
-    equal(true,true,"Test not implemented");
-});
-
-test("0x - ", function() {
-    equal(true,true,"Test not implemented");
-});
-
-test("0x - ", function() {
-    equal(true,true,"Test not implemented");
-});
-
-test("0x - ", function() {
-    equal(true,true,"Test not implemented");
-});
-
-test("0x - ", function() {
-    equal(true,true,"Test not implemented");
-});
-
-test("0x - ", function() {
-    equal(true,true,"Test not implemented");
-});
-
-test("0x - ", function() {
-    equal(true,true,"Test not implemented");
-});
-
-test("0x - ", function() {
-    equal(true,true,"Test not implemented");
-});
-
-test("0x - ", function() {
-    equal(true,true,"Test not implemented");
-});
-
-test("0x - ", function() {
-    equal(true,true,"Test not implemented");
-});
-
-test("0x - ", function() {
-    equal(true,true,"Test not implemented");
-});
-
-test("0x - ", function() {
-    equal(true,true,"Test not implemented");
-});
-
-test("0x - ", function() {
-    equal(true,true,"Test not implemented");
-});
-
-test("0x - ", function() {
-    equal(true,true,"Test not implemented");
-});
-
-test("0x - ", function() {
-    equal(true,true,"Test not implemented");
-});
-
-test("0x - ", function() {
-    equal(true,true,"Test not implemented");
-});
-
-test("0x - ", function() {
-    equal(true,true,"Test not implemented");
-});
-
-test("0x - ", function() {
-    equal(true,true,"Test not implemented");
-});
-
-test("0x - ", function() {
-    equal(true,true,"Test not implemented");
-});
-
-test("0x - ", function() {
-    equal(true,true,"Test not implemented");
-});
-
-test("0x - ", function() {
-    equal(true,true,"Test not implemented");
-});
-
-test("0x - ", function() {
-    equal(true,true,"Test not implemented");
-});
-
-test("0x - ", function() {
-    equal(true,true,"Test not implemented");
-});
-
-test("0x - ", function() {
-    equal(true,true,"Test not implemented");
-});
-
-test("0x - ", function() {
-    equal(true,true,"Test not implemented");
-});
-
-test("0x - ", function() {
-    equal(true,true,"Test not implemented");
-});
-
-test("0x - ", function() {
-    equal(true,true,"Test not implemented");
-});
-
-test("0x - ", function() {
-    equal(true,true,"Test not implemented");
-});
-
-test("0x - ", function() {
-    equal(true,true,"Test not implemented");
-});
-
-test("0x - ", function() {
-    equal(true,true,"Test not implemented");
-});
-
-test("0x - ", function() {
-    equal(true,true,"Test not implemented");
-});
-
-test("0x - ", function() {
-    equal(true,true,"Test not implemented");
-});
-
-test("0x - ", function() {
-    equal(true,true,"Test not implemented");
-});
-
-test("0x - ", function() {
-    equal(true,true,"Test not implemented");
-});
-
-test("0x - ", function() {
-    equal(true,true,"Test not implemented");
-});
-
-test("0x - ", function() {
-    equal(true,true,"Test not implemented");
-});
-
-test("0x - ", function() {
-    equal(true,true,"Test not implemented");
-});
-
-test("0x - ", function() {
-    equal(true,true,"Test not implemented");
-});
-
-test("0x - ", function() {
-    equal(true,true,"Test not implemented");
-});
-
-test("0x - ", function() {
-    equal(true,true,"Test not implemented");
-});
-
-test("0x - ", function() {
-    equal(true,true,"Test not implemented");
-});
-
-test("0x - ", function() {
-    equal(true,true,"Test not implemented");
-});
-
-test("0x - ", function() {
-    equal(true,true,"Test not implemented");
-});
-
-test("0x - ", function() {
-    equal(true,true,"Test not implemented");
-});
-
-test("0x - ", function() {
-    equal(true,true,"Test not implemented");
-});
-
-test("0x - ", function() {
-    equal(true,true,"Test not implemented");
-});
-
-test("0x - ", function() {
-    equal(true,true,"Test not implemented");
-});
-
-test("0x - ", function() {
-    equal(true,true,"Test not implemented");
-});
-
-test("0x - ", function() {
-    equal(true,true,"Test not implemented");
-});
-
-test("0x - ", function() {
-    equal(true,true,"Test not implemented");
-});
-
-test("0x - ", function() {
-    equal(true,true,"Test not implemented");
-});
-
-test("0x - ", function() {
-    equal(true,true,"Test not implemented");
-});
-
-test("0x - ", function() {
-    equal(true,true,"Test not implemented");
-});
-
-test("0x - ", function() {
-    equal(true,true,"Test not implemented");
-});
-
-test("0x - ", function() {
-    equal(true,true,"Test not implemented");
-});
-
-test("0x - ", function() {
-    equal(true,true,"Test not implemented");
-});
-
-test("0x - ", function() {
-    equal(true,true,"Test not implemented");
-});
-
-test("0x - ", function() {
-    equal(true,true,"Test not implemented");
-});
-
-test("0x - ", function() {
-    equal(true,true,"Test not implemented");
-});
-
-test("0x - ", function() {
-    equal(true,true,"Test not implemented");
-});
-
-test("0x - ", function() {
-    equal(true,true,"Test not implemented");
-});
-
-test("0x - ", function() {
-    equal(true,true,"Test not implemented");
-});
-
-test("0x - ", function() {
-    equal(true,true,"Test not implemented");
-});
-
-test("0x - ", function() {
-    equal(true,true,"Test not implemented");
-});
-
-test("0x - ", function() {
-    equal(true,true,"Test not implemented");
-});
-
-test("0x - ", function() {
-    equal(true,true,"Test not implemented");
-});
-
-test("0x - ", function() {
-    equal(true,true,"Test not implemented");
-});
-
-test("0x - ", function() {
-    equal(true,true,"Test not implemented");
-});
-
-test("0x - ", function() {
-    equal(true,true,"Test not implemented");
-});
-
-test("0x - ", function() {
-    equal(true,true,"Test not implemented");
-});
-
-test("0x - ", function() {
-    equal(true,true,"Test not implemented");
-});
-
-test("0x - ", function() {
-    equal(true,true,"Test not implemented");
-});
-
-test("0x - ", function() {
-    equal(true,true,"Test not implemented");
-});
-
-test("0x - ", function() {
-    equal(true,true,"Test not implemented");
-});
-
-test("0x - ", function() {
-    equal(true,true,"Test not implemented");
-});
-
-test("0x - ", function() {
-    equal(true,true,"Test not implemented");
-});
-
-test("0x - ", function() {
-    equal(true,true,"Test not implemented");
-});
-
-test("0x - ", function() {
-    equal(true,true,"Test not implemented");
-});
-
-test("0x - ", function() {
-    equal(true,true,"Test not implemented");
-});
-
-test("0x - ", function() {
-    equal(true,true,"Test not implemented");
-});
-
-test("0x - ", function() {
-    equal(true,true,"Test not implemented");
-});
-
-test("0x - ", function() {
-    equal(true,true,"Test not implemented");
-});
-
-test("0x - ", function() {
-    equal(true,true,"Test not implemented");
-});
-
-test("0x - ", function() {
-    equal(true,true,"Test not implemented");
-});
-
-test("0x - ", function() {
-    equal(true,true,"Test not implemented");
-});
-
-test("0x - ", function() {
-    equal(true,true,"Test not implemented");
-});
-
-test("0x - ", function() {
-    equal(true,true,"Test not implemented");
-});
-
-test("0x - ", function() {
-    equal(true,true,"Test not implemented");
-});
-
-test("0x - ", function() {
-    equal(true,true,"Test not implemented");
-});
-
-test("0x - ", function() {
-    equal(true,true,"Test not implemented");
-});
-
-test("0x - ", function() {
-    equal(true,true,"Test not implemented");
-});
-
-test("0x - ", function() {
-    equal(true,true,"Test not implemented");
-});
-
-test("0x - ", function() {
-    equal(true,true,"Test not implemented");
-});
-
-test("0x - ", function() {
-    equal(true,true,"Test not implemented");
-});
-
-test("0x - ", function() {
-    equal(true,true,"Test not implemented");
-});
-
-test("0x - ", function() {
-    equal(true,true,"Test not implemented");
-});
-
-test("0x - ", function() {
-    equal(true,true,"Test not implemented");
-});
-
-test("0x - ", function() {
-    equal(true,true,"Test not implemented");
-});
-
-test("0x - ", function() {
-    equal(true,true,"Test not implemented");
-});
-
-test("0x - ", function() {
-    equal(true,true,"Test not implemented");
-});
-
-test("0x - ", function() {
-    equal(true,true,"Test not implemented");
-});
-
-test("0x - ", function() {
-    equal(true,true,"Test not implemented");
-});
-
-test("0x - ", function() {
-    equal(true,true,"Test not implemented");
-});
-
-test("0x - ", function() {
-    equal(true,true,"Test not implemented");
-});
-
-test("0x - ", function() {
-    equal(true,true,"Test not implemented");
-});
-
-test("0x - ", function() {
-    equal(true,true,"Test not implemented");
-});
-
-test("0x - ", function() {
-    equal(true,true,"Test not implemented");
-});
-
-test("0x - ", function() {
-    equal(true,true,"Test not implemented");
-});
-
-test("0x - ", function() {
-    equal(true,true,"Test not implemented");
-});
-
-test("0x - ", function() {
-    equal(true,true,"Test not implemented");
-});
-
-test("0x - ", function() {
-    equal(true,true,"Test not implemented");
-});
-
-test("0x - ", function() {
-    equal(true,true,"Test not implemented");
-});
-
-test("0x - ", function() {
-    equal(true,true,"Test not implemented");
-});
-
-test("0x - ", function() {
-    equal(true,true,"Test not implemented");
-});
-
-test("0x - ", function() {
-    equal(true,true,"Test not implemented");
-});
-
-test("0x - ", function() {
-    equal(true,true,"Test not implemented");
-});
-
-test("0x - ", function() {
-    equal(true,true,"Test not implemented");
-});
-
-test("0x - ", function() {
-    equal(true,true,"Test not implemented");
-});
-
-test("0x - ", function() {
-    equal(true,true,"Test not implemented");
-});
-
-test("0x - ", function() {
-    equal(true,true,"Test not implemented");
-});
-
-test("0x - ", function() {
-    equal(true,true,"Test not implemented");
-});
-
-test("0x - ", function() {
-    equal(true,true,"Test not implemented");
-});
-
-test("0x - ", function() {
-    equal(true,true,"Test not implemented");
-});
-
-test("0x - ", function() {
-    equal(true,true,"Test not implemented");
-});
-
-test("0x - ", function() {
-    equal(true,true,"Test not implemented");
-});
-
-test("0x - ", function() {
-    equal(true,true,"Test not implemented");
-});
-
-test("0x - ", function() {
-    equal(true,true,"Test not implemented");
-});
-
-test("0x - ", function() {
-    equal(true,true,"Test not implemented");
-});
-
-test("0x - ", function() {
-    equal(true,true,"Test not implemented");
-});
-
-test("0x - ", function() {
-    equal(true,true,"Test not implemented");
-});
-
-test("0x - ", function() {
-    equal(true,true,"Test not implemented");
-});
-
-test("0x - ", function() {
-    equal(true,true,"Test not implemented");
-});
-
-test("0x - ", function() {
-    equal(true,true,"Test not implemented");
-});
-
-test("0x - ", function() {
-    equal(true,true,"Test not implemented");
-});
-
-test("0x - ", function() {
-    equal(true,true,"Test not implemented");
-});
-
-test("0x - ", function() {
-    equal(true,true,"Test not implemented");
-});
-
-test("0x - ", function() {
-    equal(true,true,"Test not implemented");
-});
-
-test("0x - ", function() {
-    equal(true,true,"Test not implemented");
-});
-
-test("0x - ", function() {
-    equal(true,true,"Test not implemented");
-});
-
-test("0x - ", function() {
-    equal(true,true,"Test not implemented");
-});
-
-test("0x - ", function() {
-    equal(true,true,"Test not implemented");
-});
-
-test("0x - ", function() {
-    equal(true,true,"Test not implemented");
-});
-
-test("0x - ", function() {
-    equal(true,true,"Test not implemented");
-});
-
-test("0x - ", function() {
-    equal(true,true,"Test not implemented");
-});
-
-test("0x - ", function() {
-    equal(true,true,"Test not implemented");
-});
-
-test("0x - ", function() {
-    equal(true,true,"Test not implemented");
-});
-
-test("0x - ", function() {
-    equal(true,true,"Test not implemented");
-});
-
-test("0x - ", function() {
-    equal(true,true,"Test not implemented");
-});
-
-test("0x - ", function() {
-    equal(true,true,"Test not implemented");
-});
-
-test("0x - ", function() {
-    equal(true,true,"Test not implemented");
-});
-
-test("0x - ", function() {
-    equal(true,true,"Test not implemented");
-});
-
-test("0x - ", function() {
-    equal(true,true,"Test not implemented");
-});
-
-test("0x - ", function() {
-    equal(true,true,"Test not implemented");
-});
-
-test("0x - ", function() {
-    equal(true,true,"Test not implemented");
-});
-
-test("0x - ", function() {
-    equal(true,true,"Test not implemented");
-});
-
-test("0x - ", function() {
-    equal(true,true,"Test not implemented");
-});
-
-test("0x - ", function() {
-    equal(true,true,"Test not implemented");
-});
-
-test("0x - ", function() {
-    equal(true,true,"Test not implemented");
-});
-
-test("0x - ", function() {
-    equal(true,true,"Test not implemented");
-});
-
-test("0x - ", function() {
-    equal(true,true,"Test not implemented");
-});
-
-test("0x - ", function() {
-    equal(true,true,"Test not implemented");
-});
-
-test("0x - ", function() {
-    equal(true,true,"Test not implemented");
-});
-
-test("0x - ", function() {
-    equal(true,true,"Test not implemented");
-});
-
-test("0x - ", function() {
-    equal(true,true,"Test not implemented");
-});
-
-test("0x - ", function() {
-    equal(true,true,"Test not implemented");
-});
-
-test("0x - ", function() {
-    equal(true,true,"Test not implemented");
-});
-
-test("0x - ", function() {
-    equal(true,true,"Test not implemented");
-});
-
-test("0x - ", function() {
-    equal(true,true,"Test not implemented");
-});
-
-test("0x - ", function() {
-    equal(true,true,"Test not implemented");
-});
-
-test("0x - ", function() {
-    equal(true,true,"Test not implemented");
-});
-
-test("0x - ", function() {
-    equal(true,true,"Test not implemented");
-});
-
-test("0x - ", function() {
-    equal(true,true,"Test not implemented");
-});
-
-test("0x - ", function() {
-    equal(true,true,"Test not implemented");
-});
-
-test("0x - ", function() {
-    equal(true,true,"Test not implemented");
-});
-
-test("0x - ", function() {
-    equal(true,true,"Test not implemented");
-});
-
-test("0x - ", function() {
-    equal(true,true,"Test not implemented");
-});
-
-test("0x - ", function() {
-    equal(true,true,"Test not implemented");
-});
-
-test("0x - ", function() {
-    equal(true,true,"Test not implemented");
-});
-
-test("0x - ", function() {
-    equal(true,true,"Test not implemented");
-});
-
-test("0x - ", function() {
-    equal(true,true,"Test not implemented");
-});
-
-test("0x - ", function() {
-    equal(true,true,"Test not implemented");
-});
-
-test("0x - ", function() {
-    equal(true,true,"Test not implemented");
-});
-
-test("0x - ", function() {
-    equal(true,true,"Test not implemented");
-});
-
-test("0x - ", function() {
-    equal(true,true,"Test not implemented");
-});
-
-test("0x - ", function() {
-    equal(true,true,"Test not implemented");
-});
-
-test("0x - ", function() {
-    equal(true,true,"Test not implemented");
-});
-
-test("0x - ", function() {
-    equal(true,true,"Test not implemented");
-});
-
-test("0x - ", function() {
-    equal(true,true,"Test not implemented");
-});
-
-test("0x - ", function() {
-    equal(true,true,"Test not implemented");
-});
-
-test("0x - ", function() {
-    equal(true,true,"Test not implemented");
-});
-
-test("0x - ", function() {
-    equal(true,true,"Test not implemented");
-});
-
-test("0x - ", function() {
-    equal(true,true,"Test not implemented");
-});
-
-test("0x - ", function() {
-    equal(true,true,"Test not implemented");
-});
-
-test("0x - ", function() {
-    equal(true,true,"Test not implemented");
-});
-
-test("0x - ", function() {
-    equal(true,true,"Test not implemented");
-});
-
-test("0x - ", function() {
-    equal(true,true,"Test not implemented");
-});
-
-test("0x - ", function() {
-    equal(true,true,"Test not implemented");
-});
-
-test("0x - ", function() {
-    equal(true,true,"Test not implemented");
-});
-
-test("0x - ", function() {
-    equal(true,true,"Test not implemented");
-});
-
-test("0x - ", function() {
-    equal(true,true,"Test not implemented");
-});
-
-test("0x - ", function() {
-    equal(true,true,"Test not implemented");
-});
-
-test("0x - ", function() {
-    equal(true,true,"Test not implemented");
-});
-
-test("0x - ", function() {
-    equal(true,true,"Test not implemented");
-});
-
-test("0x - ", function() {
-    equal(true,true,"Test not implemented");
-});
-
-test("0x - ", function() {
-    equal(true,true,"Test not implemented");
-});
-
-test("0x - ", function() {
-    equal(true,true,"Test not implemented");
-});
-
-test("0x - ", function() {
-    equal(true,true,"Test not implemented");
-});
-
-test("0x - ", function() {
-    equal(true,true,"Test not implemented");
-});
-
-test("0x - ", function() {
-    equal(true,true,"Test not implemented");
-});
-
-test("0x - ", function() {
-    equal(true,true,"Test not implemented");
-});
-
-test("0x - ", function() {
-    equal(true,true,"Test not implemented");
-});
-
-test("0x - ", function() {
-    equal(true,true,"Test not implemented");
-});
-
-test("0x - ", function() {
-    equal(true,true,"Test not implemented");
-});
-
-test("0x - ", function() {
-    equal(true,true,"Test not implemented");
-});
-
-test("0x - ", function() {
-    equal(true,true,"Test not implemented");
+/*********************************************************************************************************************/
+
+QUnit.module("Instruction - ASL", {
+    setup: function() {
+        MOS6502.init();
+    }
+});
+
+test("0x0A - ASL (Accumulator)", function() {
+    /**
+     *    Instruction: ASL - Shift left one bit.
+     * Affected Flags: Sign, Zero, Carry
+     *    Total Tests: 5
+     */
+
+    var OPCODE = 0x0A,
+        CycleCost = 2,
+        BytesUsed = 1,
+        PCStart = 0x4000;
+
+    MOS6502._RAM[PCStart] = OPCODE;
+
+    /**
+     * Test 1: Set carry.
+     *
+     * Before ASL Applied:
+     *         Operand: 10101010 (170)
+     * Status Register: 00100000 (32)
+     *
+     * After ASL applied:
+     *         Operand: 01010100 (84)
+     * Status Register: 00100001 (33)
+     */
+    MOS6502._PC = PCStart;
+    MOS6502._A = 170;
+    MOS6502._P = 32;
+    MOS6502._CYCLES = 0;
+
+    MOS6502.emulateCycle();
+
+    equal(MOS6502._A,
+          84,
+        "Set carry: Operand shifted correctly.");
+
+    equal(MOS6502._P,
+        33,
+        "Set carry: Status Register set correctly.");
+
+    equal(MOS6502._PC,
+            PCStart + BytesUsed,
+        "Set carry: Program Counter set correctly.");
+
+    equal(MOS6502._CYCLES,
+        CycleCost,
+        "Set carry: Cycles set correctly.");
+
+    /**
+     * Test 2: Set carry & zero.
+     *
+     * Before ASL Applied:
+     *         Operand: 10000000 (128)
+     * Status Register: 00100000 (32)
+     *
+     * After ASL applied:
+     *         Operand: 00000000 (0)
+     * Status Register: 00100011 (35)
+     */
+    MOS6502._PC = PCStart;
+    MOS6502._A = 128;
+    MOS6502._P = 32;
+    MOS6502._CYCLES = 0;
+
+    MOS6502.emulateCycle();
+
+    equal(MOS6502._A,
+        0,
+        "Set carry & zero: Operand shifted correctly.");
+
+    equal(MOS6502._P,
+        35,
+        "Set carry & zero: Status Register set correctly.");
+
+    equal(MOS6502._PC,
+            PCStart + BytesUsed,
+        "Set carry & zero: Program Counter set correctly.");
+
+    equal(MOS6502._CYCLES,
+        CycleCost,
+        "Set carry & zero: Cycles set correctly.");
+
+    /**
+     * Test 3: Set sign & carry.
+     *
+     * Before ASL Applied:
+     *         Operand: 11001010 (202)
+     * Status Register: 00100000 (32)
+     *
+     * After ASL applied:
+     *         Operand: 10010100 (148)
+     * Status Register: 10100001 (161)
+     */
+    MOS6502._PC = PCStart;
+    MOS6502._A = 202;
+    MOS6502._P = 32;
+    MOS6502._CYCLES = 0;
+
+    MOS6502.emulateCycle();
+
+    equal(MOS6502._A,
+        148,
+        "Set sign & carry: Operand shifted correctly.");
+
+    equal(MOS6502._P,
+        161,
+        "Set sign & carry: Status Register set correctly.");
+
+    equal(MOS6502._PC,
+            PCStart + BytesUsed,
+        "Set sign & carry: Program Counter set correctly.");
+
+    equal(MOS6502._CYCLES,
+        CycleCost,
+        "Set sign & carry: Cycles set correctly.");
+
+    /**
+     * Test 4: Set zero.
+     *
+     * Before ASL Applied:
+     *         Operand: 00000000 (0)
+     * Status Register: 00100000 (32)
+     *
+     * After ASL applied:
+     *         Operand: 00000000 (0)
+     * Status Register: 00100010 (34)
+     */
+    MOS6502._PC = PCStart;
+    MOS6502._A = 0;
+    MOS6502._P = 32;
+    MOS6502._CYCLES = 0;
+
+    MOS6502.emulateCycle();
+
+    equal(MOS6502._A,
+        0,
+        "Set zero: Operand shifted correctly.");
+
+    equal(MOS6502._P,
+        34,
+        "Set zero: Status Register set correctly.");
+
+    equal(MOS6502._PC,
+            PCStart + BytesUsed,
+        "Set zero: Program Counter set correctly.");
+
+    equal(MOS6502._CYCLES,
+        CycleCost,
+        "Set zero: Cycles set correctly.");
+
+    /**
+     * Test 5: Set sign.
+     *
+     * Before ASL Applied:
+     *         Operand: 01000000 (64)
+     * Status Register: 00100000 (32)
+     *
+     * After ASL applied:
+     *         Operand: 10000000 (128)
+     * Status Register: 10100000 (160)
+     */
+    MOS6502._PC = PCStart;
+    MOS6502._A = 64;
+    MOS6502._P = 32;
+    MOS6502._CYCLES = 0;
+
+    MOS6502.emulateCycle();
+
+    equal(MOS6502._A,
+        128,
+        "Set sign: Operand shifted correctly.");
+
+    equal(MOS6502._P,
+        160,
+        "Set sign: Status Register set correctly.");
+
+    equal(MOS6502._PC,
+            PCStart + BytesUsed,
+        "Set sign: Program Counter set correctly.");
+
+    equal(MOS6502._CYCLES,
+        CycleCost,
+        "Set sign: Cycles set correctly.");
+
+    /**
+     * Test 6: Set none.
+     *
+     * Before ASL Applied:
+     *         Operand: 00100110 ()
+     * Status Register: 00100000 (32)
+     *
+     * After ASL applied:
+     *         Operand: 10000000 (128)
+     * Status Register: 10100000 (160)
+     */
+    MOS6502._PC = PCStart;
+    MOS6502._A = 38;
+    MOS6502._P = 32;
+    MOS6502._CYCLES = 0;
+
+    MOS6502.emulateCycle();
+
+    equal(MOS6502._A,
+        76,
+        "Set none: Operand shifted correctly.");
+
+    equal(MOS6502._P,
+        32,
+        "Set none: Status Register set correctly.");
+
+    equal(MOS6502._PC,
+            PCStart + BytesUsed,
+        "Set none: Program Counter set correctly.");
+
+    equal(MOS6502._CYCLES,
+        CycleCost,
+        "Set none: Cycles set correctly.");
+});
+
+test("0x06 - ASL (Zero Page)", function() {
+    /**
+     *    Instruction: ASL - Shift left one bit.
+     * Affected Flags: Sign, Zero, Carry
+     *    Total Tests: 5
+     */
+
+    var OPCODE = 0x06,
+        ZPAddress = 0x20,
+        CycleCost = 5,
+        BytesUsed = 2,
+        PCStart = 0x4000;
+
+    MOS6502._RAM[PCStart] = OPCODE;
+    MOS6502._RAM[PCStart + 1] = ZPAddress;
+
+    /**
+     * Test 1: Set carry.
+     *
+     * Before ASL Applied:
+     *         Operand: 10101010 (170)
+     * Status Register: 00100000 (32)
+     *
+     * After ASL applied:
+     *         Operand: 01010100 (84)
+     * Status Register: 00100001 (33)
+     */
+    MOS6502._PC = PCStart;
+    MOS6502._RAM[ZPAddress] = 170;
+    MOS6502._P = 32;
+    MOS6502._CYCLES = 0;
+
+    MOS6502.emulateCycle();
+
+    equal(MOS6502._RAM[ZPAddress],
+        84,
+        "Set carry: Operand shifted correctly.");
+
+    equal(MOS6502._P,
+        33,
+        "Set carry: Status Register set correctly.");
+
+    equal(MOS6502._PC,
+            PCStart + BytesUsed,
+        "Set carry: Program Counter set correctly.");
+
+    equal(MOS6502._CYCLES,
+        CycleCost,
+        "Set carry: Cycles set correctly.");
+
+    /**
+     * Test 2: Set carry & zero.
+     *
+     * Before ASL Applied:
+     *         Operand: 10000000 (128)
+     * Status Register: 00100000 (32)
+     *
+     * After ASL applied:
+     *         Operand: 00000000 (0)
+     * Status Register: 00100011 (35)
+     */
+    MOS6502._PC = PCStart;
+    MOS6502._RAM[ZPAddress] = 128;
+    MOS6502._P = 32;
+    MOS6502._CYCLES = 0;
+
+    MOS6502.emulateCycle();
+
+    equal(MOS6502._RAM[ZPAddress],
+        0,
+        "Set carry & zero: Operand shifted correctly.");
+
+    equal(MOS6502._P,
+        35,
+        "Set carry & zero: Status Register set correctly.");
+
+    equal(MOS6502._PC,
+            PCStart + BytesUsed,
+        "Set carry & zero: Program Counter set correctly.");
+
+    equal(MOS6502._CYCLES,
+        CycleCost,
+        "Set carry & zero: Cycles set correctly.");
+
+    /**
+     * Test 3: Set sign & carry.
+     *
+     * Before ASL Applied:
+     *         Operand: 11001010 (202)
+     * Status Register: 00100000 (32)
+     *
+     * After ASL applied:
+     *         Operand: 10010100 (148)
+     * Status Register: 10100001 (161)
+     */
+    MOS6502._PC = PCStart;
+    MOS6502._RAM[ZPAddress] = 202;
+    MOS6502._P = 32;
+    MOS6502._CYCLES = 0;
+
+    MOS6502.emulateCycle();
+
+    equal(MOS6502._RAM[ZPAddress],
+        148,
+        "Set sign & carry: Operand shifted correctly.");
+
+    equal(MOS6502._P,
+        161,
+        "Set sign & carry: Status Register set correctly.");
+
+    equal(MOS6502._PC,
+            PCStart + BytesUsed,
+        "Set sign & carry: Program Counter set correctly.");
+
+    equal(MOS6502._CYCLES,
+        CycleCost,
+        "Set sign & carry: Cycles set correctly.");
+
+    /**
+     * Test 4: Set zero.
+     *
+     * Before ASL Applied:
+     *         Operand: 00000000 (0)
+     * Status Register: 00100000 (32)
+     *
+     * After ASL applied:
+     *         Operand: 00000000 (0)
+     * Status Register: 00100010 (34)
+     */
+    MOS6502._PC = PCStart;
+    MOS6502._RAM[ZPAddress] = 0;
+    MOS6502._P = 32;
+    MOS6502._CYCLES = 0;
+
+    MOS6502.emulateCycle();
+
+    equal(MOS6502._RAM[ZPAddress],
+        0,
+        "Set zero: Operand shifted correctly.");
+
+    equal(MOS6502._P,
+        34,
+        "Set zero: Status Register set correctly.");
+
+    equal(MOS6502._PC,
+            PCStart + BytesUsed,
+        "Set zero: Program Counter set correctly.");
+
+    equal(MOS6502._CYCLES,
+        CycleCost,
+        "Set zero: Cycles set correctly.");
+
+    /**
+     * Test 5: Set sign.
+     *
+     * Before ASL Applied:
+     *         Operand: 01000000 (64)
+     * Status Register: 00100000 (32)
+     *
+     * After ASL applied:
+     *         Operand: 10000000 (128)
+     * Status Register: 10100000 (160)
+     */
+    MOS6502._PC = PCStart;
+    MOS6502._RAM[ZPAddress] = 64;
+    MOS6502._P = 32;
+    MOS6502._CYCLES = 0;
+
+    MOS6502.emulateCycle();
+
+    equal(MOS6502._RAM[ZPAddress],
+        128,
+        "Set sign: Operand shifted correctly.");
+
+    equal(MOS6502._P,
+        160,
+        "Set sign: Status Register set correctly.");
+
+    equal(MOS6502._PC,
+            PCStart + BytesUsed,
+        "Set sign: Program Counter set correctly.");
+
+    equal(MOS6502._CYCLES,
+        CycleCost,
+        "Set sign: Cycles set correctly.");
+
+    /**
+     * Test 6: Set none.
+     *
+     * Before ASL Applied:
+     *         Operand: 00100110 ()
+     * Status Register: 00100000 (32)
+     *
+     * After ASL applied:
+     *         Operand: 10000000 (128)
+     * Status Register: 10100000 (160)
+     */
+    MOS6502._PC = PCStart;
+    MOS6502._RAM[ZPAddress] = 38;
+    MOS6502._P = 32;
+    MOS6502._CYCLES = 0;
+
+    MOS6502.emulateCycle();
+
+    equal(MOS6502._RAM[ZPAddress],
+        76,
+        "Set none: Operand shifted correctly.");
+
+    equal(MOS6502._P,
+        32,
+        "Set none: Status Register set correctly.");
+
+    equal(MOS6502._PC,
+            PCStart + BytesUsed,
+        "Set none: Program Counter set correctly.");
+
+    equal(MOS6502._CYCLES,
+        CycleCost,
+        "Set none: Cycles set correctly.");
+});
+
+test("0x16 - ASL (Zero Page, X)", function() {
+    /**
+     *    Instruction: ASL - Shift left one bit.
+     * Affected Flags: Sign, Zero, Carry
+     *    Total Tests: 5
+     */
+
+    var OPCODE = 0x16,
+        ZPAddress = 0x80,
+        XRegister = 0x80,
+        CycleCost = 6,
+        BytesUsed = 2,
+        PCStart = 0x4000;
+
+    MOS6502._RAM[PCStart] = OPCODE;
+    MOS6502._RAM[PCStart + 1] = ZPAddress;
+    MOS6502._X = XRegister;
+
+    /**
+     * Test 1: Set carry.
+     *
+     * Before ASL Applied:
+     *         Operand: 10101010 (170)
+     * Status Register: 00100000 (32)
+     *
+     * After ASL applied:
+     *         Operand: 01010100 (84)
+     * Status Register: 00100001 (33)
+     */
+    MOS6502._PC = PCStart;
+    MOS6502._RAM[(ZPAddress + XRegister) & 0xFF] = 170;
+    MOS6502._P = 32;
+    MOS6502._CYCLES = 0;
+
+    MOS6502.emulateCycle();
+
+    equal(MOS6502._RAM[(ZPAddress + XRegister) & 0xFF],
+        84,
+        "Set carry: Operand shifted correctly.");
+
+    equal(MOS6502._P,
+        33,
+        "Set carry: Status Register set correctly.");
+
+    equal(MOS6502._PC,
+            PCStart + BytesUsed,
+        "Set carry: Program Counter set correctly.");
+
+    equal(MOS6502._CYCLES,
+        CycleCost,
+        "Set carry: Cycles set correctly.");
+
+    /**
+     * Test 2: Set carry & zero.
+     *
+     * Before ASL Applied:
+     *         Operand: 10000000 (128)
+     * Status Register: 00100000 (32)
+     *
+     * After ASL applied:
+     *         Operand: 00000000 (0)
+     * Status Register: 00100011 (35)
+     */
+    MOS6502._PC = PCStart;
+    MOS6502._RAM[(ZPAddress + XRegister) & 0xFF] = 128;
+    MOS6502._P = 32;
+    MOS6502._CYCLES = 0;
+
+    MOS6502.emulateCycle();
+
+    equal(MOS6502._RAM[(ZPAddress + XRegister) & 0xFF],
+        0,
+        "Set carry & zero: Operand shifted correctly.");
+
+    equal(MOS6502._P,
+        35,
+        "Set carry & zero: Status Register set correctly.");
+
+    equal(MOS6502._PC,
+            PCStart + BytesUsed,
+        "Set carry & zero: Program Counter set correctly.");
+
+    equal(MOS6502._CYCLES,
+        CycleCost,
+        "Set carry & zero: Cycles set correctly.");
+
+    /**
+     * Test 3: Set sign & carry.
+     *
+     * Before ASL Applied:
+     *         Operand: 11001010 (202)
+     * Status Register: 00100000 (32)
+     *
+     * After ASL applied:
+     *         Operand: 10010100 (148)
+     * Status Register: 10100001 (161)
+     */
+    MOS6502._PC = PCStart;
+    MOS6502._RAM[(ZPAddress + XRegister) & 0xFF] = 202;
+    MOS6502._P = 32;
+    MOS6502._CYCLES = 0;
+
+    MOS6502.emulateCycle();
+
+    equal(MOS6502._RAM[(ZPAddress + XRegister) & 0xFF],
+        148,
+        "Set sign & carry: Operand shifted correctly.");
+
+    equal(MOS6502._P,
+        161,
+        "Set sign & carry: Status Register set correctly.");
+
+    equal(MOS6502._PC,
+            PCStart + BytesUsed,
+        "Set sign & carry: Program Counter set correctly.");
+
+    equal(MOS6502._CYCLES,
+        CycleCost,
+        "Set sign & carry: Cycles set correctly.");
+
+    /**
+     * Test 4: Set zero.
+     *
+     * Before ASL Applied:
+     *         Operand: 00000000 (0)
+     * Status Register: 00100000 (32)
+     *
+     * After ASL applied:
+     *         Operand: 00000000 (0)
+     * Status Register: 00100010 (34)
+     */
+    MOS6502._PC = PCStart;
+    MOS6502._RAM[(ZPAddress + XRegister) & 0xFF] = 0;
+    MOS6502._P = 32;
+    MOS6502._CYCLES = 0;
+
+    MOS6502.emulateCycle();
+
+    equal(MOS6502._RAM[(ZPAddress + XRegister) & 0xFF],
+        0,
+        "Set zero: Operand shifted correctly.");
+
+    equal(MOS6502._P,
+        34,
+        "Set zero: Status Register set correctly.");
+
+    equal(MOS6502._PC,
+            PCStart + BytesUsed,
+        "Set zero: Program Counter set correctly.");
+
+    equal(MOS6502._CYCLES,
+        CycleCost,
+        "Set zero: Cycles set correctly.");
+
+    /**
+     * Test 5: Set sign.
+     *
+     * Before ASL Applied:
+     *         Operand: 01000000 (64)
+     * Status Register: 00100000 (32)
+     *
+     * After ASL applied:
+     *         Operand: 10000000 (128)
+     * Status Register: 10100000 (160)
+     */
+    MOS6502._PC = PCStart;
+    MOS6502._RAM[(ZPAddress + XRegister) & 0xFF] = 64;
+    MOS6502._P = 32;
+    MOS6502._CYCLES = 0;
+
+    MOS6502.emulateCycle();
+
+    equal(MOS6502._RAM[(ZPAddress + XRegister) & 0xFF],
+        128,
+        "Set sign: Operand shifted correctly.");
+
+    equal(MOS6502._P,
+        160,
+        "Set sign: Status Register set correctly.");
+
+    equal(MOS6502._PC,
+            PCStart + BytesUsed,
+        "Set sign: Program Counter set correctly.");
+
+    equal(MOS6502._CYCLES,
+        CycleCost,
+        "Set sign: Cycles set correctly.");
+
+    /**
+     * Test 6: Set none.
+     *
+     * Before ASL Applied:
+     *         Operand: 00100110 ()
+     * Status Register: 00100000 (32)
+     *
+     * After ASL applied:
+     *         Operand: 10000000 (128)
+     * Status Register: 10100000 (160)
+     */
+    MOS6502._PC = PCStart;
+    MOS6502._RAM[(ZPAddress + XRegister) & 0xFF] = 38;
+    MOS6502._P = 32;
+    MOS6502._CYCLES = 0;
+
+    MOS6502.emulateCycle();
+
+    equal(MOS6502._RAM[(ZPAddress + XRegister) & 0xFF],
+        76,
+        "Set none: Operand shifted correctly.");
+
+    equal(MOS6502._P,
+        32,
+        "Set none: Status Register set correctly.");
+
+    equal(MOS6502._PC,
+            PCStart + BytesUsed,
+        "Set none: Program Counter set correctly.");
+
+    equal(MOS6502._CYCLES,
+        CycleCost,
+        "Set none: Cycles set correctly.");
+});
+
+test("0x0E - ASL (Absolute)", function() {
+    /**
+     *    Instruction: ASL - Shift left one bit.
+     * Affected Flags: Sign, Zero, Carry
+     *    Total Tests: 5
+     */
+
+    var OPCODE = 0x0E,
+        AddressByte1 = 0x80,
+        AddressByte2 = 0x80,
+        CycleCost = 6,
+        BytesUsed = 3,
+        PCStart = 0x4000;
+
+    MOS6502._RAM[PCStart] = OPCODE;
+    MOS6502._RAM[PCStart + 1] = AddressByte1;
+    MOS6502._RAM[PCStart + 2] = AddressByte2;
+
+    /**
+     * Test 1: Set carry.
+     *
+     * Before ASL Applied:
+     *         Operand: 10101010 (170)
+     * Status Register: 00100000 (32)
+     *
+     * After ASL applied:
+     *         Operand: 01010100 (84)
+     * Status Register: 00100001 (33)
+     */
+    MOS6502._PC = PCStart;
+    MOS6502._RAM[MOS6502._MAKE_ADDRESS(AddressByte1,AddressByte2)] = 170;
+    MOS6502._P = 32;
+    MOS6502._CYCLES = 0;
+
+    MOS6502.emulateCycle();
+
+    equal(MOS6502._RAM[MOS6502._MAKE_ADDRESS(AddressByte1,AddressByte2)],
+        84,
+        "Set carry: Operand shifted correctly.");
+
+    equal(MOS6502._P,
+        33,
+        "Set carry: Status Register set correctly.");
+
+    equal(MOS6502._PC,
+            PCStart + BytesUsed,
+        "Set carry: Program Counter set correctly.");
+
+    equal(MOS6502._CYCLES,
+        CycleCost,
+        "Set carry: Cycles set correctly.");
+
+    /**
+     * Test 2: Set carry & zero.
+     *
+     * Before ASL Applied:
+     *         Operand: 10000000 (128)
+     * Status Register: 00100000 (32)
+     *
+     * After ASL applied:
+     *         Operand: 00000000 (0)
+     * Status Register: 00100011 (35)
+     */
+    MOS6502._PC = PCStart;
+    MOS6502._RAM[MOS6502._MAKE_ADDRESS(AddressByte1,AddressByte2)] = 128;
+    MOS6502._P = 32;
+    MOS6502._CYCLES = 0;
+
+    MOS6502.emulateCycle();
+
+    equal(MOS6502._RAM[MOS6502._MAKE_ADDRESS(AddressByte1,AddressByte2)],
+        0,
+        "Set carry & zero: Operand shifted correctly.");
+
+    equal(MOS6502._P,
+        35,
+        "Set carry & zero: Status Register set correctly.");
+
+    equal(MOS6502._PC,
+            PCStart + BytesUsed,
+        "Set carry & zero: Program Counter set correctly.");
+
+    equal(MOS6502._CYCLES,
+        CycleCost,
+        "Set carry & zero: Cycles set correctly.");
+
+    /**
+     * Test 3: Set sign & carry.
+     *
+     * Before ASL Applied:
+     *         Operand: 11001010 (202)
+     * Status Register: 00100000 (32)
+     *
+     * After ASL applied:
+     *         Operand: 10010100 (148)
+     * Status Register: 10100001 (161)
+     */
+    MOS6502._PC = PCStart;
+    MOS6502._RAM[MOS6502._MAKE_ADDRESS(AddressByte1,AddressByte2)] = 202;
+    MOS6502._P = 32;
+    MOS6502._CYCLES = 0;
+
+    MOS6502.emulateCycle();
+
+    equal(MOS6502._RAM[MOS6502._MAKE_ADDRESS(AddressByte1,AddressByte2)],
+        148,
+        "Set sign & carry: Operand shifted correctly.");
+
+    equal(MOS6502._P,
+        161,
+        "Set sign & carry: Status Register set correctly.");
+
+    equal(MOS6502._PC,
+            PCStart + BytesUsed,
+        "Set sign & carry: Program Counter set correctly.");
+
+    equal(MOS6502._CYCLES,
+        CycleCost,
+        "Set sign & carry: Cycles set correctly.");
+
+    /**
+     * Test 4: Set zero.
+     *
+     * Before ASL Applied:
+     *         Operand: 00000000 (0)
+     * Status Register: 00100000 (32)
+     *
+     * After ASL applied:
+     *         Operand: 00000000 (0)
+     * Status Register: 00100010 (34)
+     */
+    MOS6502._PC = PCStart;
+    MOS6502._RAM[MOS6502._MAKE_ADDRESS(AddressByte1,AddressByte2)] = 0;
+    MOS6502._P = 32;
+    MOS6502._CYCLES = 0;
+
+    MOS6502.emulateCycle();
+
+    equal(MOS6502._RAM[MOS6502._MAKE_ADDRESS(AddressByte1,AddressByte2)],
+        0,
+        "Set zero: Operand shifted correctly.");
+
+    equal(MOS6502._P,
+        34,
+        "Set zero: Status Register set correctly.");
+
+    equal(MOS6502._PC,
+            PCStart + BytesUsed,
+        "Set zero: Program Counter set correctly.");
+
+    equal(MOS6502._CYCLES,
+        CycleCost,
+        "Set zero: Cycles set correctly.");
+
+    /**
+     * Test 5: Set sign.
+     *
+     * Before ASL Applied:
+     *         Operand: 01000000 (64)
+     * Status Register: 00100000 (32)
+     *
+     * After ASL applied:
+     *         Operand: 10000000 (128)
+     * Status Register: 10100000 (160)
+     */
+    MOS6502._PC = PCStart;
+    MOS6502._RAM[MOS6502._MAKE_ADDRESS(AddressByte1,AddressByte2)] = 64;
+    MOS6502._P = 32;
+    MOS6502._CYCLES = 0;
+
+    MOS6502.emulateCycle();
+
+    equal(MOS6502._RAM[MOS6502._MAKE_ADDRESS(AddressByte1,AddressByte2)],
+        128,
+        "Set sign: Operand shifted correctly.");
+
+    equal(MOS6502._P,
+        160,
+        "Set sign: Status Register set correctly.");
+
+    equal(MOS6502._PC,
+            PCStart + BytesUsed,
+        "Set sign: Program Counter set correctly.");
+
+    equal(MOS6502._CYCLES,
+        CycleCost,
+        "Set sign: Cycles set correctly.");
+
+    /**
+     * Test 6: Set none.
+     *
+     * Before ASL Applied:
+     *         Operand: 00100110 ()
+     * Status Register: 00100000 (32)
+     *
+     * After ASL applied:
+     *         Operand: 10000000 (128)
+     * Status Register: 10100000 (160)
+     */
+    MOS6502._PC = PCStart;
+    MOS6502._RAM[MOS6502._MAKE_ADDRESS(AddressByte1,AddressByte2)] = 38;
+    MOS6502._P = 32;
+    MOS6502._CYCLES = 0;
+
+    MOS6502.emulateCycle();
+
+    equal(MOS6502._RAM[MOS6502._MAKE_ADDRESS(AddressByte1,AddressByte2)],
+        76,
+        "Set none: Operand shifted correctly.");
+
+    equal(MOS6502._P,
+        32,
+        "Set none: Status Register set correctly.");
+
+    equal(MOS6502._PC,
+            PCStart + BytesUsed,
+        "Set none: Program Counter set correctly.");
+
+    equal(MOS6502._CYCLES,
+        CycleCost,
+        "Set none: Cycles set correctly.");
+});
+
+test("0x1E - ASL (Absolute, X)", function() {
+    /**
+     *    Instruction: ASL - Shift left one bit.
+     * Affected Flags: Sign, Zero, Carry
+     *    Total Tests: 5
+     */
+
+    var OPCODE = 0x1E,
+        AddressByte1 = 0x80,
+        AddressByte2 = 0x80,
+        XRegister = 0x80,
+        CycleCost = 7,
+        BytesUsed = 3,
+        PCStart = 0x4000;
+
+    MOS6502._RAM[PCStart] = OPCODE;
+    MOS6502._RAM[PCStart + 1] = AddressByte1;
+    MOS6502._RAM[PCStart + 2] = AddressByte2;
+    MOS6502._X = XRegister;
+
+    /**
+     * Test 1: Set carry.
+     *
+     * Before ASL Applied:
+     *         Operand: 10101010 (170)
+     * Status Register: 00100000 (32)
+     *
+     * After ASL applied:
+     *         Operand: 01010100 (84)
+     * Status Register: 00100001 (33)
+     */
+    MOS6502._PC = PCStart;
+    MOS6502._RAM[MOS6502._MAKE_ADDRESS(AddressByte1,AddressByte2) + XRegister] = 170;
+    MOS6502._P = 32;
+    MOS6502._CYCLES = 0;
+
+    MOS6502.emulateCycle();
+
+    equal(MOS6502._RAM[MOS6502._MAKE_ADDRESS(AddressByte1,AddressByte2) + XRegister],
+        84,
+        "Set carry: Operand shifted correctly.");
+
+    equal(MOS6502._P,
+        33,
+        "Set carry: Status Register set correctly.");
+
+    equal(MOS6502._PC,
+            PCStart + BytesUsed,
+        "Set carry: Program Counter set correctly.");
+
+    equal(MOS6502._CYCLES,
+        CycleCost,
+        "Set carry: Cycles set correctly.");
+
+    /**
+     * Test 2: Set carry & zero.
+     *
+     * Before ASL Applied:
+     *         Operand: 10000000 (128)
+     * Status Register: 00100000 (32)
+     *
+     * After ASL applied:
+     *         Operand: 00000000 (0)
+     * Status Register: 00100011 (35)
+     */
+    MOS6502._PC = PCStart;
+    MOS6502._RAM[MOS6502._MAKE_ADDRESS(AddressByte1,AddressByte2) + XRegister] = 128;
+    MOS6502._P = 32;
+    MOS6502._CYCLES = 0;
+
+    MOS6502.emulateCycle();
+
+    equal(MOS6502._RAM[MOS6502._MAKE_ADDRESS(AddressByte1,AddressByte2) + XRegister],
+        0,
+        "Set carry & zero: Operand shifted correctly.");
+
+    equal(MOS6502._P,
+        35,
+        "Set carry & zero: Status Register set correctly.");
+
+    equal(MOS6502._PC,
+            PCStart + BytesUsed,
+        "Set carry & zero: Program Counter set correctly.");
+
+    equal(MOS6502._CYCLES,
+        CycleCost,
+        "Set carry & zero: Cycles set correctly.");
+
+    /**
+     * Test 3: Set sign & carry.
+     *
+     * Before ASL Applied:
+     *         Operand: 11001010 (202)
+     * Status Register: 00100000 (32)
+     *
+     * After ASL applied:
+     *         Operand: 10010100 (148)
+     * Status Register: 10100001 (161)
+     */
+    MOS6502._PC = PCStart;
+    MOS6502._RAM[MOS6502._MAKE_ADDRESS(AddressByte1,AddressByte2) + XRegister] = 202;
+    MOS6502._P = 32;
+    MOS6502._CYCLES = 0;
+
+    MOS6502.emulateCycle();
+
+    equal(MOS6502._RAM[MOS6502._MAKE_ADDRESS(AddressByte1,AddressByte2) + XRegister],
+        148,
+        "Set sign & carry: Operand shifted correctly.");
+
+    equal(MOS6502._P,
+        161,
+        "Set sign & carry: Status Register set correctly.");
+
+    equal(MOS6502._PC,
+            PCStart + BytesUsed,
+        "Set sign & carry: Program Counter set correctly.");
+
+    equal(MOS6502._CYCLES,
+        CycleCost,
+        "Set sign & carry: Cycles set correctly.");
+
+    /**
+     * Test 4: Set zero.
+     *
+     * Before ASL Applied:
+     *         Operand: 00000000 (0)
+     * Status Register: 00100000 (32)
+     *
+     * After ASL applied:
+     *         Operand: 00000000 (0)
+     * Status Register: 00100010 (34)
+     */
+    MOS6502._PC = PCStart;
+    MOS6502._RAM[MOS6502._MAKE_ADDRESS(AddressByte1,AddressByte2) + XRegister] = 0;
+    MOS6502._P = 32;
+    MOS6502._CYCLES = 0;
+
+    MOS6502.emulateCycle();
+
+    equal(MOS6502._RAM[MOS6502._MAKE_ADDRESS(AddressByte1,AddressByte2) + XRegister],
+        0,
+        "Set zero: Operand shifted correctly.");
+
+    equal(MOS6502._P,
+        34,
+        "Set zero: Status Register set correctly.");
+
+    equal(MOS6502._PC,
+            PCStart + BytesUsed,
+        "Set zero: Program Counter set correctly.");
+
+    equal(MOS6502._CYCLES,
+        CycleCost,
+        "Set zero: Cycles set correctly.");
+
+    /**
+     * Test 5: Set sign.
+     *
+     * Before ASL Applied:
+     *         Operand: 01000000 (64)
+     * Status Register: 00100000 (32)
+     *
+     * After ASL applied:
+     *         Operand: 10000000 (128)
+     * Status Register: 10100000 (160)
+     */
+    MOS6502._PC = PCStart;
+    MOS6502._RAM[MOS6502._MAKE_ADDRESS(AddressByte1,AddressByte2) + XRegister] = 64;
+    MOS6502._P = 32;
+    MOS6502._CYCLES = 0;
+
+    MOS6502.emulateCycle();
+
+    equal(MOS6502._RAM[MOS6502._MAKE_ADDRESS(AddressByte1,AddressByte2) + XRegister],
+        128,
+        "Set sign: Operand shifted correctly.");
+
+    equal(MOS6502._P,
+        160,
+        "Set sign: Status Register set correctly.");
+
+    equal(MOS6502._PC,
+            PCStart + BytesUsed,
+        "Set sign: Program Counter set correctly.");
+
+    equal(MOS6502._CYCLES,
+        CycleCost,
+        "Set sign: Cycles set correctly.");
+
+    /**
+     * Test 6: Set none.
+     *
+     * Before ASL Applied:
+     *         Operand: 00100110 ()
+     * Status Register: 00100000 (32)
+     *
+     * After ASL applied:
+     *         Operand: 10000000 (128)
+     * Status Register: 10100000 (160)
+     */
+    MOS6502._PC = PCStart;
+    MOS6502._RAM[MOS6502._MAKE_ADDRESS(AddressByte1,AddressByte2) + XRegister] = 38;
+    MOS6502._P = 32;
+    MOS6502._CYCLES = 0;
+
+    MOS6502.emulateCycle();
+
+    equal(MOS6502._RAM[MOS6502._MAKE_ADDRESS(AddressByte1,AddressByte2) + XRegister],
+        76,
+        "Set none: Operand shifted correctly.");
+
+    equal(MOS6502._P,
+        32,
+        "Set none: Status Register set correctly.");
+
+    equal(MOS6502._PC,
+            PCStart + BytesUsed,
+        "Set none: Program Counter set correctly.");
+
+    equal(MOS6502._CYCLES,
+        CycleCost,
+        "Set none: Cycles set correctly.");
 });

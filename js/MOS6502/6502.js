@@ -854,8 +854,8 @@ MOS6502.prototype.ASL = function ASL() {
     switch (opCode) {
         // Get Operand
         case (0x0A): me._A = OPER; me._PC += 1; me._CYCLES += 2; break;
-        case (0x06): me.WriteZeroPage(OPER); me._PC += 2; me._CYCLES += 5; break;
-        case (0x16): me.WriteZeroPageX(OPER); me._PC += 2; me._CYCLES += 6; break;
+        case (0x06): me.WriteZeroPage(byte1,OPER); me._PC += 2; me._CYCLES += 5; break;
+        case (0x16): me.WriteZeroPageX(byte1,OPER); me._PC += 2; me._CYCLES += 6; break;
         case (0x0E): me.WriteAbsolute(byte1,byte2,OPER); me._PC += 3; me._CYCLES += 6; break;
         case (0x1E): me.WriteAbsoluteX(byte1,byte2,OPER); me._PC += 3; me._CYCLES += 7; break;
 
