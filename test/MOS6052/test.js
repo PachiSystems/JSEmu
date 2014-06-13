@@ -3507,6 +3507,7 @@ test("0x08 - PHP (Implied)", function() {
         StatusRegister = 32;
 
     MOS6502._PC = PCStart;
+    MOS6502._SP = 0x01FF;
     MOS6502._RAM[PCStart] = OPCODE;
     MOS6502._P = StatusRegister;
     MOS6502._CYCLES = 0;
