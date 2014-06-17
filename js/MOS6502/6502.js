@@ -775,14 +775,14 @@ MOS6502.prototype.AND = function AND() {
 
     switch (opCode) {
         // Get Operand
-        case (0x21): OPER = me.ReadIndirectX(byte1); me._PC += 2; me._CYCLES += 6; break;
-        case (0x25): OPER = me.ReadZeroPage(byte1); me._PC += 2; me._CYCLES += 3; break;
         case (0x29): OPER = byte1; me._PC += 2; me._CYCLES += 2; break;
-        case (0x2D): OPER = me.ReadAbsolute(byte1, byte2); me._PC += 3; me._CYCLES += 4; break;
-        case (0x31): OPER = me.ReadIndirectY(byte1,false); me._PC += 2; me._CYCLES += 5; break;
+        case (0x25): OPER = me.ReadZeroPage(byte1); me._PC += 2; me._CYCLES += 3; break;
         case (0x35): OPER = me.ReadZeroPageX(byte1); me._PC += 2; me._CYCLES += 4; break;
+        case (0x2D): OPER = me.ReadAbsolute(byte1, byte2); me._PC += 3; me._CYCLES += 4; break;
+        case (0x3D): OPER = me.ReadAbsoluteX(byte1,byte2,true); me._PC += 3; me._CYCLES += 4; break;
         case (0x39): OPER = me.ReadAbsoluteY(byte1,byte2,true); me._PC += 3; me._CYCLES += 4; break;
-        case (0x3D): OPER = me.ReadAbsoluteX(byte1,byte2,true); me._PC += 3; me._CYCLES += 4; break;;
+        case (0x21): OPER = me.ReadIndirectX(byte1); me._PC += 2; me._CYCLES += 6; break;
+        case (0x31): OPER = me.ReadIndirectY(byte1,false); me._PC += 2; me._CYCLES += 5; break;
 
         default: console.error("Illegal AND opcode passed. (0x" + opCode.toSrting(16) + ")" ); break;
 

@@ -3787,7 +3787,7 @@ test("0x18 - CLC (Implied)", function() {
 
 /*********************************************************************************************************************/
 
-//<editor-fold desc = " Tests">
+//<editor-fold desc = "JSR Tests">
 
 QUnit.module("Instruction - JSR", {
     setup: function() {
@@ -3813,6 +3813,10 @@ test("0x20 - JSR (Absolute)", function() {
     MOS6502._SP = 0x01FF;
     MOS6502._CYCLES = 0;
 
+    /**
+     * Test 1: JSR should jump to a given address and store the return address on the stack.
+     */
+
     MOS6502.emulateCycle();
 
     equal(MOS6502._PC,
@@ -3836,9 +3840,1075 @@ test("0x20 - JSR (Absolute)", function() {
         CycleCost,
         "Cycles calculated correctly.");
 
+});
+
+//</editor-fold>
+
+/*********************************************************************************************************************/
+
+//<editor-fold desc = "AND Tests">
+
+QUnit.module("Instruction - AND", {
+    setup: function() {
+        MOS6502.init();
+    }
+});
+
+test("0x29 - AND (Immediate)", function() {
     /**
-     * Test 1: Carry flag not set. CLC should not alter Status Register.
+     *    Instruction = AND - "AND" memory with accumulator.
+     * Affected Flags = Sign, Zero
+     *    Total Tests = 3
      */
+
+    var OPCODE = 0x29,
+        CycleCost = 2,
+        BytesUsed = 2,
+        PCStart = 0x4000;
+
+    MOS6502._RAM[PCStart] = OPCODE;
+
+    /**
+     * Test 1: AND performed without setting any flags.
+     */
+
+    MOS6502._A = 0x14;
+    MOS6502._P = 0x20;
+    MOS6502._PC = PCStart;
+    MOS6502._CYCLES = 0;
+    MOS6502._RAM[PCStart + 1] = 0x54;
+
+    MOS6502.emulateCycle();
+
+    equal(MOS6502._PC,
+        PCStart + BytesUsed,
+        "No flag: Program Counter set correctly.");
+
+    equal(MOS6502._A,
+        0x14,
+        "No flag: AND operation performed correctly and stored in accumulator.");
+
+    equal(MOS6502._P,
+        0x20,
+        "No flag: Status register set correctly.");
+
+    equal(MOS6502._CYCLES,
+        CycleCost,
+        "No flag: Cycles calculated correctly.");
+
+    /**
+     * Test 2: AND performed setting the zero flag.
+     */
+
+    MOS6502._A = 0x54;
+    MOS6502._P = 0x20;
+    MOS6502._PC = PCStart;
+    MOS6502._CYCLES = 0;
+    MOS6502._RAM[PCStart + 1] = 0x20;
+
+    MOS6502.emulateCycle();
+
+    equal(MOS6502._PC,
+            PCStart + BytesUsed,
+        "Zero flag: Program Counter set correctly.");
+
+    equal(MOS6502._A,
+        0x00,
+        "Zero flag: AND operation performed correctly and stored in accumulator.");
+
+    equal(MOS6502._P,
+        0x22,
+        "Zero flag: Status register set correctly.");
+
+    equal(MOS6502._CYCLES,
+        CycleCost,
+        "Zero flag: Cycles calculated correctly.");
+
+    /**
+     * Test 3: AND performed setting the sign flag.
+     */
+
+    MOS6502._A = 0x82;
+    MOS6502._P = 0x20;
+    MOS6502._PC = PCStart;
+    MOS6502._CYCLES = 0;
+    MOS6502._RAM[PCStart + 1] = 0x81;
+
+    MOS6502.emulateCycle();
+
+    equal(MOS6502._PC,
+            PCStart + BytesUsed,
+        "Sign flag: Program Counter set correctly.");
+
+    equal(MOS6502._A,
+        0x80,
+        "Sign flag: AND operation performed correctly and stored in accumulator.");
+
+    equal(MOS6502._P,
+        0xA0,
+        "Sign flag: Status register set correctly.");
+
+    equal(MOS6502._CYCLES,
+        CycleCost,
+        "Sign flag: Cycles calculated correctly.");
+
+});
+
+test("0x25 - AND (Zero Page)", function(){
+    /**
+     *    Instruction = AND - "AND" memory with accumulator.
+     * Affected Flags = Sign, Zero
+     *    Total Tests = 3
+     */
+
+    var OPCODE = 0x25,
+        CycleCost = 3,
+        BytesUsed = 2,
+        ZPAddress = Math.floor(Math.random() * 256) + 1,
+        PCStart = 0x4000;
+
+    MOS6502._RAM[PCStart] = OPCODE;
+    MOS6502._RAM[PCStart + 1] = ZPAddress;
+
+    /**
+     * Test 1: AND performed without setting any flags.
+     */
+
+    MOS6502._A = 0x14;
+    MOS6502._P = 0x20;
+    MOS6502._PC = PCStart;
+    MOS6502._CYCLES = 0;
+    MOS6502._RAM[ZPAddress] = 0x54;
+
+    MOS6502.emulateCycle();
+
+    equal(MOS6502._PC,
+            PCStart + BytesUsed,
+        "No flag: Program Counter set correctly.");
+
+    equal(MOS6502._A,
+        0x14,
+        "No flag: AND operation performed correctly and stored in accumulator.");
+
+    equal(MOS6502._P,
+        0x20,
+        "No flag: Status register set correctly.");
+
+    equal(MOS6502._CYCLES,
+        CycleCost,
+        "No flag: Cycles calculated correctly.");
+
+    /**
+     * Test 2: AND performed setting the zero flag.
+     */
+
+    MOS6502._A = 0x54;
+    MOS6502._P = 0x20;
+    MOS6502._PC = PCStart;
+    MOS6502._CYCLES = 0;
+    MOS6502._RAM[ZPAddress] = 0x20;
+
+    MOS6502.emulateCycle();
+
+    equal(MOS6502._PC,
+            PCStart + BytesUsed,
+        "Zero flag: Program Counter set correctly.");
+
+    equal(MOS6502._A,
+        0x00,
+        "Zero flag: AND operation performed correctly and stored in accumulator.");
+
+    equal(MOS6502._P,
+        0x22,
+        "Zero flag: Status register set correctly.");
+
+    equal(MOS6502._CYCLES,
+        CycleCost,
+        "Zero flag: Cycles calculated correctly.");
+
+    /**
+     * Test 3: AND performed setting the sign flag.
+     */
+
+    MOS6502._A = 0x82;
+    MOS6502._P = 0x20;
+    MOS6502._PC = PCStart;
+    MOS6502._CYCLES = 0;
+    MOS6502._RAM[ZPAddress] = 0x81;
+
+    MOS6502.emulateCycle();
+
+    equal(MOS6502._PC,
+            PCStart + BytesUsed,
+        "Sign flag: Program Counter set correctly.");
+
+    equal(MOS6502._A,
+        0x80,
+        "Sign flag: AND operation performed correctly and stored in accumulator.");
+
+    equal(MOS6502._P,
+        0xA0,
+        "Sign flag: Status register set correctly.");
+
+    equal(MOS6502._CYCLES,
+        CycleCost,
+        "Sign flag: Cycles calculated correctly.");
+
+});
+
+test("0x35 - AND (Zero Page, X)", function(){
+    /**
+     *    Instruction = AND - "AND" memory with accumulator.
+     * Affected Flags = Sign, Zero
+     *    Total Tests = 3
+     */
+
+    var OPCODE = 0x35,
+        CycleCost = 4,
+        BytesUsed = 2,
+        ZPAddress = Math.floor(Math.random() * 256) + 1,
+        XRegister = Math.floor(Math.random() * 256) + 1,
+        PCStart = 0x4000;
+
+    MOS6502._RAM[PCStart] = OPCODE;
+    MOS6502._RAM[PCStart + 1] = ZPAddress;
+    MOS6502._X = XRegister;
+
+    /**
+     * Test 1: AND performed without setting any flags.
+     */
+
+    MOS6502._A = 0x14;
+    MOS6502._P = 0x20;
+    MOS6502._PC = PCStart;
+    MOS6502._CYCLES = 0;
+    MOS6502._RAM[(ZPAddress + XRegister) & 0xFF] = 0x54;
+
+    MOS6502.emulateCycle();
+
+    equal(MOS6502._PC,
+            PCStart + BytesUsed,
+        "No flag: Program Counter set correctly.");
+
+    equal(MOS6502._A,
+        0x14,
+        "No flag: AND operation performed correctly and stored in accumulator.");
+
+    equal(MOS6502._P,
+        0x20,
+        "No flag: Status register set correctly.");
+
+    equal(MOS6502._CYCLES,
+        CycleCost,
+        "No flag: Cycles calculated correctly.");
+
+    /**
+     * Test 2: AND performed setting the zero flag.
+     */
+
+    MOS6502._A = 0x54;
+    MOS6502._P = 0x20;
+    MOS6502._PC = PCStart;
+    MOS6502._CYCLES = 0;
+    MOS6502._RAM[(ZPAddress + XRegister) & 0xFF] = 0x20;
+
+    MOS6502.emulateCycle();
+
+    equal(MOS6502._PC,
+            PCStart + BytesUsed,
+        "Zero flag: Program Counter set correctly.");
+
+    equal(MOS6502._A,
+        0x00,
+        "Zero flag: AND operation performed correctly and stored in accumulator.");
+
+    equal(MOS6502._P,
+        0x22,
+        "Zero flag: Status register set correctly.");
+
+    equal(MOS6502._CYCLES,
+        CycleCost,
+        "Zero flag: Cycles calculated correctly.");
+
+    /**
+     * Test 3: AND performed setting the sign flag.
+     */
+
+    MOS6502._A = 0x82;
+    MOS6502._P = 0x20;
+    MOS6502._PC = PCStart;
+    MOS6502._CYCLES = 0;
+    MOS6502._RAM[(ZPAddress + XRegister) & 0xFF] = 0x81;
+
+    MOS6502.emulateCycle();
+
+    equal(MOS6502._PC,
+            PCStart + BytesUsed,
+        "Sign flag: Program Counter set correctly.");
+
+    equal(MOS6502._A,
+        0x80,
+        "Sign flag: AND operation performed correctly and stored in accumulator.");
+
+    equal(MOS6502._P,
+        0xA0,
+        "Sign flag: Status register set correctly.");
+
+    equal(MOS6502._CYCLES,
+        CycleCost,
+        "Sign flag: Cycles calculated correctly.");
+
+});
+
+test("0x2D - AND (Absolute)", function() {
+    /**
+     *    Instruction = AND - "AND" memory with accumulator.
+     * Affected Flags = Sign, Zero
+     *    Total Tests = 3
+     */
+
+    var OPCODE = 0x2D,
+        CycleCost = 4,
+        BytesUsed = 3,
+        AddressByte1 = 0x31,
+        AddressByte2 = 0x21,
+        FullAddress = MOS6502._MAKE_ADDRESS(AddressByte1,AddressByte2),
+        PCStart = 0x4000;
+
+    MOS6502._RAM[PCStart] = OPCODE;
+    MOS6502._RAM[PCStart + 1] = AddressByte1;
+    MOS6502._RAM[PCStart + 2] = AddressByte2;
+
+    /**
+     * Test 1: AND performed without setting any flags.
+     */
+
+    MOS6502._A = 0x14;
+    MOS6502._P = 0x20;
+    MOS6502._PC = PCStart;
+    MOS6502._CYCLES = 0;
+    MOS6502._RAM[FullAddress] = 0x54;
+
+    MOS6502.emulateCycle();
+
+    equal(MOS6502._PC,
+            PCStart + BytesUsed,
+        "No flag: Program Counter set correctly.");
+
+    equal(MOS6502._A,
+        0x14,
+        "No flag: AND operation performed correctly and stored in accumulator.");
+
+    equal(MOS6502._P,
+        0x20,
+        "No flag: Status register set correctly.");
+
+    equal(MOS6502._CYCLES,
+        CycleCost,
+        "No flag: Cycles calculated correctly.");
+
+    /**
+     * Test 2: AND performed setting the zero flag.
+     */
+
+    MOS6502._A = 0x54;
+    MOS6502._P = 0x20;
+    MOS6502._PC = PCStart;
+    MOS6502._CYCLES = 0;
+    MOS6502._RAM[FullAddress] = 0x20;
+
+    MOS6502.emulateCycle();
+
+    equal(MOS6502._PC,
+            PCStart + BytesUsed,
+        "Zero flag: Program Counter set correctly.");
+
+    equal(MOS6502._A,
+        0x00,
+        "Zero flag: AND operation performed correctly and stored in accumulator.");
+
+    equal(MOS6502._P,
+        0x22,
+        "Zero flag: Status register set correctly.");
+
+    equal(MOS6502._CYCLES,
+        CycleCost,
+        "Zero flag: Cycles calculated correctly.");
+
+    /**
+     * Test 3: AND performed setting the sign flag.
+     */
+
+    MOS6502._A = 0x82;
+    MOS6502._P = 0x20;
+    MOS6502._PC = PCStart;
+    MOS6502._CYCLES = 0;
+    MOS6502._RAM[FullAddress] = 0x81;
+
+    MOS6502.emulateCycle();
+
+    equal(MOS6502._PC,
+            PCStart + BytesUsed,
+        "Sign flag: Program Counter set correctly.");
+
+    equal(MOS6502._A,
+        0x80,
+        "Sign flag: AND operation performed correctly and stored in accumulator.");
+
+    equal(MOS6502._P,
+        0xA0,
+        "Sign flag: Status register set correctly.");
+
+    equal(MOS6502._CYCLES,
+        CycleCost,
+        "Sign flag: Cycles calculated correctly.");
+
+});
+
+test("0x3D - AND (Absolute, X) (Same Page)", function() {
+    /**
+     *    Instruction = AND - "AND" memory with accumulator.
+     * Affected Flags = Sign, Zero
+     *    Total Tests = 3
+     */
+
+    var OPCODE = 0x3D,
+        CycleCost = 4,
+        BytesUsed = 3,
+        AddressByte1 = 0x31,
+        AddressByte2 = 0x21,
+        XRegister = 0x80,
+        FullAddress = MOS6502._MAKE_ADDRESS(AddressByte1,AddressByte2),
+        PCStart = 0x4000;
+
+    MOS6502._RAM[PCStart] = OPCODE;
+    MOS6502._RAM[PCStart + 1] = AddressByte1;
+    MOS6502._RAM[PCStart + 2] = AddressByte2;
+    MOS6502._X = XRegister;
+
+    /**
+     * Test 1: AND performed without setting any flags.
+     */
+
+    MOS6502._A = 0x14;
+    MOS6502._P = 0x20;
+    MOS6502._PC = PCStart;
+    MOS6502._CYCLES = 0;
+    MOS6502._RAM[FullAddress + XRegister] = 0x54;
+
+    MOS6502.emulateCycle();
+
+    equal(MOS6502._PC,
+            PCStart + BytesUsed,
+        "No flag: Program Counter set correctly.");
+
+    equal(MOS6502._A,
+        0x14,
+        "No flag: AND operation performed correctly and stored in accumulator.");
+
+    equal(MOS6502._P,
+        0x20,
+        "No flag: Status register set correctly.");
+
+    equal(MOS6502._CYCLES,
+        CycleCost,
+        "No flag: Cycles calculated correctly.");
+
+    /**
+     * Test 2: AND performed setting the zero flag.
+     */
+
+    MOS6502._A = 0x54;
+    MOS6502._P = 0x20;
+    MOS6502._PC = PCStart;
+    MOS6502._CYCLES = 0;
+    MOS6502._RAM[FullAddress + XRegister] = 0x20;
+
+    MOS6502.emulateCycle();
+
+    equal(MOS6502._PC,
+            PCStart + BytesUsed,
+        "Zero flag: Program Counter set correctly.");
+
+    equal(MOS6502._A,
+        0x00,
+        "Zero flag: AND operation performed correctly and stored in accumulator.");
+
+    equal(MOS6502._P,
+        0x22,
+        "Zero flag: Status register set correctly.");
+
+    equal(MOS6502._CYCLES,
+        CycleCost,
+        "Zero flag: Cycles calculated correctly.");
+
+    /**
+     * Test 3: AND performed setting the sign flag.
+     */
+
+    MOS6502._A = 0x82;
+    MOS6502._P = 0x20;
+    MOS6502._PC = PCStart;
+    MOS6502._CYCLES = 0;
+    MOS6502._RAM[FullAddress + XRegister] = 0x81;
+
+    MOS6502.emulateCycle();
+
+    equal(MOS6502._PC,
+            PCStart + BytesUsed,
+        "Sign flag: Program Counter set correctly.");
+
+    equal(MOS6502._A,
+        0x80,
+        "Sign flag: AND operation performed correctly and stored in accumulator.");
+
+    equal(MOS6502._P,
+        0xA0,
+        "Sign flag: Status register set correctly.");
+
+    equal(MOS6502._CYCLES,
+        CycleCost,
+        "Sign flag: Cycles calculated correctly.");
+
+});
+
+test("0x3D - AND (Absolute, X) (Cross Page)", function() {
+    /**
+     *    Instruction = AND - "AND" memory with accumulator.
+     * Affected Flags = Sign, Zero
+     *    Total Tests = 3
+     */
+
+    var OPCODE = 0x3D,
+        CycleCost = 5,
+        BytesUsed = 3,
+        AddressByte1 = 0x31,
+        AddressByte2 = 0x21,
+        XRegister = 0xFE,
+        FullAddress = MOS6502._MAKE_ADDRESS(AddressByte1,AddressByte2),
+        PCStart = 0x4000;
+
+    MOS6502._RAM[PCStart] = OPCODE;
+    MOS6502._RAM[PCStart + 1] = AddressByte1;
+    MOS6502._RAM[PCStart + 2] = AddressByte2;
+    MOS6502._X = XRegister;
+
+    /**
+     * Test 1: AND performed without setting any flags.
+     */
+
+    MOS6502._A = 0x14;
+    MOS6502._P = 0x20;
+    MOS6502._PC = PCStart;
+    MOS6502._CYCLES = 0;
+    MOS6502._RAM[FullAddress + XRegister] = 0x54;
+
+    MOS6502.emulateCycle();
+
+    equal(MOS6502._PC,
+            PCStart + BytesUsed,
+        "No flag: Program Counter set correctly.");
+
+    equal(MOS6502._A,
+        0x14,
+        "No flag: AND operation performed correctly and stored in accumulator.");
+
+    equal(MOS6502._P,
+        0x20,
+        "No flag: Status register set correctly.");
+
+    equal(MOS6502._CYCLES,
+        CycleCost,
+        "No flag: Cycles calculated correctly.");
+
+    /**
+     * Test 2: AND performed setting the zero flag.
+     */
+
+    MOS6502._A = 0x54;
+    MOS6502._P = 0x20;
+    MOS6502._PC = PCStart;
+    MOS6502._CYCLES = 0;
+    MOS6502._RAM[FullAddress + XRegister] = 0x20;
+
+    MOS6502.emulateCycle();
+
+    equal(MOS6502._PC,
+            PCStart + BytesUsed,
+        "Zero flag: Program Counter set correctly.");
+
+    equal(MOS6502._A,
+        0x00,
+        "Zero flag: AND operation performed correctly and stored in accumulator.");
+
+    equal(MOS6502._P,
+        0x22,
+        "Zero flag: Status register set correctly.");
+
+    equal(MOS6502._CYCLES,
+        CycleCost,
+        "Zero flag: Cycles calculated correctly.");
+
+    /**
+     * Test 3: AND performed setting the sign flag.
+     */
+
+    MOS6502._A = 0x82;
+    MOS6502._P = 0x20;
+    MOS6502._PC = PCStart;
+    MOS6502._CYCLES = 0;
+    MOS6502._RAM[FullAddress + XRegister] = 0x81;
+
+    MOS6502.emulateCycle();
+
+    equal(MOS6502._PC,
+            PCStart + BytesUsed,
+        "Sign flag: Program Counter set correctly.");
+
+    equal(MOS6502._A,
+        0x80,
+        "Sign flag: AND operation performed correctly and stored in accumulator.");
+
+    equal(MOS6502._P,
+        0xA0,
+        "Sign flag: Status register set correctly.");
+
+    equal(MOS6502._CYCLES,
+        CycleCost,
+        "Sign flag: Cycles calculated correctly.");
+
+});
+
+test("0x39 - AND (Absolute, Y) (Same Page)", function() {
+    /**
+     *    Instruction = AND - "AND" memory with accumulator.
+     * Affected Flags = Sign, Zero
+     *    Total Tests = 3
+     */
+
+    var OPCODE = 0x39,
+        CycleCost = 4,
+        BytesUsed = 3,
+        AddressByte1 = 0x31,
+        AddressByte2 = 0x21,
+        YRegister = 0x80,
+        FullAddress = MOS6502._MAKE_ADDRESS(AddressByte1,AddressByte2),
+        PCStart = 0x4000;
+
+    MOS6502._RAM[PCStart] = OPCODE;
+    MOS6502._RAM[PCStart + 1] = AddressByte1;
+    MOS6502._RAM[PCStart + 2] = AddressByte2;
+    MOS6502._Y = YRegister;
+
+    /**
+     * Test 1: AND performed without setting any flags.
+     */
+
+    MOS6502._A = 0x14;
+    MOS6502._P = 0x20;
+    MOS6502._PC = PCStart;
+    MOS6502._CYCLES = 0;
+    MOS6502._RAM[FullAddress + YRegister] = 0x54;
+
+    MOS6502.emulateCycle();
+
+    equal(MOS6502._PC,
+            PCStart + BytesUsed,
+        "No flag: Program Counter set correctly.");
+
+    equal(MOS6502._A,
+        0x14,
+        "No flag: AND operation performed correctly and stored in accumulator.");
+
+    equal(MOS6502._P,
+        0x20,
+        "No flag: Status register set correctly.");
+
+    equal(MOS6502._CYCLES,
+        CycleCost,
+        "No flag: Cycles calculated correctly.");
+
+    /**
+     * Test 2: AND performed setting the zero flag.
+     */
+
+    MOS6502._A = 0x54;
+    MOS6502._P = 0x20;
+    MOS6502._PC = PCStart;
+    MOS6502._CYCLES = 0;
+    MOS6502._RAM[FullAddress + YRegister] = 0x20;
+
+    MOS6502.emulateCycle();
+
+    equal(MOS6502._PC,
+            PCStart + BytesUsed,
+        "Zero flag: Program Counter set correctly.");
+
+    equal(MOS6502._A,
+        0x00,
+        "Zero flag: AND operation performed correctly and stored in accumulator.");
+
+    equal(MOS6502._P,
+        0x22,
+        "Zero flag: Status register set correctly.");
+
+    equal(MOS6502._CYCLES,
+        CycleCost,
+        "Zero flag: Cycles calculated correctly.");
+
+    /**
+     * Test 3: AND performed setting the sign flag.
+     */
+
+    MOS6502._A = 0x82;
+    MOS6502._P = 0x20;
+    MOS6502._PC = PCStart;
+    MOS6502._CYCLES = 0;
+    MOS6502._RAM[FullAddress + YRegister] = 0x81;
+
+    MOS6502.emulateCycle();
+
+    equal(MOS6502._PC,
+            PCStart + BytesUsed,
+        "Sign flag: Program Counter set correctly.");
+
+    equal(MOS6502._A,
+        0x80,
+        "Sign flag: AND operation performed correctly and stored in accumulator.");
+
+    equal(MOS6502._P,
+        0xA0,
+        "Sign flag: Status register set correctly.");
+
+    equal(MOS6502._CYCLES,
+        CycleCost,
+        "Sign flag: Cycles calculated correctly.");
+
+});
+
+test("0x39 - AND (Absolute, Y) (Cross Page)", function() {
+    /**
+     *    Instruction = AND - "AND" memory with accumulator.
+     * Affected Flags = Sign, Zero
+     *    Total Tests = 3
+     */
+
+    var OPCODE = 0x3D,
+        CycleCost = 5,
+        BytesUsed = 3,
+        AddressByte1 = 0x31,
+        AddressByte2 = 0x21,
+        YRegister = 0xFE,
+        FullAddress = MOS6502._MAKE_ADDRESS(AddressByte1,AddressByte2),
+        PCStart = 0x4000;
+
+    MOS6502._RAM[PCStart] = OPCODE;
+    MOS6502._RAM[PCStart + 1] = AddressByte1;
+    MOS6502._RAM[PCStart + 2] = AddressByte2;
+    MOS6502._Y = YRegister;
+
+    /**
+     * Test 1: AND performed without setting any flags.
+     */
+
+    MOS6502._A = 0x14;
+    MOS6502._P = 0x20;
+    MOS6502._PC = PCStart;
+    MOS6502._CYCLES = 0;
+    MOS6502._RAM[FullAddress + YRegister] = 0x54;
+
+    MOS6502.emulateCycle();
+
+    equal(MOS6502._PC,
+            PCStart + BytesUsed,
+        "No flag: Program Counter set correctly.");
+
+    equal(MOS6502._A,
+        0x14,
+        "No flag: AND operation performed correctly and stored in accumulator.");
+
+    equal(MOS6502._P,
+        0x20,
+        "No flag: Status register set correctly.");
+
+    equal(MOS6502._CYCLES,
+        CycleCost,
+        "No flag: Cycles calculated correctly.");
+
+    /**
+     * Test 2: AND performed setting the zero flag.
+     */
+
+    MOS6502._A = 0x54;
+    MOS6502._P = 0x20;
+    MOS6502._PC = PCStart;
+    MOS6502._CYCLES = 0;
+    MOS6502._RAM[FullAddress + YRegister] = 0x20;
+
+    MOS6502.emulateCycle();
+
+    equal(MOS6502._PC,
+            PCStart + BytesUsed,
+        "Zero flag: Program Counter set correctly.");
+
+    equal(MOS6502._A,
+        0x00,
+        "Zero flag: AND operation performed correctly and stored in accumulator.");
+
+    equal(MOS6502._P,
+        0x22,
+        "Zero flag: Status register set correctly.");
+
+    equal(MOS6502._CYCLES,
+        CycleCost,
+        "Zero flag: Cycles calculated correctly.");
+
+    /**
+     * Test 3: AND performed setting the sign flag.
+     */
+
+    MOS6502._A = 0x82;
+    MOS6502._P = 0x20;
+    MOS6502._PC = PCStart;
+    MOS6502._CYCLES = 0;
+    MOS6502._RAM[FullAddress + YRegister] = 0x81;
+
+    MOS6502.emulateCycle();
+
+    equal(MOS6502._PC,
+            PCStart + BytesUsed,
+        "Sign flag: Program Counter set correctly.");
+
+    equal(MOS6502._A,
+        0x80,
+        "Sign flag: AND operation performed correctly and stored in accumulator.");
+
+    equal(MOS6502._P,
+        0xA0,
+        "Sign flag: Status register set correctly.");
+
+    equal(MOS6502._CYCLES,
+        CycleCost,
+        "Sign flag: Cycles calculated correctly.");
+
+});
+
+test("0x21 - AND (Indirect, X)", function() {
+    /**
+     *    Instruction = AND - "AND" memory with accumulator.
+     * Affected Flags = Sign, Zero
+     *    Total Tests = 3
+     */
+
+    var OPCODE = 0x21,
+        CycleCost = 6,
+        BytesUsed = 2,
+        AddressByte1 = 0x31,
+        AddressByte2 = 0x21,
+        ZPAddress = 0x31,
+        XRegister = 0x80,
+        FullAddress = MOS6502._MAKE_ADDRESS(AddressByte1,AddressByte2),
+        PCStart = 0x4000;
+
+    MOS6502._RAM[PCStart] = OPCODE;
+    MOS6502._RAM[PCStart + 1] = ZPAddress;
+    MOS6502._RAM[(ZPAddress + XRegister) & 0xFF] = AddressByte1;
+    MOS6502._RAM[(ZPAddress + XRegister + 1) & 0xFF] = AddressByte2;
+    MOS6502._X = XRegister;
+
+    /**
+     * Test 1: AND performed without setting any flags.
+     */
+
+    MOS6502._A = 0x14;
+    MOS6502._P = 0x20;
+    MOS6502._PC = PCStart;
+    MOS6502._CYCLES = 0;
+    MOS6502._RAM[FullAddress] = 0x54;
+
+    MOS6502.emulateCycle();
+
+    equal(MOS6502._PC,
+            PCStart + BytesUsed,
+        "No flag: Program Counter set correctly.");
+
+    equal(MOS6502._A,
+        0x14,
+        "No flag: AND operation performed correctly and stored in accumulator.");
+
+    equal(MOS6502._P,
+        0x20,
+        "No flag: Status register set correctly.");
+
+    equal(MOS6502._CYCLES,
+        CycleCost,
+        "No flag: Cycles calculated correctly.");
+
+    /**
+     * Test 2: AND performed setting the zero flag.
+     */
+
+    MOS6502._A = 0x54;
+    MOS6502._P = 0x20;
+    MOS6502._PC = PCStart;
+    MOS6502._CYCLES = 0;
+    MOS6502._RAM[FullAddress] = 0x20;
+
+    MOS6502.emulateCycle();
+
+    equal(MOS6502._PC,
+            PCStart + BytesUsed,
+        "Zero flag: Program Counter set correctly.");
+
+    equal(MOS6502._A,
+        0x00,
+        "Zero flag: AND operation performed correctly and stored in accumulator.");
+
+    equal(MOS6502._P,
+        0x22,
+        "Zero flag: Status register set correctly.");
+
+    equal(MOS6502._CYCLES,
+        CycleCost,
+        "Zero flag: Cycles calculated correctly.");
+
+    /**
+     * Test 3: AND performed setting the sign flag.
+     */
+
+    MOS6502._A = 0x82;
+    MOS6502._P = 0x20;
+    MOS6502._PC = PCStart;
+    MOS6502._CYCLES = 0;
+    MOS6502._RAM[FullAddress] = 0x81;
+
+    MOS6502.emulateCycle();
+
+    equal(MOS6502._PC,
+            PCStart + BytesUsed,
+        "Sign flag: Program Counter set correctly.");
+
+    equal(MOS6502._A,
+        0x80,
+        "Sign flag: AND operation performed correctly and stored in accumulator.");
+
+    equal(MOS6502._P,
+        0xA0,
+        "Sign flag: Status register set correctly.");
+
+    equal(MOS6502._CYCLES,
+        CycleCost,
+        "Sign flag: Cycles calculated correctly.");
+
+});
+
+test("0x31 - AND (Indirect, Y)", function() {
+    /**
+     *    Instruction = AND - "AND" memory with accumulator.
+     * Affected Flags = Sign, Zero
+     *    Total Tests = 3
+     */
+
+    var OPCODE = 0x31,
+        CycleCost = 5,
+        BytesUsed = 2,
+        AddressByte1 = 0x31,
+        AddressByte2 = 0x21,
+        ZPAddress = 0x31,
+        YRegister = 0x80,
+        FullAddress = MOS6502._MAKE_ADDRESS(AddressByte1,AddressByte2),
+        PCStart = 0x4000;
+
+    MOS6502._RAM[PCStart] = OPCODE;
+    MOS6502._RAM[PCStart + 1] = ZPAddress;
+    MOS6502._RAM[ZPAddress] = AddressByte1;
+    MOS6502._RAM[ZPAddress + 1] = AddressByte2;
+    MOS6502._Y = YRegister;
+
+    /**
+     * Test 1: AND performed without setting any flags.
+     */
+
+    MOS6502._A = 0x14;
+    MOS6502._P = 0x20;
+    MOS6502._PC = PCStart;
+    MOS6502._CYCLES = 0;
+    MOS6502._RAM[FullAddress + YRegister] = 0x54;
+
+    MOS6502.emulateCycle();
+
+    equal(MOS6502._PC,
+            PCStart + BytesUsed,
+        "No flag: Program Counter set correctly.");
+
+    equal(MOS6502._A,
+        0x14,
+        "No flag: AND operation performed correctly and stored in accumulator.");
+
+    equal(MOS6502._P,
+        0x20,
+        "No flag: Status register set correctly.");
+
+    equal(MOS6502._CYCLES,
+        CycleCost,
+        "No flag: Cycles calculated correctly.");
+
+    /**
+     * Test 2: AND performed setting the zero flag.
+     */
+
+    MOS6502._A = 0x54;
+    MOS6502._P = 0x20;
+    MOS6502._PC = PCStart;
+    MOS6502._CYCLES = 0;
+    MOS6502._RAM[FullAddress + YRegister] = 0x20;
+
+    MOS6502.emulateCycle();
+
+    equal(MOS6502._PC,
+            PCStart + BytesUsed,
+        "Zero flag: Program Counter set correctly.");
+
+    equal(MOS6502._A,
+        0x00,
+        "Zero flag: AND operation performed correctly and stored in accumulator.");
+
+    equal(MOS6502._P,
+        0x22,
+        "Zero flag: Status register set correctly.");
+
+    equal(MOS6502._CYCLES,
+        CycleCost,
+        "Zero flag: Cycles calculated correctly.");
+
+    /**
+     * Test 3: AND performed setting the sign flag.
+     */
+
+    MOS6502._A = 0x82;
+    MOS6502._P = 0x20;
+    MOS6502._PC = PCStart;
+    MOS6502._CYCLES = 0;
+    MOS6502._RAM[FullAddress + YRegister] = 0x81;
+
+    MOS6502.emulateCycle();
+
+    equal(MOS6502._PC,
+            PCStart + BytesUsed,
+        "Sign flag: Program Counter set correctly.");
+
+    equal(MOS6502._A,
+        0x80,
+        "Sign flag: AND operation performed correctly and stored in accumulator.");
+
+    equal(MOS6502._P,
+        0xA0,
+        "Sign flag: Status register set correctly.");
+
+    equal(MOS6502._CYCLES,
+        CycleCost,
+        "Sign flag: Cycles calculated correctly.");
+
 });
 
 //</editor-fold>
@@ -3846,7 +4916,6 @@ test("0x20 - JSR (Absolute)", function() {
 /**
  * Tests to be implemented:
  * ADC   Add Memory to Accumulator with Carry
- * AND   "AND" Memory with Accumulator
  *
  * BCC   Branch on Carry Clear
  * BCS   Branch on Carry Set
