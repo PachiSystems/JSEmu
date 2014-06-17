@@ -102,7 +102,7 @@ MOS6502.prototype.init = function() {
     var me = this;
 
     // Blank out the stack.
-    for(var i = 0x0100; i <= 0x01F; i++) {
+    for(var i = 0x0100; i <= 0x01FF; i++) {
         me._RAM[i] = 0;
     }
 
@@ -1958,9 +1958,12 @@ MOS6502.prototype.JSR = function() {
     switch (opCode) {
         // Get Operand
         case (0x20):
-            me._PUSH(me._PC + 2);
+            me._PUSH((me._PC + 2) >> 8);
+            me._PUSH((me._PC + 2) & 0xFF);
+
             me._PC = me._MAKE_ADDRESS(byte1,byte2);
             me._CYCLES += 6;
+
             break;
 
         default: console.error("Illegal JSR opcode passed. (0x" + opCode.toString(16) + ")" ); break;

@@ -3702,7 +3702,7 @@ test("0x10 - BPL (Relative)", function() {
 
 /*********************************************************************************************************************/
 
-//<editor-fold desc = "CLC Tests">
+//<editor-fold desc="CLC Tests">
 
 QUnit.module("Instruction - CLC", {
     setup: function() {
@@ -3783,7 +3783,65 @@ test("0x18 - CLC (Implied)", function() {
         "Program Counter incremented correctly.");
 });
 
-//<editor-fold>
+//</editor-fold>
+
+/*********************************************************************************************************************/
+
+//<editor-fold desc = " Tests">
+
+QUnit.module("Instruction - JSR", {
+    setup: function() {
+        MOS6502.init();
+    }
+});
+
+test("0x20 - JSR (Absolute)", function() {
+    /**
+     *    Instruction = JSR - Jump to new location saving return address.
+     * Affected Flags = None
+     *    Total Tests = 1
+     */
+
+    var OPCODE = 0x20,
+        CycleCost = 6,
+        PCStart = 0x4000;
+
+    MOS6502._PC = PCStart;
+    MOS6502._RAM[PCStart] = OPCODE;
+    MOS6502._RAM[PCStart + 1] = 0x31;
+    MOS6502._RAM[PCStart + 2] = 0x21;
+    MOS6502._SP = 0x01FF;
+    MOS6502._CYCLES = 0;
+
+    MOS6502.emulateCycle();
+
+    equal(MOS6502._PC,
+        0x2131,
+        "Jump made successfully.");
+
+    equal(MOS6502._SP,
+        0x01FD,
+        "Stack pointer updated correctly.");
+
+    equal(MOS6502._RAM[0x01FF],
+        (PCStart + 2) >> 8,
+        "Return address high byte stored correctly.");
+
+    equal(MOS6502._RAM[0x01FE],
+            (PCStart + 2) & 0xFF,
+        "Return address low byte stored correctly.");
+
+
+    equal(MOS6502._CYCLES,
+        CycleCost,
+        "Cycles calculated correctly.");
+
+    /**
+     * Test 1: Carry flag not set. CLC should not alter Status Register.
+     */
+});
+
+//</editor-fold>
 
 /**
  * Tests to be implemented:
@@ -3799,7 +3857,6 @@ test("0x18 - CLC (Implied)", function() {
  * BVC   Branch on Overflow Clear
  * BVS   Branch on Overflow Set
  *
- * CLC   Clear Carry Flag
  * CLD   Clear Decimal Mode
  * CLI   Clear interrupt Disable Bit
  * CLV   Clear Overflow Flag
@@ -3818,7 +3875,6 @@ test("0x18 - CLC (Implied)", function() {
  * INY   Increment Index Y by One
  *
  * JMP   Jump to New Location
- * JSR   Jump to New Location Saving Return Address
  *
  * LDA   Load Accumulator with Memory
  * LDX   Load Index X with Memory
@@ -3865,5 +3921,5 @@ QUnit.module("Instruction - ", {
 
 test("0x -  ()", function() {});
 
-//<editor-fold>
+//</editor-fold>
  */
