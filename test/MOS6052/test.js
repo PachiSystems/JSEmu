@@ -1,9 +1,6 @@
 var MOS6502 = new MOS6502();
 
-/**
- * Utiliity Methods
- * These methods are used to set flags in the CPU and to create 16-bit addresses. MOS6502 is little endian.
- */
+//<editor-fold desc="Utility Method Tests">
 
 QUnit.module("Utility Methods", {
     setup: function() {
@@ -348,7 +345,11 @@ test("If / Set Sign", function() {
 
 });
 
+//</editor-fold>
+
 /*********************************************************************************************************************/
+
+//<editor-fold desc="Memory Mode Tests (Read)">
 
 QUnit.module("Memory Modes - Read", {
     setup: function() {
@@ -644,7 +645,11 @@ test("Read Indirect Y (check page true)", function(){
         "Page boundary crossed. One cycle added.");
 });
 
+//</editor-fold>
+
 /*********************************************************************************************************************/
+
+//<editor-fold desc="Memory Mode Tests (Write)">
 
 QUnit.module("Memory Modes - Write", {
     setup: function() {
@@ -826,7 +831,11 @@ test("Write Indirect Y", function() {
 
 });
 
+//</editor-fold>
+
 /*********************************************************************************************************************/
+
+//<editor-fold desc="ORA Tests"
 
 QUnit.module ("Instruction - ORA", {
     setup: function() {
@@ -2319,7 +2328,11 @@ test("0x11 - ORA (Indirect, Y) [Page Boundary Crossed]", function() {
 
 });
 
+//</editor-fold>
+
 /*********************************************************************************************************************/
+
+//<editor-fold desc="BRK Tests">
 
 QUnit.module("Instruction - BRK", {
     setup: function() {
@@ -2366,7 +2379,11 @@ test("0x00 - BRK (Implied)", function() {
         "Status Register set correctly.");
 });
 
+//</editor-fold>
+
 /*********************************************************************************************************************/
+
+//<editor-fold desc="ASL Tests">
 
 QUnit.module("Instruction - ASL", {
     setup: function() {
@@ -3485,7 +3502,11 @@ test("0x1E - ASL (Absolute, X)", function() {
         "Set none: Cycles set correctly.");
 });
 
+//</editor-fold>
+
 /*********************************************************************************************************************/
+
+//<editor-fold desc="PHP Tests">
 
 QUnit.module("Instruction - PHP", {
     setup: function() {
@@ -3543,7 +3564,11 @@ test("0x08 - PHP (Implied)", function() {
         "Cycles set correctly.")
 });
 
+//</editor-fold>
+
 /*********************************************************************************************************************/
+
+//<editor-fold desc="BPL Tests">
 
 QUnit.module("Instruction - BPL", {
     setup: function() {
@@ -3672,3 +3697,173 @@ test("0x10 - BPL (Relative)", function() {
             CycleCost + 2,
         "Result plus, branch backwards, different page: Cycles set correctly.");
 });
+
+//</editor-fold>
+
+/*********************************************************************************************************************/
+
+//<editor-fold desc = "CLC Tests">
+
+QUnit.module("Instruction - CLC", {
+    setup: function() {
+        MOS6502.init();
+    }
+});
+
+test("0x18 - CLC (Implied)", function() {
+    /**
+     *    Instruction = CLC - Clear carry flag.
+     * Affected Flags = Carry
+     *    Total Tests = 3
+     */
+
+    var OPCODE = 0x18,
+        CycleCost = 2,
+        BytesUsed = 1,
+        PCStart = 0x4000;
+
+    MOS6502._RAM[PCStart] = OPCODE;
+
+    /**
+     * Test 1: Carry flag not set. CLC should not alter Status Register.
+     */
+
+    MOS6502._P = 0xA0;
+    MOS6502._PC = PCStart;
+    MOS6502.emulateCycle();
+
+    equal(MOS6502._P,
+        0xA0,
+        "Carry flag not set. CLC did not alter Status Register.");
+
+    /**
+     * Test 2: Carry flag not set. Other flags set. CLC should not alter Status Register.
+     */
+
+    MOS6502._P = 0xC2;
+    MOS6502._PC = PCStart;
+    MOS6502.emulateCycle();
+
+    equal(MOS6502._P,
+        0xC2,
+        "Carry flag not set. Other flags set. CLC did not alter Status Register.");
+
+    /**
+     * Test 3: Carry flag set. CLC should alter Status Register.
+     */
+
+    MOS6502._P = 0x21;
+    MOS6502._PC = PCStart;
+    MOS6502.emulateCycle();
+
+    equal(MOS6502._P,
+        0x20,
+        "Carry flag set. CLC altered Status Register correctly.");
+
+
+    /**
+     * Test 4: Carry flag set. Other flags set. CLC should alter Status Register to remove only the carry flag.
+     */
+
+    MOS6502._P = 0xC3;
+    MOS6502._PC = PCStart;
+    MOS6502._CYCLES = 0;
+    MOS6502.emulateCycle();
+
+    equal(MOS6502._P,
+        0xC2,
+        "Carry flag set. Other flags set. CLC altered Status Register correctly.");
+
+    equal(MOS6502._CYCLES,
+        CycleCost,
+        "Cycles calculated correctly.");
+
+    equal(MOS6502._PC,
+            PCStart + BytesUsed,
+        "Program Counter incremented correctly.");
+});
+
+//<editor-fold>
+
+/**
+ * Tests to be implemented:
+ * ADC   Add Memory to Accumulator with Carry
+ * AND   "AND" Memory with Accumulator
+ *
+ * BCC   Branch on Carry Clear
+ * BCS   Branch on Carry Set
+ * BEQ   Branch on Result Zero
+ * BIT   Test Bits in Memory with Accumulator
+ * BMI   Branch on Result Minus
+ * BNE   Branch on Result not Zero
+ * BVC   Branch on Overflow Clear
+ * BVS   Branch on Overflow Set
+ *
+ * CLC   Clear Carry Flag
+ * CLD   Clear Decimal Mode
+ * CLI   Clear interrupt Disable Bit
+ * CLV   Clear Overflow Flag
+ * CMP   Compare Memory and Accumulator
+ * CPX   Compare Memory and Index X
+ * CPY   Compare Memory and Index Y
+ *
+ * DEC   Decrement Memory by One
+ * DEX   Decrement Index X by One
+ * DEY   Decrement Index Y by One
+ *
+ * EOR   "Exclusive-Or" Memory with Accumulator
+ *
+ * INC   Increment Memory by One
+ * INX   Increment Index X by One
+ * INY   Increment Index Y by One
+ *
+ * JMP   Jump to New Location
+ * JSR   Jump to New Location Saving Return Address
+ *
+ * LDA   Load Accumulator with Memory
+ * LDX   Load Index X with Memory
+ * LDY   Load Index Y with Memory
+ * LSR   Shift Right One Bit (Memory or Accumulator)
+ *
+ * NOP   No Operation
+ *
+ * PHA   Push Accumulator on Stack
+ * PLA   Pull Accumulator from Stack
+ * PLP   Pull Processor Status from Stack
+ *
+ * ROL   Rotate One Bit Left (Memory or Accumulator)
+ * ROR   Rotate One Bit Right (Memory or Accumulator)
+ * RTI   Return from Interrupt
+ * RTS   Return from Subroutine
+ *
+ * SBC   Subtract Memory from Accumulator with Borrow
+ * SEC   Set Carry Flag
+ * SED   Set Decimal Mode
+ * SEI   Set Interrupt Disable Status
+ * STA   Store Accumulator in Memory
+ * STX   Store Index X in Memory
+ * STY   Store Index Y in Memory
+ *
+ * TAX   Transfer Accumulator to Index X
+ * TAY   Transfer Accumulator to Index Y
+ * TSX   Transfer Stack Pointer to Index X
+ * TXA   Transfer Index X to Accumulator
+ * TXS   Transfer Index X to Stack Pointer
+ * TYA   Transfer Index Y to Accumulator
+ */
+
+/**
+ Template:
+
+//<editor-fold desc = " Tests">
+
+QUnit.module("Instruction - ", {
+    setup: function() {
+        MOS6502.init();
+    }
+});
+
+test("0x -  ()", function() {});
+
+//<editor-fold>
+ */
