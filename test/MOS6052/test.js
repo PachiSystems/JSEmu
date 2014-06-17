@@ -3516,11 +3516,11 @@ test("0x08 - PHP (Implied)", function() {
      * Test 1: Push status register onto the stack.
      *
      * Before PHP Applied:
-     *        0x1FFF = 0x00
+     *        0x01FF = 0x00
      * Stack Pointer = 0x01FF
      *
      * After PHP Applied:
-     *        0x1FFF = 0x32
+     *        0x01FF = 0x32
      * Stack Pointer = 0x01FE
      */
 
@@ -3541,4 +3541,134 @@ test("0x08 - PHP (Implied)", function() {
     equal(MOS6502._CYCLES,
         CycleCost,
         "Cycles set correctly.")
+});
+
+/*********************************************************************************************************************/
+
+QUnit.module("Instruction - BPL", {
+    setup: function() {
+        MOS6502.init();
+    }
+});
+
+test("0x10 - BPL (Relative)", function() {
+    /**
+     *    Instruction = BPL - Branch on result plus.
+     * Affected Flags = None
+     *    Total Tests = 5
+     *
+     * NOTE: PC counter is initially set to the middle of a page to facilitate page switching later.
+     */
+
+    var OPCODE = 0x10,
+        relativePlusSamePage = 64,
+        relativeMinusSamePage = 192,
+        relativePlusNextPage = 127,
+        relativeMinusNextPage = 129,
+        CycleCost = 2,
+        BytesUsed = 2,
+        PCStart = 0x4080,
+        PCStartHigh = 0x40E0,
+        PCStartLow = 0x4010;
+
+    MOS6502._PC = PCStart;
+    MOS6502._RAM[PCStart] = OPCODE;
+    MOS6502._RAM[PCStartHigh] = OPCODE;
+    MOS6502._RAM[PCStartLow] = OPCODE;
+    MOS6502._CYCLES = 0;
+
+    /**
+     * Test 1: Result not plus (no branch, but 2 cycles used)
+     */
+
+    // Set the sign flag which indicates a negative.
+    MOS6502._P = 0xA0;
+
+    MOS6502.emulateCycle();
+
+    equal(MOS6502._PC,
+            PCStart + BytesUsed,
+        "Result not plus: Program Counter set correctly.");
+
+    equal(MOS6502._CYCLES,
+        CycleCost,
+        "Result not plus: Cycles set correctly.");
+
+    /**
+     * Test 2: Result plus. Branch forward to same page. (3 cycles)
+     */
+
+    MOS6502._P = 0x20;
+    MOS6502._PC = PCStart;
+    MOS6502._RAM[PCStart + 1] = relativePlusSamePage;
+    MOS6502._CYCLES = 0;
+
+    MOS6502.emulateCycle();
+
+    equal(MOS6502._PC,
+        PCStart + relativePlusSamePage,
+        "Result plus, branch forward, same page: Program Counter set correctly.");
+
+    equal(MOS6502._CYCLES,
+        CycleCost + 1,
+        "Result plus, branch forward, same page: Cycles set correctly.");
+
+    /**
+     * Test 3: Result plus. Branch backward to same page. (3 cycles)
+     */
+
+    MOS6502._P = 0x20;
+    MOS6502._PC = PCStart;
+    MOS6502._RAM[PCStart + 1] = relativeMinusSamePage;
+    MOS6502._CYCLES = 0;
+
+    MOS6502.emulateCycle();
+
+    equal(MOS6502._PC,
+        (PCStart + relativeMinusSamePage) - 256,
+        "Result plus, branch backwards, same page: Program Counter set correctly.");
+
+    equal(MOS6502._CYCLES,
+            CycleCost + 1,
+        "Result plus, branch backwards, same page: Cycles set correctly.");
+
+    /**
+     * Test 4: Result plus. Branch forward to different page. (4 cycles)
+     *
+     * NOTE: It's not possible to branch to another page from 0x4080. Using 0x40E0 for forward branch.
+     */
+
+    MOS6502._P = 0x20;
+    MOS6502._PC = PCStartHigh;
+    MOS6502._RAM[PCStartHigh + 1] = relativePlusNextPage;
+    MOS6502._CYCLES = 0;
+
+    MOS6502.emulateCycle();
+
+    equal(MOS6502._PC,
+        PCStartHigh + relativePlusNextPage,
+        "Result plus, branch forward, different page: Program Counter set correctly.");
+
+    equal(MOS6502._CYCLES,
+            CycleCost + 2,
+        "Result plus, branch forward, different page: Cycles set correctly.");
+
+    /**
+     * Test 5: Result plus. Branch backward to different page. (4 cycles)
+     */
+
+    MOS6502._P = 0x20;
+    MOS6502._PC = PCStartLow;
+    MOS6502._RAM[PCStartLow + 1] = relativeMinusNextPage;
+    MOS6502._CYCLES = 0;
+
+    MOS6502.emulateCycle();
+
+    equal(MOS6502._PC,
+            (PCStartLow + relativeMinusNextPage) - 256,
+        "Result plus, branch backwards, different page: Program Counter set correctly.");
+
+    equal(MOS6502._CYCLES,
+            CycleCost + 2,
+        "Result plus, branch backwards, different page: Cycles set correctly.");
 });
