@@ -109,6 +109,8 @@ MOS6502.prototype.init = function() {
     // Set INTERRUPT to false
     me._SET_INTERRUPT(false);
 
+    me._CYCLES = 0;
+
 };
 
 MOS6502.prototype.beginEmulation = function(romImage, renderer) {
@@ -1016,7 +1018,6 @@ MOS6502.prototype.BIT = function() {
      |  Absolute      |   BIT Oper            |    2C   |    3    |    4     |
      +----------------+-----------------------+---------+---------+----------+
 
-
      */
     var me = this,
         opCode = me._RAM[ me._PC ],
@@ -1034,7 +1035,7 @@ MOS6502.prototype.BIT = function() {
     }
 
     me._SET_SIGN(OPER);
-    me._SET_OVERFLOW(0x40 & OPER); // Copy bit 6 to overflow flag.
+    me._SET_OVERFLOW( (0x40 & OPER) === 0x40 ); // Copy bit 6 to overflow flag.
     me._SET_ZERO(OPER & me._A);
 
 };

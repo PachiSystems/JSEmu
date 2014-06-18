@@ -4913,6 +4913,259 @@ test("0x31 - AND (Indirect, Y)", function() {
 
 //</editor-fold>
 
+/*********************************************************************************************************************/
+
+//<editor-fold desc="BIT Tests">
+
+QUnit.module("Instruction - BIT", {
+    setup: function() {
+        MOS6502.init();
+    }
+});
+
+test("0x24 - BIT (Zero Page)", function() {
+    /**
+     *    Instruction = BIT - Test bits in memory with accumulator.
+     * Affected Flags = Sign, Zero, Overflow
+     *    Total Tests = 5
+     */
+
+    var OPCODE = 0x24,
+        CycleCost = 3,
+        BytesUsed = 2,
+        ZPAddress = Math.floor(Math.random() * 255) + 1,
+        PCStart = 0x4000;
+
+    MOS6502._RAM[PCStart] = OPCODE;
+    MOS6502._RAM[PCStart + 1] = ZPAddress;
+
+    /**
+     * Test 1: Set none.
+     */
+    MOS6502._A = 42;
+    MOS6502._CYCLES = 0;
+    MOS6502._P = 0x20;
+    MOS6502._PC = PCStart;
+    MOS6502._RAM[ZPAddress] = 43;
+
+    MOS6502.emulateCycle();
+
+    equal(MOS6502._P,0x20,"Set none: Status register correctly set.");
+
+    equal(MOS6502._PC,PCStart+BytesUsed,"Set none: Program counter incremented correctly.");
+
+    equal(MOS6502._CYCLES,CycleCost,"Set none: Cycles incremented correctly.");
+
+    /**
+     * Test 2: Set zero.
+     */
+    MOS6502._A = 21;
+    MOS6502._CYCLES = 0;
+    MOS6502._P = 0x20;
+    MOS6502._PC = PCStart;
+    MOS6502._RAM[ZPAddress] = 42;
+
+    MOS6502.emulateCycle();
+
+    equal(MOS6502._P,0x22,"Set zero: Status register correctly set.");
+
+    equal(MOS6502._PC,PCStart+BytesUsed,"Set zero: Program counter incremented correctly.");
+
+    equal(MOS6502._CYCLES,CycleCost,"Set zero: Cycles incremented correctly.");
+
+    /**
+     * Test 3: Set sign.
+     */
+    MOS6502._A = 153;
+    MOS6502._CYCLES = 0;
+    MOS6502._P = 0x20;
+    MOS6502._PC = PCStart;
+    MOS6502._RAM[ZPAddress] = 137;
+
+    MOS6502.emulateCycle();
+
+    equal(MOS6502._P,0xA0,"Set sign: Status register correctly set.");
+
+    equal(MOS6502._PC,PCStart+BytesUsed,"Set sign: Program counter incremented correctly.");
+
+    equal(MOS6502._CYCLES,CycleCost,"Set sign: Cycles incremented correctly.");
+
+    /**
+     * Test 4: Set overflow.
+     */
+    MOS6502._A = 204;
+    MOS6502._CYCLES = 0;
+    MOS6502._P = 0x20;
+    MOS6502._PC = PCStart;
+    MOS6502._RAM[ZPAddress] = 85;
+
+    MOS6502.emulateCycle();
+
+    equal(MOS6502._P,0x60,"Set overflow: Status register correctly set.");
+
+    equal(MOS6502._PC,PCStart+BytesUsed,"Set overflow: Program counter incremented correctly.");
+
+    equal(MOS6502._CYCLES,CycleCost,"Set overflow: Cycles incremented correctly.");
+
+    /**
+     * Test 5: Set sign and overflow.
+     */
+    MOS6502._A = 204;
+    MOS6502._CYCLES = 0;
+    MOS6502._P = 0x20;
+    MOS6502._PC = PCStart;
+    MOS6502._RAM[ZPAddress] = 213;
+
+    MOS6502.emulateCycle();
+
+    equal(MOS6502._P,0xE0,"Set sign and overflow: Status register correctly set.");
+
+    equal(MOS6502._PC,PCStart+BytesUsed,"Set sign and overflow: Program counter incremented correctly.");
+
+    equal(MOS6502._CYCLES,CycleCost,"Set sign and overflow: Cycles incremented correctly.");
+
+    /**
+     * Test 6: Set all.
+     */
+    MOS6502._A = 42;
+    MOS6502._CYCLES = 0;
+    MOS6502._P = 0x20;
+    MOS6502._PC = PCStart;
+    MOS6502._RAM[ZPAddress] = 213;
+
+    MOS6502.emulateCycle();
+
+    equal(MOS6502._P,0xE2,"Set all: Status register correctly set.");
+
+    equal(MOS6502._PC,PCStart+BytesUsed,"Set all: Program counter incremented correctly.");
+
+    equal(MOS6502._CYCLES,CycleCost,"Set all: Cycles incremented correctly.");
+});
+
+test("0x2C - BIT (Absolute)", function() {
+    /**
+     *    Instruction = BIT - Test bits in memory with accumulator.
+     * Affected Flags = Sign, Zero, Overflow
+     *    Total Tests = 5
+     */
+
+    var OPCODE = 0x2C,
+        CycleCost = 4,
+        BytesUsed = 3,
+        AddressByte1 = 0x31,
+        AddressByte2 = Math.floor(Math.random() * 255) + 1,
+        FullAddress = MOS6502._MAKE_ADDRESS(AddressByte1,AddressByte2),
+        PCStart = 0x4000;
+
+    MOS6502._RAM[PCStart] = OPCODE;
+    MOS6502._RAM[PCStart + 1] = AddressByte1;
+    MOS6502._RAM[PCStart + 2] = AddressByte2;
+
+    /**
+     * Test 1: Set none.
+     */
+    MOS6502._A = 42;
+    MOS6502._CYCLES = 0;
+    MOS6502._P = 0x20;
+    MOS6502._PC = PCStart;
+    MOS6502._RAM[FullAddress] = 43;
+
+    MOS6502.emulateCycle();
+
+    equal(MOS6502._P,0x20,"Set none: Status register correctly set.");
+
+    equal(MOS6502._PC,PCStart+BytesUsed,"Set none: Program counter incremented correctly.");
+
+    equal(MOS6502._CYCLES,CycleCost,"Set none: Cycles incremented correctly.");
+
+    /**
+     * Test 2: Set zero.
+     */
+    MOS6502._A = 21;
+    MOS6502._CYCLES = 0;
+    MOS6502._P = 0x20;
+    MOS6502._PC = PCStart;
+    MOS6502._RAM[FullAddress] = 42;
+
+    MOS6502.emulateCycle();
+
+    equal(MOS6502._P,0x22,"Set zero: Status register correctly set.");
+
+    equal(MOS6502._PC,PCStart+BytesUsed,"Set zero: Program counter incremented correctly.");
+
+    equal(MOS6502._CYCLES,CycleCost,"Set zero: Cycles incremented correctly.");
+
+    /**
+     * Test 3: Set sign.
+     */
+    MOS6502._A = 153;
+    MOS6502._CYCLES = 0;
+    MOS6502._P = 0x20;
+    MOS6502._PC = PCStart;
+    MOS6502._RAM[FullAddress] = 137;
+
+    MOS6502.emulateCycle();
+
+    equal(MOS6502._P,0xA0,"Set sign: Status register correctly set.");
+
+    equal(MOS6502._PC,PCStart+BytesUsed,"Set sign: Program counter incremented correctly.");
+
+    equal(MOS6502._CYCLES,CycleCost,"Set sign: Cycles incremented correctly.");
+
+    /**
+     * Test 4: Set overflow.
+     */
+    MOS6502._A = 204;
+    MOS6502._CYCLES = 0;
+    MOS6502._P = 0x20;
+    MOS6502._PC = PCStart;
+    MOS6502._RAM[FullAddress] = 85;
+
+    MOS6502.emulateCycle();
+
+    equal(MOS6502._P,0x60,"Set overflow: Status register correctly set.");
+
+    equal(MOS6502._PC,PCStart+BytesUsed,"Set overflow: Program counter incremented correctly.");
+
+    equal(MOS6502._CYCLES,CycleCost,"Set overflow: Cycles incremented correctly.");
+
+    /**
+     * Test 5: Set sign and overflow.
+     */
+    MOS6502._A = 204;
+    MOS6502._CYCLES = 0;
+    MOS6502._P = 0x20;
+    MOS6502._PC = PCStart;
+    MOS6502._RAM[FullAddress] = 213;
+
+    MOS6502.emulateCycle();
+
+    equal(MOS6502._P,0xE0,"Set sign and overflow: Status register correctly set.");
+
+    equal(MOS6502._PC,PCStart+BytesUsed,"Set sign and overflow: Program counter incremented correctly.");
+
+    equal(MOS6502._CYCLES,CycleCost,"Set sign and overflow: Cycles incremented correctly.");
+
+    /**
+     * Test 6: Set all.
+     */
+    MOS6502._A = 42;
+    MOS6502._CYCLES = 0;
+    MOS6502._P = 0x20;
+    MOS6502._PC = PCStart;
+    MOS6502._RAM[FullAddress] = 213;
+
+    MOS6502.emulateCycle();
+
+    equal(MOS6502._P,0xE2,"Set all: Status register correctly set.");
+
+    equal(MOS6502._PC,PCStart+BytesUsed,"Set all: Program counter incremented correctly.");
+
+    equal(MOS6502._CYCLES,CycleCost,"Set all: Cycles incremented correctly.");
+});
+
+//</editor-fold>
+
 /**
  * Tests to be implemented:
  * ADC   Add Memory to Accumulator with Carry
@@ -4920,7 +5173,6 @@ test("0x31 - AND (Indirect, Y)", function() {
  * BCC   Branch on Carry Clear
  * BCS   Branch on Carry Set
  * BEQ   Branch on Result Zero
- * BIT   Test Bits in Memory with Accumulator
  * BMI   Branch on Result Minus
  * BNE   Branch on Result not Zero
  * BVC   Branch on Overflow Clear
