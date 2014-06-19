@@ -5166,67 +5166,1610 @@ test("0x2C - BIT (Absolute)", function() {
 
 //</editor-fold>
 
+/*********************************************************************************************************************/
+
+//<editor-fold desc="ROL Tests">
+
+QUnit.module("Instruction - ROL", {
+    setup: function() {
+        MOS6502.init();
+    }
+});
+
+test("0x2A - ROL (Accumulator)",function() {
+    /**
+     *    Instruction = ROL - Rotate one bit left (memory or accumulator).
+     * Affected Flags = Sign, Zero, Carry
+     *    Total Tests = 10
+     */
+    var OPCODE = 0x2A,
+        PCStart = 0x4000,
+        CycleCost = 2,
+        BytesUsed = 1;
+
+    MOS6502._RAM[PCStart] = OPCODE;
+
+    /**
+     * Test 1: Set none.
+     */
+    MOS6502._A = 21;
+    MOS6502._P = 0x20;
+
+    MOS6502._PC = PCStart;
+    MOS6502._CYCLES = 0;
+
+    MOS6502.emulateCycle();
+
+    equal(MOS6502._A,
+        42,
+        "Test 1: Set none - ROL successfully applied.");
+
+    equal(MOS6502._P,
+        0x20,
+        "Test 1: Set none - Status Register correctly set.");
+
+    equal(MOS6502._PC,
+        PCStart + BytesUsed,
+        "Test 1: Set none - Program Counter incremented successfully.");
+
+    equal(MOS6502._CYCLES,
+        CycleCost,
+        "Test 1: Set none - Cycles incremented correctly.");
+
+    /**
+     * Test 2: Set none. Carry set before ROL.
+     */
+    MOS6502._A = 0;
+    MOS6502._P = 0x21;
+
+    MOS6502._PC = PCStart;
+    MOS6502._CYCLES = 0;
+
+    MOS6502.emulateCycle();
+
+    equal(MOS6502._A,
+        1,
+        "Test 2: Set none. Carry set before ROL - ROL successfully applied.");
+
+    equal(MOS6502._P,
+        0x20,
+        "Test 2: Set none. Carry set before ROL - Status Register correctly set.");
+
+    equal(MOS6502._PC,
+            PCStart + BytesUsed,
+        "Test 2: Set none. Carry set before ROL - Program Counter incremented successfully.");
+
+    equal(MOS6502._CYCLES,
+        CycleCost,
+        "Test 2: Set none. Carry set before ROL - Cycles incremented correctly.");
+
+    /**
+     * Test 3: Carry set before ROL.
+     */
+    MOS6502._A = 39;
+    MOS6502._P = 0x21;
+
+    MOS6502._PC = PCStart;
+    MOS6502._CYCLES = 0;
+
+    MOS6502.emulateCycle();
+
+    equal(MOS6502._A,
+        79,
+        "Test 3: Carry set before ROL - ROL successfully applied.");
+
+    equal(MOS6502._P,
+        0x20,
+        "Test 3: Carry set before ROL - Status Register correctly set.");
+
+    equal(MOS6502._PC,
+            PCStart + BytesUsed,
+        "Test 3: Carry set before ROL - Program Counter incremented successfully.");
+
+    equal(MOS6502._CYCLES,
+        CycleCost,
+        "Test 3: Carry set before ROL - Cycles incremented correctly.");
+
+    /**
+     * Test 4: ROL sets carry.
+     */
+    MOS6502._A = 136;
+    MOS6502._P = 0x20;
+
+    MOS6502._PC = PCStart;
+    MOS6502._CYCLES = 0;
+
+    MOS6502.emulateCycle();
+
+    equal(MOS6502._A,
+        16,
+        "Test 4: ROL sets carry - ROL successfully applied.");
+
+    equal(MOS6502._P,
+        0x21,
+        "Test 4: ROL sets carry - Status Register correctly set.");
+
+    equal(MOS6502._PC,
+            PCStart + BytesUsed,
+        "Test 4: ROL sets carry - Program Counter incremented successfully.");
+
+    equal(MOS6502._CYCLES,
+        CycleCost,
+        "Test 4: ROL sets carry - Cycles incremented correctly.");
+
+    /**
+     * Test 5: Carry set before ROL. ROL sets carry.
+     */
+    MOS6502._A = 136;
+    MOS6502._P = 0x21;
+
+    MOS6502._PC = PCStart;
+    MOS6502._CYCLES = 0;
+
+    MOS6502.emulateCycle();
+
+    equal(MOS6502._A,
+        17,
+        "Test 5: Carry set before ROL. ROL sets carry - ROL successfully applied.");
+
+    equal(MOS6502._P,
+        0x21,
+        "Test 5: Carry set before ROL. ROL sets carry - Status Register correctly set.");
+
+    equal(MOS6502._PC,
+            PCStart + BytesUsed,
+        "Test 5: Carry set before ROL. ROL sets carry - Program Counter incremented successfully.");
+
+    equal(MOS6502._CYCLES,
+        CycleCost,
+        "Test 5: Carry set before ROL. ROL sets carry - Cycles incremented correctly.");
+
+    /**
+     * Test 6: Set zero.
+     */
+    MOS6502._A = 0;
+    MOS6502._P = 0x20;
+
+    MOS6502._PC = PCStart;
+    MOS6502._CYCLES = 0;
+
+    MOS6502.emulateCycle();
+
+    equal(MOS6502._A,
+        0,
+        "Test 6: Set zero - ROL successfully applied.");
+
+    equal(MOS6502._P,
+        0x22,
+        "Test 6: Set zero - Status Register correctly set.");
+
+    equal(MOS6502._PC,
+            PCStart + BytesUsed,
+        "Test 6: Set zero - Program Counter incremented successfully.");
+
+    equal(MOS6502._CYCLES,
+        CycleCost,
+        "Test 6: Set zero - Cycles incremented correctly.");
+
+    /**
+     * Test 7: Set zero and carry
+     */
+    MOS6502._A = 128;
+    MOS6502._P = 0x20;
+
+    MOS6502._PC = PCStart;
+    MOS6502._CYCLES = 0;
+
+    MOS6502.emulateCycle();
+
+    equal(MOS6502._A,
+        0,
+        "Test 7: Set zero and carry - ROL successfully applied.");
+
+    equal(MOS6502._P,
+        0x23,
+        "Test 7: Set zero and carry - Status Register correctly set.");
+
+    equal(MOS6502._PC,
+            PCStart + BytesUsed,
+        "Test 7: Set zero and carry - Program Counter incremented successfully.");
+
+    equal(MOS6502._CYCLES,
+        CycleCost,
+        "Test 7: Set zero and carry - Cycles incremented correctly.");
+
+    /**
+     * Test 8: Set sign.
+     */
+    MOS6502._A = 66;
+    MOS6502._P = 0x20;
+
+    MOS6502._PC = PCStart;
+    MOS6502._CYCLES = 0;
+
+    MOS6502.emulateCycle();
+
+    equal(MOS6502._A,
+        132,
+        "Test 8: Set sign - ROL successfully applied.");
+
+    equal(MOS6502._P,
+        0xA0,
+        "Test 8: Set sign - Status Register correctly set.");
+
+    equal(MOS6502._PC,
+            PCStart + BytesUsed,
+        "Test 8: Set sign - Program Counter incremented successfully.");
+
+    equal(MOS6502._CYCLES,
+        CycleCost,
+        "Test 8: Set sign - Cycles incremented correctly.");
+
+    /**
+     * Test 9: Set sign and carry.
+     */
+    MOS6502._A = 201;
+    MOS6502._P = 0x20;
+
+    MOS6502._PC = PCStart;
+    MOS6502._CYCLES = 0;
+
+    MOS6502.emulateCycle();
+
+    equal(MOS6502._A,
+        146,
+        "Test 9: Set sign and carry - ROL successfully applied.");
+
+    equal(MOS6502._P,
+        0xA1,
+        "Test 9: Set sign and carry - Status Register correctly set.");
+
+    equal(MOS6502._PC,
+            PCStart + BytesUsed,
+        "Test 9: Set sign and carry - Program Counter incremented successfully.");
+
+    equal(MOS6502._CYCLES,
+        CycleCost,
+        "Test 9: Set sign and carry - Cycles incremented correctly.");
+
+    /**
+     * Test 10: Carry set before ROL. Set sign and carry after ROL.
+     */
+    MOS6502._A = 201;
+    MOS6502._P = 0x21;
+
+    MOS6502._PC = PCStart;
+    MOS6502._CYCLES = 0;
+
+    MOS6502.emulateCycle();
+
+    equal(MOS6502._A,
+        147,
+        "Test 10: Carry set before ROL. Set sign and carry after ROL - ROL successfully applied.");
+
+    equal(MOS6502._P,
+        0xA1,
+        "Test 10: Carry set before ROL. Set sign and carry after ROL - Status Register correctly set.");
+
+    equal(MOS6502._PC,
+            PCStart + BytesUsed,
+        "Test 10: Carry set before ROL. Set sign and carry after ROL - Program Counter incremented successfully.");
+
+    equal(MOS6502._CYCLES,
+        CycleCost,
+        "Test 10: Carry set before ROL. Set sign and carry after ROL - Cycles incremented correctly.");
+});
+
+test("0x26 - ROL (Zero Page)",function() {
+    /**
+     *    Instruction = ROL - Rotate one bit left (memory or accumulator).
+     * Affected Flags = Sign, Zero, Carry
+     *    Total Tests = 10
+     */
+    var OPCODE = 0x26,
+        PCStart = 0x4000,
+        ZPAddress = Math.floor(Math.random() * 255) + 1,
+        CycleCost = 5,
+        BytesUsed = 2;
+
+    MOS6502._RAM[PCStart] = OPCODE;
+    MOS6502._RAM[PCStart + 1] = ZPAddress;
+
+    /**
+     * Test 1: Set none.
+     */
+    MOS6502._RAM[ZPAddress] = 21;
+    MOS6502._P = 0x20;
+
+    MOS6502._PC = PCStart;
+    MOS6502._CYCLES = 0;
+
+    MOS6502.emulateCycle();
+
+    equal(MOS6502._RAM[ZPAddress],
+        42,
+        "Test 1: Set none - ROL successfully applied.");
+
+    equal(MOS6502._P,
+        0x20,
+        "Test 1: Set none - Status Register correctly set.");
+
+    equal(MOS6502._PC,
+            PCStart + BytesUsed,
+        "Test 1: Set none - Program Counter incremented successfully.");
+
+    equal(MOS6502._CYCLES,
+        CycleCost,
+        "Test 1: Set none - Cycles incremented correctly.");
+
+    /**
+     * Test 2: Set none. Carry set before ROL.
+     */
+    MOS6502._RAM[ZPAddress] = 0;
+    MOS6502._P = 0x21;
+
+    MOS6502._PC = PCStart;
+    MOS6502._CYCLES = 0;
+
+    MOS6502.emulateCycle();
+
+    equal(MOS6502._RAM[ZPAddress],
+        1,
+        "Test 2: Set none. Carry set before ROL - ROL successfully applied.");
+
+    equal(MOS6502._P,
+        0x20,
+        "Test 2: Set none. Carry set before ROL - Status Register correctly set.");
+
+    equal(MOS6502._PC,
+            PCStart + BytesUsed,
+        "Test 2: Set none. Carry set before ROL - Program Counter incremented successfully.");
+
+    equal(MOS6502._CYCLES,
+        CycleCost,
+        "Test 2: Set none. Carry set before ROL - Cycles incremented correctly.");
+
+    /**
+     * Test 3: Carry set before ROL.
+     */
+    MOS6502._RAM[ZPAddress] = 39;
+    MOS6502._P = 0x21;
+
+    MOS6502._PC = PCStart;
+    MOS6502._CYCLES = 0;
+
+    MOS6502.emulateCycle();
+
+    equal(MOS6502._RAM[ZPAddress],
+        79,
+        "Test 3: Carry set before ROL - ROL successfully applied.");
+
+    equal(MOS6502._P,
+        0x20,
+        "Test 3: Carry set before ROL - Status Register correctly set.");
+
+    equal(MOS6502._PC,
+            PCStart + BytesUsed,
+        "Test 3: Carry set before ROL - Program Counter incremented successfully.");
+
+    equal(MOS6502._CYCLES,
+        CycleCost,
+        "Test 3: Carry set before ROL - Cycles incremented correctly.");
+
+    /**
+     * Test 4: ROL sets carry.
+     */
+    MOS6502._RAM[ZPAddress] = 136;
+    MOS6502._P = 0x20;
+
+    MOS6502._PC = PCStart;
+    MOS6502._CYCLES = 0;
+
+    MOS6502.emulateCycle();
+
+    equal(MOS6502._RAM[ZPAddress],
+        16,
+        "Test 4: ROL sets carry - ROL successfully applied.");
+
+    equal(MOS6502._P,
+        0x21,
+        "Test 4: ROL sets carry - Status Register correctly set.");
+
+    equal(MOS6502._PC,
+            PCStart + BytesUsed,
+        "Test 4: ROL sets carry - Program Counter incremented successfully.");
+
+    equal(MOS6502._CYCLES,
+        CycleCost,
+        "Test 4: ROL sets carry - Cycles incremented correctly.");
+
+    /**
+     * Test 5: Carry set before ROL. ROL sets carry.
+     */
+    MOS6502._RAM[ZPAddress] = 136;
+    MOS6502._P = 0x21;
+
+    MOS6502._PC = PCStart;
+    MOS6502._CYCLES = 0;
+
+    MOS6502.emulateCycle();
+
+    equal(MOS6502._RAM[ZPAddress],
+        17,
+        "Test 5: Carry set before ROL. ROL sets carry - ROL successfully applied.");
+
+    equal(MOS6502._P,
+        0x21,
+        "Test 5: Carry set before ROL. ROL sets carry - Status Register correctly set.");
+
+    equal(MOS6502._PC,
+            PCStart + BytesUsed,
+        "Test 5: Carry set before ROL. ROL sets carry - Program Counter incremented successfully.");
+
+    equal(MOS6502._CYCLES,
+        CycleCost,
+        "Test 5: Carry set before ROL. ROL sets carry - Cycles incremented correctly.");
+
+    /**
+     * Test 6: Set zero.
+     */
+    MOS6502._RAM[ZPAddress] = 0;
+    MOS6502._P = 0x20;
+
+    MOS6502._PC = PCStart;
+    MOS6502._CYCLES = 0;
+
+    MOS6502.emulateCycle();
+
+    equal(MOS6502._RAM[ZPAddress],
+        0,
+        "Test 6: Set zero - ROL successfully applied.");
+
+    equal(MOS6502._P,
+        0x22,
+        "Test 6: Set zero - Status Register correctly set.");
+
+    equal(MOS6502._PC,
+            PCStart + BytesUsed,
+        "Test 6: Set zero - Program Counter incremented successfully.");
+
+    equal(MOS6502._CYCLES,
+        CycleCost,
+        "Test 6: Set zero - Cycles incremented correctly.");
+
+    /**
+     * Test 7: Set zero and carry
+     */
+    MOS6502._RAM[ZPAddress] = 128;
+    MOS6502._P = 0x20;
+
+    MOS6502._PC = PCStart;
+    MOS6502._CYCLES = 0;
+
+    MOS6502.emulateCycle();
+
+    equal(MOS6502._RAM[ZPAddress],
+        0,
+        "Test 7: Set zero and carry - ROL successfully applied.");
+
+    equal(MOS6502._P,
+        0x23,
+        "Test 7: Set zero and carry - Status Register correctly set.");
+
+    equal(MOS6502._PC,
+            PCStart + BytesUsed,
+        "Test 7: Set zero and carry - Program Counter incremented successfully.");
+
+    equal(MOS6502._CYCLES,
+        CycleCost,
+        "Test 7: Set zero and carry - Cycles incremented correctly.");
+
+    /**
+     * Test 8: Set sign.
+     */
+    MOS6502._RAM[ZPAddress] = 66;
+    MOS6502._P = 0x20;
+
+    MOS6502._PC = PCStart;
+    MOS6502._CYCLES = 0;
+
+    MOS6502.emulateCycle();
+
+    equal(MOS6502._RAM[ZPAddress],
+        132,
+        "Test 8: Set sign - ROL successfully applied.");
+
+    equal(MOS6502._P,
+        0xA0,
+        "Test 8: Set sign - Status Register correctly set.");
+
+    equal(MOS6502._PC,
+            PCStart + BytesUsed,
+        "Test 8: Set sign - Program Counter incremented successfully.");
+
+    equal(MOS6502._CYCLES,
+        CycleCost,
+        "Test 8: Set sign - Cycles incremented correctly.");
+
+    /**
+     * Test 9: Set sign and carry.
+     */
+    MOS6502._RAM[ZPAddress] = 201;
+    MOS6502._P = 0x20;
+
+    MOS6502._PC = PCStart;
+    MOS6502._CYCLES = 0;
+
+    MOS6502.emulateCycle();
+
+    equal(MOS6502._RAM[ZPAddress],
+        146,
+        "Test 9: Set sign and carry - ROL successfully applied.");
+
+    equal(MOS6502._P,
+        0xA1,
+        "Test 9: Set sign and carry - Status Register correctly set.");
+
+    equal(MOS6502._PC,
+            PCStart + BytesUsed,
+        "Test 9: Set sign and carry - Program Counter incremented successfully.");
+
+    equal(MOS6502._CYCLES,
+        CycleCost,
+        "Test 9: Set sign and carry - Cycles incremented correctly.");
+
+    /**
+     * Test 10: Carry set before ROL. Set sign and carry after ROL.
+     */
+    MOS6502._RAM[ZPAddress] = 201;
+    MOS6502._P = 0x21;
+
+    MOS6502._PC = PCStart;
+    MOS6502._CYCLES = 0;
+
+    MOS6502.emulateCycle();
+
+    equal(MOS6502._RAM[ZPAddress],
+        147,
+        "Test 10: Carry set before ROL. Set sign and carry after ROL - ROL successfully applied.");
+
+    equal(MOS6502._P,
+        0xA1,
+        "Test 10: Carry set before ROL. Set sign and carry after ROL - Status Register correctly set.");
+
+    equal(MOS6502._PC,
+            PCStart + BytesUsed,
+        "Test 10: Carry set before ROL. Set sign and carry after ROL - Program Counter incremented successfully.");
+
+    equal(MOS6502._CYCLES,
+        CycleCost,
+        "Test 10: Carry set before ROL. Set sign and carry after ROL - Cycles incremented correctly.");
+});
+
+test("0x36 - ROL (Zero Page, X)",function() {
+    /**
+     *    Instruction = ROL - Rotate one bit left (memory or accumulator).
+     * Affected Flags = Sign, Zero, Carry
+     *    Total Tests = 10
+     */
+    var OPCODE = 0x36,
+        PCStart = 0x4000,
+        ZPAddress = Math.floor(Math.random() * 255) + 1,
+        XRegister = Math.floor(Math.random() * 255) + 1,
+        OperandLocation = (ZPAddress + XRegister) & 0xFF,
+        CycleCost = 6,
+        BytesUsed = 2;
+
+    MOS6502._RAM[PCStart] = OPCODE;
+    MOS6502._RAM[PCStart + 1] = ZPAddress;
+    MOS6502._X = XRegister;
+
+    /**
+     * Test 1: Set none.
+     */
+    MOS6502._RAM[OperandLocation] = 21;
+    MOS6502._P = 0x20;
+
+    MOS6502._PC = PCStart;
+    MOS6502._CYCLES = 0;
+
+    MOS6502.emulateCycle();
+
+    equal(MOS6502._RAM[OperandLocation],
+        42,
+        "Test 1: Set none - ROL successfully applied.");
+
+    equal(MOS6502._P,
+        0x20,
+        "Test 1: Set none - Status Register correctly set.");
+
+    equal(MOS6502._PC,
+            PCStart + BytesUsed,
+        "Test 1: Set none - Program Counter incremented successfully.");
+
+    equal(MOS6502._CYCLES,
+        CycleCost,
+        "Test 1: Set none - Cycles incremented correctly.");
+
+    /**
+     * Test 2: Set none. Carry set before ROL.
+     */
+    MOS6502._RAM[OperandLocation] = 0;
+    MOS6502._P = 0x21;
+
+    MOS6502._PC = PCStart;
+    MOS6502._CYCLES = 0;
+
+    MOS6502.emulateCycle();
+
+    equal(MOS6502._RAM[OperandLocation],
+        1,
+        "Test 2: Set none. Carry set before ROL - ROL successfully applied.");
+
+    equal(MOS6502._P,
+        0x20,
+        "Test 2: Set none. Carry set before ROL - Status Register correctly set.");
+
+    equal(MOS6502._PC,
+            PCStart + BytesUsed,
+        "Test 2: Set none. Carry set before ROL - Program Counter incremented successfully.");
+
+    equal(MOS6502._CYCLES,
+        CycleCost,
+        "Test 2: Set none. Carry set before ROL - Cycles incremented correctly.");
+
+    /**
+     * Test 3: Carry set before ROL.
+     */
+    MOS6502._RAM[OperandLocation] = 39;
+    MOS6502._P = 0x21;
+
+    MOS6502._PC = PCStart;
+    MOS6502._CYCLES = 0;
+
+    MOS6502.emulateCycle();
+
+    equal(MOS6502._RAM[OperandLocation],
+        79,
+        "Test 3: Carry set before ROL - ROL successfully applied.");
+
+    equal(MOS6502._P,
+        0x20,
+        "Test 3: Carry set before ROL - Status Register correctly set.");
+
+    equal(MOS6502._PC,
+            PCStart + BytesUsed,
+        "Test 3: Carry set before ROL - Program Counter incremented successfully.");
+
+    equal(MOS6502._CYCLES,
+        CycleCost,
+        "Test 3: Carry set before ROL - Cycles incremented correctly.");
+
+    /**
+     * Test 4: ROL sets carry.
+     */
+    MOS6502._RAM[OperandLocation] = 136;
+    MOS6502._P = 0x20;
+
+    MOS6502._PC = PCStart;
+    MOS6502._CYCLES = 0;
+
+    MOS6502.emulateCycle();
+
+    equal(MOS6502._RAM[OperandLocation],
+        16,
+        "Test 4: ROL sets carry - ROL successfully applied.");
+
+    equal(MOS6502._P,
+        0x21,
+        "Test 4: ROL sets carry - Status Register correctly set.");
+
+    equal(MOS6502._PC,
+            PCStart + BytesUsed,
+        "Test 4: ROL sets carry - Program Counter incremented successfully.");
+
+    equal(MOS6502._CYCLES,
+        CycleCost,
+        "Test 4: ROL sets carry - Cycles incremented correctly.");
+
+    /**
+     * Test 5: Carry set before ROL. ROL sets carry.
+     */
+    MOS6502._RAM[OperandLocation] = 136;
+    MOS6502._P = 0x21;
+
+    MOS6502._PC = PCStart;
+    MOS6502._CYCLES = 0;
+
+    MOS6502.emulateCycle();
+
+    equal(MOS6502._RAM[OperandLocation],
+        17,
+        "Test 5: Carry set before ROL. ROL sets carry - ROL successfully applied.");
+
+    equal(MOS6502._P,
+        0x21,
+        "Test 5: Carry set before ROL. ROL sets carry - Status Register correctly set.");
+
+    equal(MOS6502._PC,
+            PCStart + BytesUsed,
+        "Test 5: Carry set before ROL. ROL sets carry - Program Counter incremented successfully.");
+
+    equal(MOS6502._CYCLES,
+        CycleCost,
+        "Test 5: Carry set before ROL. ROL sets carry - Cycles incremented correctly.");
+
+    /**
+     * Test 6: Set zero.
+     */
+    MOS6502._RAM[OperandLocation] = 0;
+    MOS6502._P = 0x20;
+
+    MOS6502._PC = PCStart;
+    MOS6502._CYCLES = 0;
+
+    MOS6502.emulateCycle();
+
+    equal(MOS6502._RAM[OperandLocation],
+        0,
+        "Test 6: Set zero - ROL successfully applied.");
+
+    equal(MOS6502._P,
+        0x22,
+        "Test 6: Set zero - Status Register correctly set.");
+
+    equal(MOS6502._PC,
+            PCStart + BytesUsed,
+        "Test 6: Set zero - Program Counter incremented successfully.");
+
+    equal(MOS6502._CYCLES,
+        CycleCost,
+        "Test 6: Set zero - Cycles incremented correctly.");
+
+    /**
+     * Test 7: Set zero and carry
+     */
+    MOS6502._RAM[OperandLocation] = 128;
+    MOS6502._P = 0x20;
+
+    MOS6502._PC = PCStart;
+    MOS6502._CYCLES = 0;
+
+    MOS6502.emulateCycle();
+
+    equal(MOS6502._RAM[OperandLocation],
+        0,
+        "Test 7: Set zero and carry - ROL successfully applied.");
+
+    equal(MOS6502._P,
+        0x23,
+        "Test 7: Set zero and carry - Status Register correctly set.");
+
+    equal(MOS6502._PC,
+            PCStart + BytesUsed,
+        "Test 7: Set zero and carry - Program Counter incremented successfully.");
+
+    equal(MOS6502._CYCLES,
+        CycleCost,
+        "Test 7: Set zero and carry - Cycles incremented correctly.");
+
+    /**
+     * Test 8: Set sign.
+     */
+    MOS6502._RAM[OperandLocation] = 66;
+    MOS6502._P = 0x20;
+
+    MOS6502._PC = PCStart;
+    MOS6502._CYCLES = 0;
+
+    MOS6502.emulateCycle();
+
+    equal(MOS6502._RAM[OperandLocation],
+        132,
+        "Test 8: Set sign - ROL successfully applied.");
+
+    equal(MOS6502._P,
+        0xA0,
+        "Test 8: Set sign - Status Register correctly set.");
+
+    equal(MOS6502._PC,
+            PCStart + BytesUsed,
+        "Test 8: Set sign - Program Counter incremented successfully.");
+
+    equal(MOS6502._CYCLES,
+        CycleCost,
+        "Test 8: Set sign - Cycles incremented correctly.");
+
+    /**
+     * Test 9: Set sign and carry.
+     */
+    MOS6502._RAM[OperandLocation] = 201;
+    MOS6502._P = 0x20;
+
+    MOS6502._PC = PCStart;
+    MOS6502._CYCLES = 0;
+
+    MOS6502.emulateCycle();
+
+    equal(MOS6502._RAM[OperandLocation],
+        146,
+        "Test 9: Set sign and carry - ROL successfully applied.");
+
+    equal(MOS6502._P,
+        0xA1,
+        "Test 9: Set sign and carry - Status Register correctly set.");
+
+    equal(MOS6502._PC,
+            PCStart + BytesUsed,
+        "Test 9: Set sign and carry - Program Counter incremented successfully.");
+
+    equal(MOS6502._CYCLES,
+        CycleCost,
+        "Test 9: Set sign and carry - Cycles incremented correctly.");
+
+    /**
+     * Test 10: Carry set before ROL. Set sign and carry after ROL.
+     */
+    MOS6502._RAM[OperandLocation] = 201;
+    MOS6502._P = 0x21;
+
+    MOS6502._PC = PCStart;
+    MOS6502._CYCLES = 0;
+
+    MOS6502.emulateCycle();
+
+    equal(MOS6502._RAM[OperandLocation],
+        147,
+        "Test 10: Carry set before ROL. Set sign and carry after ROL - ROL successfully applied.");
+
+    equal(MOS6502._P,
+        0xA1,
+        "Test 10: Carry set before ROL. Set sign and carry after ROL - Status Register correctly set.");
+
+    equal(MOS6502._PC,
+            PCStart + BytesUsed,
+        "Test 10: Carry set before ROL. Set sign and carry after ROL - Program Counter incremented successfully.");
+
+    equal(MOS6502._CYCLES,
+        CycleCost,
+        "Test 10: Carry set before ROL. Set sign and carry after ROL - Cycles incremented correctly.");
+});
+
+test("0x2E - ROL (Absolute)",function() {
+    /**
+     *    Instruction = ROL - Rotate one bit left (memory or accumulator).
+     * Affected Flags = Sign, Zero, Carry
+     *    Total Tests = 10
+     */
+    var OPCODE = 0x2E,
+        PCStart = 0x4000,
+        AddressByte1 = Math.floor(Math.random() * (255-120+1) + 120),
+        AddressByte2 = Math.floor(Math.random() * (255-120+1) + 120),
+        OperandLocation = MOS6502._MAKE_ADDRESS(AddressByte1,AddressByte2),
+        CycleCost = 6,
+        BytesUsed = 3;
+
+    MOS6502._RAM[PCStart] = OPCODE;
+    MOS6502._RAM[PCStart + 1] = AddressByte1;
+    MOS6502._RAM[PCStart + 2] = AddressByte2;
+
+    /**
+     * Test 1: Set none.
+     */
+    MOS6502._RAM[OperandLocation] = 21;
+    MOS6502._P = 0x20;
+
+    MOS6502._PC = PCStart;
+    MOS6502._CYCLES = 0;
+
+    MOS6502.emulateCycle();
+
+    equal(MOS6502._RAM[OperandLocation],
+        42,
+        "Test 1: Set none - ROL successfully applied.");
+
+    equal(MOS6502._P,
+        0x20,
+        "Test 1: Set none - Status Register correctly set.");
+
+    equal(MOS6502._PC,
+            PCStart + BytesUsed,
+        "Test 1: Set none - Program Counter incremented successfully.");
+
+    equal(MOS6502._CYCLES,
+        CycleCost,
+        "Test 1: Set none - Cycles incremented correctly.");
+
+    /**
+     * Test 2: Set none. Carry set before ROL.
+     */
+    MOS6502._RAM[OperandLocation] = 0;
+    MOS6502._P = 0x21;
+
+    MOS6502._PC = PCStart;
+    MOS6502._CYCLES = 0;
+
+    MOS6502.emulateCycle();
+
+    equal(MOS6502._RAM[OperandLocation],
+        1,
+        "Test 2: Set none. Carry set before ROL - ROL successfully applied.");
+
+    equal(MOS6502._P,
+        0x20,
+        "Test 2: Set none. Carry set before ROL - Status Register correctly set.");
+
+    equal(MOS6502._PC,
+            PCStart + BytesUsed,
+        "Test 2: Set none. Carry set before ROL - Program Counter incremented successfully.");
+
+    equal(MOS6502._CYCLES,
+        CycleCost,
+        "Test 2: Set none. Carry set before ROL - Cycles incremented correctly.");
+
+    /**
+     * Test 3: Carry set before ROL.
+     */
+    MOS6502._RAM[OperandLocation] = 39;
+    MOS6502._P = 0x21;
+
+    MOS6502._PC = PCStart;
+    MOS6502._CYCLES = 0;
+
+    MOS6502.emulateCycle();
+
+    equal(MOS6502._RAM[OperandLocation],
+        79,
+        "Test 3: Carry set before ROL - ROL successfully applied.");
+
+    equal(MOS6502._P,
+        0x20,
+        "Test 3: Carry set before ROL - Status Register correctly set.");
+
+    equal(MOS6502._PC,
+            PCStart + BytesUsed,
+        "Test 3: Carry set before ROL - Program Counter incremented successfully.");
+
+    equal(MOS6502._CYCLES,
+        CycleCost,
+        "Test 3: Carry set before ROL - Cycles incremented correctly.");
+
+    /**
+     * Test 4: ROL sets carry.
+     */
+    MOS6502._RAM[OperandLocation] = 136;
+    MOS6502._P = 0x20;
+
+    MOS6502._PC = PCStart;
+    MOS6502._CYCLES = 0;
+
+    MOS6502.emulateCycle();
+
+    equal(MOS6502._RAM[OperandLocation],
+        16,
+        "Test 4: ROL sets carry - ROL successfully applied.");
+
+    equal(MOS6502._P,
+        0x21,
+        "Test 4: ROL sets carry - Status Register correctly set.");
+
+    equal(MOS6502._PC,
+            PCStart + BytesUsed,
+        "Test 4: ROL sets carry - Program Counter incremented successfully.");
+
+    equal(MOS6502._CYCLES,
+        CycleCost,
+        "Test 4: ROL sets carry - Cycles incremented correctly.");
+
+    /**
+     * Test 5: Carry set before ROL. ROL sets carry.
+     */
+    MOS6502._RAM[OperandLocation] = 136;
+    MOS6502._P = 0x21;
+
+    MOS6502._PC = PCStart;
+    MOS6502._CYCLES = 0;
+
+    MOS6502.emulateCycle();
+
+    equal(MOS6502._RAM[OperandLocation],
+        17,
+        "Test 5: Carry set before ROL. ROL sets carry - ROL successfully applied.");
+
+    equal(MOS6502._P,
+        0x21,
+        "Test 5: Carry set before ROL. ROL sets carry - Status Register correctly set.");
+
+    equal(MOS6502._PC,
+            PCStart + BytesUsed,
+        "Test 5: Carry set before ROL. ROL sets carry - Program Counter incremented successfully.");
+
+    equal(MOS6502._CYCLES,
+        CycleCost,
+        "Test 5: Carry set before ROL. ROL sets carry - Cycles incremented correctly.");
+
+    /**
+     * Test 6: Set zero.
+     */
+    MOS6502._RAM[OperandLocation] = 0;
+    MOS6502._P = 0x20;
+
+    MOS6502._PC = PCStart;
+    MOS6502._CYCLES = 0;
+
+    MOS6502.emulateCycle();
+
+    equal(MOS6502._RAM[OperandLocation],
+        0,
+        "Test 6: Set zero - ROL successfully applied.");
+
+    equal(MOS6502._P,
+        0x22,
+        "Test 6: Set zero - Status Register correctly set.");
+
+    equal(MOS6502._PC,
+            PCStart + BytesUsed,
+        "Test 6: Set zero - Program Counter incremented successfully.");
+
+    equal(MOS6502._CYCLES,
+        CycleCost,
+        "Test 6: Set zero - Cycles incremented correctly.");
+
+    /**
+     * Test 7: Set zero and carry
+     */
+    MOS6502._RAM[OperandLocation] = 128;
+    MOS6502._P = 0x20;
+
+    MOS6502._PC = PCStart;
+    MOS6502._CYCLES = 0;
+
+    MOS6502.emulateCycle();
+
+    equal(MOS6502._RAM[OperandLocation],
+        0,
+        "Test 7: Set zero and carry - ROL successfully applied.");
+
+    equal(MOS6502._P,
+        0x23,
+        "Test 7: Set zero and carry - Status Register correctly set.");
+
+    equal(MOS6502._PC,
+            PCStart + BytesUsed,
+        "Test 7: Set zero and carry - Program Counter incremented successfully.");
+
+    equal(MOS6502._CYCLES,
+        CycleCost,
+        "Test 7: Set zero and carry - Cycles incremented correctly.");
+
+    /**
+     * Test 8: Set sign.
+     */
+    MOS6502._RAM[OperandLocation] = 66;
+    MOS6502._P = 0x20;
+
+    MOS6502._PC = PCStart;
+    MOS6502._CYCLES = 0;
+
+    MOS6502.emulateCycle();
+
+    equal(MOS6502._RAM[OperandLocation],
+        132,
+        "Test 8: Set sign - ROL successfully applied.");
+
+    equal(MOS6502._P,
+        0xA0,
+        "Test 8: Set sign - Status Register correctly set.");
+
+    equal(MOS6502._PC,
+            PCStart + BytesUsed,
+        "Test 8: Set sign - Program Counter incremented successfully.");
+
+    equal(MOS6502._CYCLES,
+        CycleCost,
+        "Test 8: Set sign - Cycles incremented correctly.");
+
+    /**
+     * Test 9: Set sign and carry.
+     */
+    MOS6502._RAM[OperandLocation] = 201;
+    MOS6502._P = 0x20;
+
+    MOS6502._PC = PCStart;
+    MOS6502._CYCLES = 0;
+
+    MOS6502.emulateCycle();
+
+    equal(MOS6502._RAM[OperandLocation],
+        146,
+        "Test 9: Set sign and carry - ROL successfully applied.");
+
+    equal(MOS6502._P,
+        0xA1,
+        "Test 9: Set sign and carry - Status Register correctly set.");
+
+    equal(MOS6502._PC,
+            PCStart + BytesUsed,
+        "Test 9: Set sign and carry - Program Counter incremented successfully.");
+
+    equal(MOS6502._CYCLES,
+        CycleCost,
+        "Test 9: Set sign and carry - Cycles incremented correctly.");
+
+    /**
+     * Test 10: Carry set before ROL. Set sign and carry after ROL.
+     */
+    MOS6502._RAM[OperandLocation] = 201;
+    MOS6502._P = 0x21;
+
+    MOS6502._PC = PCStart;
+    MOS6502._CYCLES = 0;
+
+    MOS6502.emulateCycle();
+
+    equal(MOS6502._RAM[OperandLocation],
+        147,
+        "Test 10: Carry set before ROL. Set sign and carry after ROL - ROL successfully applied.");
+
+    equal(MOS6502._P,
+        0xA1,
+        "Test 10: Carry set before ROL. Set sign and carry after ROL - Status Register correctly set.");
+
+    equal(MOS6502._PC,
+            PCStart + BytesUsed,
+        "Test 10: Carry set before ROL. Set sign and carry after ROL - Program Counter incremented successfully.");
+
+    equal(MOS6502._CYCLES,
+        CycleCost,
+        "Test 10: Carry set before ROL. Set sign and carry after ROL - Cycles incremented correctly.");
+});
+
+test("0x3E - ROL (Absolute, X)",function() {
+    /**
+     *    Instruction = ROL - Rotate one bit left (memory or accumulator).
+     * Affected Flags = Sign, Zero, Carry
+     *    Total Tests = 10
+     */
+    var OPCODE = 0x3E,
+        PCStart = 0x4000,
+        AddressByte1 = Math.floor(Math.random() * (255-120+1) + 120),
+        AddressByte2 = Math.floor(Math.random() * (255-120+1) + 120),
+        XRegister = Math.floor(Math.random() * 255) + 1,
+        OperandLocation = MOS6502._MAKE_ADDRESS(AddressByte1,AddressByte2) + XRegister,
+        CycleCost = 7,
+        BytesUsed = 3;
+
+    MOS6502._RAM[PCStart] = OPCODE;
+    MOS6502._RAM[PCStart + 1] = AddressByte1;
+    MOS6502._RAM[PCStart + 2] = AddressByte2;
+    MOS6502._X = XRegister;
+
+    /**
+     * Test 1: Set none.
+     */
+    MOS6502._RAM[OperandLocation] = 21;
+    MOS6502._P = 0x20;
+
+    MOS6502._PC = PCStart;
+    MOS6502._CYCLES = 0;
+
+    MOS6502.emulateCycle();
+
+    equal(MOS6502._RAM[OperandLocation],
+        42,
+        "Test 1: Set none - ROL successfully applied.");
+
+    equal(MOS6502._P,
+        0x20,
+        "Test 1: Set none - Status Register correctly set.");
+
+    equal(MOS6502._PC,
+            PCStart + BytesUsed,
+        "Test 1: Set none - Program Counter incremented successfully.");
+
+    equal(MOS6502._CYCLES,
+        CycleCost,
+        "Test 1: Set none - Cycles incremented correctly.");
+
+    /**
+     * Test 2: Set none. Carry set before ROL.
+     */
+    MOS6502._RAM[OperandLocation] = 0;
+    MOS6502._P = 0x21;
+
+    MOS6502._PC = PCStart;
+    MOS6502._CYCLES = 0;
+
+    MOS6502.emulateCycle();
+
+    equal(MOS6502._RAM[OperandLocation],
+        1,
+        "Test 2: Set none. Carry set before ROL - ROL successfully applied.");
+
+    equal(MOS6502._P,
+        0x20,
+        "Test 2: Set none. Carry set before ROL - Status Register correctly set.");
+
+    equal(MOS6502._PC,
+            PCStart + BytesUsed,
+        "Test 2: Set none. Carry set before ROL - Program Counter incremented successfully.");
+
+    equal(MOS6502._CYCLES,
+        CycleCost,
+        "Test 2: Set none. Carry set before ROL - Cycles incremented correctly.");
+
+    /**
+     * Test 3: Carry set before ROL.
+     */
+    MOS6502._RAM[OperandLocation] = 39;
+    MOS6502._P = 0x21;
+
+    MOS6502._PC = PCStart;
+    MOS6502._CYCLES = 0;
+
+    MOS6502.emulateCycle();
+
+    equal(MOS6502._RAM[OperandLocation],
+        79,
+        "Test 3: Carry set before ROL - ROL successfully applied.");
+
+    equal(MOS6502._P,
+        0x20,
+        "Test 3: Carry set before ROL - Status Register correctly set.");
+
+    equal(MOS6502._PC,
+            PCStart + BytesUsed,
+        "Test 3: Carry set before ROL - Program Counter incremented successfully.");
+
+    equal(MOS6502._CYCLES,
+        CycleCost,
+        "Test 3: Carry set before ROL - Cycles incremented correctly.");
+
+    /**
+     * Test 4: ROL sets carry.
+     */
+    MOS6502._RAM[OperandLocation] = 136;
+    MOS6502._P = 0x20;
+
+    MOS6502._PC = PCStart;
+    MOS6502._CYCLES = 0;
+
+    MOS6502.emulateCycle();
+
+    equal(MOS6502._RAM[OperandLocation],
+        16,
+        "Test 4: ROL sets carry - ROL successfully applied.");
+
+    equal(MOS6502._P,
+        0x21,
+        "Test 4: ROL sets carry - Status Register correctly set.");
+
+    equal(MOS6502._PC,
+            PCStart + BytesUsed,
+        "Test 4: ROL sets carry - Program Counter incremented successfully.");
+
+    equal(MOS6502._CYCLES,
+        CycleCost,
+        "Test 4: ROL sets carry - Cycles incremented correctly.");
+
+    /**
+     * Test 5: Carry set before ROL. ROL sets carry.
+     */
+    MOS6502._RAM[OperandLocation] = 136;
+    MOS6502._P = 0x21;
+
+    MOS6502._PC = PCStart;
+    MOS6502._CYCLES = 0;
+
+    MOS6502.emulateCycle();
+
+    equal(MOS6502._RAM[OperandLocation],
+        17,
+        "Test 5: Carry set before ROL. ROL sets carry - ROL successfully applied.");
+
+    equal(MOS6502._P,
+        0x21,
+        "Test 5: Carry set before ROL. ROL sets carry - Status Register correctly set.");
+
+    equal(MOS6502._PC,
+            PCStart + BytesUsed,
+        "Test 5: Carry set before ROL. ROL sets carry - Program Counter incremented successfully.");
+
+    equal(MOS6502._CYCLES,
+        CycleCost,
+        "Test 5: Carry set before ROL. ROL sets carry - Cycles incremented correctly.");
+
+    /**
+     * Test 6: Set zero.
+     */
+    MOS6502._RAM[OperandLocation] = 0;
+    MOS6502._P = 0x20;
+
+    MOS6502._PC = PCStart;
+    MOS6502._CYCLES = 0;
+
+    MOS6502.emulateCycle();
+
+    equal(MOS6502._RAM[OperandLocation],
+        0,
+        "Test 6: Set zero - ROL successfully applied.");
+
+    equal(MOS6502._P,
+        0x22,
+        "Test 6: Set zero - Status Register correctly set.");
+
+    equal(MOS6502._PC,
+            PCStart + BytesUsed,
+        "Test 6: Set zero - Program Counter incremented successfully.");
+
+    equal(MOS6502._CYCLES,
+        CycleCost,
+        "Test 6: Set zero - Cycles incremented correctly.");
+
+    /**
+     * Test 7: Set zero and carry
+     */
+    MOS6502._RAM[OperandLocation] = 128;
+    MOS6502._P = 0x20;
+
+    MOS6502._PC = PCStart;
+    MOS6502._CYCLES = 0;
+
+    MOS6502.emulateCycle();
+
+    equal(MOS6502._RAM[OperandLocation],
+        0,
+        "Test 7: Set zero and carry - ROL successfully applied.");
+
+    equal(MOS6502._P,
+        0x23,
+        "Test 7: Set zero and carry - Status Register correctly set.");
+
+    equal(MOS6502._PC,
+            PCStart + BytesUsed,
+        "Test 7: Set zero and carry - Program Counter incremented successfully.");
+
+    equal(MOS6502._CYCLES,
+        CycleCost,
+        "Test 7: Set zero and carry - Cycles incremented correctly.");
+
+    /**
+     * Test 8: Set sign.
+     */
+    MOS6502._RAM[OperandLocation] = 66;
+    MOS6502._P = 0x20;
+
+    MOS6502._PC = PCStart;
+    MOS6502._CYCLES = 0;
+
+    MOS6502.emulateCycle();
+
+    equal(MOS6502._RAM[OperandLocation],
+        132,
+        "Test 8: Set sign - ROL successfully applied.");
+
+    equal(MOS6502._P,
+        0xA0,
+        "Test 8: Set sign - Status Register correctly set.");
+
+    equal(MOS6502._PC,
+            PCStart + BytesUsed,
+        "Test 8: Set sign - Program Counter incremented successfully.");
+
+    equal(MOS6502._CYCLES,
+        CycleCost,
+        "Test 8: Set sign - Cycles incremented correctly.");
+
+    /**
+     * Test 9: Set sign and carry.
+     */
+    MOS6502._RAM[OperandLocation] = 201;
+    MOS6502._P = 0x20;
+
+    MOS6502._PC = PCStart;
+    MOS6502._CYCLES = 0;
+
+    MOS6502.emulateCycle();
+
+    equal(MOS6502._RAM[OperandLocation],
+        146,
+        "Test 9: Set sign and carry - ROL successfully applied.");
+
+    equal(MOS6502._P,
+        0xA1,
+        "Test 9: Set sign and carry - Status Register correctly set.");
+
+    equal(MOS6502._PC,
+            PCStart + BytesUsed,
+        "Test 9: Set sign and carry - Program Counter incremented successfully.");
+
+    equal(MOS6502._CYCLES,
+        CycleCost,
+        "Test 9: Set sign and carry - Cycles incremented correctly.");
+
+    /**
+     * Test 10: Carry set before ROL. Set sign and carry after ROL.
+     */
+    MOS6502._RAM[OperandLocation] = 201;
+    MOS6502._P = 0x21;
+
+    MOS6502._PC = PCStart;
+    MOS6502._CYCLES = 0;
+
+    MOS6502.emulateCycle();
+
+    equal(MOS6502._RAM[OperandLocation],
+        147,
+        "Test 10: Carry set before ROL. Set sign and carry after ROL - ROL successfully applied.");
+
+    equal(MOS6502._P,
+        0xA1,
+        "Test 10: Carry set before ROL. Set sign and carry after ROL - Status Register correctly set.");
+
+    equal(MOS6502._PC,
+            PCStart + BytesUsed,
+        "Test 10: Carry set before ROL. Set sign and carry after ROL - Program Counter incremented successfully.");
+
+    equal(MOS6502._CYCLES,
+        CycleCost,
+        "Test 10: Carry set before ROL. Set sign and carry after ROL - Cycles incremented correctly.");
+});
+
+//</editor-fold>
+
 /**
  * Tests to be implemented:
- * ADC   Add Memory to Accumulator with Carry
- *
- * BCC   Branch on Carry Clear
- * BCS   Branch on Carry Set
- * BEQ   Branch on Result Zero
- * BMI   Branch on Result Minus
- * BNE   Branch on Result not Zero
- * BVC   Branch on Overflow Clear
- * BVS   Branch on Overflow Set
- *
- * CLD   Clear Decimal Mode
- * CLI   Clear interrupt Disable Bit
- * CLV   Clear Overflow Flag
- * CMP   Compare Memory and Accumulator
- * CPX   Compare Memory and Index X
- * CPY   Compare Memory and Index Y
- *
- * DEC   Decrement Memory by One
- * DEX   Decrement Index X by One
- * DEY   Decrement Index Y by One
- *
- * EOR   "Exclusive-Or" Memory with Accumulator
- *
- * INC   Increment Memory by One
- * INX   Increment Index X by One
- * INY   Increment Index Y by One
- *
- * JMP   Jump to New Location
- *
- * LDA   Load Accumulator with Memory
- * LDX   Load Index X with Memory
- * LDY   Load Index Y with Memory
- * LSR   Shift Right One Bit (Memory or Accumulator)
- *
- * NOP   No Operation
- *
- * PHA   Push Accumulator on Stack
- * PLA   Pull Accumulator from Stack
- * PLP   Pull Processor Status from Stack
- *
- * ROL   Rotate One Bit Left (Memory or Accumulator)
- * ROR   Rotate One Bit Right (Memory or Accumulator)
- * RTI   Return from Interrupt
- * RTS   Return from Subroutine
- *
- * SBC   Subtract Memory from Accumulator with Borrow
- * SEC   Set Carry Flag
- * SED   Set Decimal Mode
- * SEI   Set Interrupt Disable Status
- * STA   Store Accumulator in Memory
- * STX   Store Index X in Memory
- * STY   Store Index Y in Memory
- *
- * TAX   Transfer Accumulator to Index X
- * TAY   Transfer Accumulator to Index Y
- * TSX   Transfer Stack Pointer to Index X
- * TXA   Transfer Index X to Accumulator
- * TXS   Transfer Index X to Stack Pointer
- * TYA   Transfer Index Y to Accumulator
+
+ // 0x20 - 0x2F
+ case (0x26) : me.ROL(); break;
+ case (0x28) : me.PLP(); break;
+ case (0x2A) : me.ROL(); break;
+ case (0x2E) : me.ROL(); break;
+
+ // 0x30 - 0x3F
+ case (0x30) : me.BMI(); break;
+ case (0x36) : me.ROL(); break;
+ case (0x38) : me.SEC(); break;
+ case (0x3E) : me.ROL(); break;
+
+ // 0x40 - 0x4F
+ case (0x40) : me.RTI(); break;
+ case (0x41) : me.EOR(); break;
+ case (0x45) : me.EOR(); break;
+ case (0x46) : me.LSR(); break;
+ case (0x48) : me.PHA(); break;
+ case (0x49) : me.EOR(); break;
+ case (0x4A) : me.LSR(); break;
+ case (0x4C) : me.JMP(); break;
+ case (0x4D) : me.EOR(); break;
+ case (0x4E) : me.LSR(); break;
+
+ // 0x50 - 0x5F
+ case (0x50) : me.BVC(); break;
+ case (0x51) : me.EOR(); break;
+ case (0x55) : me.EOR(); break;
+ case (0x56) : me.LSR(); break;
+ case (0x58) : me.CLI(); break;
+ case (0x59) : me.EOR(); break;
+ case (0x5D) : me.EOR(); break;
+ case (0x5E) : me.LSR(); break;
+
+ // 0x60 - 0x6F
+ case (0x60) : me.RTS(); break;
+ case (0x61) : me.ADC(); break;
+ case (0x65) : me.ADC(); break;
+ case (0x66) : me.ROR(); break;
+ case (0x68) : me.PLA(); break;
+ case (0x69) : me.ADC(); break;
+ case (0x6A) : me.ROR(); break;
+ case (0x6C) : me.JMP(); break;
+ case (0x6D) : me.ADC(); break;
+ case (0x6E) : me.ROR(); break;
+
+ // 0x70 - 0x7F
+ case (0x70) : me.BVS(); break;
+ case (0x71) : me.ADC(); break;
+ case (0x75) : me.ADC(); break;
+ case (0x76) : me.ROR(); break;
+ case (0x78) : me.SEI(); break;
+ case (0x79) : me.ADC(); break;
+ case (0x7D) : me.ADC(); break;
+ case (0x7E) : me.ROR(); break;
+
+ // 0x80 - 0x8F
+ case (0x81) : me.STA(); break;
+ case (0x84) : me.STY(); break;
+ case (0x85) : me.STA(); break;
+ case (0x86) : me.STX(); break;
+ case (0x88) : me.DEY(); break;
+ case (0x8A) : me.TXA(); break;
+ case (0x8C) : me.STY(); break;
+ case (0x8D) : me.STA(); break;
+ case (0x8E) : me.STX(); break;
+
+ // 0x90 - 0x9F
+ case (0x90) : me.BCC(); break;
+ case (0x91) : me.STA(); break;
+ case (0x94) : me.STY(); break;
+ case (0x95) : me.STA(); break;
+ case (0x96) : me.STX(); break;
+ case (0x98) : me.TYA(); break;
+ case (0x99) : me.STA(); break;
+ case (0x9A) : me.TXS(); break;
+ case (0x9D) : me.STA(); break;
+
+ // 0xA0 - 0xAF
+ case (0xA0) : me.LDY(); break;
+ case (0xA1) : me.LDA(); break;
+ case (0xA2) : me.LDX(); break;
+ case (0xA4) : me.LDY(); break;
+ case (0xA5) : me.LDA(); break;
+ case (0xA6) : me.LDX(); break;
+ case (0xA8) : me.TAY(); break;
+ case (0xA9) : me.LDA(); break;
+ case (0xAA) : me.TAX(); break;
+ case (0xAC) : me.LDY(); break;
+ case (0xAD) : me.LDA(); break;
+ case (0xAE) : me.LDX(); break;
+
+ // 0xB0 - 0xBF
+ case (0xB0) : me.BCS(); break;
+ case (0xB1) : me.LDA(); break;
+ case (0xB4) : me.LDY(); break;
+ case (0xB5) : me.LDA(); break;
+ case (0xB6) : me.LDX(); break;
+ case (0xB8) : me.CLV(); break;
+ case (0xB9) : me.LDA(); break;
+ case (0xBA) : me.TSX(); break;
+ case (0xBC) : me.LDY(); break;
+ case (0xBD) : me.LDA(); break;
+ case (0xBE) : me.LDX(); break;
+
+ // 0xC0 - 0xCF
+ case (0xC0) : me.CPY(); break;
+ case (0xC1) : me.CMP(); break;
+ case (0xC4) : me.CPY(); break;
+ case (0xC5) : me.CMP(); break;
+ case (0xC6) : me.DEC(); break;
+ case (0xC8) : me.INY(); break;
+ case (0xC9) : me.CMP(); break;
+ case (0xCA) : me.DEX(); break;
+ case (0xCC) : me.CPY(); break;
+ case (0xCD) : me.CMP(); break;
+ case (0xCE) : me.DEC(); break;
+
+ // 0xD0 - 0xDF
+ case (0xD0) : me.BNE(); break;
+ case (0xD1) : me.CMP(); break;
+ case (0xD5) : me.CMP(); break;
+ case (0xD6) : me.DEC(); break;
+ case (0xD8) : me.CLD(); break;
+ case (0xD9) : me.CMP(); break;
+ case (0xDD) : me.CMP(); break;
+ case (0xDE) : me.DEC(); break;
+
+ // 0xE0 - 0xEF
+ case (0xE0) : me.CPX(); break;
+ case (0xE1) : me.SBC(); break;
+ case (0xE4) : me.CPX(); break;
+ case (0xE5) : me.SBC(); break;
+ case (0xE6) : me.INC(); break;
+ case (0xE8) : me.INX(); break;
+ case (0xE9) : me.SBC(); break;
+ case (0xEA) : me.NOP(); break;
+ case (0xEC) : me.CPX(); break;
+ case (0xED) : me.SBC(); break;
+ case (0xEE) : me.INC(); break;
+
+ // 0xF0 - 0xFF
+ case (0xF0) : me.BEQ(); break;
+ case (0xF1) : me.SBC(); break;
+ case (0xF5) : me.SBC(); break;
+ case (0xF6) : me.INC(); break;
+ case (0xF8) : me.SED(); break;
+ case (0xF9) : me.SBC(); break;
+ case (0xFD) : me.SBC(); break;
+ case (0xFE) : me.INC(); break;
  */
 
 /**

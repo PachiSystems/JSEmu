@@ -2431,7 +2431,7 @@ MOS6502.prototype.ROL = function() {
         case (0x26): OPER = me.ReadZeroPage(byte1); break;
         case (0x36): OPER = me.ReadZeroPageX(byte1); break;
         case (0x2E): OPER = me.ReadAbsolute(byte1,byte2); break;
-        case (0x3E): OPER = me.ReadAbsoluteX(byte1,byte2,true); break;
+        case (0x3E): OPER = me.ReadAbsoluteX(byte1,byte2,false); break;
 
         default: console.error("Illegal ROL opcode passed. (0x" + opCode.toString(16) + ")" ); break;
 
