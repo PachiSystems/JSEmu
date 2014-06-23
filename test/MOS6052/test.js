@@ -6617,20 +6617,63 @@ test("0x3E - ROL (Absolute, X)",function() {
 
 //</editor-fold>
 
+/*********************************************************************************************************************/
+
+//<editor-fold desc="PLP Tests">
+
+QUnit.module("Instruction - PLP", {
+    setup: function() {
+        MOS6502.init();
+    }
+});
+
+test("0x28 - PLP (Implied)", function() {
+    /**
+     *    Instruction = PLP - Pull processor status from stack
+     * Affected Flags = All
+     *    Total Tests = 1
+     */
+
+    var OPCODE = 0x28,
+        CycleCost = 4,
+        BytesUsed = 1,
+        StatusRegister = Math.floor(Math.random() * 255) + 1,
+        PCStart = 0x4000;
+
+    MOS6502._RAM[PCStart] = OPCODE;
+    MOS6502._CYCLES = 0;
+    MOS6502._P = 0x20;
+    MOS6502._SP = 0x01FE;
+    MOS6502._RAM[MOS6502._SP] = StatusRegister;
+    MOS6502._PC = PCStart;
+
+    /**
+     * Test 1: Pull status register from the stack.
+     */
+
+    MOS6502.emulateCycle();
+
+    equal(MOS6502._P,StatusRegister,"Status register updated correctly.");
+
+    equal(MOS6502._SP,0x01FF,"Stack pointer updated correctly.");
+
+    equal(MOS6502._PC,PCStart + BytesUsed,"Program counter updated successfully.");
+
+    equal(MOS6502._CYCLES,CycleCost,"Cycle count updated successfully.");
+});
+
+
+//</editor-fold>
+
 /**
  * Tests to be implemented:
 
  // 0x20 - 0x2F
- case (0x26) : me.ROL(); break;
  case (0x28) : me.PLP(); break;
- case (0x2A) : me.ROL(); break;
- case (0x2E) : me.ROL(); break;
 
  // 0x30 - 0x3F
  case (0x30) : me.BMI(); break;
- case (0x36) : me.ROL(); break;
  case (0x38) : me.SEC(); break;
- case (0x3E) : me.ROL(); break;
 
  // 0x40 - 0x4F
  case (0x40) : me.RTI(); break;

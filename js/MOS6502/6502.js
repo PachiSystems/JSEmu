@@ -550,10 +550,11 @@ MOS6502.prototype._PULL = function() {
         SP = me._SP,
         OPER;
     
-    OPER = me._RAM[ SP ];
-    SP++;
-    if (SP > 0x01FF) SP = 0x0100;
-    me._SP = SP;
+    OPER = me._RAM[ me._SP ];
+    me._SP++;
+    if (me._SP > 0x01FF) {
+        me._SP = 0x0100;
+    }
     return OPER;
     
 };
@@ -2364,7 +2365,7 @@ MOS6502.prototype.PLP = function() {
     /**
 
 
-     PLP               PLP Pull processor status from stack                PLA
+     PLP               PLP Pull processor status from stack                PLP
 
      Operation:  P fromS                                   N Z C I D V
      From Stack
@@ -2384,6 +2385,7 @@ MOS6502.prototype.PLP = function() {
         // Get Operand
         case (0x28):
             me._P = me._PULL();
+            console.log("PLP: " + me._P);
             me._CYCLES += 4;
             me._PC += 1;
             break;
