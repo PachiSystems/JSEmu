@@ -3582,7 +3582,6 @@ test("0x10 - BPL (Relative)", function() {
      * Affected Flags = None
      *    Total Tests = 5
      *
-     * NOTE: PC counter is initially set to the middle of a page to facilitate page switching later.
      */
 
     var OPCODE = 0x10,
@@ -6665,14 +6664,189 @@ test("0x28 - PLP (Implied)", function() {
 
 //</editor-fold>
 
+/*********************************************************************************************************************/
+
+//<editor-fold desc="BMI Tests">
+
+QUnit.module("Instruction - BMI", {
+    setup: function() {
+        MOS6502.init();
+    }
+});
+
+test("0x30 - BMI (Relative)", function() {
+    /**
+     *    Instruction = BMI - Branch on result minus
+     * Affected Flags = None
+     *    Total Tests = 5
+     */
+
+    var OPCODE = 0x30,
+        relativePlusSamePage = 64,
+        relativeMinusSamePage = 192,
+        relativePlusNextPage = 127,
+        relativeMinusNextPage = 129,
+        CycleCost = 2,
+        BytesUsed = 2,
+        PCStart = 0x4080,
+        PCStartHigh = 0x40E0,
+        PCStartLow = 0x4010;
+
+    MOS6502._PC = PCStart;
+    MOS6502._RAM[PCStart] = OPCODE;
+    MOS6502._RAM[PCStartHigh] = OPCODE;
+    MOS6502._RAM[PCStartLow] = OPCODE;
+    MOS6502._CYCLES = 0;
+
+    /**
+     * Test 1: Result plus (no branch, but 2 cycles used)
+     */
+
+    // Disable the sign flag which indicates a positive.
+    MOS6502._P = 0x20;
+
+    MOS6502.emulateCycle();
+
+    equal(MOS6502._PC,
+            PCStart + BytesUsed,
+        "Result plus: Program Counter set correctly.");
+
+    equal(MOS6502._CYCLES,
+        CycleCost,
+        "Result plus: Cycles set correctly.");
+
+    /**
+     * Test 2: Result minus. Branch forward to same page. (3 cycles)
+     */
+
+    MOS6502._P = 0xA0;
+    MOS6502._PC = PCStart;
+    MOS6502._RAM[PCStart + 1] = relativePlusSamePage;
+    MOS6502._CYCLES = 0;
+
+    MOS6502.emulateCycle();
+
+    equal(MOS6502._PC,
+            PCStart + relativePlusSamePage,
+        "Result minus, branch forward, same page: Program Counter set correctly.");
+
+    equal(MOS6502._CYCLES,
+            CycleCost + 1,
+        "Result minus, branch forward, same page: Cycles set correctly.");
+
+    /**
+     * Test 3: Result minus. Branch backward to same page. (3 cycles)
+     */
+
+    MOS6502._P = 0xA0;
+    MOS6502._PC = PCStart;
+    MOS6502._RAM[PCStart + 1] = relativeMinusSamePage;
+    MOS6502._CYCLES = 0;
+
+    MOS6502.emulateCycle();
+
+    equal(MOS6502._PC,
+            (PCStart + relativeMinusSamePage) - 256,
+        "Result minus, branch backwards, same page: Program Counter set correctly.");
+
+    equal(MOS6502._CYCLES,
+            CycleCost + 1,
+        "Result minus, branch backwards, same page: Cycles set correctly.");
+
+    /**
+     * Test 4: Result minus. Branch forward to different page. (4 cycles)
+     *
+     * NOTE: It's not possible to branch to another page from 0x4080. Using 0x40E0 for forward branch.
+     */
+
+    MOS6502._P = 0xA0;
+    MOS6502._PC = PCStartHigh;
+    MOS6502._RAM[PCStartHigh + 1] = relativePlusNextPage;
+    MOS6502._CYCLES = 0;
+
+    MOS6502.emulateCycle();
+
+    equal(MOS6502._PC,
+            PCStartHigh + relativePlusNextPage,
+        "Result minus, branch forward, different page: Program Counter set correctly.");
+
+    equal(MOS6502._CYCLES,
+            CycleCost + 2,
+        "Result minus, branch forward, different page: Cycles set correctly.");
+
+    /**
+     * Test 5: Result minus. Branch backward to different page. (4 cycles)
+     */
+
+    MOS6502._P = 0xA0;
+    MOS6502._PC = PCStartLow;
+    MOS6502._RAM[PCStartLow + 1] = relativeMinusNextPage;
+    MOS6502._CYCLES = 0;
+
+    MOS6502.emulateCycle();
+
+    equal(MOS6502._PC,
+            (PCStartLow + relativeMinusNextPage) - 256,
+        "Result minus, branch backwards, different page: Program Counter set correctly.");
+
+    equal(MOS6502._CYCLES,
+            CycleCost + 2,
+        "Result minus, branch backwards, different page: Cycles set correctly.");
+});
+
+//</editor-fold>
+
+/*********************************************************************************************************************/
+
+//<editor-fold desc="SEC Tests">
+
+QUnit.module("Instruction - SEC", {
+    setup: function() {
+        MOS6502.init();
+    }
+});
+
+test("0x38 - SEC (Implied)", function() {
+    /**
+     *    Instruction = SEC - Set carry flag
+     * Affected Flags = None
+     *    Total Tests = 1
+     */
+
+    var OPCODE = 0x38,
+        PCStart = 0x4000,
+        BytesUsed = 1,
+        CycleCost = 2;
+
+    MOS6502._P = 0x20;
+    MOS6502._CYCLES = 0;
+    MOS6502._RAM[PCStart] = OPCODE;
+    MOS6502._PC = PCStart;
+
+    MOS6502.emulateCycle();
+
+    equal(MOS6502._PC,
+        PCStart + BytesUsed,
+        "Program counter set correctly.");
+
+    equal(MOS6502._CYCLES,
+        CycleCost,
+        "Cycles set correctly.");
+
+    equal(MOS6502._P,
+        0x21,
+        "Sign set successfully.");
+
+
+});
+
+
+//</editor-fold>
+
 /**
  * Tests to be implemented:
 
- // 0x20 - 0x2F
- case (0x28) : me.PLP(); break;
-
  // 0x30 - 0x3F
- case (0x30) : me.BMI(); break;
  case (0x38) : me.SEC(); break;
 
  // 0x40 - 0x4F

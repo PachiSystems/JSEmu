@@ -1077,15 +1077,16 @@ MOS6502.prototype.BMI = function() {
     if(me._IF_SIGN()) {
 
         // So... Since there are no signed numbers in JS... We have to work it out.
-        var relAddress = ( (OPER + 2) < 0x80 ) ? me._PC += OPER + 2 : me._PC += OPER + 2 - 256;
+        var relAddress = ( OPER < 0x80 ) ? OPER : OPER - 256;
 
-        me._CYCLES += ( (me._PC & 0xFF00) !=  (me._PC + relAddress) & 0xFF00) ? 1 : 1;
+        me._CYCLES += (me._PC & 0xFF00) !=  ( (me._PC + relAddress) & 0xFF00) ? 2 : 1;
 
-        me._PC += relAddress; // The switch is going to add two to this...
+        me._PC += relAddress;
 
     } else {
-        me._CYCLES += 2;
+
         me._PC += 2;
+
     }
 
 };
@@ -1102,7 +1103,7 @@ MOS6502.prototype.BNE = function() {
      +----------------+-----------------------+---------+---------+----------+
      | Addressing Mode| Assembly Language Form| OP CODE |No. Bytes|No. Cycles|
      +----------------+-----------------------+---------+---------+----------+
-     |  Relative      |   BMI Oper            |    D0   |    2    |    2*    |
+     |  Relative      |   BNE Oper            |    D0   |    2    |    2*    |
      +----------------+-----------------------+---------+---------+----------+
      * Add 1 if branch occurs to same page.
      * Add 2 if branch occurs to different page.
@@ -2683,7 +2684,7 @@ MOS6502.prototype.SEC = function() {
     switch (opCode) {
         // Get Operand
         case (0x38):
-            me._SET_CARRY(1);
+            me._SET_CARRY(true);
             me._CYCLES += 2;
             me._PC += 1;
             break;
