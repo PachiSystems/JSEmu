@@ -7832,7 +7832,7 @@ test("0x51 - EOR (Indirect, Y) (Cross Page)", function() {
     var OPCODE = 0x51,
         PCStart = 0x4000,
         YRegister = 0xA0,
-        ZPAddress = Math.floor(Math.random() * 255) + 1,
+        ZPAddress = Math.floor(Math.random() * 220) + 1,
         AddressByte1 = 0xA0,
         AddressByte2 = 0x21,
         BytesUsed = 2,
@@ -7918,28 +7918,798 @@ test("0x51 - EOR (Indirect, Y) (Cross Page)", function() {
 
 //</editor-fold>
 
+/*********************************************************************************************************************/
+
+//<editor-fold desc="LSR Tests">
+
+QUnit.module("Instruction - LSR", {
+    setup: function() {
+        MOS6502.init();
+    }
+});
+
+test("0x4A - LSR (Accumulator)", function() {
+    /**
+     *    Instruction = LSR - Shift right one bit (memory or accumulator)
+     * Affected Flags = Sign (Clear), Zero, Carry
+     *    Total Tests = 7
+     */
+
+    var OPCODE = 0x4A,
+        PCStart = 0x4000,
+        BytesUsed = 1,
+        CycleCost = 2,
+        ExpectedResult;
+
+    MOS6502._RAM[PCStart] = OPCODE;
+
+    /**
+     * Test 1: Set none.
+     */
+    MOS6502._P = 0x20;
+    MOS6502._PC = PCStart;
+    MOS6502._CYCLES = 0;
+    MOS6502._A = 170;
+    ExpectedResult = 85;
+
+    MOS6502.emulateCycle();
+
+    equal(MOS6502._PC, PCStart + BytesUsed, "Set none: Program counter increased correctly.");
+
+    equal(MOS6502._CYCLES, CycleCost, "Set none: Cycles increased correctly.");
+
+    equal(MOS6502._P, 0x20, "Set none: Status register set correctly");
+
+    equal(MOS6502._A,ExpectedResult,"Set none: LSR performed correctly.");
+
+    /**
+     * Test 2: Carry set, shift clears.
+     */
+    MOS6502._P = 0x21;
+    MOS6502._PC = PCStart;
+    MOS6502._CYCLES = 0;
+    MOS6502._A = 170;
+    ExpectedResult = 85;
+
+    MOS6502.emulateCycle();
+
+    equal(MOS6502._PC, PCStart + BytesUsed, "Carry set, shift clears: Program counter increased correctly.");
+
+    equal(MOS6502._CYCLES, CycleCost, "Carry set, shift clears: Cycles increased correctly.")
+
+    equal(MOS6502._P, 0x20, "Carry set, shift clears: Status register set correctly");
+
+    equal(MOS6502._A,ExpectedResult,"Carry set, shift clears: LSR performed correctly.");
+
+    /**
+     * Test 3: Carry set, shift sets.
+     */
+    MOS6502._P = 0x21;
+    MOS6502._PC = PCStart;
+    MOS6502._CYCLES = 0;
+    MOS6502._A = 85;
+    ExpectedResult = 42;
+
+    MOS6502.emulateCycle();
+
+    equal(MOS6502._PC, PCStart + BytesUsed, "Carry set, shift sets: Program counter increased correctly.");
+
+    equal(MOS6502._CYCLES, CycleCost, "Carry set, shift sets: Cycles increased correctly.")
+
+    equal(MOS6502._P, 0x21, "Carry set, shift sets: Status register set correctly");
+
+    equal(MOS6502._A,ExpectedResult,"Carry sets, shift sets: LSR performed correctly.");
+
+    /**
+     * Test 4: Sign set, shift clears.
+     */
+    MOS6502._P = 0xA0;
+    MOS6502._PC = PCStart;
+    MOS6502._CYCLES = 0;
+    MOS6502._A = 170;
+    ExpectedResult = 85;
+
+    MOS6502.emulateCycle();
+
+    equal(MOS6502._PC, PCStart + BytesUsed, "Sign set, shift clears: Program counter increased correctly.");
+
+    equal(MOS6502._CYCLES, CycleCost, "Sign set, shift clears: Cycles increased correctly.")
+
+    equal(MOS6502._P, 0x20, "Sign set, shift clears: Status register set correctly");
+
+    equal(MOS6502._A,ExpectedResult,"Sign set, shift clears: LSR performed correctly.");
+
+    /**
+     * Test 5: Set zero.
+     */
+    MOS6502._P = 0x20;
+    MOS6502._PC = PCStart;
+    MOS6502._CYCLES = 0;
+    MOS6502._A = 0;
+    ExpectedResult = 0;
+
+    MOS6502.emulateCycle();
+
+    equal(MOS6502._PC, PCStart + BytesUsed, "Set zero: Program counter increased correctly.");
+
+    equal(MOS6502._CYCLES, CycleCost, "Set zero: Cycles increased correctly.")
+
+    equal(MOS6502._P, 0x22, "Set zero: Status register set correctly");
+
+    equal(MOS6502._A,ExpectedResult,"Set zero: LSR performed correctly.");
+
+    /**
+     * Test 6: Set zero, set carry.
+     */
+    MOS6502._P = 0x20;
+    MOS6502._PC = PCStart;
+    MOS6502._CYCLES = 0;
+    MOS6502._A = 1;
+    ExpectedResult = 0;
+
+    MOS6502.emulateCycle();
+
+    equal(MOS6502._PC, PCStart + BytesUsed, "Set zero, set carry: Program counter increased correctly.");
+
+    equal(MOS6502._CYCLES, CycleCost, "Set zero, set carry: Cycles increased correctly.")
+
+    equal(MOS6502._P, 0x23, "Set zero, set carry: Status register set correctly");
+
+    equal(MOS6502._A,ExpectedResult,"Set zero, set carry: LSR performed correctly.");
+
+    /**
+     * Test 7: Sign set, shift clears, sets zero and sets carry.
+     */
+    MOS6502._P = 0xA0;
+    MOS6502._PC = PCStart;
+    MOS6502._CYCLES = 0;
+    MOS6502._A = 1;
+    ExpectedResult = 0;
+
+    MOS6502.emulateCycle();
+
+    equal(MOS6502._PC, PCStart + BytesUsed, "Sign set, shift clears, sets zero and sets carry: Program counter increased correctly.");
+
+    equal(MOS6502._CYCLES, CycleCost, "Sign set, shift clears, sets zero and sets carry: Cycles increased correctly.")
+
+    equal(MOS6502._P, 0x23, "Sign set, shift clears, sets zero and sets carry: Status register set correctly");
+
+    equal(MOS6502._A,ExpectedResult,"Sign set, shift clears, sets zero and sets carry: LSR performed correctly.");
+
+});
+
+test("0x46 - LSR (Zero Page)", function() {
+    /**
+     *    Instruction = LSR - Shift right one bit (memory or accumulator)
+     * Affected Flags = Sign (Clear), Zero, Carry
+     *    Total Tests = 7
+     */
+
+    var OPCODE = 0x46,
+        PCStart = 0x4000,
+        ZPAddress = Math.floor(Math.random() * 200) + 1,
+        BytesUsed = 2,
+        CycleCost = 5,
+        ExpectedResult;
+
+    MOS6502._RAM[PCStart] = OPCODE;
+    MOS6502._RAM[PCStart + 1] = ZPAddress;
+
+    /**
+     * Test 1: Set none.
+     */
+    MOS6502._P = 0x20;
+    MOS6502._PC = PCStart;
+    MOS6502._CYCLES = 0;
+    MOS6502._RAM[ZPAddress] = 170;
+    ExpectedResult = 85;
+
+    MOS6502.emulateCycle();
+
+    equal(MOS6502._PC, PCStart + BytesUsed, "Set none: Program counter increased correctly.");
+
+    equal(MOS6502._CYCLES, CycleCost, "Set none: Cycles increased correctly.");
+
+    equal(MOS6502._P, 0x20, "Set none: Status register set correctly");
+
+    equal(MOS6502._RAM[ZPAddress],ExpectedResult,"Set none: LSR performed correctly.");
+
+    /**
+     * Test 2: Carry set, shift clears.
+     */
+    MOS6502._P = 0x21;
+    MOS6502._PC = PCStart;
+    MOS6502._CYCLES = 0;
+    MOS6502._RAM[ZPAddress] = 170;
+    ExpectedResult = 85;
+
+    MOS6502.emulateCycle();
+
+    equal(MOS6502._PC, PCStart + BytesUsed, "Carry set, shift clears: Program counter increased correctly.");
+
+    equal(MOS6502._CYCLES, CycleCost, "Carry set, shift clears: Cycles increased correctly.")
+
+    equal(MOS6502._P, 0x20, "Carry set, shift clears: Status register set correctly");
+
+    equal(MOS6502._RAM[ZPAddress],ExpectedResult,"Carry set, shift clears: LSR performed correctly.");
+
+    /**
+     * Test 3: Carry set, shift sets.
+     */
+    MOS6502._P = 0x21;
+    MOS6502._PC = PCStart;
+    MOS6502._CYCLES = 0;
+    MOS6502._RAM[ZPAddress] = 85;
+    ExpectedResult = 42;
+
+    MOS6502.emulateCycle();
+
+    equal(MOS6502._PC, PCStart + BytesUsed, "Carry set, shift sets: Program counter increased correctly.");
+
+    equal(MOS6502._CYCLES, CycleCost, "Carry set, shift sets: Cycles increased correctly.")
+
+    equal(MOS6502._P, 0x21, "Carry set, shift sets: Status register set correctly");
+
+    equal(MOS6502._RAM[ZPAddress],ExpectedResult,"Carry sets, shift sets: LSR performed correctly.");
+
+    /**
+     * Test 4: Sign set, shift clears.
+     */
+    MOS6502._P = 0xA0;
+    MOS6502._PC = PCStart;
+    MOS6502._CYCLES = 0;
+    MOS6502._RAM[ZPAddress] = 170;
+    ExpectedResult = 85;
+
+    MOS6502.emulateCycle();
+
+    equal(MOS6502._PC, PCStart + BytesUsed, "Sign set, shift clears: Program counter increased correctly.");
+
+    equal(MOS6502._CYCLES, CycleCost, "Sign set, shift clears: Cycles increased correctly.")
+
+    equal(MOS6502._P, 0x20, "Sign set, shift clears: Status register set correctly");
+
+    equal(MOS6502._RAM[ZPAddress],ExpectedResult,"Sign set, shift clears: LSR performed correctly.");
+
+    /**
+     * Test 5: Set zero.
+     */
+    MOS6502._P = 0x20;
+    MOS6502._PC = PCStart;
+    MOS6502._CYCLES = 0;
+    MOS6502._RAM[ZPAddress] = 0;
+    ExpectedResult = 0;
+
+    MOS6502.emulateCycle();
+
+    equal(MOS6502._PC, PCStart + BytesUsed, "Set zero: Program counter increased correctly.");
+
+    equal(MOS6502._CYCLES, CycleCost, "Set zero: Cycles increased correctly.")
+
+    equal(MOS6502._P, 0x22, "Set zero: Status register set correctly");
+
+    equal(MOS6502._RAM[ZPAddress],ExpectedResult,"Set zero: LSR performed correctly.");
+
+    /**
+     * Test 6: Set zero, set carry.
+     */
+    MOS6502._P = 0x20;
+    MOS6502._PC = PCStart;
+    MOS6502._CYCLES = 0;
+    MOS6502._RAM[ZPAddress] = 1;
+    ExpectedResult = 0;
+
+    MOS6502.emulateCycle();
+
+    equal(MOS6502._PC, PCStart + BytesUsed, "Set zero, set carry: Program counter increased correctly.");
+
+    equal(MOS6502._CYCLES, CycleCost, "Set zero, set carry: Cycles increased correctly.")
+
+    equal(MOS6502._P, 0x23, "Set zero, set carry: Status register set correctly");
+
+    equal(MOS6502._RAM[ZPAddress],ExpectedResult,"Set zero, set carry: LSR performed correctly.");
+
+    /**
+     * Test 7: Sign set, shift clears, sets zero and sets carry.
+     */
+    MOS6502._P = 0xA0;
+    MOS6502._PC = PCStart;
+    MOS6502._CYCLES = 0;
+    MOS6502._RAM[ZPAddress] = 1;
+    ExpectedResult = 0;
+
+    MOS6502.emulateCycle();
+
+    equal(MOS6502._PC, PCStart + BytesUsed, "Sign set, shift clears, sets zero and sets carry: Program counter increased correctly.");
+
+    equal(MOS6502._CYCLES, CycleCost, "Sign set, shift clears, sets zero and sets carry: Cycles increased correctly.")
+
+    equal(MOS6502._P, 0x23, "Sign set, shift clears, sets zero and sets carry: Status register set correctly");
+
+    equal(MOS6502._RAM[ZPAddress],ExpectedResult,"Sign set, shift clears, sets zero and sets carry: LSR performed correctly.");
+
+});
+
+test("0x56 - LSR (Zero Page, X)", function() {
+    /**
+     *    Instruction = LSR - Shift right one bit (memory or accumulator)
+     * Affected Flags = Sign (Clear), Zero, Carry
+     *    Total Tests = 7
+     */
+
+    var OPCODE = 0x56,
+        PCStart = 0x4000,
+        ZPAddress = Math.floor(Math.random() * 200) + 1,
+        XRegister = Math.floor(Math.random() * 200) + 1,
+        BytesUsed = 2,
+        CycleCost = 6,
+        ExpectedResult;
+
+    MOS6502._RAM[PCStart] = OPCODE;
+    MOS6502._RAM[PCStart + 1] = ZPAddress;
+    MOS6502._X = XRegister;
+
+    /**
+     * Test 1: Set none.
+     */
+    MOS6502._P = 0x20;
+    MOS6502._PC = PCStart;
+    MOS6502._CYCLES = 0;
+    MOS6502._RAM[(ZPAddress + XRegister) & 0xFF] = 170;
+    ExpectedResult = 85;
+
+    MOS6502.emulateCycle();
+
+    equal(MOS6502._PC, PCStart + BytesUsed, "Set none: Program counter increased correctly.");
+
+    equal(MOS6502._CYCLES, CycleCost, "Set none: Cycles increased correctly.");
+
+    equal(MOS6502._P, 0x20, "Set none: Status register set correctly");
+
+    equal(MOS6502._RAM[(ZPAddress + XRegister) & 0xFF],ExpectedResult,"Set none: LSR performed correctly.");
+
+    /**
+     * Test 2: Carry set, shift clears.
+     */
+    MOS6502._P = 0x21;
+    MOS6502._PC = PCStart;
+    MOS6502._CYCLES = 0;
+    MOS6502._RAM[(ZPAddress + XRegister) & 0xFF] = 170;
+    ExpectedResult = 85;
+
+    MOS6502.emulateCycle();
+
+    equal(MOS6502._PC, PCStart + BytesUsed, "Carry set, shift clears: Program counter increased correctly.");
+
+    equal(MOS6502._CYCLES, CycleCost, "Carry set, shift clears: Cycles increased correctly.")
+
+    equal(MOS6502._P, 0x20, "Carry set, shift clears: Status register set correctly");
+
+    equal(MOS6502._RAM[(ZPAddress + XRegister) & 0xFF],ExpectedResult,"Carry set, shift clears: LSR performed correctly.");
+
+    /**
+     * Test 3: Carry set, shift sets.
+     */
+    MOS6502._P = 0x21;
+    MOS6502._PC = PCStart;
+    MOS6502._CYCLES = 0;
+    MOS6502._RAM[(ZPAddress + XRegister) & 0xFF] = 85;
+    ExpectedResult = 42;
+
+    MOS6502.emulateCycle();
+
+    equal(MOS6502._PC, PCStart + BytesUsed, "Carry set, shift sets: Program counter increased correctly.");
+
+    equal(MOS6502._CYCLES, CycleCost, "Carry set, shift sets: Cycles increased correctly.")
+
+    equal(MOS6502._P, 0x21, "Carry set, shift sets: Status register set correctly");
+
+    equal(MOS6502._RAM[(ZPAddress + XRegister) & 0xFF],ExpectedResult,"Carry sets, shift sets: LSR performed correctly.");
+
+    /**
+     * Test 4: Sign set, shift clears.
+     */
+    MOS6502._P = 0xA0;
+    MOS6502._PC = PCStart;
+    MOS6502._CYCLES = 0;
+    MOS6502._RAM[(ZPAddress + XRegister) & 0xFF] = 170;
+    ExpectedResult = 85;
+
+    MOS6502.emulateCycle();
+
+    equal(MOS6502._PC, PCStart + BytesUsed, "Sign set, shift clears: Program counter increased correctly.");
+
+    equal(MOS6502._CYCLES, CycleCost, "Sign set, shift clears: Cycles increased correctly.")
+
+    equal(MOS6502._P, 0x20, "Sign set, shift clears: Status register set correctly");
+
+    equal(MOS6502._RAM[(ZPAddress + XRegister) & 0xFF],ExpectedResult,"Sign set, shift clears: LSR performed correctly.");
+
+    /**
+     * Test 5: Set zero.
+     */
+    MOS6502._P = 0x20;
+    MOS6502._PC = PCStart;
+    MOS6502._CYCLES = 0;
+    MOS6502._RAM[(ZPAddress + XRegister) & 0xFF] = 0;
+    ExpectedResult = 0;
+
+    MOS6502.emulateCycle();
+
+    equal(MOS6502._PC, PCStart + BytesUsed, "Set zero: Program counter increased correctly.");
+
+    equal(MOS6502._CYCLES, CycleCost, "Set zero: Cycles increased correctly.")
+
+    equal(MOS6502._P, 0x22, "Set zero: Status register set correctly");
+
+    equal(MOS6502._RAM[(ZPAddress + XRegister) & 0xFF],ExpectedResult,"Set zero: LSR performed correctly.");
+
+    /**
+     * Test 6: Set zero, set carry.
+     */
+    MOS6502._P = 0x20;
+    MOS6502._PC = PCStart;
+    MOS6502._CYCLES = 0;
+    MOS6502._RAM[(ZPAddress + XRegister) & 0xFF] = 1;
+    ExpectedResult = 0;
+
+    MOS6502.emulateCycle();
+
+    equal(MOS6502._PC, PCStart + BytesUsed, "Set zero, set carry: Program counter increased correctly.");
+
+    equal(MOS6502._CYCLES, CycleCost, "Set zero, set carry: Cycles increased correctly.")
+
+    equal(MOS6502._P, 0x23, "Set zero, set carry: Status register set correctly");
+
+    equal(MOS6502._RAM[(ZPAddress + XRegister) & 0xFF],ExpectedResult,"Set zero, set carry: LSR performed correctly.");
+
+    /**
+     * Test 7: Sign set, shift clears, sets zero and sets carry.
+     */
+    MOS6502._P = 0xA0;
+    MOS6502._PC = PCStart;
+    MOS6502._CYCLES = 0;
+    MOS6502._RAM[(ZPAddress + XRegister) & 0xFF] = 1;
+    ExpectedResult = 0;
+
+    MOS6502.emulateCycle();
+
+    equal(MOS6502._PC, PCStart + BytesUsed, "Sign set, shift clears, sets zero and sets carry: Program counter increased correctly.");
+
+    equal(MOS6502._CYCLES, CycleCost, "Sign set, shift clears, sets zero and sets carry: Cycles increased correctly.")
+
+    equal(MOS6502._P, 0x23, "Sign set, shift clears, sets zero and sets carry: Status register set correctly");
+
+    equal(MOS6502._RAM[(ZPAddress + XRegister) & 0xFF],ExpectedResult,"Sign set, shift clears, sets zero and sets carry: LSR performed correctly.");
+
+});
+
+test("0x4E - LSR (Absolute)", function() {
+    /**
+     *    Instruction = LSR - Shift right one bit (memory or accumulator)
+     * Affected Flags = Sign (Clear), Zero, Carry
+     *    Total Tests = 7
+     */
+
+    var OPCODE = 0x4E,
+        PCStart = 0x4000,
+        AddressByte1 = 0x31,
+        AddressByte2 = 0x21,
+        BytesUsed = 3,
+        CycleCost = 6,
+        ExpectedResult;
+
+    MOS6502._RAM[PCStart] = OPCODE;
+    MOS6502._RAM[PCStart + 1] = AddressByte1;
+    MOS6502._RAM[PCStart + 2] = AddressByte2;
+
+    /**
+     * Test 1: Set none.
+     */
+    MOS6502._P = 0x20;
+    MOS6502._PC = PCStart;
+    MOS6502._CYCLES = 0;
+    MOS6502._RAM[MOS6502._MAKE_ADDRESS(AddressByte1,AddressByte2)] = 170;
+    ExpectedResult = 85;
+
+    MOS6502.emulateCycle();
+
+    equal(MOS6502._PC, PCStart + BytesUsed, "Set none: Program counter increased correctly.");
+
+    equal(MOS6502._CYCLES, CycleCost, "Set none: Cycles increased correctly.");
+
+    equal(MOS6502._P, 0x20, "Set none: Status register set correctly");
+
+    equal(MOS6502._RAM[MOS6502._MAKE_ADDRESS(AddressByte1,AddressByte2)],ExpectedResult,"Set none: LSR performed correctly.");
+
+    /**
+     * Test 2: Carry set, shift clears.
+     */
+    MOS6502._P = 0x21;
+    MOS6502._PC = PCStart;
+    MOS6502._CYCLES = 0;
+    MOS6502._RAM[MOS6502._MAKE_ADDRESS(AddressByte1,AddressByte2)] = 170;
+    ExpectedResult = 85;
+
+    MOS6502.emulateCycle();
+
+    equal(MOS6502._PC, PCStart + BytesUsed, "Carry set, shift clears: Program counter increased correctly.");
+
+    equal(MOS6502._CYCLES, CycleCost, "Carry set, shift clears: Cycles increased correctly.")
+
+    equal(MOS6502._P, 0x20, "Carry set, shift clears: Status register set correctly");
+
+    equal(MOS6502._RAM[MOS6502._MAKE_ADDRESS(AddressByte1,AddressByte2)],ExpectedResult,"Carry set, shift clears: LSR performed correctly.");
+
+    /**
+     * Test 3: Carry set, shift sets.
+     */
+    MOS6502._P = 0x21;
+    MOS6502._PC = PCStart;
+    MOS6502._CYCLES = 0;
+    MOS6502._RAM[MOS6502._MAKE_ADDRESS(AddressByte1,AddressByte2)] = 85;
+    ExpectedResult = 42;
+
+    MOS6502.emulateCycle();
+
+    equal(MOS6502._PC, PCStart + BytesUsed, "Carry set, shift sets: Program counter increased correctly.");
+
+    equal(MOS6502._CYCLES, CycleCost, "Carry set, shift sets: Cycles increased correctly.")
+
+    equal(MOS6502._P, 0x21, "Carry set, shift sets: Status register set correctly");
+
+    equal(MOS6502._RAM[MOS6502._MAKE_ADDRESS(AddressByte1,AddressByte2)],ExpectedResult,"Carry sets, shift sets: LSR performed correctly.");
+
+    /**
+     * Test 4: Sign set, shift clears.
+     */
+    MOS6502._P = 0xA0;
+    MOS6502._PC = PCStart;
+    MOS6502._CYCLES = 0;
+    MOS6502._RAM[MOS6502._MAKE_ADDRESS(AddressByte1,AddressByte2)] = 170;
+    ExpectedResult = 85;
+
+    MOS6502.emulateCycle();
+
+    equal(MOS6502._PC, PCStart + BytesUsed, "Sign set, shift clears: Program counter increased correctly.");
+
+    equal(MOS6502._CYCLES, CycleCost, "Sign set, shift clears: Cycles increased correctly.")
+
+    equal(MOS6502._P, 0x20, "Sign set, shift clears: Status register set correctly");
+
+    equal(MOS6502._RAM[MOS6502._MAKE_ADDRESS(AddressByte1,AddressByte2)],ExpectedResult,"Sign set, shift clears: LSR performed correctly.");
+
+    /**
+     * Test 5: Set zero.
+     */
+    MOS6502._P = 0x20;
+    MOS6502._PC = PCStart;
+    MOS6502._CYCLES = 0;
+    MOS6502._RAM[MOS6502._MAKE_ADDRESS(AddressByte1,AddressByte2)] = 0;
+    ExpectedResult = 0;
+
+    MOS6502.emulateCycle();
+
+    equal(MOS6502._PC, PCStart + BytesUsed, "Set zero: Program counter increased correctly.");
+
+    equal(MOS6502._CYCLES, CycleCost, "Set zero: Cycles increased correctly.")
+
+    equal(MOS6502._P, 0x22, "Set zero: Status register set correctly");
+
+    equal(MOS6502._RAM[MOS6502._MAKE_ADDRESS(AddressByte1,AddressByte2)],ExpectedResult,"Set zero: LSR performed correctly.");
+
+    /**
+     * Test 6: Set zero, set carry.
+     */
+    MOS6502._P = 0x20;
+    MOS6502._PC = PCStart;
+    MOS6502._CYCLES = 0;
+    MOS6502._RAM[MOS6502._MAKE_ADDRESS(AddressByte1,AddressByte2)] = 1;
+    ExpectedResult = 0;
+
+    MOS6502.emulateCycle();
+
+    equal(MOS6502._PC, PCStart + BytesUsed, "Set zero, set carry: Program counter increased correctly.");
+
+    equal(MOS6502._CYCLES, CycleCost, "Set zero, set carry: Cycles increased correctly.")
+
+    equal(MOS6502._P, 0x23, "Set zero, set carry: Status register set correctly");
+
+    equal(MOS6502._RAM[MOS6502._MAKE_ADDRESS(AddressByte1,AddressByte2)],ExpectedResult,"Set zero, set carry: LSR performed correctly.");
+
+    /**
+     * Test 7: Sign set, shift clears, sets zero and sets carry.
+     */
+    MOS6502._P = 0xA0;
+    MOS6502._PC = PCStart;
+    MOS6502._CYCLES = 0;
+    MOS6502._RAM[MOS6502._MAKE_ADDRESS(AddressByte1,AddressByte2)] = 1;
+    ExpectedResult = 0;
+
+    MOS6502.emulateCycle();
+
+    equal(MOS6502._PC, PCStart + BytesUsed, "Sign set, shift clears, sets zero and sets carry: Program counter increased correctly.");
+
+    equal(MOS6502._CYCLES, CycleCost, "Sign set, shift clears, sets zero and sets carry: Cycles increased correctly.")
+
+    equal(MOS6502._P, 0x23, "Sign set, shift clears, sets zero and sets carry: Status register set correctly");
+
+    equal(MOS6502._RAM[MOS6502._MAKE_ADDRESS(AddressByte1,AddressByte2)],ExpectedResult,"Sign set, shift clears, sets zero and sets carry: LSR performed correctly.");
+
+});
+
+test("0x5E - LSR (Absolute, X)", function() {
+    /**
+     *    Instruction = LSR - Shift right one bit (memory or accumulator)
+     * Affected Flags = Sign (Clear), Zero, Carry
+     *    Total Tests = 7
+     */
+
+    var OPCODE = 0x5E,
+        PCStart = 0x4000,
+        AddressByte1 = 0x31,
+        AddressByte2 = 0x21,
+        XRegister = Math.floor(Math.random() * 200) + 1,
+        BytesUsed = 3,
+        CycleCost = 7,
+        ExpectedResult;
+
+    MOS6502._RAM[PCStart] = OPCODE;
+    MOS6502._RAM[PCStart + 1] = AddressByte1;
+    MOS6502._RAM[PCStart + 2] = AddressByte2;
+    MOS6502._X = XRegister;
+
+    /**
+     * Test 1: Set none.
+     */
+    MOS6502._P = 0x20;
+    MOS6502._PC = PCStart;
+    MOS6502._CYCLES = 0;
+    MOS6502._RAM[MOS6502._MAKE_ADDRESS(AddressByte1,AddressByte2) + XRegister] = 170;
+    ExpectedResult = 85;
+
+    MOS6502.emulateCycle();
+
+    equal(MOS6502._PC, PCStart + BytesUsed, "Set none: Program counter increased correctly.");
+
+    equal(MOS6502._CYCLES, CycleCost, "Set none: Cycles increased correctly.");
+
+    equal(MOS6502._P, 0x20, "Set none: Status register set correctly");
+
+    equal(MOS6502._RAM[MOS6502._MAKE_ADDRESS(AddressByte1,AddressByte2) + XRegister],ExpectedResult,"Set none: LSR performed correctly.");
+
+    /**
+     * Test 2: Carry set, shift clears.
+     */
+    MOS6502._P = 0x21;
+    MOS6502._PC = PCStart;
+    MOS6502._CYCLES = 0;
+    MOS6502._RAM[MOS6502._MAKE_ADDRESS(AddressByte1,AddressByte2) + XRegister] = 170;
+    ExpectedResult = 85;
+
+    MOS6502.emulateCycle();
+
+    equal(MOS6502._PC, PCStart + BytesUsed, "Carry set, shift clears: Program counter increased correctly.");
+
+    equal(MOS6502._CYCLES, CycleCost, "Carry set, shift clears: Cycles increased correctly.")
+
+    equal(MOS6502._P, 0x20, "Carry set, shift clears: Status register set correctly");
+
+    equal(MOS6502._RAM[MOS6502._MAKE_ADDRESS(AddressByte1,AddressByte2) + XRegister],ExpectedResult,"Carry set, shift clears: LSR performed correctly.");
+
+    /**
+     * Test 3: Carry set, shift sets.
+     */
+    MOS6502._P = 0x21;
+    MOS6502._PC = PCStart;
+    MOS6502._CYCLES = 0;
+    MOS6502._RAM[MOS6502._MAKE_ADDRESS(AddressByte1,AddressByte2) + XRegister] = 85;
+    ExpectedResult = 42;
+
+    MOS6502.emulateCycle();
+
+    equal(MOS6502._PC, PCStart + BytesUsed, "Carry set, shift sets: Program counter increased correctly.");
+
+    equal(MOS6502._CYCLES, CycleCost, "Carry set, shift sets: Cycles increased correctly.")
+
+    equal(MOS6502._P, 0x21, "Carry set, shift sets: Status register set correctly");
+
+    equal(MOS6502._RAM[MOS6502._MAKE_ADDRESS(AddressByte1,AddressByte2) + XRegister],ExpectedResult,"Carry sets, shift sets: LSR performed correctly.");
+
+    /**
+     * Test 4: Sign set, shift clears.
+     */
+    MOS6502._P = 0xA0;
+    MOS6502._PC = PCStart;
+    MOS6502._CYCLES = 0;
+    MOS6502._RAM[MOS6502._MAKE_ADDRESS(AddressByte1,AddressByte2) + XRegister] = 170;
+    ExpectedResult = 85;
+
+    MOS6502.emulateCycle();
+
+    equal(MOS6502._PC, PCStart + BytesUsed, "Sign set, shift clears: Program counter increased correctly.");
+
+    equal(MOS6502._CYCLES, CycleCost, "Sign set, shift clears: Cycles increased correctly.")
+
+    equal(MOS6502._P, 0x20, "Sign set, shift clears: Status register set correctly");
+
+    equal(MOS6502._RAM[MOS6502._MAKE_ADDRESS(AddressByte1,AddressByte2) + XRegister],ExpectedResult,"Sign set, shift clears: LSR performed correctly.");
+
+    /**
+     * Test 5: Set zero.
+     */
+    MOS6502._P = 0x20;
+    MOS6502._PC = PCStart;
+    MOS6502._CYCLES = 0;
+    MOS6502._RAM[MOS6502._MAKE_ADDRESS(AddressByte1,AddressByte2) + XRegister] = 0;
+    ExpectedResult = 0;
+
+    MOS6502.emulateCycle();
+
+    equal(MOS6502._PC, PCStart + BytesUsed, "Set zero: Program counter increased correctly.");
+
+    equal(MOS6502._CYCLES, CycleCost, "Set zero: Cycles increased correctly.")
+
+    equal(MOS6502._P, 0x22, "Set zero: Status register set correctly");
+
+    equal(MOS6502._RAM[MOS6502._MAKE_ADDRESS(AddressByte1,AddressByte2) + XRegister],ExpectedResult,"Set zero: LSR performed correctly.");
+
+    /**
+     * Test 6: Set zero, set carry.
+     */
+    MOS6502._P = 0x20;
+    MOS6502._PC = PCStart;
+    MOS6502._CYCLES = 0;
+    MOS6502._RAM[MOS6502._MAKE_ADDRESS(AddressByte1,AddressByte2) + XRegister] = 1;
+    ExpectedResult = 0;
+
+    MOS6502.emulateCycle();
+
+    equal(MOS6502._PC, PCStart + BytesUsed, "Set zero, set carry: Program counter increased correctly.");
+
+    equal(MOS6502._CYCLES, CycleCost, "Set zero, set carry: Cycles increased correctly.")
+
+    equal(MOS6502._P, 0x23, "Set zero, set carry: Status register set correctly");
+
+    equal(MOS6502._RAM[MOS6502._MAKE_ADDRESS(AddressByte1,AddressByte2) + XRegister],ExpectedResult,"Set zero, set carry: LSR performed correctly.");
+
+    /**
+     * Test 7: Sign set, shift clears, sets zero and sets carry.
+     */
+    MOS6502._P = 0xA0;
+    MOS6502._PC = PCStart;
+    MOS6502._CYCLES = 0;
+    MOS6502._RAM[MOS6502._MAKE_ADDRESS(AddressByte1,AddressByte2) + XRegister] = 1;
+    ExpectedResult = 0;
+
+    MOS6502.emulateCycle();
+
+    equal(MOS6502._PC, PCStart + BytesUsed, "Sign set, shift clears, sets zero and sets carry: Program counter increased correctly.");
+
+    equal(MOS6502._CYCLES, CycleCost, "Sign set, shift clears, sets zero and sets carry: Cycles increased correctly.")
+
+    equal(MOS6502._P, 0x23, "Sign set, shift clears, sets zero and sets carry: Status register set correctly");
+
+    equal(MOS6502._RAM[MOS6502._MAKE_ADDRESS(AddressByte1,AddressByte2) + XRegister],ExpectedResult,"Sign set, shift clears, sets zero and sets carry: LSR performed correctly.");
+
+});
+
+//</editor-fold>
+
 /**
  * Tests to be implemented:
 
  // 0x40 - 0x4F
- case (0x41) : me.EOR(); break;
- case (0x45) : me.EOR(); break;
  case (0x46) : me.LSR(); break;
  case (0x48) : me.PHA(); break;
- case (0x49) : me.EOR(); break;
  case (0x4A) : me.LSR(); break;
  case (0x4C) : me.JMP(); break;
- case (0x4D) : me.EOR(); break;
  case (0x4E) : me.LSR(); break;
 
  // 0x50 - 0x5F
  case (0x50) : me.BVC(); break;
- case (0x51) : me.EOR(); break;
- case (0x55) : me.EOR(); break;
  case (0x56) : me.LSR(); break;
  case (0x58) : me.CLI(); break;
- case (0x59) : me.EOR(); break;
- case (0x5D) : me.EOR(); break;
  case (0x5E) : me.LSR(); break;
 
  // 0x60 - 0x6F

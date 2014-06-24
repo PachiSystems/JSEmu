@@ -2394,7 +2394,6 @@ MOS6502.prototype.PLP = function() {
         // Get Operand
         case (0x28):
             me._P = me._PULL();
-            console.log("PLP: " + me._P);
             me._CYCLES += 4;
             me._PC += 1;
             break;
