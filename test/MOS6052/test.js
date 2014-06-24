@@ -6843,11 +6843,60 @@ test("0x38 - SEC (Implied)", function() {
 
 //</editor-fold>
 
+/*********************************************************************************************************************/
+
+//<editor-fold desc="RTI Tests">
+
+QUnit.module("Instruction - RTI", {
+    setup: function() {
+        MOS6502.init();
+    }
+});
+
+test("0x40 - RTI (Implied)", function() {
+    /**
+     *    Instruction = RTI - Return from interrupt
+     * Affected Flags = None
+     *    Total Tests = 1
+     */
+
+    var OPCODE = 0x40,
+        PCStart = 0x4000,
+        StatusRegister = Math.floor(Math.random() * 255) + 1,
+        AddressByte1 = 0x31,
+        AddressByte2 = 0x21,
+        BytesUsed = 1,
+        CycleCost = 6;
+
+    MOS6502._RAM[PCStart] = OPCODE;
+    MOS6502._SP = 0x01FD;
+    MOS6502._P = 0x20;
+    MOS6502._RAM[0x01FD] = StatusRegister;
+    MOS6502._RAM[0x01FE] = AddressByte1;
+    MOS6502._RAM[0x01FF] = AddressByte2;
+    MOS6502._CYCLES = 0;
+    MOS6502._PC = PCStart;
+
+    MOS6502.emulateCycle();
+
+    equal(MOS6502._PC,
+        MOS6502._MAKE_ADDRESS(AddressByte1,AddressByte2),
+        "Program Counter set correctly.");
+
+    equal(MOS6502._CYCLES,
+        CycleCost,
+        "Cycles incremented correctly.");
+
+    equal(MOS6502._P,
+        StatusRegister,
+        "Status Register set correctly.");
+
+});
+
+//</editor-fold>
+
 /**
  * Tests to be implemented:
-
- // 0x30 - 0x3F
- case (0x38) : me.SEC(); break;
 
  // 0x40 - 0x4F
  case (0x40) : me.RTI(); break;

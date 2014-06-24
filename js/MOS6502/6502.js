@@ -1969,8 +1969,8 @@ MOS6502.prototype.JSR = function() {
     switch (opCode) {
         // Get Operand
         case (0x20):
-            me._PUSH((me._PC + 2) >> 8);
-            me._PUSH((me._PC + 2) & 0xFF);
+            me._PUSH((me._PC + 3) >> 8);
+            me._PUSH((me._PC + 3) & 0xFF);
 
             me._PC = me._MAKE_ADDRESS(byte1,byte2);
             me._CYCLES += 6;
@@ -2558,8 +2558,7 @@ MOS6502.prototype.RTI = function() {
         case (0x40):
             me._P = me._PULL();
 
-            var ADDR = me._PULL();
-            ADDR |= (me._PULL() << 8);
+            var ADDR = me._MAKE_ADDRESS(me._PULL(), me._PULL());
 
             me._CYCLES += 6;
             me._PC = ADDR;
