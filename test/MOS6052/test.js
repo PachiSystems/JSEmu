@@ -3827,11 +3827,11 @@ test("0x20 - JSR (Absolute)", function() {
         "Stack pointer updated correctly.");
 
     equal(MOS6502._RAM[0x01FF],
-        (PCStart + 2) >> 8,
+        (PCStart + 3) >> 8,
         "Return address high byte stored correctly.");
 
     equal(MOS6502._RAM[0x01FE],
-            (PCStart + 2) & 0xFF,
+            (PCStart + 3) & 0xFF,
         "Return address low byte stored correctly.");
 
 
