@@ -1275,14 +1275,13 @@ MOS6502.prototype.BVC = function() {
     if(!me._IF_OVERFLOW()) {
 
         // So... Since there are no signed numbers in JS... We have to work it out.
-        var relAddress = ( (OPER + 2) < 0x80 ) ? me._PC += OPER + 2 : me._PC += OPER + 2 - 256;
+        var relAddress = ( OPER < 0x80 ) ? OPER : OPER - 256;
 
-        me._CYCLES += ( (me._PC & 0xFF00) !=  (me._PC + relAddress) & 0xFF00) ? 2 : 1;
+        me._CYCLES += (me._PC & 0xFF00) !=  ( (me._PC + relAddress) & 0xFF00) ? 2 : 1;
 
-        me._PC += relAddress; // The switch is going to add two to this...
+        me._PC += relAddress;
 
     } else {
-        me._CYCLES += 2;
         me._PC += 2;
     }
 
