@@ -8740,12 +8740,78 @@ test("0x48 - PHA (Implied)", function() {
 
 //</editor-fold>
 
+/*********************************************************************************************************************/
+
+//<editor-fold desc="JMP Tests">
+
+QUnit.module("Instruction - JMP", {
+    setup: function() {
+        MOS6502.init();
+    }
+});
+
+test("0x4C - JMP (Absolute)", function() {
+    /**
+     *    Instruction = JMP - Jump to new location
+     * Affected Flags = None
+     *    Total Tests = 1
+     */
+
+    var OPCODE = 0x4C,
+        PCStart = 0x4000,
+        BytesUsed = 3,
+        AddressByte1 = Math.floor(Math.random() * 255) + 1,
+        AddressByte2 = Math.floor(Math.random() * 255) + 1,
+        CycleCost = 3;
+
+    MOS6502._RAM[PCStart] = OPCODE;
+    MOS6502._RAM[PCStart + 1] = AddressByte1;
+    MOS6502._RAM[PCStart + 2] = AddressByte2;
+
+    MOS6502._PC = PCStart;
+
+    MOS6502.emulateCycle();
+
+    equal(MOS6502._PC,MOS6502._MAKE_ADDRESS(AddressByte1,AddressByte2),"Program counter set correctly.");
+
+    equal(MOS6502._CYCLES, CycleCost, "Cycles increased correctly.");
+
+});
+
+test("0x6C - JMP (Indirect)", function() {
+    /**
+     *    Instruction = JMP - Jump to new location
+     * Affected Flags = None
+     *    Total Tests = 1
+     */
+
+    var OPCODE = 0x6C,
+        PCStart = 0x4000,
+        BytesUsed = 3,
+        AddressByte1 = Math.floor(Math.random() * 255) + 1,
+        AddressByte2 = Math.floor(Math.random() * 255) + 1,
+        AddressByte3 = Math.floor(Math.random() * 255) + 1,
+        AddressByte4 = Math.floor(Math.random() * 255) + 1,
+        CycleCost = 5;
+
+    MOS6502._RAM[PCStart] = OPCODE;
+    MOS6502._RAM[PCStart + 1] = AddressByte1;
+    MOS6502._RAM[PCStart + 2] = AddressByte2;
+    MOS6502._RAM[AddressByte1] = AddressByte3;
+    MOS6502._RAM[AddressByte2] = AddressByte4;
+
+    MOS6502._PC = PCStart;
+
+    MOS6502.emulateCycle();
+
+    equal(MOS6502._PC,MOS6502._MAKE_ADDRESS(AddressByte3,AddressByte4),"Program counter set correctly.");
+
+    equal(MOS6502._CYCLES, CycleCost, "Cycles increased correctly.");
+
+});
+
 /**
  * Tests to be implemented:
-
- // 0x40 - 0x4F
- case (0x48) : me.PHA(); break;
- case (0x4C) : me.JMP(); break;
 
  // 0x50 - 0x5F
  case (0x50) : me.BVC(); break;
@@ -8759,7 +8825,6 @@ test("0x48 - PHA (Implied)", function() {
  case (0x68) : me.PLA(); break;
  case (0x69) : me.ADC(); break;
  case (0x6A) : me.ROR(); break;
- case (0x6C) : me.JMP(); break;
  case (0x6D) : me.ADC(); break;
  case (0x6E) : me.ROR(); break;
 
