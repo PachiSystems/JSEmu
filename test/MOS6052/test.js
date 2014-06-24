@@ -6856,7 +6856,7 @@ QUnit.module("Instruction - RTI", {
 test("0x40 - RTI (Implied)", function() {
     /**
      *    Instruction = RTI - Return from interrupt
-     * Affected Flags = None
+     * Affected Flags = All (From stack)
      *    Total Tests = 1
      */
 
@@ -6895,11 +6895,1033 @@ test("0x40 - RTI (Implied)", function() {
 
 //</editor-fold>
 
+/*********************************************************************************************************************/
+
+//<editor-fold desc="EOR Tests">
+
+QUnit.module("Instruction - EOR", {
+    setup: function() {
+        MOS6502.init();
+    }
+});
+
+test("0x49 - EOR (Immediate)", function() {
+    /**
+     *    Instruction = EOR - "Exclusive-Or" memory with accumulator
+     * Affected Flags = Sign, Zero
+     *    Total Tests = 3
+     */
+
+    var OPCODE = 0x49,
+        PCStart = 0x4000,
+        BytesUsed = 2,
+        CycleCost = 2,
+        Memory, Accumulator,ExpectedResult;
+
+    MOS6502._RAM[PCStart] = OPCODE;
+
+    /**
+     * Test 1: Set none.
+     */
+    Memory = 170;
+    Accumulator = 153;
+    ExpectedResult = 51;
+
+    MOS6502._PC = PCStart;
+    MOS6502._CYCLES = 0;
+    MOS6502._RAM[PCStart + 1] = Memory;
+    MOS6502._A = Accumulator;
+    MOS6502._P = 0x20;
+
+    MOS6502.emulateCycle();
+
+    equal(MOS6502._PC, PCStart + BytesUsed,"Set none: Program counter incremented correctly.");
+
+    equal(MOS6502._CYCLES, CycleCost, "Set none: Cycles incremented correctly.");
+
+    equal(MOS6502._A, ExpectedResult, "Set none: EOR successful.");
+
+    equal(MOS6502._P, 0x20, "Set none: Status register set correctly.");
+
+    /**
+     * Test 2: Set sign.
+     */
+    Memory = 158;
+    Accumulator = 123;
+    ExpectedResult = 229;
+
+    MOS6502._PC = PCStart;
+    MOS6502._CYCLES = 0;
+    MOS6502._RAM[PCStart + 1] = Memory;
+    MOS6502._A = Accumulator;
+    MOS6502._P = 0x20;
+
+    MOS6502.emulateCycle();
+
+    equal(MOS6502._PC, PCStart + BytesUsed,"Set sign: Program counter incremented correctly.");
+
+    equal(MOS6502._CYCLES, CycleCost, "Set sign: Cycles incremented correctly.");
+
+    equal(MOS6502._A, ExpectedResult, "Set sign: EOR successful.");
+
+    equal(MOS6502._P, 0xA0, "Set sign: Status register set correctly.");
+
+    /**
+     * Test 3: Set zero.
+     */
+    Memory = 170;
+    Accumulator = 170;
+    ExpectedResult = 0;
+
+    MOS6502._PC = PCStart;
+    MOS6502._CYCLES = 0;
+    MOS6502._RAM[PCStart + 1] = Memory;
+    MOS6502._A = Accumulator;
+    MOS6502._P = 0x20;
+
+    MOS6502.emulateCycle();
+
+    equal(MOS6502._PC, PCStart + BytesUsed,"Set zero: Program counter incremented correctly.");
+
+    equal(MOS6502._CYCLES, CycleCost, "Set zero: Cycles incremented correctly.");
+
+    equal(MOS6502._A, ExpectedResult, "Set zero: EOR successful.");
+
+    equal(MOS6502._P, 0x22, "Set zero: Status register set correctly.");
+
+});
+
+test("0x45 - EOR (Zero Page)", function() {
+    /**
+     *    Instruction = EOR - "Exclusive-Or" memory with accumulator
+     * Affected Flags = Sign, Zero
+     *    Total Tests = 3
+     */
+
+    var OPCODE = 0x45,
+        PCStart = 0x4000,
+        ZPAddress = Math.floor(Math.random() * 255) + 1,
+        BytesUsed = 2,
+        CycleCost = 3,
+        Memory, Accumulator,ExpectedResult;
+
+    MOS6502._RAM[PCStart] = OPCODE;
+    MOS6502._RAM[PCStart + 1] = ZPAddress;
+
+    /**
+     * Test 1: Set none.
+     */
+    Memory = 170;
+    Accumulator = 153;
+    ExpectedResult = 51;
+
+    MOS6502._PC = PCStart;
+    MOS6502._CYCLES = 0;
+    MOS6502._RAM[ZPAddress] = Memory;
+    MOS6502._A = Accumulator;
+    MOS6502._P = 0x20;
+
+    MOS6502.emulateCycle();
+
+    equal(MOS6502._PC, PCStart + BytesUsed,"Set none: Program counter incremented correctly.");
+
+    equal(MOS6502._CYCLES, CycleCost, "Set none: Cycles incremented correctly.");
+
+    equal(MOS6502._A, ExpectedResult, "Set none: EOR successful.");
+
+    equal(MOS6502._P, 0x20, "Set none: Status register set correctly.");
+
+    /**
+     * Test 2: Set sign.
+     */
+    Memory = 158;
+    Accumulator = 123;
+    ExpectedResult = 229;
+
+    MOS6502._PC = PCStart;
+    MOS6502._CYCLES = 0;
+    MOS6502._RAM[ZPAddress] = Memory;
+    MOS6502._A = Accumulator;
+    MOS6502._P = 0x20;
+
+    MOS6502.emulateCycle();
+
+    equal(MOS6502._PC, PCStart + BytesUsed,"Set sign: Program counter incremented correctly.");
+
+    equal(MOS6502._CYCLES, CycleCost, "Set sign: Cycles incremented correctly.");
+
+    equal(MOS6502._A, ExpectedResult, "Set sign: EOR successful.");
+
+    equal(MOS6502._P, 0xA0, "Set sign: Status register set correctly.");
+
+    /**
+     * Test 3: Set zero.
+     */
+    Memory = 170;
+    Accumulator = 170;
+    ExpectedResult = 0;
+
+    MOS6502._PC = PCStart;
+    MOS6502._CYCLES = 0;
+    MOS6502._RAM[ZPAddress] = Memory;
+    MOS6502._A = Accumulator;
+    MOS6502._P = 0x20;
+
+    MOS6502.emulateCycle();
+
+    equal(MOS6502._PC, PCStart + BytesUsed,"Set zero: Program counter incremented correctly.");
+
+    equal(MOS6502._CYCLES, CycleCost, "Set zero: Cycles incremented correctly.");
+
+    equal(MOS6502._A, ExpectedResult, "Set zero: EOR successful.");
+
+    equal(MOS6502._P, 0x22, "Set zero: Status register set correctly.");
+
+});
+
+test("0x55 - EOR (Zero Page, X)", function() {
+    /**
+     *    Instruction = EOR - "Exclusive-Or" memory with accumulator
+     * Affected Flags = Sign, Zero
+     *    Total Tests = 3
+     */
+
+    var OPCODE = 0x55,
+        PCStart = 0x4000,
+        XRegister = Math.floor(Math.random() * 255) + 1,
+        ZPAddress = Math.floor(Math.random() * 255) + 1,
+        BytesUsed = 2,
+        CycleCost = 4,
+        Memory, Accumulator,ExpectedResult;
+
+    MOS6502._RAM[PCStart] = OPCODE;
+    MOS6502._RAM[PCStart + 1] = ZPAddress;
+    MOS6502._X = XRegister;
+
+    /**
+     * Test 1: Set none.
+     */
+    Memory = 170;
+    Accumulator = 153;
+    ExpectedResult = 51;
+
+    MOS6502._PC = PCStart;
+    MOS6502._CYCLES = 0;
+    MOS6502._RAM[(ZPAddress + XRegister) & 0xFF] = Memory;
+    MOS6502._A = Accumulator;
+    MOS6502._P = 0x20;
+
+    MOS6502.emulateCycle();
+
+    equal(MOS6502._PC, PCStart + BytesUsed,"Set none: Program counter incremented correctly.");
+
+    equal(MOS6502._CYCLES, CycleCost, "Set none: Cycles incremented correctly.");
+
+    equal(MOS6502._A, ExpectedResult, "Set none: EOR successful.");
+
+    equal(MOS6502._P, 0x20, "Set none: Status register set correctly.");
+
+    /**
+     * Test 2: Set sign.
+     */
+    Memory = 158;
+    Accumulator = 123;
+    ExpectedResult = 229;
+
+    MOS6502._PC = PCStart;
+    MOS6502._CYCLES = 0;
+    MOS6502._RAM[(ZPAddress + XRegister) & 0xFF] = Memory;
+    MOS6502._A = Accumulator;
+    MOS6502._P = 0x20;
+
+    MOS6502.emulateCycle();
+
+    equal(MOS6502._PC, PCStart + BytesUsed,"Set sign: Program counter incremented correctly.");
+
+    equal(MOS6502._CYCLES, CycleCost, "Set sign: Cycles incremented correctly.");
+
+    equal(MOS6502._A, ExpectedResult, "Set sign: EOR successful.");
+
+    equal(MOS6502._P, 0xA0, "Set sign: Status register set correctly.");
+
+    /**
+     * Test 3: Set zero.
+     */
+    Memory = 170;
+    Accumulator = 170;
+    ExpectedResult = 0;
+
+    MOS6502._PC = PCStart;
+    MOS6502._CYCLES = 0;
+    MOS6502._RAM[(ZPAddress + XRegister) & 0xFF] = Memory;
+    MOS6502._A = Accumulator;
+    MOS6502._P = 0x20;
+
+    MOS6502.emulateCycle();
+
+    equal(MOS6502._PC, PCStart + BytesUsed,"Set zero: Program counter incremented correctly.");
+
+    equal(MOS6502._CYCLES, CycleCost, "Set zero: Cycles incremented correctly.");
+
+    equal(MOS6502._A, ExpectedResult, "Set zero: EOR successful.");
+
+    equal(MOS6502._P, 0x22, "Set zero: Status register set correctly.");
+
+});
+
+test("0x4D - EOR (Absolute)", function() {
+    /**
+     *    Instruction = EOR - "Exclusive-Or" memory with accumulator
+     * Affected Flags = Sign, Zero
+     *    Total Tests = 3
+     */
+
+    var OPCODE = 0x4D,
+        PCStart = 0x4000,
+        XRegister = Math.floor(Math.random() * 255) + 1,
+        YRegister = Math.floor(Math.random() * 255) + 1,
+        ZPAddress = Math.floor(Math.random() * 255) + 1,
+        AddressByte1 = 0x31,
+        AddressByte2 = 0x21,
+        BytesUsed = 3,
+        CycleCost = 4,
+        Memory, Accumulator,ExpectedResult;
+
+    MOS6502._RAM[PCStart] = OPCODE;
+    MOS6502._RAM[PCStart + 1] = AddressByte1;
+    MOS6502._RAM[PCStart + 2] = AddressByte2;
+
+    /**
+     * Test 1: Set none.
+     */
+    Memory = 170;
+    Accumulator = 153;
+    ExpectedResult = 51;
+
+    MOS6502._PC = PCStart;
+    MOS6502._CYCLES = 0;
+    MOS6502._RAM[0x2131] = Memory;
+    MOS6502._A = Accumulator;
+    MOS6502._P = 0x20;
+
+    MOS6502.emulateCycle();
+
+    equal(MOS6502._PC, PCStart + BytesUsed,"Set none: Program counter incremented correctly.");
+
+    equal(MOS6502._CYCLES, CycleCost, "Set none: Cycles incremented correctly.");
+
+    equal(MOS6502._A, ExpectedResult, "Set none: EOR successful.");
+
+    equal(MOS6502._P, 0x20, "Set none: Status register set correctly.");
+
+    /**
+     * Test 2: Set sign.
+     */
+    Memory = 158;
+    Accumulator = 123;
+    ExpectedResult = 229;
+
+    MOS6502._PC = PCStart;
+    MOS6502._CYCLES = 0;
+    MOS6502._RAM[0x2131] = Memory;
+    MOS6502._A = Accumulator;
+    MOS6502._P = 0x20;
+
+    MOS6502.emulateCycle();
+
+    equal(MOS6502._PC, PCStart + BytesUsed,"Set sign: Program counter incremented correctly.");
+
+    equal(MOS6502._CYCLES, CycleCost, "Set sign: Cycles incremented correctly.");
+
+    equal(MOS6502._A, ExpectedResult, "Set sign: EOR successful.");
+
+    equal(MOS6502._P, 0xA0, "Set sign: Status register set correctly.");
+
+    /**
+     * Test 3: Set zero.
+     */
+    Memory = 170;
+    Accumulator = 170;
+    ExpectedResult = 0;
+
+    MOS6502._PC = PCStart;
+    MOS6502._CYCLES = 0;
+    MOS6502._RAM[0x2131] = Memory;
+    MOS6502._A = Accumulator;
+    MOS6502._P = 0x20;
+
+    MOS6502.emulateCycle();
+
+    equal(MOS6502._PC, PCStart + BytesUsed,"Set zero: Program counter incremented correctly.");
+
+    equal(MOS6502._CYCLES, CycleCost, "Set zero: Cycles incremented correctly.");
+
+    equal(MOS6502._A, ExpectedResult, "Set zero: EOR successful.");
+
+    equal(MOS6502._P, 0x22, "Set zero: Status register set correctly.");
+
+});
+
+test("0x5D - EOR (Absolute, X) (Same Page)", function() {
+    /**
+     *    Instruction = EOR - "Exclusive-Or" memory with accumulator
+     * Affected Flags = Sign, Zero
+     *    Total Tests = 3
+     */
+
+    var OPCODE = 0x5D,
+        PCStart = 0x4000,
+        XRegister = 0x50,
+        ZPAddress = Math.floor(Math.random() * 255) + 1,
+        AddressByte1 = 0xA0,
+        AddressByte2 = 0x21,
+        BytesUsed = 3,
+        CycleCost = 4,
+        Memory, Accumulator,ExpectedResult;
+
+    MOS6502._RAM[PCStart] = OPCODE;
+    MOS6502._RAM[PCStart + 1] = AddressByte1;
+    MOS6502._RAM[PCStart + 2] = AddressByte2;
+    MOS6502._X = XRegister;
+
+    /**
+     * Test 1: Set none.
+     */
+    Memory = 170;
+    Accumulator = 153;
+    ExpectedResult = 51;
+
+    MOS6502._PC = PCStart;
+    MOS6502._CYCLES = 0;
+    MOS6502._RAM[MOS6502._MAKE_ADDRESS(AddressByte1,AddressByte2) + XRegister] = Memory;
+    MOS6502._A = Accumulator;
+    MOS6502._P = 0x20;
+
+    MOS6502.emulateCycle();
+
+    equal(MOS6502._PC, PCStart + BytesUsed,"Set none: Program counter incremented correctly.");
+
+    equal(MOS6502._CYCLES, CycleCost, "Set none: Cycles incremented correctly.");
+
+    equal(MOS6502._A, ExpectedResult, "Set none: EOR successful.");
+
+    equal(MOS6502._P, 0x20, "Set none: Status register set correctly.");
+
+    /**
+     * Test 2: Set sign.
+     */
+    Memory = 158;
+    Accumulator = 123;
+    ExpectedResult = 229;
+
+    MOS6502._PC = PCStart;
+    MOS6502._CYCLES = 0;
+    MOS6502._RAM[MOS6502._MAKE_ADDRESS(AddressByte1,AddressByte2) + XRegister] = Memory;
+    MOS6502._A = Accumulator;
+    MOS6502._P = 0x20;
+
+    MOS6502.emulateCycle();
+
+    equal(MOS6502._PC, PCStart + BytesUsed,"Set sign: Program counter incremented correctly.");
+
+    equal(MOS6502._CYCLES, CycleCost, "Set sign: Cycles incremented correctly.");
+
+    equal(MOS6502._A, ExpectedResult, "Set sign: EOR successful.");
+
+    equal(MOS6502._P, 0xA0, "Set sign: Status register set correctly.");
+
+    /**
+     * Test 3: Set zero.
+     */
+    Memory = 170;
+    Accumulator = 170;
+    ExpectedResult = 0;
+
+    MOS6502._PC = PCStart;
+    MOS6502._CYCLES = 0;
+    MOS6502._RAM[MOS6502._MAKE_ADDRESS(AddressByte1,AddressByte2) + XRegister] = Memory;
+    MOS6502._A = Accumulator;
+    MOS6502._P = 0x20;
+
+    MOS6502.emulateCycle();
+
+    equal(MOS6502._PC, PCStart + BytesUsed,"Set zero: Program counter incremented correctly.");
+
+    equal(MOS6502._CYCLES, CycleCost, "Set zero: Cycles incremented correctly.");
+
+    equal(MOS6502._A, ExpectedResult, "Set zero: EOR successful.");
+
+    equal(MOS6502._P, 0x22, "Set zero: Status register set correctly.");
+
+});
+
+test("0x5D - EOR (Absolute, X) (Cross Page)", function() {
+    /**
+     *    Instruction = EOR - "Exclusive-Or" memory with accumulator
+     * Affected Flags = Sign, Zero
+     *    Total Tests = 3
+     */
+
+    var OPCODE = 0x5D,
+        PCStart = 0x4000,
+        XRegister = 0xA0,
+        ZPAddress = Math.floor(Math.random() * 255) + 1,
+        AddressByte1 = 0xA0,
+        AddressByte2 = 0x21,
+        BytesUsed = 3,
+        CycleCost = 5,
+        Memory, Accumulator,ExpectedResult;
+
+    MOS6502._RAM[PCStart] = OPCODE;
+    MOS6502._RAM[PCStart + 1] = AddressByte1;
+    MOS6502._RAM[PCStart + 2] = AddressByte2;
+    MOS6502._X = XRegister;
+
+    /**
+     * Test 1: Set none.
+     */
+    Memory = 170;
+    Accumulator = 153;
+    ExpectedResult = 51;
+
+    MOS6502._PC = PCStart;
+    MOS6502._CYCLES = 0;
+    MOS6502._RAM[MOS6502._MAKE_ADDRESS(AddressByte1,AddressByte2) + XRegister] = Memory;
+    MOS6502._A = Accumulator;
+    MOS6502._P = 0x20;
+
+    MOS6502.emulateCycle();
+
+    equal(MOS6502._PC, PCStart + BytesUsed,"Set none: Program counter incremented correctly.");
+
+    equal(MOS6502._CYCLES, CycleCost, "Set none: Cycles incremented correctly.");
+
+    equal(MOS6502._A, ExpectedResult, "Set none: EOR successful.");
+
+    equal(MOS6502._P, 0x20, "Set none: Status register set correctly.");
+
+    /**
+     * Test 2: Set sign.
+     */
+    Memory = 158;
+    Accumulator = 123;
+    ExpectedResult = 229;
+
+    MOS6502._PC = PCStart;
+    MOS6502._CYCLES = 0;
+    MOS6502._RAM[MOS6502._MAKE_ADDRESS(AddressByte1,AddressByte2) + XRegister] = Memory;
+    MOS6502._A = Accumulator;
+    MOS6502._P = 0x20;
+
+    MOS6502.emulateCycle();
+
+    equal(MOS6502._PC, PCStart + BytesUsed,"Set sign: Program counter incremented correctly.");
+
+    equal(MOS6502._CYCLES, CycleCost, "Set sign: Cycles incremented correctly.");
+
+    equal(MOS6502._A, ExpectedResult, "Set sign: EOR successful.");
+
+    equal(MOS6502._P, 0xA0, "Set sign: Status register set correctly.");
+
+    /**
+     * Test 3: Set zero.
+     */
+    Memory = 170;
+    Accumulator = 170;
+    ExpectedResult = 0;
+
+    MOS6502._PC = PCStart;
+    MOS6502._CYCLES = 0;
+    MOS6502._RAM[MOS6502._MAKE_ADDRESS(AddressByte1,AddressByte2) + XRegister] = Memory;
+    MOS6502._A = Accumulator;
+    MOS6502._P = 0x20;
+
+    MOS6502.emulateCycle();
+
+    equal(MOS6502._PC, PCStart + BytesUsed,"Set zero: Program counter incremented correctly.");
+
+    equal(MOS6502._CYCLES, CycleCost, "Set zero: Cycles incremented correctly.");
+
+    equal(MOS6502._A, ExpectedResult, "Set zero: EOR successful.");
+
+    equal(MOS6502._P, 0x22, "Set zero: Status register set correctly.");
+
+});
+
+test("0x59 - EOR (Absolute, Y) (Same Page)", function() {
+    /**
+     *    Instruction = EOR - "Exclusive-Or" memory with accumulator
+     * Affected Flags = Sign, Zero
+     *    Total Tests = 3
+     */
+
+    var OPCODE = 0x59,
+        PCStart = 0x4000,
+        YRegister = 0x50,
+        ZPAddress = Math.floor(Math.random() * 255) + 1,
+        AddressByte1 = 0xA0,
+        AddressByte2 = 0x21,
+        BytesUsed = 3,
+        CycleCost = 4,
+        Memory, Accumulator,ExpectedResult;
+
+    MOS6502._RAM[PCStart] = OPCODE;
+    MOS6502._RAM[PCStart + 1] = AddressByte1;
+    MOS6502._RAM[PCStart + 2] = AddressByte2;
+    MOS6502._Y = YRegister;
+
+    /**
+     * Test 1: Set none.
+     */
+    Memory = 170;
+    Accumulator = 153;
+    ExpectedResult = 51;
+
+    MOS6502._PC = PCStart;
+    MOS6502._CYCLES = 0;
+    MOS6502._RAM[MOS6502._MAKE_ADDRESS(AddressByte1,AddressByte2) + YRegister] = Memory;
+    MOS6502._A = Accumulator;
+    MOS6502._P = 0x20;
+
+    MOS6502.emulateCycle();
+
+    equal(MOS6502._PC, PCStart + BytesUsed,"Set none: Program counter incremented correctly.");
+
+    equal(MOS6502._CYCLES, CycleCost, "Set none: Cycles incremented correctly.");
+
+    equal(MOS6502._A, ExpectedResult, "Set none: EOR successful.");
+
+    equal(MOS6502._P, 0x20, "Set none: Status register set correctly.");
+
+    /**
+     * Test 2: Set sign.
+     */
+    Memory = 158;
+    Accumulator = 123;
+    ExpectedResult = 229;
+
+    MOS6502._PC = PCStart;
+    MOS6502._CYCLES = 0;
+    MOS6502._RAM[MOS6502._MAKE_ADDRESS(AddressByte1,AddressByte2) + YRegister] = Memory;
+    MOS6502._A = Accumulator;
+    MOS6502._P = 0x20;
+
+    MOS6502.emulateCycle();
+
+    equal(MOS6502._PC, PCStart + BytesUsed,"Set sign: Program counter incremented correctly.");
+
+    equal(MOS6502._CYCLES, CycleCost, "Set sign: Cycles incremented correctly.");
+
+    equal(MOS6502._A, ExpectedResult, "Set sign: EOR successful.");
+
+    equal(MOS6502._P, 0xA0, "Set sign: Status register set correctly.");
+
+    /**
+     * Test 3: Set zero.
+     */
+    Memory = 170;
+    Accumulator = 170;
+    ExpectedResult = 0;
+
+    MOS6502._PC = PCStart;
+    MOS6502._CYCLES = 0;
+    MOS6502._RAM[MOS6502._MAKE_ADDRESS(AddressByte1,AddressByte2) + YRegister] = Memory;
+    MOS6502._A = Accumulator;
+    MOS6502._P = 0x20;
+
+    MOS6502.emulateCycle();
+
+    equal(MOS6502._PC, PCStart + BytesUsed,"Set zero: Program counter incremented correctly.");
+
+    equal(MOS6502._CYCLES, CycleCost, "Set zero: Cycles incremented correctly.");
+
+    equal(MOS6502._A, ExpectedResult, "Set zero: EOR successful.");
+
+    equal(MOS6502._P, 0x22, "Set zero: Status register set correctly.");
+
+});
+
+test("0x59 - EOR (Absolute, Y) (Cross Page)", function() {
+    /**
+     *    Instruction = EOR - "Exclusive-Or" memory with accumulator
+     * Affected Flags = Sign, Zero
+     *    Total Tests = 3
+     */
+
+    var OPCODE = 0x59,
+        PCStart = 0x4000,
+        YRegister = 0xA0,
+        ZPAddress = Math.floor(Math.random() * 255) + 1,
+        AddressByte1 = 0xA0,
+        AddressByte2 = 0x21,
+        BytesUsed = 3,
+        CycleCost = 5,
+        Memory, Accumulator,ExpectedResult;
+
+    MOS6502._RAM[PCStart] = OPCODE;
+    MOS6502._RAM[PCStart + 1] = AddressByte1;
+    MOS6502._RAM[PCStart + 2] = AddressByte2;
+    MOS6502._Y = YRegister;
+
+    /**
+     * Test 1: Set none.
+     */
+    Memory = 170;
+    Accumulator = 153;
+    ExpectedResult = 51;
+
+    MOS6502._PC = PCStart;
+    MOS6502._CYCLES = 0;
+    MOS6502._RAM[MOS6502._MAKE_ADDRESS(AddressByte1,AddressByte2) + YRegister] = Memory;
+    MOS6502._A = Accumulator;
+    MOS6502._P = 0x20;
+
+    MOS6502.emulateCycle();
+
+    equal(MOS6502._PC, PCStart + BytesUsed,"Set none: Program counter incremented correctly.");
+
+    equal(MOS6502._CYCLES, CycleCost, "Set none: Cycles incremented correctly.");
+
+    equal(MOS6502._A, ExpectedResult, "Set none: EOR successful.");
+
+    equal(MOS6502._P, 0x20, "Set none: Status register set correctly.");
+
+    /**
+     * Test 2: Set sign.
+     */
+    Memory = 158;
+    Accumulator = 123;
+    ExpectedResult = 229;
+
+    MOS6502._PC = PCStart;
+    MOS6502._CYCLES = 0;
+    MOS6502._RAM[MOS6502._MAKE_ADDRESS(AddressByte1,AddressByte2) + YRegister] = Memory;
+    MOS6502._A = Accumulator;
+    MOS6502._P = 0x20;
+
+    MOS6502.emulateCycle();
+
+    equal(MOS6502._PC, PCStart + BytesUsed,"Set sign: Program counter incremented correctly.");
+
+    equal(MOS6502._CYCLES, CycleCost, "Set sign: Cycles incremented correctly.");
+
+    equal(MOS6502._A, ExpectedResult, "Set sign: EOR successful.");
+
+    equal(MOS6502._P, 0xA0, "Set sign: Status register set correctly.");
+
+    /**
+     * Test 3: Set zero.
+     */
+    Memory = 170;
+    Accumulator = 170;
+    ExpectedResult = 0;
+
+    MOS6502._PC = PCStart;
+    MOS6502._CYCLES = 0;
+    MOS6502._RAM[MOS6502._MAKE_ADDRESS(AddressByte1,AddressByte2) + YRegister] = Memory;
+    MOS6502._A = Accumulator;
+    MOS6502._P = 0x20;
+
+    MOS6502.emulateCycle();
+
+    equal(MOS6502._PC, PCStart + BytesUsed,"Set zero: Program counter incremented correctly.");
+
+    equal(MOS6502._CYCLES, CycleCost, "Set zero: Cycles incremented correctly.");
+
+    equal(MOS6502._A, ExpectedResult, "Set zero: EOR successful.");
+
+    equal(MOS6502._P, 0x22, "Set zero: Status register set correctly.");
+
+});
+
+test("0x41 - EOR (Indirect, X)", function() {
+    /**
+     *    Instruction = EOR - "Exclusive-Or" memory with accumulator
+     * Affected Flags = Sign, Zero
+     *    Total Tests = 3
+     */
+
+    var OPCODE = 0x41,
+        PCStart = 0x4000,
+        XRegister = Math.floor(Math.random() * 255) + 1,
+        ZPAddress = Math.floor(Math.random() * 255) + 1,
+        AddressByte1 = 0x31,
+        AddressByte2 = 0x21,
+        BytesUsed = 2,
+        CycleCost = 6,
+        Memory, Accumulator,ExpectedResult;
+
+    MOS6502._RAM[PCStart] = OPCODE;
+    MOS6502._RAM[PCStart + 1] = ZPAddress;
+    MOS6502._RAM[(ZPAddress + XRegister) & 0xFF] = AddressByte1;
+    MOS6502._RAM[(ZPAddress + XRegister + 1) & 0xFF] = AddressByte2;
+    MOS6502._X = XRegister;
+
+    /**
+     * Test 1: Set none.
+     */
+    Memory = 170;
+    Accumulator = 153;
+    ExpectedResult = 51;
+
+    MOS6502._PC = PCStart;
+    MOS6502._CYCLES = 0;
+    MOS6502._RAM[MOS6502._MAKE_ADDRESS(AddressByte1,AddressByte2)] = Memory;
+    MOS6502._A = Accumulator;
+    MOS6502._P = 0x20;
+
+    MOS6502.emulateCycle();
+
+    equal(MOS6502._PC, PCStart + BytesUsed,"Set none: Program counter incremented correctly.");
+
+    equal(MOS6502._CYCLES, CycleCost, "Set none: Cycles incremented correctly.");
+
+    equal(MOS6502._A, ExpectedResult, "Set none: EOR successful.");
+
+    equal(MOS6502._P, 0x20, "Set none: Status register set correctly.");
+
+    /**
+     * Test 2: Set sign.
+     */
+    Memory = 158;
+    Accumulator = 123;
+    ExpectedResult = 229;
+
+    MOS6502._PC = PCStart;
+    MOS6502._CYCLES = 0;
+    MOS6502._RAM[MOS6502._MAKE_ADDRESS(AddressByte1,AddressByte2)] = Memory;
+    MOS6502._A = Accumulator;
+    MOS6502._P = 0x20;
+
+    MOS6502.emulateCycle();
+
+    equal(MOS6502._PC, PCStart + BytesUsed,"Set sign: Program counter incremented correctly.");
+
+    equal(MOS6502._CYCLES, CycleCost, "Set sign: Cycles incremented correctly.");
+
+    equal(MOS6502._A, ExpectedResult, "Set sign: EOR successful.");
+
+    equal(MOS6502._P, 0xA0, "Set sign: Status register set correctly.");
+
+    /**
+     * Test 3: Set zero.
+     */
+    Memory = 170;
+    Accumulator = 170;
+    ExpectedResult = 0;
+
+    MOS6502._PC = PCStart;
+    MOS6502._CYCLES = 0;
+    MOS6502._RAM[MOS6502._MAKE_ADDRESS(AddressByte1,AddressByte2)] = Memory;
+    MOS6502._A = Accumulator;
+    MOS6502._P = 0x20;
+
+    MOS6502.emulateCycle();
+
+    equal(MOS6502._PC, PCStart + BytesUsed,"Set zero: Program counter incremented correctly.");
+
+    equal(MOS6502._CYCLES, CycleCost, "Set zero: Cycles incremented correctly.");
+
+    equal(MOS6502._A, ExpectedResult, "Set zero: EOR successful.");
+
+    equal(MOS6502._P, 0x22, "Set zero: Status register set correctly.");
+
+});
+
+test("0x51 - EOR (Indirect, Y) (Same Page)", function() {
+    /**
+     *    Instruction = EOR - "Exclusive-Or" memory with accumulator
+     * Affected Flags = Sign, Zero
+     *    Total Tests = 3
+     */
+
+    var OPCODE = 0x51,
+        PCStart = 0x4000,
+        YRegister = 0x50,
+        ZPAddress = Math.floor(Math.random() * 255) + 1,
+        AddressByte1 = 0xA0,
+        AddressByte2 = 0x21,
+        BytesUsed = 2,
+        CycleCost = 5,
+        Memory, Accumulator,ExpectedResult;
+
+    MOS6502._RAM[PCStart] = OPCODE;
+    MOS6502._RAM[PCStart + 1] = ZPAddress;
+    MOS6502._RAM[ZPAddress] = AddressByte1;
+    MOS6502._RAM[ZPAddress + 1] = AddressByte2;
+    MOS6502._Y = YRegister;
+
+    /**
+     * Test 1: Set none.
+     */
+    Memory = 170;
+    Accumulator = 153;
+    ExpectedResult = 51;
+
+    MOS6502._PC = PCStart;
+    MOS6502._CYCLES = 0;
+    MOS6502._RAM[MOS6502._MAKE_ADDRESS(AddressByte1,AddressByte2) + YRegister] = Memory;
+    MOS6502._A = Accumulator;
+    MOS6502._P = 0x20;
+
+    MOS6502.emulateCycle();
+
+    equal(MOS6502._PC, PCStart + BytesUsed,"Set none: Program counter incremented correctly.");
+
+    equal(MOS6502._CYCLES, CycleCost, "Set none: Cycles incremented correctly.");
+
+    equal(MOS6502._A, ExpectedResult, "Set none: EOR successful.");
+
+    equal(MOS6502._P, 0x20, "Set none: Status register set correctly.");
+
+    /**
+     * Test 2: Set sign.
+     */
+    Memory = 158;
+    Accumulator = 123;
+    ExpectedResult = 229;
+
+    MOS6502._PC = PCStart;
+    MOS6502._CYCLES = 0;
+    MOS6502._RAM[MOS6502._MAKE_ADDRESS(AddressByte1,AddressByte2) + YRegister] = Memory;
+    MOS6502._A = Accumulator;
+    MOS6502._P = 0x20;
+
+    MOS6502.emulateCycle();
+
+    equal(MOS6502._PC, PCStart + BytesUsed,"Set sign: Program counter incremented correctly.");
+
+    equal(MOS6502._CYCLES, CycleCost, "Set sign: Cycles incremented correctly.");
+
+    equal(MOS6502._A, ExpectedResult, "Set sign: EOR successful.");
+
+    equal(MOS6502._P, 0xA0, "Set sign: Status register set correctly.");
+
+    /**
+     * Test 3: Set zero.
+     */
+    Memory = 170;
+    Accumulator = 170;
+    ExpectedResult = 0;
+
+    MOS6502._PC = PCStart;
+    MOS6502._CYCLES = 0;
+    MOS6502._RAM[MOS6502._MAKE_ADDRESS(AddressByte1,AddressByte2) + YRegister] = Memory;
+    MOS6502._A = Accumulator;
+    MOS6502._P = 0x20;
+
+    MOS6502.emulateCycle();
+
+    equal(MOS6502._PC, PCStart + BytesUsed,"Set zero: Program counter incremented correctly.");
+
+    equal(MOS6502._CYCLES, CycleCost, "Set zero: Cycles incremented correctly.");
+
+    equal(MOS6502._A, ExpectedResult, "Set zero: EOR successful.");
+
+    equal(MOS6502._P, 0x22, "Set zero: Status register set correctly.");
+
+});
+
+test("0x51 - EOR (Indirect, Y) (Cross Page)", function() {
+    /**
+     *    Instruction = EOR - "Exclusive-Or" memory with accumulator
+     * Affected Flags = Sign, Zero
+     *    Total Tests = 3
+     */
+
+    var OPCODE = 0x51,
+        PCStart = 0x4000,
+        YRegister = 0xA0,
+        ZPAddress = Math.floor(Math.random() * 255) + 1,
+        AddressByte1 = 0xA0,
+        AddressByte2 = 0x21,
+        BytesUsed = 2,
+        CycleCost = 6,
+        Memory, Accumulator,ExpectedResult;
+
+    MOS6502._RAM[PCStart] = OPCODE;
+    MOS6502._RAM[PCStart + 1] = ZPAddress;
+    MOS6502._RAM[(ZPAddress) & 0xFF] = AddressByte1;
+    MOS6502._RAM[(ZPAddress + 1) & 0xFF] = AddressByte2;
+    MOS6502._Y = YRegister;
+
+    /**
+     * Test 1: Set none.
+     */
+    Memory = 170;
+    Accumulator = 153;
+    ExpectedResult = 51;
+
+    MOS6502._PC = PCStart;
+    MOS6502._CYCLES = 0;
+    MOS6502._RAM[MOS6502._MAKE_ADDRESS(AddressByte1,AddressByte2) + YRegister] = Memory;
+    MOS6502._A = Accumulator;
+    MOS6502._P = 0x20;
+
+    MOS6502.emulateCycle();
+
+    equal(MOS6502._PC, PCStart + BytesUsed,"Set none: Program counter incremented correctly.");
+
+    equal(MOS6502._CYCLES, CycleCost, "Set none: Cycles incremented correctly.");
+
+    equal(MOS6502._A, ExpectedResult, "Set none: EOR successful.");
+
+    equal(MOS6502._P, 0x20, "Set none: Status register set correctly.");
+
+    /**
+     * Test 2: Set sign.
+     */
+    Memory = 158;
+    Accumulator = 123;
+    ExpectedResult = 229;
+
+    MOS6502._PC = PCStart;
+    MOS6502._CYCLES = 0;
+    MOS6502._RAM[MOS6502._MAKE_ADDRESS(AddressByte1,AddressByte2) + YRegister] = Memory;
+    MOS6502._A = Accumulator;
+    MOS6502._P = 0x20;
+
+    MOS6502.emulateCycle();
+
+    equal(MOS6502._PC, PCStart + BytesUsed,"Set sign: Program counter incremented correctly.");
+
+    equal(MOS6502._CYCLES, CycleCost, "Set sign: Cycles incremented correctly.");
+
+    equal(MOS6502._A, ExpectedResult, "Set sign: EOR successful.");
+
+    equal(MOS6502._P, 0xA0, "Set sign: Status register set correctly.");
+
+    /**
+     * Test 3: Set zero.
+     */
+    Memory = 170;
+    Accumulator = 170;
+    ExpectedResult = 0;
+
+    MOS6502._PC = PCStart;
+    MOS6502._CYCLES = 0;
+    MOS6502._RAM[MOS6502._MAKE_ADDRESS(AddressByte1,AddressByte2) + YRegister] = Memory;
+    MOS6502._A = Accumulator;
+    MOS6502._P = 0x20;
+
+    MOS6502.emulateCycle();
+
+    equal(MOS6502._PC, PCStart + BytesUsed,"Set zero: Program counter incremented correctly.");
+
+    equal(MOS6502._CYCLES, CycleCost, "Set zero: Cycles incremented correctly.");
+
+    equal(MOS6502._A, ExpectedResult, "Set zero: EOR successful.");
+
+    equal(MOS6502._P, 0x22, "Set zero: Status register set correctly.");
+
+});
+
+//</editor-fold>
+
 /**
  * Tests to be implemented:
 
  // 0x40 - 0x4F
- case (0x40) : me.RTI(); break;
  case (0x41) : me.EOR(); break;
  case (0x45) : me.EOR(); break;
  case (0x46) : me.LSR(); break;
