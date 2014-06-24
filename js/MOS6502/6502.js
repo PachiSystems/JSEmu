@@ -2290,7 +2290,7 @@ MOS6502.prototype.PHA = function() {
 
     switch (opCode) {
         // Get Operand
-        case (0x46): me._PUSH(me._A); me._CYCLES += 3; me._PC += 1; break;
+        case (0x48): me._PUSH(me._A); me._CYCLES += 3; me._PC += 1; break;
 
         default: console.error("Illegal ADC opcode passed. (0x" + opCode.toString(16) + ")" ); break;
 

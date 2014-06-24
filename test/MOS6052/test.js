@@ -8696,21 +8696,60 @@ test("0x5E - LSR (Absolute, X)", function() {
 
 //</editor-fold>
 
+/*********************************************************************************************************************/
+
+//<editor-fold desc="PHA Tests">
+
+QUnit.module("Instruction - PHA", {
+    setup: function() {
+        MOS6502.init();
+    }
+});
+
+test("0x48 - PHA (Implied)", function() {
+    /**
+     *    Instruction = PHA - Push accumulator on stack
+     * Affected Flags = None
+     *    Total Tests = 1
+     */
+
+    var OPCODE = 0x48,
+        PCStart = 0x4000,
+        BytesUsed = 1,
+        Accumulator = Math.floor(Math.random() * 255) + 1,
+        CycleCost = 3;
+
+    MOS6502._RAM[PCStart] = OPCODE;
+
+    MOS6502._SP = 0x01FF;
+    MOS6502._A = Accumulator;
+    MOS6502._CYCLES = 0;
+    MOS6502._PC = PCStart;
+
+    MOS6502.emulateCycle();
+
+    equal(MOS6502._PC, PCStart + BytesUsed, "Program counter increased correctly.");
+
+    equal(MOS6502._CYCLES, CycleCost, "Cycles increased correctly.");
+
+    equal(MOS6502._SP, 0x01FE, "Stack pointer updated correctly.");
+
+    equal(MOS6502._RAM[0x01FF], Accumulator, "Accumulator pushed onto stack.");
+
+});
+
+//</editor-fold>
+
 /**
  * Tests to be implemented:
 
  // 0x40 - 0x4F
- case (0x46) : me.LSR(); break;
  case (0x48) : me.PHA(); break;
- case (0x4A) : me.LSR(); break;
  case (0x4C) : me.JMP(); break;
- case (0x4E) : me.LSR(); break;
 
  // 0x50 - 0x5F
  case (0x50) : me.BVC(); break;
- case (0x56) : me.LSR(); break;
  case (0x58) : me.CLI(); break;
- case (0x5E) : me.LSR(); break;
 
  // 0x60 - 0x6F
  case (0x60) : me.RTS(); break;
