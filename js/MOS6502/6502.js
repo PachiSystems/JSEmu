@@ -549,9 +549,9 @@ MOS6502.prototype._PULL = function() {
     var me = this,
         SP = me._SP,
         OPER;
-    
-    OPER = me._RAM[ me._SP ];
+
     me._SP++;
+    OPER = me._RAM[ me._SP ];
     if (me._SP > 0x01FF) {
         me._SP = 0x0100;
     }
@@ -1420,13 +1420,11 @@ MOS6502.prototype.CLI = function() {
 
     switch (opCode) {
         // Get Operand
-        case (0x58): me._CYCLES += 2; me._PC += 1; break;
+        case (0x58): me._CYCLES += 2; me._PC += 1; me._SET_INTERRUPT(0); break;
 
         default: console.error("Illegal CLI opcode passed. (0x" + opCode.toString(16) + ")" ); break;
 
     }
-
-    me._SET_INTERRUPT(0);
 
 };
 
@@ -2591,11 +2589,11 @@ MOS6502.prototype.RTS = function() {
     switch (opCode) {
         // Get Operand
         case (0x60):
-            var ADDR = me._PULL();
-            ADDR |= ( (me._PULL() << 8 ) + 1 );
+
+            var ADDR = me._MAKE_ADDRESS(me._PULL(), me._PULL());
 
             me._CYCLES += 6;
-            me._PC += ADDR;
+            me._PC = ADDR;
             break;
 
         default: console.error("Illegal RTS opcode passed. (0x" + opCode.toString(16) + ")" ); break;

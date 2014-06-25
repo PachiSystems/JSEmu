@@ -6643,7 +6643,7 @@ test("0x28 - PLP (Implied)", function() {
     MOS6502._CYCLES = 0;
     MOS6502._P = 0x20;
     MOS6502._SP = 0x01FE;
-    MOS6502._RAM[MOS6502._SP] = StatusRegister;
+    MOS6502._RAM[0x01FF] = StatusRegister;
     MOS6502._PC = PCStart;
 
     /**
@@ -6869,7 +6869,7 @@ test("0x40 - RTI (Implied)", function() {
         CycleCost = 6;
 
     MOS6502._RAM[PCStart] = OPCODE;
-    MOS6502._SP = 0x01FD;
+    MOS6502._SP = 0x01FC;
     MOS6502._P = 0x20;
     MOS6502._RAM[0x01FD] = StatusRegister;
     MOS6502._RAM[0x01FE] = AddressByte1;
@@ -8945,12 +8945,107 @@ var OPCODE = 0x50,
 
 //</editor-fold>
 
+/*********************************************************************************************************************/
+
+//<editor-fold desc="CLI Tests">
+
+QUnit.module("Instruction - CLI", {
+    setup: function() {
+        MOS6502.init();
+    }
+});
+
+test("0x58 - CLI (IMPLIED)", function() {
+    /**
+     *    Instruction = CLI - Clear interrupt disable bit
+     * Affected Flags = None
+     *    Total Tests = 2
+     */
+
+    var OPCODE = 0x58,
+        CycleCost = 2,
+        BytesUsed = 1,
+        PCStart = 0x4000;
+
+    MOS6502._RAM[PCStart] = OPCODE;
+
+    /**
+     * Test 1: Interrupt not set pre-CLI.
+     */
+    MOS6502._PC = PCStart;
+    MOS6502._CYCLES = 0;
+    MOS6502._P = 0x20;
+
+    MOS6502.emulateCycle();
+
+    equal(MOS6502._PC,PCStart + BytesUsed,"Interrupt not set pre-CLI: Program counter incremented correctly.");
+
+    equal(MOS6502._CYCLES,CycleCost,"Interrupt not set pre-CLI: Cycles set correctly.");
+
+    equal(MOS6502._P,0x20,"Interrupt not set pre-CLI: Status register set correctly.");
+
+    /**
+     * Test 2: Interrupt set pre-CLI.
+     */
+    MOS6502._PC = PCStart;
+    MOS6502._CYCLES = 0;
+    MOS6502._P = 0x24;
+
+    MOS6502.emulateCycle();
+
+    equal(MOS6502._PC,PCStart + BytesUsed,"Interrupt set pre-CLI: Program counter incremented correctly.");
+
+    equal(MOS6502._CYCLES,CycleCost,"Interrupt set pre-CLI: Cycles set correctly.");
+
+    equal(MOS6502._P,0x20,"Interrupt set pre-CLI: Status register set correctly.");
+
+});
+
+//</editor-fold>
+
+/*********************************************************************************************************************/
+
+//<editor-fold desc="CLI Tests">
+
+QUnit.module("Instruction - CLI", {
+    setup: function() {
+        MOS6502.init();
+    }
+});
+
+test("0x60 - RTS (IMPLIED)", function() {
+    /**
+     *    Instruction = RTS - Return from subroutine
+     * Affected Flags = None
+     *    Total Tests = 2
+     */
+
+    var OPCODE = 0x60,
+        CycleCost = 6,
+        BytesUsed = 1,
+        PCStart = 0x4000;
+
+    MOS6502._RAM[PCStart] = OPCODE;
+
+    MOS6502._RAM[0x01FF] = 0x31;
+    MOS6502._RAM[0x01FE] = 0x21;
+    MOS6502._SP = 0x01FD;
+    MOS6502._PC = PCStart;
+    MOS6502._CYCLES = 0;
+
+    MOS6502.emulateCycle();
+
+    equal(MOS6502._PC,0x3121,"RTS successfully set program counter.");
+
+    equal(MOS6502._CYCLES,CycleCost,"Cycles increased correctly.");
+
+    equal(MOS6502._SP,0x01FF,"Stack Pointer set correctly.");
+});
+
+//</editor-fold>
+
 /**
  * Tests to be implemented:
-
- // 0x50 - 0x5F
- case (0x50) : me.BVC(); break;
- case (0x58) : me.CLI(); break;
 
  // 0x60 - 0x6F
  case (0x60) : me.RTS(); break;
