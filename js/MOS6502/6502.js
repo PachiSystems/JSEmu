@@ -491,31 +491,31 @@ MOS6502.prototype.emulateCycle = function() {
 };
 
 // Some special functions for checking and setting/toggling flags and statuses.
-MOS6502.prototype._IF_CARRY = function(){ return (this._P & 0x01 === 1); };
+MOS6502.prototype._IF_CARRY = function(){ return (this._P & 0x01) === 1; };
 
 MOS6502.prototype._SET_CARRY = function(condition) { (condition) ? this._P |= 0x01 : this._P &= ~(0x01); };
 
-MOS6502.prototype._IF_ZERO = function() { return ((this._P & 0x02) >> 1 === 1); };
+MOS6502.prototype._IF_ZERO = function() { return ((this._P & 0x02) >> 1) === 1; };
 
 MOS6502.prototype._SET_ZERO = function(value) { (value === 0) ? this._P |= 0x02 : this._P &= ~(0x02);};
 
-MOS6502.prototype._IF_INTERRUPT = function() { return ((this._P & 0x04) >> 2 === 1); };
+MOS6502.prototype._IF_INTERRUPT = function() { return ((this._P & 0x04) >> 2) === 1; };
 
 MOS6502.prototype._SET_INTERRUPT = function(condition) { (condition) ? this._P |= 0x04 : this._P &= ~(0x04); };
 
-MOS6502.prototype._IF_DECIMAL = function() { return ((this._P & 0x08) >> 3 === 1); };
+MOS6502.prototype._IF_DECIMAL = function() { return ((this._P & 0x08) >> 3) === 1; };
 
 MOS6502.prototype._SET_DECIMAL = function(condition) { (condition) ? this._P |= 0x08 : this._P &= ~(0x08); };
 
-MOS6502.prototype._IF_BREAK = function() { return ((this._P & 0x10) >> 4 === 1); };
+MOS6502.prototype._IF_BREAK = function() { return ((this._P & 0x10) >> 4) === 1; };
 
 MOS6502.prototype._SET_BREAK = function(condition) { (condition) ? this._P |= 0x10 : this._P &= ~(0x10); };
 
-MOS6502.prototype._IF_OVERFLOW = function() { return ((this._P & 0x40) >> 6 === 1); };
+MOS6502.prototype._IF_OVERFLOW = function() { return ((this._P & 0x40) >> 6) === 1; };
 
 MOS6502.prototype._SET_OVERFLOW = function(condition) { (condition) ? this._P |= 0x40 : this._P &= ~(0x40); };
 
-MOS6502.prototype._IF_SIGN = function() { return ((this._P & 0x80) >> 7 === 1); };
+MOS6502.prototype._IF_SIGN = function() { return ((this._P & 0x80) >> 7) === 1; };
 
 MOS6502.prototype._SET_SIGN = function(value) { ( (value & 0x80) >> 7 === 1) ? this._P |= 0x80 : this._P &= ~(0x80); };
 
@@ -715,34 +715,80 @@ MOS6502.prototype.ADC = function ADC() {
 
     }
 
-    // Store Operand + accumulator. Plus one if carry flag is set.
-    var temp = OPER + me._A + (me._IF_CARRY() ? 1 : 0);
+    /* This is the second attempt at implementing ADC:
+    var data = OPER + me._A + (me._IF_CARRY() ? 1 : 0);
 
-    if( me._IF_DECIMAL() ) {
+    me._SET_ZERO(data & 0xFF);
 
-        if ( ( ( me._A & 0xF) + (OPER & 0xF) + (me._IF_CARRY() ? 1 : 0) ) > 9 ) {
-            temp += 6;
-        }
+    if (me._IF_DECIMAL()) {
 
-        me._SET_SIGN(temp);
-        me._SET_OVERFLOW( !( (me._A ^ OPER) & 0x80 ) && ( ( me._A ^ temp) & 0x80) );
+        if(((me._A & 0xF) + (OPER & 0xF) + (me._IF_CARRY() ? 1 : 0)) > 9) data += 6;
 
-        if ( temp > 0x99) {
-            temp += 96;
-        }
+        me._SET_SIGN(data);
+        me._SET_OVERFLOW(!((me._A ^ OPER) & 0x80) && ((me._A ^ data) & 0x80));
 
-        me._SET_CARRY(temp & 0x99);
+        if (data > 0x99) data += 0x60;
+
+        me._SET_CARRY(data > 0x99);
 
     } else {
 
-       me._SET_ZERO(temp & 0xFF);
-       me._SET_SIGN(temp);
-       me._SET_OVERFLOW( !( (me._A ^ OPER) & 0x80) && ( ( me._A ^ temp) & 0x80) );
-       me._SET_CARRY(temp > 0xFF);
-
+        me._SET_SIGN(data);
+        me._SET_OVERFLOW(!((me._A ^ OPER) & 0x80) && ((me._A ^ data) & 0x80));
+        me._SET_CARRY(data > 0xFF);
     }
 
-    me._A = temp & 0xFF;
+    me._A = data & 0xFF;
+    */
+
+    // And here's the third:
+    var tmp;
+
+    if ((0x80 & (me._A ^ OPER)) > 0) {
+        me._SET_OVERFLOW(false);
+    } else {
+        me._SET_OVERFLOW(true);
+    }
+
+    if (me._IF_DECIMAL()) {
+
+        tmp = (me._A & 0xF) + (OPER & 0xF) + (me._IF_CARRY() ? 1 : 0);
+
+        if (tmp >= 10) {
+
+            tmp = 0x10 | ((tmp + 6) & 0xF);
+
+        }
+
+        tmp += (me._A & 0xF0) + (OPER & 0xF0);
+
+        if (tmp >= 160) {
+            me._SET_CARRY(true);
+
+            if (me._IF_OVERFLOW() && tmp >= 0x180) { me._SET_OVERFLOW(false); }
+
+            tmp += 0x60;
+        } else {
+            me._SET_CARRY(false);
+            if (me._IF_OVERFLOW() && tmp < 0x80) { me._SET_OVERFLOW(false); }
+        }
+    } else {
+        tmp = me._A + OPER + (me._IF_CARRY() ? 1 : 0);
+        if (tmp > 0xFF) {
+            me._SET_CARRY(true);
+            if (me._IF_OVERFLOW() && tmp >= 0x180) { me._SET_OVERFLOW(false); }
+        } else {
+            me._SET_CARRY(false);
+            if (me._IF_OVERFLOW() && tmp < 0x80) { me._SET_OVERFLOW(false); }
+        }
+    }
+
+    me._A = tmp & 0xFF;
+
+    me._SET_ZERO(me._A);
+
+    me._SET_SIGN(me._A);
+
 };
 
 MOS6502.prototype.AND = function AND() {

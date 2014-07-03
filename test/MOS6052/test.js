@@ -763,10 +763,10 @@ test("Write Absolute Y", function() {
      * Given a byte of data and a little endian address, it should write to that address offset by the Y register value.
      */
 
-    var randomData = Math.floor(Math.random() * 255) + 1,
-        randomY = Math.floor(Math.random() * 255) + 1,
-        randomAddress1 = Math.floor(Math.random() * 255) + 1,
-        randomAddress2 = Math.floor(Math.random() * 255) + 1;
+    var randomData = Math.floor(Math.random() * 254) + 1,
+        randomY = Math.floor(Math.random() * 254) + 1,
+        randomAddress1 = Math.floor(Math.random() * 254) + 1,
+        randomAddress2 = Math.floor(Math.random() * 254) + 1;
 
     MOS6502._Y = randomY;
     MOS6502.WriteAbsoluteY(randomAddress1, randomAddress2, randomData);
@@ -8955,7 +8955,7 @@ QUnit.module("Instruction - CLI", {
     }
 });
 
-test("0x58 - CLI (IMPLIED)", function() {
+test("0x58 - CLI (Implied)", function() {
     /**
      *    Instruction = CLI - Clear interrupt disable bit
      * Affected Flags = None
@@ -9005,15 +9005,15 @@ test("0x58 - CLI (IMPLIED)", function() {
 
 /*********************************************************************************************************************/
 
-//<editor-fold desc="CLI Tests">
+//<editor-fold desc="RTS Tests">
 
-QUnit.module("Instruction - CLI", {
+QUnit.module("Instruction - RTS", {
     setup: function() {
         MOS6502.init();
     }
 });
 
-test("0x60 - RTS (IMPLIED)", function() {
+test("0x60 - RTS (Implied)", function() {
     /**
      *    Instruction = RTS - Return from subroutine
      * Affected Flags = None
@@ -9044,28 +9044,2236 @@ test("0x60 - RTS (IMPLIED)", function() {
 
 //</editor-fold>
 
+/*********************************************************************************************************************/
+
+//<editor-fold desc="ADC Tests">
+
+QUnit.module("Instruction - ADC", {
+    setup: function() {
+        MOS6502.init();
+    }
+});
+
+test("0x69 - ADC (Immediate)", function() {
+    /**
+     *    Instruction = ADC - Add memory to accumulator with carry
+     * Affected Flags = Sign, Zero, Carry, Overflow
+     *    Total Tests = 10
+     */
+
+    var OPCODE = 0x69,
+        CycleCost = 2,
+        BytesUsed = 2,
+        PCStart = 0x4000;
+
+    MOS6502._RAM[PCStart] = OPCODE;
+
+    // DECIMAL MODE ACTIVE
+
+    /**
+     * Test 1:
+     * 00 + 00 and C=0 gives 00 and N=0 V=0 Z=1 C=0
+     */
+
+    MOS6502._P = 0x20 + 0x08;
+    MOS6502._RAM[PCStart + 1] = 0x00;
+    MOS6502._A = 0x00;
+    MOS6502._PC = PCStart;
+
+    MOS6502.emulateCycle();
+
+    equal(MOS6502._P,0x20 + 0x08 + 0x02,"Test 1: Zero set correctly.");
+    equal(MOS6502._A, 0x00, "Test 1: ADC performed in decimal mode correctly.");
+
+    /**
+     * Test 2:
+     * 79 + 00 and C=1 gives 80 and N=1 V=1 Z=0 C=0
+     */
+    MOS6502._P = 0x20 + 0x08 + 0x01;
+    MOS6502._RAM[PCStart + 1] = 0x79;
+    MOS6502._A = 0x00;
+    MOS6502._PC = PCStart;
+
+    MOS6502.emulateCycle();
+
+    equal(MOS6502._P,0x20 + 0x80 + 0x40 + 0x08,"Test 2: Sign & Overflow set correctly.");
+    equal(MOS6502._A, 0x80, "Test 2: ADC performed in decimal mode correctly.");
+
+    /**
+     * Test 3:
+     * 24 + 56 and C=0 gives 80 and N=1 V=1 Z=0 C=0 (simulate)
+     */
+    MOS6502._P = 0x20 + 0x08;
+    MOS6502._RAM[PCStart + 1] = 0x24;
+    MOS6502._A = 0x56;
+    MOS6502._PC = PCStart;
+
+    MOS6502.emulateCycle();
+
+    equal(MOS6502._P,0x20 + 0x80 + 0x40 + 0x08,"Test 3: Sign & Overflow set correctly.");
+    equal(MOS6502._A, 0x80, "Test 3: ADC performed in decimal mode correctly.");
+
+    /**
+     * Test 4:
+     * 93 + 82 and C=0 gives 75 and N=0 V=1 Z=0 C=1 (simulate)
+     */
+    MOS6502._P = 0x20 + 0x08;
+    MOS6502._RAM[PCStart + 1] = 0x93;
+    MOS6502._A = 0x82;
+    MOS6502._PC = PCStart;
+
+    MOS6502.emulateCycle();
+
+    equal(MOS6502._P,0x20 + 0x40 + 0x08 + 0x01,"Test 4: Overflow & Carry set correctly.");
+    equal(MOS6502._A, 0x75, "Test 4: ADC performed in decimal mode correctly.");
+
+    /**
+     * Test 5:
+     * 89 + 76 and C=0 gives 65 and N=0 V=0 Z=0 C=1 (simulate)
+     */
+    MOS6502._P = 0x20 + 0x08;
+    MOS6502._RAM[PCStart + 1] = 0x89;
+    MOS6502._A = 0x76;
+    MOS6502._PC = PCStart;
+
+    MOS6502.emulateCycle();
+
+    equal(MOS6502._P,0x20 + 0x08 + 0x01,"Test 5: Carry set correctly.");
+    equal(MOS6502._A, 0x65, "Test 5: ADC performed in decimal mode correctly.");
+
+    /**
+     * Test 6:
+     * 89 + 76 and C=1 gives 66 and N=0 V=0 Z=0 C=1 (simulate)
+     *
+     * Fails: Carry is not set.
+     */
+    MOS6502._P = 0x20 + 0x08 + 0x01;
+    MOS6502._RAM[PCStart + 1] = 0x89;
+    MOS6502._A = 0x76;
+    MOS6502._PC = PCStart;
+
+    MOS6502.emulateCycle();
+
+    equal(MOS6502._P,0x20 + 0x08 + 0x01,"Test 6: Carry set correctly.");
+    equal(MOS6502._A, 0x66, "Test 6: ADC performed in decimal mode correctly.");
+
+    /**
+     * Test 7:
+     * 80 + f0 and C=0 gives d0 and N=1 V=1 Z=0 C=1
+     */
+    MOS6502._P = 0x20 + 0x80 + 0x08;
+    MOS6502._RAM[PCStart + 1] = 0x80;
+    MOS6502._A = 0xF0;
+    MOS6502._PC = PCStart;
+
+    MOS6502.emulateCycle();
+
+    equal(MOS6502._P,0x20 + 0x80 + 0x40 + 0x08 + 0x01,"Test 7: Overflow & Carry set correctly.");
+    equal(MOS6502._A, 0xD0, "Test 7: ADC performed in decimal mode correctly.");
+
+    /**
+     * Test 8:
+     * 80 + fa and C=0 gives e0 and N=1 V=0 Z=0 C=1
+     */
+    MOS6502._P = 0x20 + 0x08;
+    MOS6502._RAM[PCStart + 1] = 0x80;
+    MOS6502._A = 0xFA;
+    MOS6502._PC = PCStart;
+
+    MOS6502.emulateCycle();
+
+    equal(MOS6502._P,0x20 + 0x80 + 0x08 + 0x01,"Test 8: Sign & Carry set correctly.");
+    equal(MOS6502._A, 0xE0, "Test 8: ADC performed in decimal mode correctly.");
+
+    /**
+     * Test 9:
+     * 2f + 4f and C=0 gives 74 and N=0 V=0 Z=0 C=0
+     */
+    MOS6502._P = 0x20 + 0x08;
+    MOS6502._RAM[PCStart + 1] = 0x4F;
+    MOS6502._A = 0x2F;
+    MOS6502._PC = PCStart;
+
+    MOS6502.emulateCycle();
+
+    equal(MOS6502._P,0x20 + 0x08,"Test 9: Status register set correctly.");
+    equal(MOS6502._A, 0x74, "Test 9: ADC performed in decimal mode correctly.");
+
+    /**
+     * Test 10:
+     * 6f + 00 and C=1 gives 76 and N=0 V=0 Z=0 C=0 (simulate)
+     */
+    MOS6502._P = 0x20 + 0x08 + 0x01;
+    MOS6502._RAM[PCStart + 1] = 0x6F;
+    MOS6502._A = 0x00;
+    MOS6502._PC = PCStart;
+
+    MOS6502.emulateCycle();
+
+    equal(MOS6502._P,0x20 + 0x08,"Test 10: Status register set correctly.");
+    equal(MOS6502._A, 0x76, "Test 10: ADC performed in decimal mode correctly.");
+
+    /**
+     * Test 11:
+     * DECIMAL MODE OFF
+     * 00 + 00 and C=0 gives 00 and N=0 V=0 Z=1 C=0
+     */
+    MOS6502._P = 0x20;
+    MOS6502._RAM[PCStart + 1] = 0x00;
+    MOS6502._A = 0x00;
+    MOS6502._PC = PCStart;
+
+    MOS6502.emulateCycle();
+
+    equal(MOS6502._P,0x20 + 0x02,"Test 11: Zero set correctly.");
+    equal(MOS6502._A, 0x00, "Test 11: ADC performed in decimal mode correctly.");
+
+    /**
+     * Test 12:
+     * DECIMAL MODE OFF
+     * FF + FF and C=1 gives FF and N=1 V=0 Z=0 C=1
+     */
+    MOS6502._P = 0x20 + 0x01;
+    MOS6502._RAM[PCStart + 1] = 0xFF;
+    MOS6502._A = 0xFF;
+    MOS6502._PC = PCStart;
+    MOS6502._CYCLES = 0;
+
+    MOS6502.emulateCycle();
+
+    equal(MOS6502._P,0x20 + 0x80 + 0x01,"Test 12: Flags set correctly.");
+    equal(MOS6502._A, 0xFF, "Test 12: ADC performed in decimal mode correctly.");
+    equal(MOS6502._PC, PCStart + BytesUsed,"Program counter increased correctly.");
+    equal(MOS6502._CYCLES, CycleCost,"Cycles increased correctly.");
+
+});
+
+test("0x65 - ADC (Zero Page)", function() {
+    /**
+     *    Instruction = ADC - Add memory to accumulator with carry
+     * Affected Flags = Sign, Zero, Carry, Overflow
+     *    Total Tests = 10
+     */
+
+    var OPCODE = 0x65,
+        CycleCost = 3,
+        BytesUsed = 2,
+        ZPAddress = Math.floor(Math.random() * 255) + 1,
+        PCStart = 0x4000;
+
+    MOS6502._RAM[PCStart] = OPCODE;
+    MOS6502._RAM[PCStart + 1] = ZPAddress;
+
+    // DECIMAL MODE ACTIVE
+
+    /**
+     * Test 1:
+     * 00 + 00 and C=0 gives 00 and N=0 V=0 Z=1 C=0
+     */
+
+    MOS6502._P = 0x20 + 0x08;
+    MOS6502._RAM[ZPAddress] = 0x00;
+    MOS6502._A = 0x00;
+    MOS6502._PC = PCStart;
+
+    MOS6502.emulateCycle();
+
+    equal(MOS6502._P,0x20 + 0x08 + 0x02,"Test 1: Zero set correctly.");
+    equal(MOS6502._A, 0x00, "Test 1: ADC performed in decimal mode correctly.");
+
+    /**
+     * Test 2:
+     * 79 + 00 and C=1 gives 80 and N=1 V=1 Z=0 C=0
+     */
+    MOS6502._P = 0x20 + 0x08 + 0x01;
+    MOS6502._RAM[ZPAddress] = 0x79;
+    MOS6502._A = 0x00;
+    MOS6502._PC = PCStart;
+
+    MOS6502.emulateCycle();
+
+    equal(MOS6502._P,0x20 + 0x80 + 0x40 + 0x08,"Test 2: Sign & Overflow set correctly.");
+    equal(MOS6502._A, 0x80, "Test 2: ADC performed in decimal mode correctly.");
+
+    /**
+     * Test 3:
+     * 24 + 56 and C=0 gives 80 and N=1 V=1 Z=0 C=0 (simulate)
+     */
+    MOS6502._P = 0x20 + 0x08;
+    MOS6502._RAM[ZPAddress] = 0x24;
+    MOS6502._A = 0x56;
+    MOS6502._PC = PCStart;
+
+    MOS6502.emulateCycle();
+
+    equal(MOS6502._P,0x20 + 0x80 + 0x40 + 0x08,"Test 3: Sign & Overflow set correctly.");
+    equal(MOS6502._A, 0x80, "Test 3: ADC performed in decimal mode correctly.");
+
+    /**
+     * Test 4:
+     * 93 + 82 and C=0 gives 75 and N=0 V=1 Z=0 C=1 (simulate)
+     */
+    MOS6502._P = 0x20 + 0x08;
+    MOS6502._RAM[ZPAddress] = 0x93;
+    MOS6502._A = 0x82;
+    MOS6502._PC = PCStart;
+
+    MOS6502.emulateCycle();
+
+    equal(MOS6502._P,0x20 + 0x40 + 0x08 + 0x01,"Test 4: Overflow & Carry set correctly.");
+    equal(MOS6502._A, 0x75, "Test 4: ADC performed in decimal mode correctly.");
+
+    /**
+     * Test 5:
+     * 89 + 76 and C=0 gives 65 and N=0 V=0 Z=0 C=1 (simulate)
+     */
+    MOS6502._P = 0x20 + 0x08;
+    MOS6502._RAM[ZPAddress] = 0x89;
+    MOS6502._A = 0x76;
+    MOS6502._PC = PCStart;
+
+    MOS6502.emulateCycle();
+
+    equal(MOS6502._P,0x20 + 0x08 + 0x01,"Test 5: Carry set correctly.");
+    equal(MOS6502._A, 0x65, "Test 5: ADC performed in decimal mode correctly.");
+
+    /**
+     * Test 6:
+     * 89 + 76 and C=1 gives 66 and N=0 V=0 Z=0 C=1 (simulate)
+     *
+     * Fails: Carry is not set.
+     */
+    MOS6502._P = 0x20 + 0x08 + 0x01;
+    MOS6502._RAM[ZPAddress] = 0x89;
+    MOS6502._A = 0x76;
+    MOS6502._PC = PCStart;
+
+    MOS6502.emulateCycle();
+
+    equal(MOS6502._P,0x20 + 0x08 + 0x01,"Test 6: Carry set correctly.");
+    equal(MOS6502._A, 0x66, "Test 6: ADC performed in decimal mode correctly.");
+
+    /**
+     * Test 7:
+     * 80 + f0 and C=0 gives d0 and N=1 V=1 Z=0 C=1
+     */
+    MOS6502._P = 0x20 + 0x80 + 0x08;
+    MOS6502._RAM[ZPAddress] = 0x80;
+    MOS6502._A = 0xF0;
+    MOS6502._PC = PCStart;
+
+    MOS6502.emulateCycle();
+
+    equal(MOS6502._P,0x20 + 0x80 + 0x40 + 0x08 + 0x01,"Test 7: Overflow & Carry set correctly.");
+    equal(MOS6502._A, 0xD0, "Test 7: ADC performed in decimal mode correctly.");
+
+    /**
+     * Test 8:
+     * 80 + fa and C=0 gives e0 and N=1 V=0 Z=0 C=1
+     */
+    MOS6502._P = 0x20 + 0x08;
+    MOS6502._RAM[ZPAddress] = 0x80;
+    MOS6502._A = 0xFA;
+    MOS6502._PC = PCStart;
+
+    MOS6502.emulateCycle();
+
+    equal(MOS6502._P,0x20 + 0x80 + 0x08 + 0x01,"Test 8: Sign & Carry set correctly.");
+    equal(MOS6502._A, 0xE0, "Test 8: ADC performed in decimal mode correctly.");
+
+    /**
+     * Test 9:
+     * 2f + 4f and C=0 gives 74 and N=0 V=0 Z=0 C=0
+     */
+    MOS6502._P = 0x20 + 0x08;
+    MOS6502._RAM[ZPAddress] = 0x4F;
+    MOS6502._A = 0x2F;
+    MOS6502._PC = PCStart;
+
+    MOS6502.emulateCycle();
+
+    equal(MOS6502._P,0x20 + 0x08,"Test 9: Status register set correctly.");
+    equal(MOS6502._A, 0x74, "Test 9: ADC performed in decimal mode correctly.");
+
+    /**
+     * Test 10:
+     * 6f + 00 and C=1 gives 76 and N=0 V=0 Z=0 C=0 (simulate)
+     */
+    MOS6502._P = 0x20 + 0x08 + 0x01;
+    MOS6502._RAM[ZPAddress] = 0x6F;
+    MOS6502._A = 0x00;
+    MOS6502._PC = PCStart;
+
+    MOS6502.emulateCycle();
+
+    equal(MOS6502._P,0x20 + 0x08,"Test 10: Status register set correctly.");
+    equal(MOS6502._A, 0x76, "Test 10: ADC performed in decimal mode correctly.");
+
+    /**
+     * Test 11:
+     * DECIMAL MODE OFF
+     * 00 + 00 and C=0 gives 00 and N=0 V=0 Z=1 C=0
+     */
+    MOS6502._P = 0x20;
+    MOS6502._RAM[ZPAddress] = 0x00;
+    MOS6502._A = 0x00;
+    MOS6502._PC = PCStart;
+
+    MOS6502.emulateCycle();
+
+    equal(MOS6502._P,0x20 + 0x02,"Test 11: Zero set correctly.");
+    equal(MOS6502._A, 0x00, "Test 11: ADC performed in decimal mode correctly.");
+
+    /**
+     * Test 12:
+     * DECIMAL MODE OFF
+     * FF + FF and C=1 gives FF and N=1 V=0 Z=0 C=1
+     */
+    MOS6502._P = 0x20 + 0x01;
+    MOS6502._RAM[ZPAddress] = 0xFF;
+    MOS6502._A = 0xFF;
+    MOS6502._PC = PCStart;
+    MOS6502._CYCLES = 0;
+
+    MOS6502.emulateCycle();
+
+    equal(MOS6502._P,0x20 + 0x80 + 0x01,"Test 12: Flags set correctly.");
+    equal(MOS6502._A, 0xFF, "Test 12: ADC performed in decimal mode correctly.");
+    equal(MOS6502._PC, PCStart + BytesUsed,"Program counter increased correctly.");
+    equal(MOS6502._CYCLES, CycleCost,"Cycles increased correctly.");
+
+});
+
+test("0x75 - ADC (Zero Page, X)", function() {
+    /**
+     *    Instruction = ADC - Add memory to accumulator with carry
+     * Affected Flags = Sign, Zero, Carry, Overflow
+     *    Total Tests = 10
+     */
+
+    var OPCODE = 0x75,
+        CycleCost = 4,
+        BytesUsed = 2,
+        ZPAddress = Math.floor(Math.random() * 255) + 1,
+        XRegister = Math.floor(Math.random() * 255) + 1,
+        OperandAddress = (XRegister + ZPAddress) & 0xFF,
+        PCStart = 0x4000;
+
+    MOS6502._RAM[PCStart] = OPCODE;
+    MOS6502._RAM[PCStart + 1] = ZPAddress;
+    MOS6502._X = XRegister;
+
+    // DECIMAL MODE ACTIVE
+
+    /**
+     * Test 1:
+     * 00 + 00 and C=0 gives 00 and N=0 V=0 Z=1 C=0
+     */
+
+    MOS6502._P = 0x20 + 0x08;
+    MOS6502._RAM[OperandAddress] = 0x00;
+    MOS6502._A = 0x00;
+    MOS6502._PC = PCStart;
+
+    MOS6502.emulateCycle();
+
+    equal(MOS6502._P,0x20 + 0x08 + 0x02,"Test 1: Zero set correctly.");
+    equal(MOS6502._A, 0x00, "Test 1: ADC performed in decimal mode correctly.");
+
+    /**
+     * Test 2:
+     * 79 + 00 and C=1 gives 80 and N=1 V=1 Z=0 C=0
+     */
+    MOS6502._P = 0x20 + 0x08 + 0x01;
+    MOS6502._RAM[OperandAddress] = 0x79;
+    MOS6502._A = 0x00;
+    MOS6502._PC = PCStart;
+
+    MOS6502.emulateCycle();
+
+    equal(MOS6502._P,0x20 + 0x80 + 0x40 + 0x08,"Test 2: Sign & Overflow set correctly.");
+    equal(MOS6502._A, 0x80, "Test 2: ADC performed in decimal mode correctly.");
+
+    /**
+     * Test 3:
+     * 24 + 56 and C=0 gives 80 and N=1 V=1 Z=0 C=0 (simulate)
+     */
+    MOS6502._P = 0x20 + 0x08;
+    MOS6502._RAM[OperandAddress] = 0x24;
+    MOS6502._A = 0x56;
+    MOS6502._PC = PCStart;
+
+    MOS6502.emulateCycle();
+
+    equal(MOS6502._P,0x20 + 0x80 + 0x40 + 0x08,"Test 3: Sign & Overflow set correctly.");
+    equal(MOS6502._A, 0x80, "Test 3: ADC performed in decimal mode correctly.");
+
+    /**
+     * Test 4:
+     * 93 + 82 and C=0 gives 75 and N=0 V=1 Z=0 C=1 (simulate)
+     */
+    MOS6502._P = 0x20 + 0x08;
+    MOS6502._RAM[OperandAddress] = 0x93;
+    MOS6502._A = 0x82;
+    MOS6502._PC = PCStart;
+
+    MOS6502.emulateCycle();
+
+    equal(MOS6502._P,0x20 + 0x40 + 0x08 + 0x01,"Test 4: Overflow & Carry set correctly.");
+    equal(MOS6502._A, 0x75, "Test 4: ADC performed in decimal mode correctly.");
+
+    /**
+     * Test 5:
+     * 89 + 76 and C=0 gives 65 and N=0 V=0 Z=0 C=1 (simulate)
+     */
+    MOS6502._P = 0x20 + 0x08;
+    MOS6502._RAM[OperandAddress] = 0x89;
+    MOS6502._A = 0x76;
+    MOS6502._PC = PCStart;
+
+    MOS6502.emulateCycle();
+
+    equal(MOS6502._P,0x20 + 0x08 + 0x01,"Test 5: Carry set correctly.");
+    equal(MOS6502._A, 0x65, "Test 5: ADC performed in decimal mode correctly.");
+
+    /**
+     * Test 6:
+     * 89 + 76 and C=1 gives 66 and N=0 V=0 Z=0 C=1 (simulate)
+     *
+     * Fails: Carry is not set.
+     */
+    MOS6502._P = 0x20 + 0x08 + 0x01;
+    MOS6502._RAM[OperandAddress] = 0x89;
+    MOS6502._A = 0x76;
+    MOS6502._PC = PCStart;
+
+    MOS6502.emulateCycle();
+
+    equal(MOS6502._P,0x20 + 0x08 + 0x01,"Test 6: Carry set correctly.");
+    equal(MOS6502._A, 0x66, "Test 6: ADC performed in decimal mode correctly.");
+
+    /**
+     * Test 7:
+     * 80 + f0 and C=0 gives d0 and N=1 V=1 Z=0 C=1
+     */
+    MOS6502._P = 0x20 + 0x80 + 0x08;
+    MOS6502._RAM[OperandAddress] = 0x80;
+    MOS6502._A = 0xF0;
+    MOS6502._PC = PCStart;
+
+    MOS6502.emulateCycle();
+
+    equal(MOS6502._P,0x20 + 0x80 + 0x40 + 0x08 + 0x01,"Test 7: Overflow & Carry set correctly.");
+    equal(MOS6502._A, 0xD0, "Test 7: ADC performed in decimal mode correctly.");
+
+    /**
+     * Test 8:
+     * 80 + fa and C=0 gives e0 and N=1 V=0 Z=0 C=1
+     */
+    MOS6502._P = 0x20 + 0x08;
+    MOS6502._RAM[OperandAddress] = 0x80;
+    MOS6502._A = 0xFA;
+    MOS6502._PC = PCStart;
+
+    MOS6502.emulateCycle();
+
+    equal(MOS6502._P,0x20 + 0x80 + 0x08 + 0x01,"Test 8: Sign & Carry set correctly.");
+    equal(MOS6502._A, 0xE0, "Test 8: ADC performed in decimal mode correctly.");
+
+    /**
+     * Test 9:
+     * 2f + 4f and C=0 gives 74 and N=0 V=0 Z=0 C=0
+     */
+    MOS6502._P = 0x20 + 0x08;
+    MOS6502._RAM[OperandAddress] = 0x4F;
+    MOS6502._A = 0x2F;
+    MOS6502._PC = PCStart;
+
+    MOS6502.emulateCycle();
+
+    equal(MOS6502._P,0x20 + 0x08,"Test 9: Status register set correctly.");
+    equal(MOS6502._A, 0x74, "Test 9: ADC performed in decimal mode correctly.");
+
+    /**
+     * Test 10:
+     * 6f + 00 and C=1 gives 76 and N=0 V=0 Z=0 C=0 (simulate)
+     */
+    MOS6502._P = 0x20 + 0x08 + 0x01;
+    MOS6502._RAM[OperandAddress] = 0x6F;
+    MOS6502._A = 0x00;
+    MOS6502._PC = PCStart;
+
+    MOS6502.emulateCycle();
+
+    equal(MOS6502._P,0x20 + 0x08,"Test 10: Status register set correctly.");
+    equal(MOS6502._A, 0x76, "Test 10: ADC performed in decimal mode correctly.");
+
+    /**
+     * Test 11:
+     * DECIMAL MODE OFF
+     * 00 + 00 and C=0 gives 00 and N=0 V=0 Z=1 C=0
+     */
+    MOS6502._P = 0x20;
+    MOS6502._RAM[OperandAddress] = 0x00;
+    MOS6502._A = 0x00;
+    MOS6502._PC = PCStart;
+
+    MOS6502.emulateCycle();
+
+    equal(MOS6502._P,0x20 + 0x02,"Test 11: Zero set correctly.");
+    equal(MOS6502._A, 0x00, "Test 11: ADC performed in decimal mode correctly.");
+
+    /**
+     * Test 12:
+     * DECIMAL MODE OFF
+     * FF + FF and C=1 gives FF and N=1 V=0 Z=0 C=1
+     */
+    MOS6502._P = 0x20 + 0x01;
+    MOS6502._RAM[OperandAddress] = 0xFF;
+    MOS6502._A = 0xFF;
+    MOS6502._PC = PCStart;
+    MOS6502._CYCLES = 0;
+
+    MOS6502.emulateCycle();
+
+    equal(MOS6502._P,0x20 + 0x80 + 0x01,"Test 12: Flags set correctly.");
+    equal(MOS6502._A, 0xFF, "Test 12: ADC performed in decimal mode correctly.");
+    equal(MOS6502._PC, PCStart + BytesUsed,"Program counter increased correctly.");
+    equal(MOS6502._CYCLES, CycleCost,"Cycles increased correctly.");
+
+});
+
+test("0x6D - ADC (Absolute)", function() {
+    /**
+     *    Instruction = ADC - Add memory to accumulator with carry
+     * Affected Flags = Sign, Zero, Carry, Overflow
+     *    Total Tests = 10
+     */
+
+    var OPCODE = 0x6D,
+        CycleCost = 4,
+        BytesUsed = 3,
+        AddressByte1 = 0x31,
+        AddressByte2 = 0x21,
+        OperandAddress = MOS6502._MAKE_ADDRESS(AddressByte1,AddressByte2),
+        PCStart = 0x4000;
+
+    MOS6502._RAM[PCStart] = OPCODE;
+    MOS6502._RAM[PCStart + 1] = AddressByte1;
+    MOS6502._RAM[PCStart + 2] = AddressByte2;
+
+    // DECIMAL MODE ACTIVE
+
+    /**
+     * Test 1:
+     * 00 + 00 and C=0 gives 00 and N=0 V=0 Z=1 C=0
+     */
+
+    MOS6502._P = 0x20 + 0x08;
+    MOS6502._RAM[OperandAddress] = 0x00;
+    MOS6502._A = 0x00;
+    MOS6502._PC = PCStart;
+
+    MOS6502.emulateCycle();
+
+    equal(MOS6502._P,0x20 + 0x08 + 0x02,"Test 1: Zero set correctly.");
+    equal(MOS6502._A, 0x00, "Test 1: ADC performed in decimal mode correctly.");
+
+    /**
+     * Test 2:
+     * 79 + 00 and C=1 gives 80 and N=1 V=1 Z=0 C=0
+     */
+    MOS6502._P = 0x20 + 0x08 + 0x01;
+    MOS6502._RAM[OperandAddress] = 0x79;
+    MOS6502._A = 0x00;
+    MOS6502._PC = PCStart;
+
+    MOS6502.emulateCycle();
+
+    equal(MOS6502._P,0x20 + 0x80 + 0x40 + 0x08,"Test 2: Sign & Overflow set correctly.");
+    equal(MOS6502._A, 0x80, "Test 2: ADC performed in decimal mode correctly.");
+
+    /**
+     * Test 3:
+     * 24 + 56 and C=0 gives 80 and N=1 V=1 Z=0 C=0 (simulate)
+     */
+    MOS6502._P = 0x20 + 0x08;
+    MOS6502._RAM[OperandAddress] = 0x24;
+    MOS6502._A = 0x56;
+    MOS6502._PC = PCStart;
+
+    MOS6502.emulateCycle();
+
+    equal(MOS6502._P,0x20 + 0x80 + 0x40 + 0x08,"Test 3: Sign & Overflow set correctly.");
+    equal(MOS6502._A, 0x80, "Test 3: ADC performed in decimal mode correctly.");
+
+    /**
+     * Test 4:
+     * 93 + 82 and C=0 gives 75 and N=0 V=1 Z=0 C=1 (simulate)
+     */
+    MOS6502._P = 0x20 + 0x08;
+    MOS6502._RAM[OperandAddress] = 0x93;
+    MOS6502._A = 0x82;
+    MOS6502._PC = PCStart;
+
+    MOS6502.emulateCycle();
+
+    equal(MOS6502._P,0x20 + 0x40 + 0x08 + 0x01,"Test 4: Overflow & Carry set correctly.");
+    equal(MOS6502._A, 0x75, "Test 4: ADC performed in decimal mode correctly.");
+
+    /**
+     * Test 5:
+     * 89 + 76 and C=0 gives 65 and N=0 V=0 Z=0 C=1 (simulate)
+     */
+    MOS6502._P = 0x20 + 0x08;
+    MOS6502._RAM[OperandAddress] = 0x89;
+    MOS6502._A = 0x76;
+    MOS6502._PC = PCStart;
+
+    MOS6502.emulateCycle();
+
+    equal(MOS6502._P,0x20 + 0x08 + 0x01,"Test 5: Carry set correctly.");
+    equal(MOS6502._A, 0x65, "Test 5: ADC performed in decimal mode correctly.");
+
+    /**
+     * Test 6:
+     * 89 + 76 and C=1 gives 66 and N=0 V=0 Z=0 C=1 (simulate)
+     *
+     * Fails: Carry is not set.
+     */
+    MOS6502._P = 0x20 + 0x08 + 0x01;
+    MOS6502._RAM[OperandAddress] = 0x89;
+    MOS6502._A = 0x76;
+    MOS6502._PC = PCStart;
+
+    MOS6502.emulateCycle();
+
+    equal(MOS6502._P,0x20 + 0x08 + 0x01,"Test 6: Carry set correctly.");
+    equal(MOS6502._A, 0x66, "Test 6: ADC performed in decimal mode correctly.");
+
+    /**
+     * Test 7:
+     * 80 + f0 and C=0 gives d0 and N=1 V=1 Z=0 C=1
+     */
+    MOS6502._P = 0x20 + 0x80 + 0x08;
+    MOS6502._RAM[OperandAddress] = 0x80;
+    MOS6502._A = 0xF0;
+    MOS6502._PC = PCStart;
+
+    MOS6502.emulateCycle();
+
+    equal(MOS6502._P,0x20 + 0x80 + 0x40 + 0x08 + 0x01,"Test 7: Overflow & Carry set correctly.");
+    equal(MOS6502._A, 0xD0, "Test 7: ADC performed in decimal mode correctly.");
+
+    /**
+     * Test 8:
+     * 80 + fa and C=0 gives e0 and N=1 V=0 Z=0 C=1
+     */
+    MOS6502._P = 0x20 + 0x08;
+    MOS6502._RAM[OperandAddress] = 0x80;
+    MOS6502._A = 0xFA;
+    MOS6502._PC = PCStart;
+
+    MOS6502.emulateCycle();
+
+    equal(MOS6502._P,0x20 + 0x80 + 0x08 + 0x01,"Test 8: Sign & Carry set correctly.");
+    equal(MOS6502._A, 0xE0, "Test 8: ADC performed in decimal mode correctly.");
+
+    /**
+     * Test 9:
+     * 2f + 4f and C=0 gives 74 and N=0 V=0 Z=0 C=0
+     */
+    MOS6502._P = 0x20 + 0x08;
+    MOS6502._RAM[OperandAddress] = 0x4F;
+    MOS6502._A = 0x2F;
+    MOS6502._PC = PCStart;
+
+    MOS6502.emulateCycle();
+
+    equal(MOS6502._P,0x20 + 0x08,"Test 9: Status register set correctly.");
+    equal(MOS6502._A, 0x74, "Test 9: ADC performed in decimal mode correctly.");
+
+    /**
+     * Test 10:
+     * 6f + 00 and C=1 gives 76 and N=0 V=0 Z=0 C=0 (simulate)
+     */
+    MOS6502._P = 0x20 + 0x08 + 0x01;
+    MOS6502._RAM[OperandAddress] = 0x6F;
+    MOS6502._A = 0x00;
+    MOS6502._PC = PCStart;
+
+    MOS6502.emulateCycle();
+
+    equal(MOS6502._P,0x20 + 0x08,"Test 10: Status register set correctly.");
+    equal(MOS6502._A, 0x76, "Test 10: ADC performed in decimal mode correctly.");
+
+    /**
+     * Test 11:
+     * DECIMAL MODE OFF
+     * 00 + 00 and C=0 gives 00 and N=0 V=0 Z=1 C=0
+     */
+    MOS6502._P = 0x20;
+    MOS6502._RAM[OperandAddress] = 0x00;
+    MOS6502._A = 0x00;
+    MOS6502._PC = PCStart;
+
+    MOS6502.emulateCycle();
+
+    equal(MOS6502._P,0x20 + 0x02,"Test 11: Zero set correctly.");
+    equal(MOS6502._A, 0x00, "Test 11: ADC performed in decimal mode correctly.");
+
+    /**
+     * Test 12:
+     * DECIMAL MODE OFF
+     * FF + FF and C=1 gives FF and N=1 V=0 Z=0 C=1
+     */
+    MOS6502._P = 0x20 + 0x01;
+    MOS6502._RAM[OperandAddress] = 0xFF;
+    MOS6502._A = 0xFF;
+    MOS6502._PC = PCStart;
+    MOS6502._CYCLES = 0;
+
+    MOS6502.emulateCycle();
+
+    equal(MOS6502._P,0x20 + 0x80 + 0x01,"Test 12: Flags set correctly.");
+    equal(MOS6502._A, 0xFF, "Test 12: ADC performed in decimal mode correctly.");
+    equal(MOS6502._PC, PCStart + BytesUsed,"Program counter increased correctly.");
+    equal(MOS6502._CYCLES, CycleCost,"Cycles increased correctly.");
+
+});
+
+test("0x7D - ADC (Absolute, X) (Same Page)", function() {
+    /**
+     *    Instruction = ADC - Add memory to accumulator with carry
+     * Affected Flags = Sign, Zero, Carry, Overflow
+     *    Total Tests = 10
+     */
+
+    var OPCODE = 0x7D,
+        CycleCost = 4,
+        BytesUsed = 3,
+        AddressByte1 = 0x31,
+        AddressByte2 = 0x21,
+        XRegister = 0x80,
+        OperandAddress = MOS6502._MAKE_ADDRESS(AddressByte1,AddressByte2) + XRegister,
+        PCStart = 0x4000;
+
+    MOS6502._RAM[PCStart] = OPCODE;
+    MOS6502._RAM[PCStart + 1] = AddressByte1;
+    MOS6502._RAM[PCStart + 2] = AddressByte2;
+    MOS6502._X = XRegister;
+
+    // DECIMAL MODE ACTIVE
+
+    /**
+     * Test 1:
+     * 00 + 00 and C=0 gives 00 and N=0 V=0 Z=1 C=0
+     */
+
+    MOS6502._P = 0x20 + 0x08;
+    MOS6502._RAM[OperandAddress] = 0x00;
+    MOS6502._A = 0x00;
+    MOS6502._PC = PCStart;
+
+    MOS6502.emulateCycle();
+
+    equal(MOS6502._P,0x20 + 0x08 + 0x02,"Test 1: Zero set correctly.");
+    equal(MOS6502._A, 0x00, "Test 1: ADC performed in decimal mode correctly.");
+
+    /**
+     * Test 2:
+     * 79 + 00 and C=1 gives 80 and N=1 V=1 Z=0 C=0
+     */
+    MOS6502._P = 0x20 + 0x08 + 0x01;
+    MOS6502._RAM[OperandAddress] = 0x79;
+    MOS6502._A = 0x00;
+    MOS6502._PC = PCStart;
+
+    MOS6502.emulateCycle();
+
+    equal(MOS6502._P,0x20 + 0x80 + 0x40 + 0x08,"Test 2: Sign & Overflow set correctly.");
+    equal(MOS6502._A, 0x80, "Test 2: ADC performed in decimal mode correctly.");
+
+    /**
+     * Test 3:
+     * 24 + 56 and C=0 gives 80 and N=1 V=1 Z=0 C=0 (simulate)
+     */
+    MOS6502._P = 0x20 + 0x08;
+    MOS6502._RAM[OperandAddress] = 0x24;
+    MOS6502._A = 0x56;
+    MOS6502._PC = PCStart;
+
+    MOS6502.emulateCycle();
+
+    equal(MOS6502._P,0x20 + 0x80 + 0x40 + 0x08,"Test 3: Sign & Overflow set correctly.");
+    equal(MOS6502._A, 0x80, "Test 3: ADC performed in decimal mode correctly.");
+
+    /**
+     * Test 4:
+     * 93 + 82 and C=0 gives 75 and N=0 V=1 Z=0 C=1 (simulate)
+     */
+    MOS6502._P = 0x20 + 0x08;
+    MOS6502._RAM[OperandAddress] = 0x93;
+    MOS6502._A = 0x82;
+    MOS6502._PC = PCStart;
+
+    MOS6502.emulateCycle();
+
+    equal(MOS6502._P,0x20 + 0x40 + 0x08 + 0x01,"Test 4: Overflow & Carry set correctly.");
+    equal(MOS6502._A, 0x75, "Test 4: ADC performed in decimal mode correctly.");
+
+    /**
+     * Test 5:
+     * 89 + 76 and C=0 gives 65 and N=0 V=0 Z=0 C=1 (simulate)
+     */
+    MOS6502._P = 0x20 + 0x08;
+    MOS6502._RAM[OperandAddress] = 0x89;
+    MOS6502._A = 0x76;
+    MOS6502._PC = PCStart;
+
+    MOS6502.emulateCycle();
+
+    equal(MOS6502._P,0x20 + 0x08 + 0x01,"Test 5: Carry set correctly.");
+    equal(MOS6502._A, 0x65, "Test 5: ADC performed in decimal mode correctly.");
+
+    /**
+     * Test 6:
+     * 89 + 76 and C=1 gives 66 and N=0 V=0 Z=0 C=1 (simulate)
+     *
+     * Fails: Carry is not set.
+     */
+    MOS6502._P = 0x20 + 0x08 + 0x01;
+    MOS6502._RAM[OperandAddress] = 0x89;
+    MOS6502._A = 0x76;
+    MOS6502._PC = PCStart;
+
+    MOS6502.emulateCycle();
+
+    equal(MOS6502._P,0x20 + 0x08 + 0x01,"Test 6: Carry set correctly.");
+    equal(MOS6502._A, 0x66, "Test 6: ADC performed in decimal mode correctly.");
+
+    /**
+     * Test 7:
+     * 80 + f0 and C=0 gives d0 and N=1 V=1 Z=0 C=1
+     */
+    MOS6502._P = 0x20 + 0x80 + 0x08;
+    MOS6502._RAM[OperandAddress] = 0x80;
+    MOS6502._A = 0xF0;
+    MOS6502._PC = PCStart;
+
+    MOS6502.emulateCycle();
+
+    equal(MOS6502._P,0x20 + 0x80 + 0x40 + 0x08 + 0x01,"Test 7: Overflow & Carry set correctly.");
+    equal(MOS6502._A, 0xD0, "Test 7: ADC performed in decimal mode correctly.");
+
+    /**
+     * Test 8:
+     * 80 + fa and C=0 gives e0 and N=1 V=0 Z=0 C=1
+     */
+    MOS6502._P = 0x20 + 0x08;
+    MOS6502._RAM[OperandAddress] = 0x80;
+    MOS6502._A = 0xFA;
+    MOS6502._PC = PCStart;
+
+    MOS6502.emulateCycle();
+
+    equal(MOS6502._P,0x20 + 0x80 + 0x08 + 0x01,"Test 8: Sign & Carry set correctly.");
+    equal(MOS6502._A, 0xE0, "Test 8: ADC performed in decimal mode correctly.");
+
+    /**
+     * Test 9:
+     * 2f + 4f and C=0 gives 74 and N=0 V=0 Z=0 C=0
+     */
+    MOS6502._P = 0x20 + 0x08;
+    MOS6502._RAM[OperandAddress] = 0x4F;
+    MOS6502._A = 0x2F;
+    MOS6502._PC = PCStart;
+
+    MOS6502.emulateCycle();
+
+    equal(MOS6502._P,0x20 + 0x08,"Test 9: Status register set correctly.");
+    equal(MOS6502._A, 0x74, "Test 9: ADC performed in decimal mode correctly.");
+
+    /**
+     * Test 10:
+     * 6f + 00 and C=1 gives 76 and N=0 V=0 Z=0 C=0 (simulate)
+     */
+    MOS6502._P = 0x20 + 0x08 + 0x01;
+    MOS6502._RAM[OperandAddress] = 0x6F;
+    MOS6502._A = 0x00;
+    MOS6502._PC = PCStart;
+
+    MOS6502.emulateCycle();
+
+    equal(MOS6502._P,0x20 + 0x08,"Test 10: Status register set correctly.");
+    equal(MOS6502._A, 0x76, "Test 10: ADC performed in decimal mode correctly.");
+
+    /**
+     * Test 11:
+     * DECIMAL MODE OFF
+     * 00 + 00 and C=0 gives 00 and N=0 V=0 Z=1 C=0
+     */
+    MOS6502._P = 0x20;
+    MOS6502._RAM[OperandAddress] = 0x00;
+    MOS6502._A = 0x00;
+    MOS6502._PC = PCStart;
+
+    MOS6502.emulateCycle();
+
+    equal(MOS6502._P,0x20 + 0x02,"Test 11: Zero set correctly.");
+    equal(MOS6502._A, 0x00, "Test 11: ADC performed in decimal mode correctly.");
+
+    /**
+     * Test 12:
+     * DECIMAL MODE OFF
+     * FF + FF and C=1 gives FF and N=1 V=0 Z=0 C=1
+     */
+    MOS6502._P = 0x20 + 0x01;
+    MOS6502._RAM[OperandAddress] = 0xFF;
+    MOS6502._A = 0xFF;
+    MOS6502._PC = PCStart;
+    MOS6502._CYCLES = 0;
+
+    MOS6502.emulateCycle();
+
+    equal(MOS6502._P,0x20 + 0x80 + 0x01,"Test 12: Flags set correctly.");
+    equal(MOS6502._A, 0xFF, "Test 12: ADC performed in decimal mode correctly.");
+    equal(MOS6502._PC, PCStart + BytesUsed,"Program counter increased correctly.");
+    equal(MOS6502._CYCLES, CycleCost,"Cycles increased correctly.");
+
+});
+
+test("0x7D - ADC (Absolute, X) (Cross Page)", function() {
+    /**
+     *    Instruction = ADC - Add memory to accumulator with carry
+     * Affected Flags = Sign, Zero, Carry, Overflow
+     *    Total Tests = 10
+     */
+
+    var OPCODE = 0x7D,
+        CycleCost = 5,
+        BytesUsed = 3,
+        AddressByte1 = 0x81,
+        AddressByte2 = 0x21,
+        XRegister = 0x80,
+        OperandAddress = MOS6502._MAKE_ADDRESS(AddressByte1,AddressByte2) + XRegister,
+        PCStart = 0x4000;
+
+    MOS6502._RAM[PCStart] = OPCODE;
+    MOS6502._RAM[PCStart + 1] = AddressByte1;
+    MOS6502._RAM[PCStart + 2] = AddressByte2;
+    MOS6502._X = XRegister;
+
+    // DECIMAL MODE ACTIVE
+
+    /**
+     * Test 1:
+     * 00 + 00 and C=0 gives 00 and N=0 V=0 Z=1 C=0
+     */
+
+    MOS6502._P = 0x20 + 0x08;
+    MOS6502._RAM[OperandAddress] = 0x00;
+    MOS6502._A = 0x00;
+    MOS6502._PC = PCStart;
+
+    MOS6502.emulateCycle();
+
+    equal(MOS6502._P,0x20 + 0x08 + 0x02,"Test 1: Zero set correctly.");
+    equal(MOS6502._A, 0x00, "Test 1: ADC performed in decimal mode correctly.");
+
+    /**
+     * Test 2:
+     * 79 + 00 and C=1 gives 80 and N=1 V=1 Z=0 C=0
+     */
+    MOS6502._P = 0x20 + 0x08 + 0x01;
+    MOS6502._RAM[OperandAddress] = 0x79;
+    MOS6502._A = 0x00;
+    MOS6502._PC = PCStart;
+
+    MOS6502.emulateCycle();
+
+    equal(MOS6502._P,0x20 + 0x80 + 0x40 + 0x08,"Test 2: Sign & Overflow set correctly.");
+    equal(MOS6502._A, 0x80, "Test 2: ADC performed in decimal mode correctly.");
+
+    /**
+     * Test 3:
+     * 24 + 56 and C=0 gives 80 and N=1 V=1 Z=0 C=0 (simulate)
+     */
+    MOS6502._P = 0x20 + 0x08;
+    MOS6502._RAM[OperandAddress] = 0x24;
+    MOS6502._A = 0x56;
+    MOS6502._PC = PCStart;
+
+    MOS6502.emulateCycle();
+
+    equal(MOS6502._P,0x20 + 0x80 + 0x40 + 0x08,"Test 3: Sign & Overflow set correctly.");
+    equal(MOS6502._A, 0x80, "Test 3: ADC performed in decimal mode correctly.");
+
+    /**
+     * Test 4:
+     * 93 + 82 and C=0 gives 75 and N=0 V=1 Z=0 C=1 (simulate)
+     */
+    MOS6502._P = 0x20 + 0x08;
+    MOS6502._RAM[OperandAddress] = 0x93;
+    MOS6502._A = 0x82;
+    MOS6502._PC = PCStart;
+
+    MOS6502.emulateCycle();
+
+    equal(MOS6502._P,0x20 + 0x40 + 0x08 + 0x01,"Test 4: Overflow & Carry set correctly.");
+    equal(MOS6502._A, 0x75, "Test 4: ADC performed in decimal mode correctly.");
+
+    /**
+     * Test 5:
+     * 89 + 76 and C=0 gives 65 and N=0 V=0 Z=0 C=1 (simulate)
+     */
+    MOS6502._P = 0x20 + 0x08;
+    MOS6502._RAM[OperandAddress] = 0x89;
+    MOS6502._A = 0x76;
+    MOS6502._PC = PCStart;
+
+    MOS6502.emulateCycle();
+
+    equal(MOS6502._P,0x20 + 0x08 + 0x01,"Test 5: Carry set correctly.");
+    equal(MOS6502._A, 0x65, "Test 5: ADC performed in decimal mode correctly.");
+
+    /**
+     * Test 6:
+     * 89 + 76 and C=1 gives 66 and N=0 V=0 Z=0 C=1 (simulate)
+     *
+     * Fails: Carry is not set.
+     */
+    MOS6502._P = 0x20 + 0x08 + 0x01;
+    MOS6502._RAM[OperandAddress] = 0x89;
+    MOS6502._A = 0x76;
+    MOS6502._PC = PCStart;
+
+    MOS6502.emulateCycle();
+
+    equal(MOS6502._P,0x20 + 0x08 + 0x01,"Test 6: Carry set correctly.");
+    equal(MOS6502._A, 0x66, "Test 6: ADC performed in decimal mode correctly.");
+
+    /**
+     * Test 7:
+     * 80 + f0 and C=0 gives d0 and N=1 V=1 Z=0 C=1
+     */
+    MOS6502._P = 0x20 + 0x80 + 0x08;
+    MOS6502._RAM[OperandAddress] = 0x80;
+    MOS6502._A = 0xF0;
+    MOS6502._PC = PCStart;
+
+    MOS6502.emulateCycle();
+
+    equal(MOS6502._P,0x20 + 0x80 + 0x40 + 0x08 + 0x01,"Test 7: Overflow & Carry set correctly.");
+    equal(MOS6502._A, 0xD0, "Test 7: ADC performed in decimal mode correctly.");
+
+    /**
+     * Test 8:
+     * 80 + fa and C=0 gives e0 and N=1 V=0 Z=0 C=1
+     */
+    MOS6502._P = 0x20 + 0x08;
+    MOS6502._RAM[OperandAddress] = 0x80;
+    MOS6502._A = 0xFA;
+    MOS6502._PC = PCStart;
+
+    MOS6502.emulateCycle();
+
+    equal(MOS6502._P,0x20 + 0x80 + 0x08 + 0x01,"Test 8: Sign & Carry set correctly.");
+    equal(MOS6502._A, 0xE0, "Test 8: ADC performed in decimal mode correctly.");
+
+    /**
+     * Test 9:
+     * 2f + 4f and C=0 gives 74 and N=0 V=0 Z=0 C=0
+     */
+    MOS6502._P = 0x20 + 0x08;
+    MOS6502._RAM[OperandAddress] = 0x4F;
+    MOS6502._A = 0x2F;
+    MOS6502._PC = PCStart;
+
+    MOS6502.emulateCycle();
+
+    equal(MOS6502._P,0x20 + 0x08,"Test 9: Status register set correctly.");
+    equal(MOS6502._A, 0x74, "Test 9: ADC performed in decimal mode correctly.");
+
+    /**
+     * Test 10:
+     * 6f + 00 and C=1 gives 76 and N=0 V=0 Z=0 C=0 (simulate)
+     */
+    MOS6502._P = 0x20 + 0x08 + 0x01;
+    MOS6502._RAM[OperandAddress] = 0x6F;
+    MOS6502._A = 0x00;
+    MOS6502._PC = PCStart;
+
+    MOS6502.emulateCycle();
+
+    equal(MOS6502._P,0x20 + 0x08,"Test 10: Status register set correctly.");
+    equal(MOS6502._A, 0x76, "Test 10: ADC performed in decimal mode correctly.");
+
+    /**
+     * Test 11:
+     * DECIMAL MODE OFF
+     * 00 + 00 and C=0 gives 00 and N=0 V=0 Z=1 C=0
+     */
+    MOS6502._P = 0x20;
+    MOS6502._RAM[OperandAddress] = 0x00;
+    MOS6502._A = 0x00;
+    MOS6502._PC = PCStart;
+
+    MOS6502.emulateCycle();
+
+    equal(MOS6502._P,0x20 + 0x02,"Test 11: Zero set correctly.");
+    equal(MOS6502._A, 0x00, "Test 11: ADC performed in decimal mode correctly.");
+
+    /**
+     * Test 12:
+     * DECIMAL MODE OFF
+     * FF + FF and C=1 gives FF and N=1 V=0 Z=0 C=1
+     */
+    MOS6502._P = 0x20 + 0x01;
+    MOS6502._RAM[OperandAddress] = 0xFF;
+    MOS6502._A = 0xFF;
+    MOS6502._PC = PCStart;
+    MOS6502._CYCLES = 0;
+
+    MOS6502.emulateCycle();
+
+    equal(MOS6502._P,0x20 + 0x80 + 0x01,"Test 12: Flags set correctly.");
+    equal(MOS6502._A, 0xFF, "Test 12: ADC performed in decimal mode correctly.");
+    equal(MOS6502._PC, PCStart + BytesUsed,"Program counter increased correctly.");
+    equal(MOS6502._CYCLES, CycleCost,"Cycles increased correctly.");
+
+});
+
+test("0x79 - ADC (Absolute, Y) (Same Page)", function() {
+    /**
+     *    Instruction = ADC - Add memory to accumulator with carry
+     * Affected Flags = Sign, Zero, Carry, Overflow
+     *    Total Tests = 10
+     */
+
+    var OPCODE = 0x79,
+        CycleCost = 4,
+        BytesUsed = 3,
+        AddressByte1 = 0x31,
+        AddressByte2 = 0x21,
+        YRegister = 0x80,
+        OperandAddress = MOS6502._MAKE_ADDRESS(AddressByte1,AddressByte2) + YRegister,
+        PCStart = 0x4000;
+
+    MOS6502._RAM[PCStart] = OPCODE;
+    MOS6502._RAM[PCStart + 1] = AddressByte1;
+    MOS6502._RAM[PCStart + 2] = AddressByte2;
+    MOS6502._Y = YRegister;
+
+    // DECIMAL MODE ACTIVE
+
+    /**
+     * Test 1:
+     * 00 + 00 and C=0 gives 00 and N=0 V=0 Z=1 C=0
+     */
+
+    MOS6502._P = 0x20 + 0x08;
+    MOS6502._RAM[OperandAddress] = 0x00;
+    MOS6502._A = 0x00;
+    MOS6502._PC = PCStart;
+
+    MOS6502.emulateCycle();
+
+    equal(MOS6502._P,0x20 + 0x08 + 0x02,"Test 1: Zero set correctly.");
+    equal(MOS6502._A, 0x00, "Test 1: ADC performed in decimal mode correctly.");
+
+    /**
+     * Test 2:
+     * 79 + 00 and C=1 gives 80 and N=1 V=1 Z=0 C=0
+     */
+    MOS6502._P = 0x20 + 0x08 + 0x01;
+    MOS6502._RAM[OperandAddress] = 0x79;
+    MOS6502._A = 0x00;
+    MOS6502._PC = PCStart;
+
+    MOS6502.emulateCycle();
+
+    equal(MOS6502._P,0x20 + 0x80 + 0x40 + 0x08,"Test 2: Sign & Overflow set correctly.");
+    equal(MOS6502._A, 0x80, "Test 2: ADC performed in decimal mode correctly.");
+
+    /**
+     * Test 3:
+     * 24 + 56 and C=0 gives 80 and N=1 V=1 Z=0 C=0 (simulate)
+     */
+    MOS6502._P = 0x20 + 0x08;
+    MOS6502._RAM[OperandAddress] = 0x24;
+    MOS6502._A = 0x56;
+    MOS6502._PC = PCStart;
+
+    MOS6502.emulateCycle();
+
+    equal(MOS6502._P,0x20 + 0x80 + 0x40 + 0x08,"Test 3: Sign & Overflow set correctly.");
+    equal(MOS6502._A, 0x80, "Test 3: ADC performed in decimal mode correctly.");
+
+    /**
+     * Test 4:
+     * 93 + 82 and C=0 gives 75 and N=0 V=1 Z=0 C=1 (simulate)
+     */
+    MOS6502._P = 0x20 + 0x08;
+    MOS6502._RAM[OperandAddress] = 0x93;
+    MOS6502._A = 0x82;
+    MOS6502._PC = PCStart;
+
+    MOS6502.emulateCycle();
+
+    equal(MOS6502._P,0x20 + 0x40 + 0x08 + 0x01,"Test 4: Overflow & Carry set correctly.");
+    equal(MOS6502._A, 0x75, "Test 4: ADC performed in decimal mode correctly.");
+
+    /**
+     * Test 5:
+     * 89 + 76 and C=0 gives 65 and N=0 V=0 Z=0 C=1 (simulate)
+     */
+    MOS6502._P = 0x20 + 0x08;
+    MOS6502._RAM[OperandAddress] = 0x89;
+    MOS6502._A = 0x76;
+    MOS6502._PC = PCStart;
+
+    MOS6502.emulateCycle();
+
+    equal(MOS6502._P,0x20 + 0x08 + 0x01,"Test 5: Carry set correctly.");
+    equal(MOS6502._A, 0x65, "Test 5: ADC performed in decimal mode correctly.");
+
+    /**
+     * Test 6:
+     * 89 + 76 and C=1 gives 66 and N=0 V=0 Z=0 C=1 (simulate)
+     *
+     * Fails: Carry is not set.
+     */
+    MOS6502._P = 0x20 + 0x08 + 0x01;
+    MOS6502._RAM[OperandAddress] = 0x89;
+    MOS6502._A = 0x76;
+    MOS6502._PC = PCStart;
+
+    MOS6502.emulateCycle();
+
+    equal(MOS6502._P,0x20 + 0x08 + 0x01,"Test 6: Carry set correctly.");
+    equal(MOS6502._A, 0x66, "Test 6: ADC performed in decimal mode correctly.");
+
+    /**
+     * Test 7:
+     * 80 + f0 and C=0 gives d0 and N=1 V=1 Z=0 C=1
+     */
+    MOS6502._P = 0x20 + 0x80 + 0x08;
+    MOS6502._RAM[OperandAddress] = 0x80;
+    MOS6502._A = 0xF0;
+    MOS6502._PC = PCStart;
+
+    MOS6502.emulateCycle();
+
+    equal(MOS6502._P,0x20 + 0x80 + 0x40 + 0x08 + 0x01,"Test 7: Overflow & Carry set correctly.");
+    equal(MOS6502._A, 0xD0, "Test 7: ADC performed in decimal mode correctly.");
+
+    /**
+     * Test 8:
+     * 80 + fa and C=0 gives e0 and N=1 V=0 Z=0 C=1
+     */
+    MOS6502._P = 0x20 + 0x08;
+    MOS6502._RAM[OperandAddress] = 0x80;
+    MOS6502._A = 0xFA;
+    MOS6502._PC = PCStart;
+
+    MOS6502.emulateCycle();
+
+    equal(MOS6502._P,0x20 + 0x80 + 0x08 + 0x01,"Test 8: Sign & Carry set correctly.");
+    equal(MOS6502._A, 0xE0, "Test 8: ADC performed in decimal mode correctly.");
+
+    /**
+     * Test 9:
+     * 2f + 4f and C=0 gives 74 and N=0 V=0 Z=0 C=0
+     */
+    MOS6502._P = 0x20 + 0x08;
+    MOS6502._RAM[OperandAddress] = 0x4F;
+    MOS6502._A = 0x2F;
+    MOS6502._PC = PCStart;
+
+    MOS6502.emulateCycle();
+
+    equal(MOS6502._P,0x20 + 0x08,"Test 9: Status register set correctly.");
+    equal(MOS6502._A, 0x74, "Test 9: ADC performed in decimal mode correctly.");
+
+    /**
+     * Test 10:
+     * 6f + 00 and C=1 gives 76 and N=0 V=0 Z=0 C=0 (simulate)
+     */
+    MOS6502._P = 0x20 + 0x08 + 0x01;
+    MOS6502._RAM[OperandAddress] = 0x6F;
+    MOS6502._A = 0x00;
+    MOS6502._PC = PCStart;
+
+    MOS6502.emulateCycle();
+
+    equal(MOS6502._P,0x20 + 0x08,"Test 10: Status register set correctly.");
+    equal(MOS6502._A, 0x76, "Test 10: ADC performed in decimal mode correctly.");
+
+    /**
+     * Test 11:
+     * DECIMAL MODE OFF
+     * 00 + 00 and C=0 gives 00 and N=0 V=0 Z=1 C=0
+     */
+    MOS6502._P = 0x20;
+    MOS6502._RAM[OperandAddress] = 0x00;
+    MOS6502._A = 0x00;
+    MOS6502._PC = PCStart;
+
+    MOS6502.emulateCycle();
+
+    equal(MOS6502._P,0x20 + 0x02,"Test 11: Zero set correctly.");
+    equal(MOS6502._A, 0x00, "Test 11: ADC performed in decimal mode correctly.");
+
+    /**
+     * Test 12:
+     * DECIMAL MODE OFF
+     * FF + FF and C=1 gives FF and N=1 V=0 Z=0 C=1
+     */
+    MOS6502._P = 0x20 + 0x01;
+    MOS6502._RAM[OperandAddress] = 0xFF;
+    MOS6502._A = 0xFF;
+    MOS6502._PC = PCStart;
+    MOS6502._CYCLES = 0;
+
+    MOS6502.emulateCycle();
+
+    equal(MOS6502._P,0x20 + 0x80 + 0x01,"Test 12: Flags set correctly.");
+    equal(MOS6502._A, 0xFF, "Test 12: ADC performed in decimal mode correctly.");
+    equal(MOS6502._PC, PCStart + BytesUsed,"Program counter increased correctly.");
+    equal(MOS6502._CYCLES, CycleCost,"Cycles increased correctly.");
+
+});
+
+test("0x79 - ADC (Absolute, Y) (Cross Page)", function() {
+    /**
+     *    Instruction = ADC - Add memory to accumulator with carry
+     * Affected Flags = Sign, Zero, Carry, Overflow
+     *    Total Tests = 10
+     */
+
+    var OPCODE = 0x79,
+        CycleCost = 5,
+        BytesUsed = 3,
+        AddressByte1 = 0x81,
+        AddressByte2 = 0x21,
+        YRegister = 0x80,
+        OperandAddress = MOS6502._MAKE_ADDRESS(AddressByte1,AddressByte2) + YRegister,
+        PCStart = 0x4000;
+
+    MOS6502._RAM[PCStart] = OPCODE;
+    MOS6502._RAM[PCStart + 1] = AddressByte1;
+    MOS6502._RAM[PCStart + 2] = AddressByte2;
+    MOS6502._Y = YRegister;
+
+    // DECIMAL MODE ACTIVE
+
+    /**
+     * Test 1:
+     * 00 + 00 and C=0 gives 00 and N=0 V=0 Z=1 C=0
+     */
+
+    MOS6502._P = 0x20 + 0x08;
+    MOS6502._RAM[OperandAddress] = 0x00;
+    MOS6502._A = 0x00;
+    MOS6502._PC = PCStart;
+
+    MOS6502.emulateCycle();
+
+    equal(MOS6502._P,0x20 + 0x08 + 0x02,"Test 1: Zero set correctly.");
+    equal(MOS6502._A, 0x00, "Test 1: ADC performed in decimal mode correctly.");
+
+    /**
+     * Test 2:
+     * 79 + 00 and C=1 gives 80 and N=1 V=1 Z=0 C=0
+     */
+    MOS6502._P = 0x20 + 0x08 + 0x01;
+    MOS6502._RAM[OperandAddress] = 0x79;
+    MOS6502._A = 0x00;
+    MOS6502._PC = PCStart;
+
+    MOS6502.emulateCycle();
+
+    equal(MOS6502._P,0x20 + 0x80 + 0x40 + 0x08,"Test 2: Sign & Overflow set correctly.");
+    equal(MOS6502._A, 0x80, "Test 2: ADC performed in decimal mode correctly.");
+
+    /**
+     * Test 3:
+     * 24 + 56 and C=0 gives 80 and N=1 V=1 Z=0 C=0 (simulate)
+     */
+    MOS6502._P = 0x20 + 0x08;
+    MOS6502._RAM[OperandAddress] = 0x24;
+    MOS6502._A = 0x56;
+    MOS6502._PC = PCStart;
+
+    MOS6502.emulateCycle();
+
+    equal(MOS6502._P,0x20 + 0x80 + 0x40 + 0x08,"Test 3: Sign & Overflow set correctly.");
+    equal(MOS6502._A, 0x80, "Test 3: ADC performed in decimal mode correctly.");
+
+    /**
+     * Test 4:
+     * 93 + 82 and C=0 gives 75 and N=0 V=1 Z=0 C=1 (simulate)
+     */
+    MOS6502._P = 0x20 + 0x08;
+    MOS6502._RAM[OperandAddress] = 0x93;
+    MOS6502._A = 0x82;
+    MOS6502._PC = PCStart;
+
+    MOS6502.emulateCycle();
+
+    equal(MOS6502._P,0x20 + 0x40 + 0x08 + 0x01,"Test 4: Overflow & Carry set correctly.");
+    equal(MOS6502._A, 0x75, "Test 4: ADC performed in decimal mode correctly.");
+
+    /**
+     * Test 5:
+     * 89 + 76 and C=0 gives 65 and N=0 V=0 Z=0 C=1 (simulate)
+     */
+    MOS6502._P = 0x20 + 0x08;
+    MOS6502._RAM[OperandAddress] = 0x89;
+    MOS6502._A = 0x76;
+    MOS6502._PC = PCStart;
+
+    MOS6502.emulateCycle();
+
+    equal(MOS6502._P,0x20 + 0x08 + 0x01,"Test 5: Carry set correctly.");
+    equal(MOS6502._A, 0x65, "Test 5: ADC performed in decimal mode correctly.");
+
+    /**
+     * Test 6:
+     * 89 + 76 and C=1 gives 66 and N=0 V=0 Z=0 C=1 (simulate)
+     *
+     * Fails: Carry is not set.
+     */
+    MOS6502._P = 0x20 + 0x08 + 0x01;
+    MOS6502._RAM[OperandAddress] = 0x89;
+    MOS6502._A = 0x76;
+    MOS6502._PC = PCStart;
+
+    MOS6502.emulateCycle();
+
+    equal(MOS6502._P,0x20 + 0x08 + 0x01,"Test 6: Carry set correctly.");
+    equal(MOS6502._A, 0x66, "Test 6: ADC performed in decimal mode correctly.");
+
+    /**
+     * Test 7:
+     * 80 + f0 and C=0 gives d0 and N=1 V=1 Z=0 C=1
+     */
+    MOS6502._P = 0x20 + 0x80 + 0x08;
+    MOS6502._RAM[OperandAddress] = 0x80;
+    MOS6502._A = 0xF0;
+    MOS6502._PC = PCStart;
+
+    MOS6502.emulateCycle();
+
+    equal(MOS6502._P,0x20 + 0x80 + 0x40 + 0x08 + 0x01,"Test 7: Overflow & Carry set correctly.");
+    equal(MOS6502._A, 0xD0, "Test 7: ADC performed in decimal mode correctly.");
+
+    /**
+     * Test 8:
+     * 80 + fa and C=0 gives e0 and N=1 V=0 Z=0 C=1
+     */
+    MOS6502._P = 0x20 + 0x08;
+    MOS6502._RAM[OperandAddress] = 0x80;
+    MOS6502._A = 0xFA;
+    MOS6502._PC = PCStart;
+
+    MOS6502.emulateCycle();
+
+    equal(MOS6502._P,0x20 + 0x80 + 0x08 + 0x01,"Test 8: Sign & Carry set correctly.");
+    equal(MOS6502._A, 0xE0, "Test 8: ADC performed in decimal mode correctly.");
+
+    /**
+     * Test 9:
+     * 2f + 4f and C=0 gives 74 and N=0 V=0 Z=0 C=0
+     */
+    MOS6502._P = 0x20 + 0x08;
+    MOS6502._RAM[OperandAddress] = 0x4F;
+    MOS6502._A = 0x2F;
+    MOS6502._PC = PCStart;
+
+    MOS6502.emulateCycle();
+
+    equal(MOS6502._P,0x20 + 0x08,"Test 9: Status register set correctly.");
+    equal(MOS6502._A, 0x74, "Test 9: ADC performed in decimal mode correctly.");
+
+    /**
+     * Test 10:
+     * 6f + 00 and C=1 gives 76 and N=0 V=0 Z=0 C=0 (simulate)
+     */
+    MOS6502._P = 0x20 + 0x08 + 0x01;
+    MOS6502._RAM[OperandAddress] = 0x6F;
+    MOS6502._A = 0x00;
+    MOS6502._PC = PCStart;
+
+    MOS6502.emulateCycle();
+
+    equal(MOS6502._P,0x20 + 0x08,"Test 10: Status register set correctly.");
+    equal(MOS6502._A, 0x76, "Test 10: ADC performed in decimal mode correctly.");
+
+    /**
+     * Test 11:
+     * DECIMAL MODE OFF
+     * 00 + 00 and C=0 gives 00 and N=0 V=0 Z=1 C=0
+     */
+    MOS6502._P = 0x20;
+    MOS6502._RAM[OperandAddress] = 0x00;
+    MOS6502._A = 0x00;
+    MOS6502._PC = PCStart;
+
+    MOS6502.emulateCycle();
+
+    equal(MOS6502._P,0x20 + 0x02,"Test 11: Zero set correctly.");
+    equal(MOS6502._A, 0x00, "Test 11: ADC performed in decimal mode correctly.");
+
+    /**
+     * Test 12:
+     * DECIMAL MODE OFF
+     * FF + FF and C=1 gives FF and N=1 V=0 Z=0 C=1
+     */
+    MOS6502._P = 0x20 + 0x01;
+    MOS6502._RAM[OperandAddress] = 0xFF;
+    MOS6502._A = 0xFF;
+    MOS6502._PC = PCStart;
+    MOS6502._CYCLES = 0;
+
+    MOS6502.emulateCycle();
+
+    equal(MOS6502._P,0x20 + 0x80 + 0x01,"Test 12: Flags set correctly.");
+    equal(MOS6502._A, 0xFF, "Test 12: ADC performed in decimal mode correctly.");
+    equal(MOS6502._PC, PCStart + BytesUsed,"Program counter increased correctly.");
+    equal(MOS6502._CYCLES, CycleCost,"Cycles increased correctly.");
+
+});
+
+test("0x61 - ADC (Indirect, X)", function() {
+    /**
+     *    Instruction = ADC - Add memory to accumulator with carry
+     * Affected Flags = Sign, Zero, Carry, Overflow
+     *    Total Tests = 10
+     */
+
+    var OPCODE = 0x61,
+        CycleCost = 6,
+        BytesUsed = 2,
+        AddressByte1 = 0x81,
+        AddressByte2 = 0x21,
+        XRegister = Math.floor(Math.random() * 255) + 1,
+        ZPAddress = Math.floor(Math.random() * 255) + 1,
+        OperandAddress = MOS6502._MAKE_ADDRESS(AddressByte1, AddressByte2),
+        PCStart = 0x4000;
+
+    MOS6502._RAM[PCStart] = OPCODE;
+    MOS6502._RAM[PCStart + 1] = ZPAddress;
+
+    MOS6502._RAM[ZPAddress + XRegister] = AddressByte1;
+    MOS6502._RAM[ZPAddress + XRegister + 1] = AddressByte2;
+    MOS6502._X = XRegister;
+
+    // DECIMAL MODE ACTIVE
+
+    /**
+     * Test 1:
+     * 00 + 00 and C=0 gives 00 and N=0 V=0 Z=1 C=0
+     */
+
+    MOS6502._P = 0x20 + 0x08;
+    MOS6502._RAM[OperandAddress] = 0x00;
+    MOS6502._A = 0x00;
+    MOS6502._PC = PCStart;
+
+    MOS6502.emulateCycle();
+
+    equal(MOS6502._P,0x20 + 0x08 + 0x02,"Test 1: Zero set correctly.");
+    equal(MOS6502._A, 0x00, "Test 1: ADC performed in decimal mode correctly.");
+
+    /**
+     * Test 2:
+     * 79 + 00 and C=1 gives 80 and N=1 V=1 Z=0 C=0
+     */
+    MOS6502._P = 0x20 + 0x08 + 0x01;
+    MOS6502._RAM[OperandAddress] = 0x79;
+    MOS6502._A = 0x00;
+    MOS6502._PC = PCStart;
+
+    MOS6502.emulateCycle();
+
+    equal(MOS6502._P,0x20 + 0x80 + 0x40 + 0x08,"Test 2: Sign & Overflow set correctly.");
+    equal(MOS6502._A, 0x80, "Test 2: ADC performed in decimal mode correctly.");
+
+    /**
+     * Test 3:
+     * 24 + 56 and C=0 gives 80 and N=1 V=1 Z=0 C=0 (simulate)
+     */
+    MOS6502._P = 0x20 + 0x08;
+    MOS6502._RAM[OperandAddress] = 0x24;
+    MOS6502._A = 0x56;
+    MOS6502._PC = PCStart;
+
+    MOS6502.emulateCycle();
+
+    equal(MOS6502._P,0x20 + 0x80 + 0x40 + 0x08,"Test 3: Sign & Overflow set correctly.");
+    equal(MOS6502._A, 0x80, "Test 3: ADC performed in decimal mode correctly.");
+
+    /**
+     * Test 4:
+     * 93 + 82 and C=0 gives 75 and N=0 V=1 Z=0 C=1 (simulate)
+     */
+    MOS6502._P = 0x20 + 0x08;
+    MOS6502._RAM[OperandAddress] = 0x93;
+    MOS6502._A = 0x82;
+    MOS6502._PC = PCStart;
+
+    MOS6502.emulateCycle();
+
+    equal(MOS6502._P,0x20 + 0x40 + 0x08 + 0x01,"Test 4: Overflow & Carry set correctly.");
+    equal(MOS6502._A, 0x75, "Test 4: ADC performed in decimal mode correctly.");
+
+    /**
+     * Test 5:
+     * 89 + 76 and C=0 gives 65 and N=0 V=0 Z=0 C=1 (simulate)
+     */
+    MOS6502._P = 0x20 + 0x08;
+    MOS6502._RAM[OperandAddress] = 0x89;
+    MOS6502._A = 0x76;
+    MOS6502._PC = PCStart;
+
+    MOS6502.emulateCycle();
+
+    equal(MOS6502._P,0x20 + 0x08 + 0x01,"Test 5: Carry set correctly.");
+    equal(MOS6502._A, 0x65, "Test 5: ADC performed in decimal mode correctly.");
+
+    /**
+     * Test 6:
+     * 89 + 76 and C=1 gives 66 and N=0 V=0 Z=0 C=1 (simulate)
+     *
+     * Fails: Carry is not set.
+     */
+    MOS6502._P = 0x20 + 0x08 + 0x01;
+    MOS6502._RAM[OperandAddress] = 0x89;
+    MOS6502._A = 0x76;
+    MOS6502._PC = PCStart;
+
+    MOS6502.emulateCycle();
+
+    equal(MOS6502._P,0x20 + 0x08 + 0x01,"Test 6: Carry set correctly.");
+    equal(MOS6502._A, 0x66, "Test 6: ADC performed in decimal mode correctly.");
+
+    /**
+     * Test 7:
+     * 80 + f0 and C=0 gives d0 and N=1 V=1 Z=0 C=1
+     */
+    MOS6502._P = 0x20 + 0x80 + 0x08;
+    MOS6502._RAM[OperandAddress] = 0x80;
+    MOS6502._A = 0xF0;
+    MOS6502._PC = PCStart;
+
+    MOS6502.emulateCycle();
+
+    equal(MOS6502._P,0x20 + 0x80 + 0x40 + 0x08 + 0x01,"Test 7: Overflow & Carry set correctly.");
+    equal(MOS6502._A, 0xD0, "Test 7: ADC performed in decimal mode correctly.");
+
+    /**
+     * Test 8:
+     * 80 + fa and C=0 gives e0 and N=1 V=0 Z=0 C=1
+     */
+    MOS6502._P = 0x20 + 0x08;
+    MOS6502._RAM[OperandAddress] = 0x80;
+    MOS6502._A = 0xFA;
+    MOS6502._PC = PCStart;
+
+    MOS6502.emulateCycle();
+
+    equal(MOS6502._P,0x20 + 0x80 + 0x08 + 0x01,"Test 8: Sign & Carry set correctly.");
+    equal(MOS6502._A, 0xE0, "Test 8: ADC performed in decimal mode correctly.");
+
+    /**
+     * Test 9:
+     * 2f + 4f and C=0 gives 74 and N=0 V=0 Z=0 C=0
+     */
+    MOS6502._P = 0x20 + 0x08;
+    MOS6502._RAM[OperandAddress] = 0x4F;
+    MOS6502._A = 0x2F;
+    MOS6502._PC = PCStart;
+
+    MOS6502.emulateCycle();
+
+    equal(MOS6502._P,0x20 + 0x08,"Test 9: Status register set correctly.");
+    equal(MOS6502._A, 0x74, "Test 9: ADC performed in decimal mode correctly.");
+
+    /**
+     * Test 10:
+     * 6f + 00 and C=1 gives 76 and N=0 V=0 Z=0 C=0 (simulate)
+     */
+    MOS6502._P = 0x20 + 0x08 + 0x01;
+    MOS6502._RAM[OperandAddress] = 0x6F;
+    MOS6502._A = 0x00;
+    MOS6502._PC = PCStart;
+
+    MOS6502.emulateCycle();
+
+    equal(MOS6502._P,0x20 + 0x08,"Test 10: Status register set correctly.");
+    equal(MOS6502._A, 0x76, "Test 10: ADC performed in decimal mode correctly.");
+
+    /**
+     * Test 11:
+     * DECIMAL MODE OFF
+     * 00 + 00 and C=0 gives 00 and N=0 V=0 Z=1 C=0
+     */
+    MOS6502._P = 0x20;
+    MOS6502._RAM[OperandAddress] = 0x00;
+    MOS6502._A = 0x00;
+    MOS6502._PC = PCStart;
+
+    MOS6502.emulateCycle();
+
+    equal(MOS6502._P,0x20 + 0x02,"Test 11: Zero set correctly.");
+    equal(MOS6502._A, 0x00, "Test 11: ADC performed in decimal mode correctly.");
+
+    /**
+     * Test 12:
+     * DECIMAL MODE OFF
+     * FF + FF and C=1 gives FF and N=1 V=0 Z=0 C=1
+     */
+    MOS6502._P = 0x20 + 0x01;
+    MOS6502._RAM[OperandAddress] = 0xFF;
+    MOS6502._A = 0xFF;
+    MOS6502._PC = PCStart;
+    MOS6502._CYCLES = 0;
+
+    MOS6502.emulateCycle();
+
+    equal(MOS6502._P,0x20 + 0x80 + 0x01,"Test 12: Flags set correctly.");
+    equal(MOS6502._A, 0xFF, "Test 12: ADC performed in decimal mode correctly.");
+    equal(MOS6502._PC, PCStart + BytesUsed,"Program counter increased correctly.");
+    equal(MOS6502._CYCLES, CycleCost,"Cycles increased correctly.");
+
+});
+
+test("0x71 - ADC (Indirect, Y) (Same Page)", function() {
+    /**
+     *    Instruction = ADC - Add memory to accumulator with carry
+     * Affected Flags = Sign, Zero, Carry, Overflow
+     *    Total Tests = 10
+     */
+
+    var OPCODE = 0x71,
+        CycleCost = 5,
+        BytesUsed = 2,
+        AddressByte1 = 0x81,
+        AddressByte2 = 0x21,
+        YRegister = 0x21,
+        ZPAddress = Math.floor(Math.random() * 255) + 1,
+        OperandAddress = MOS6502._MAKE_ADDRESS(AddressByte1, AddressByte2) + YRegister,
+        PCStart = 0x4000;
+
+    MOS6502._RAM[PCStart] = OPCODE;
+    MOS6502._RAM[PCStart + 1] = ZPAddress;
+
+    MOS6502._RAM[ZPAddress] = AddressByte1;
+    MOS6502._RAM[ZPAddress + 1] = AddressByte2;
+    MOS6502._Y = YRegister;
+
+    // DECIMAL MODE ACTIVE
+
+    /**
+     * Test 1:
+     * 00 + 00 and C=0 gives 00 and N=0 V=0 Z=1 C=0
+     */
+
+    MOS6502._P = 0x20 + 0x08;
+    MOS6502._RAM[OperandAddress] = 0x00;
+    MOS6502._A = 0x00;
+    MOS6502._PC = PCStart;
+
+    MOS6502.emulateCycle();
+
+    equal(MOS6502._P,0x20 + 0x08 + 0x02,"Test 1: Zero set correctly.");
+    equal(MOS6502._A, 0x00, "Test 1: ADC performed in decimal mode correctly.");
+
+    /**
+     * Test 2:
+     * 79 + 00 and C=1 gives 80 and N=1 V=1 Z=0 C=0
+     */
+    MOS6502._P = 0x20 + 0x08 + 0x01;
+    MOS6502._RAM[OperandAddress] = 0x79;
+    MOS6502._A = 0x00;
+    MOS6502._PC = PCStart;
+
+    MOS6502.emulateCycle();
+
+    equal(MOS6502._P,0x20 + 0x80 + 0x40 + 0x08,"Test 2: Sign & Overflow set correctly.");
+    equal(MOS6502._A, 0x80, "Test 2: ADC performed in decimal mode correctly.");
+
+    /**
+     * Test 3:
+     * 24 + 56 and C=0 gives 80 and N=1 V=1 Z=0 C=0 (simulate)
+     */
+    MOS6502._P = 0x20 + 0x08;
+    MOS6502._RAM[OperandAddress] = 0x24;
+    MOS6502._A = 0x56;
+    MOS6502._PC = PCStart;
+
+    MOS6502.emulateCycle();
+
+    equal(MOS6502._P,0x20 + 0x80 + 0x40 + 0x08,"Test 3: Sign & Overflow set correctly.");
+    equal(MOS6502._A, 0x80, "Test 3: ADC performed in decimal mode correctly.");
+
+    /**
+     * Test 4:
+     * 93 + 82 and C=0 gives 75 and N=0 V=1 Z=0 C=1 (simulate)
+     */
+    MOS6502._P = 0x20 + 0x08;
+    MOS6502._RAM[OperandAddress] = 0x93;
+    MOS6502._A = 0x82;
+    MOS6502._PC = PCStart;
+
+    MOS6502.emulateCycle();
+
+    equal(MOS6502._P,0x20 + 0x40 + 0x08 + 0x01,"Test 4: Overflow & Carry set correctly.");
+    equal(MOS6502._A, 0x75, "Test 4: ADC performed in decimal mode correctly.");
+
+    /**
+     * Test 5:
+     * 89 + 76 and C=0 gives 65 and N=0 V=0 Z=0 C=1 (simulate)
+     */
+    MOS6502._P = 0x20 + 0x08;
+    MOS6502._RAM[OperandAddress] = 0x89;
+    MOS6502._A = 0x76;
+    MOS6502._PC = PCStart;
+
+    MOS6502.emulateCycle();
+
+    equal(MOS6502._P,0x20 + 0x08 + 0x01,"Test 5: Carry set correctly.");
+    equal(MOS6502._A, 0x65, "Test 5: ADC performed in decimal mode correctly.");
+
+    /**
+     * Test 6:
+     * 89 + 76 and C=1 gives 66 and N=0 V=0 Z=0 C=1 (simulate)
+     *
+     * Fails: Carry is not set.
+     */
+    MOS6502._P = 0x20 + 0x08 + 0x01;
+    MOS6502._RAM[OperandAddress] = 0x89;
+    MOS6502._A = 0x76;
+    MOS6502._PC = PCStart;
+
+    MOS6502.emulateCycle();
+
+    equal(MOS6502._P,0x20 + 0x08 + 0x01,"Test 6: Carry set correctly.");
+    equal(MOS6502._A, 0x66, "Test 6: ADC performed in decimal mode correctly.");
+
+    /**
+     * Test 7:
+     * 80 + f0 and C=0 gives d0 and N=1 V=1 Z=0 C=1
+     */
+    MOS6502._P = 0x20 + 0x80 + 0x08;
+    MOS6502._RAM[OperandAddress] = 0x80;
+    MOS6502._A = 0xF0;
+    MOS6502._PC = PCStart;
+
+    MOS6502.emulateCycle();
+
+    equal(MOS6502._P,0x20 + 0x80 + 0x40 + 0x08 + 0x01,"Test 7: Overflow & Carry set correctly.");
+    equal(MOS6502._A, 0xD0, "Test 7: ADC performed in decimal mode correctly.");
+
+    /**
+     * Test 8:
+     * 80 + fa and C=0 gives e0 and N=1 V=0 Z=0 C=1
+     */
+    MOS6502._P = 0x20 + 0x08;
+    MOS6502._RAM[OperandAddress] = 0x80;
+    MOS6502._A = 0xFA;
+    MOS6502._PC = PCStart;
+
+    MOS6502.emulateCycle();
+
+    equal(MOS6502._P,0x20 + 0x80 + 0x08 + 0x01,"Test 8: Sign & Carry set correctly.");
+    equal(MOS6502._A, 0xE0, "Test 8: ADC performed in decimal mode correctly.");
+
+    /**
+     * Test 9:
+     * 2f + 4f and C=0 gives 74 and N=0 V=0 Z=0 C=0
+     */
+    MOS6502._P = 0x20 + 0x08;
+    MOS6502._RAM[OperandAddress] = 0x4F;
+    MOS6502._A = 0x2F;
+    MOS6502._PC = PCStart;
+
+    MOS6502.emulateCycle();
+
+    equal(MOS6502._P,0x20 + 0x08,"Test 9: Status register set correctly.");
+    equal(MOS6502._A, 0x74, "Test 9: ADC performed in decimal mode correctly.");
+
+    /**
+     * Test 10:
+     * 6f + 00 and C=1 gives 76 and N=0 V=0 Z=0 C=0 (simulate)
+     */
+    MOS6502._P = 0x20 + 0x08 + 0x01;
+    MOS6502._RAM[OperandAddress] = 0x6F;
+    MOS6502._A = 0x00;
+    MOS6502._PC = PCStart;
+
+    MOS6502.emulateCycle();
+
+    equal(MOS6502._P,0x20 + 0x08,"Test 10: Status register set correctly.");
+    equal(MOS6502._A, 0x76, "Test 10: ADC performed in decimal mode correctly.");
+
+    /**
+     * Test 11:
+     * DECIMAL MODE OFF
+     * 00 + 00 and C=0 gives 00 and N=0 V=0 Z=1 C=0
+     */
+    MOS6502._P = 0x20;
+    MOS6502._RAM[OperandAddress] = 0x00;
+    MOS6502._A = 0x00;
+    MOS6502._PC = PCStart;
+
+    MOS6502.emulateCycle();
+
+    equal(MOS6502._P,0x20 + 0x02,"Test 11: Zero set correctly.");
+    equal(MOS6502._A, 0x00, "Test 11: ADC performed in decimal mode correctly.");
+
+    /**
+     * Test 12:
+     * DECIMAL MODE OFF
+     * FF + FF and C=1 gives FF and N=1 V=0 Z=0 C=1
+     */
+    MOS6502._P = 0x20 + 0x01;
+    MOS6502._RAM[OperandAddress] = 0xFF;
+    MOS6502._A = 0xFF;
+    MOS6502._PC = PCStart;
+    MOS6502._CYCLES = 0;
+
+    MOS6502.emulateCycle();
+
+    equal(MOS6502._P,0x20 + 0x80 + 0x01,"Test 12: Flags set correctly.");
+    equal(MOS6502._A, 0xFF, "Test 12: ADC performed in decimal mode correctly.");
+    equal(MOS6502._PC, PCStart + BytesUsed,"Program counter increased correctly.");
+    equal(MOS6502._CYCLES, CycleCost,"Cycles increased correctly.");
+
+});
+
+test("0x71 - ADC (Indirect, Y) (Cross Page)", function() {
+    /**
+     *    Instruction = ADC - Add memory to accumulator with carry
+     * Affected Flags = Sign, Zero, Carry, Overflow
+     *    Total Tests = 10
+     */
+
+    var OPCODE = 0x71,
+        CycleCost = 6,
+        BytesUsed = 2,
+        AddressByte1 = 0x81,
+        AddressByte2 = 0x21,
+        YRegister = 0x81,
+        ZPAddress = Math.floor(Math.random() * 255) + 1,
+        OperandAddress = MOS6502._MAKE_ADDRESS(AddressByte1, AddressByte2) + YRegister,
+        PCStart = 0x4000;
+
+    MOS6502._RAM[PCStart] = OPCODE;
+    MOS6502._RAM[PCStart + 1] = ZPAddress;
+
+    MOS6502._RAM[ZPAddress] = AddressByte1;
+    MOS6502._RAM[ZPAddress + 1] = AddressByte2;
+    MOS6502._Y = YRegister;
+
+    // DECIMAL MODE ACTIVE
+
+    /**
+     * Test 1:
+     * 00 + 00 and C=0 gives 00 and N=0 V=0 Z=1 C=0
+     */
+
+    MOS6502._P = 0x20 + 0x08;
+    MOS6502._RAM[OperandAddress] = 0x00;
+    MOS6502._A = 0x00;
+    MOS6502._PC = PCStart;
+
+    MOS6502.emulateCycle();
+
+    equal(MOS6502._P,0x20 + 0x08 + 0x02,"Test 1: Zero set correctly.");
+    equal(MOS6502._A, 0x00, "Test 1: ADC performed in decimal mode correctly.");
+
+    /**
+     * Test 2:
+     * 79 + 00 and C=1 gives 80 and N=1 V=1 Z=0 C=0
+     */
+    MOS6502._P = 0x20 + 0x08 + 0x01;
+    MOS6502._RAM[OperandAddress] = 0x79;
+    MOS6502._A = 0x00;
+    MOS6502._PC = PCStart;
+
+    MOS6502.emulateCycle();
+
+    equal(MOS6502._P,0x20 + 0x80 + 0x40 + 0x08,"Test 2: Sign & Overflow set correctly.");
+    equal(MOS6502._A, 0x80, "Test 2: ADC performed in decimal mode correctly.");
+
+    /**
+     * Test 3:
+     * 24 + 56 and C=0 gives 80 and N=1 V=1 Z=0 C=0 (simulate)
+     */
+    MOS6502._P = 0x20 + 0x08;
+    MOS6502._RAM[OperandAddress] = 0x24;
+    MOS6502._A = 0x56;
+    MOS6502._PC = PCStart;
+
+    MOS6502.emulateCycle();
+
+    equal(MOS6502._P,0x20 + 0x80 + 0x40 + 0x08,"Test 3: Sign & Overflow set correctly.");
+    equal(MOS6502._A, 0x80, "Test 3: ADC performed in decimal mode correctly.");
+
+    /**
+     * Test 4:
+     * 93 + 82 and C=0 gives 75 and N=0 V=1 Z=0 C=1 (simulate)
+     */
+    MOS6502._P = 0x20 + 0x08;
+    MOS6502._RAM[OperandAddress] = 0x93;
+    MOS6502._A = 0x82;
+    MOS6502._PC = PCStart;
+
+    MOS6502.emulateCycle();
+
+    equal(MOS6502._P,0x20 + 0x40 + 0x08 + 0x01,"Test 4: Overflow & Carry set correctly.");
+    equal(MOS6502._A, 0x75, "Test 4: ADC performed in decimal mode correctly.");
+
+    /**
+     * Test 5:
+     * 89 + 76 and C=0 gives 65 and N=0 V=0 Z=0 C=1 (simulate)
+     */
+    MOS6502._P = 0x20 + 0x08;
+    MOS6502._RAM[OperandAddress] = 0x89;
+    MOS6502._A = 0x76;
+    MOS6502._PC = PCStart;
+
+    MOS6502.emulateCycle();
+
+    equal(MOS6502._P,0x20 + 0x08 + 0x01,"Test 5: Carry set correctly.");
+    equal(MOS6502._A, 0x65, "Test 5: ADC performed in decimal mode correctly.");
+
+    /**
+     * Test 6:
+     * 89 + 76 and C=1 gives 66 and N=0 V=0 Z=0 C=1 (simulate)
+     *
+     * Fails: Carry is not set.
+     */
+    MOS6502._P = 0x20 + 0x08 + 0x01;
+    MOS6502._RAM[OperandAddress] = 0x89;
+    MOS6502._A = 0x76;
+    MOS6502._PC = PCStart;
+
+    MOS6502.emulateCycle();
+
+    equal(MOS6502._P,0x20 + 0x08 + 0x01,"Test 6: Carry set correctly.");
+    equal(MOS6502._A, 0x66, "Test 6: ADC performed in decimal mode correctly.");
+
+    /**
+     * Test 7:
+     * 80 + f0 and C=0 gives d0 and N=1 V=1 Z=0 C=1
+     */
+    MOS6502._P = 0x20 + 0x80 + 0x08;
+    MOS6502._RAM[OperandAddress] = 0x80;
+    MOS6502._A = 0xF0;
+    MOS6502._PC = PCStart;
+
+    MOS6502.emulateCycle();
+
+    equal(MOS6502._P,0x20 + 0x80 + 0x40 + 0x08 + 0x01,"Test 7: Overflow & Carry set correctly.");
+    equal(MOS6502._A, 0xD0, "Test 7: ADC performed in decimal mode correctly.");
+
+    /**
+     * Test 8:
+     * 80 + fa and C=0 gives e0 and N=1 V=0 Z=0 C=1
+     */
+    MOS6502._P = 0x20 + 0x08;
+    MOS6502._RAM[OperandAddress] = 0x80;
+    MOS6502._A = 0xFA;
+    MOS6502._PC = PCStart;
+
+    MOS6502.emulateCycle();
+
+    equal(MOS6502._P,0x20 + 0x80 + 0x08 + 0x01,"Test 8: Sign & Carry set correctly.");
+    equal(MOS6502._A, 0xE0, "Test 8: ADC performed in decimal mode correctly.");
+
+    /**
+     * Test 9:
+     * 2f + 4f and C=0 gives 74 and N=0 V=0 Z=0 C=0
+     */
+    MOS6502._P = 0x20 + 0x08;
+    MOS6502._RAM[OperandAddress] = 0x4F;
+    MOS6502._A = 0x2F;
+    MOS6502._PC = PCStart;
+
+    MOS6502.emulateCycle();
+
+    equal(MOS6502._P,0x20 + 0x08,"Test 9: Status register set correctly.");
+    equal(MOS6502._A, 0x74, "Test 9: ADC performed in decimal mode correctly.");
+
+    /**
+     * Test 10:
+     * 6f + 00 and C=1 gives 76 and N=0 V=0 Z=0 C=0 (simulate)
+     */
+    MOS6502._P = 0x20 + 0x08 + 0x01;
+    MOS6502._RAM[OperandAddress] = 0x6F;
+    MOS6502._A = 0x00;
+    MOS6502._PC = PCStart;
+
+    MOS6502.emulateCycle();
+
+    equal(MOS6502._P,0x20 + 0x08,"Test 10: Status register set correctly.");
+    equal(MOS6502._A, 0x76, "Test 10: ADC performed in decimal mode correctly.");
+
+    /**
+     * Test 11:
+     * DECIMAL MODE OFF
+     * 00 + 00 and C=0 gives 00 and N=0 V=0 Z=1 C=0
+     */
+    MOS6502._P = 0x20;
+    MOS6502._RAM[OperandAddress] = 0x00;
+    MOS6502._A = 0x00;
+    MOS6502._PC = PCStart;
+
+    MOS6502.emulateCycle();
+
+    equal(MOS6502._P,0x20 + 0x02,"Test 11: Zero set correctly.");
+    equal(MOS6502._A, 0x00, "Test 11: ADC performed in decimal mode correctly.");
+
+    /**
+     * Test 12:
+     * DECIMAL MODE OFF
+     * FF + FF and C=1 gives FF and N=1 V=0 Z=0 C=1
+     */
+    MOS6502._P = 0x20 + 0x01;
+    MOS6502._RAM[OperandAddress] = 0xFF;
+    MOS6502._A = 0xFF;
+    MOS6502._PC = PCStart;
+    MOS6502._CYCLES = 0;
+
+    MOS6502.emulateCycle();
+
+    equal(MOS6502._P,0x20 + 0x80 + 0x01,"Test 12: Flags set correctly.");
+    equal(MOS6502._A, 0xFF, "Test 12: ADC performed in decimal mode correctly.");
+    equal(MOS6502._PC, PCStart + BytesUsed,"Program counter increased correctly.");
+    equal(MOS6502._CYCLES, CycleCost,"Cycles increased correctly.");
+
+});
+
+//</editor-fold>
+
 /**
  * Tests to be implemented:
 
  // 0x60 - 0x6F
- case (0x60) : me.RTS(); break;
- case (0x61) : me.ADC(); break;
- case (0x65) : me.ADC(); break;
  case (0x66) : me.ROR(); break;
  case (0x68) : me.PLA(); break;
- case (0x69) : me.ADC(); break;
  case (0x6A) : me.ROR(); break;
- case (0x6D) : me.ADC(); break;
  case (0x6E) : me.ROR(); break;
 
  // 0x70 - 0x7F
  case (0x70) : me.BVS(); break;
  case (0x71) : me.ADC(); break;
- case (0x75) : me.ADC(); break;
  case (0x76) : me.ROR(); break;
  case (0x78) : me.SEI(); break;
- case (0x79) : me.ADC(); break;
- case (0x7D) : me.ADC(); break;
  case (0x7E) : me.ROR(); break;
 
  // 0x80 - 0x8F
