@@ -9258,7 +9258,7 @@ test("0x65 - ADC (Zero Page)", function() {
     var OPCODE = 0x65,
         CycleCost = 3,
         BytesUsed = 2,
-        ZPAddress = Math.floor(Math.random() * 255) + 1,
+        ZPAddress = Math.floor(Math.random() * 200) + 1,
         PCStart = 0x4000;
 
     MOS6502._RAM[PCStart] = OPCODE;
@@ -9454,8 +9454,8 @@ test("0x75 - ADC (Zero Page, X)", function() {
     var OPCODE = 0x75,
         CycleCost = 4,
         BytesUsed = 2,
-        ZPAddress = Math.floor(Math.random() * 255) + 1,
-        XRegister = Math.floor(Math.random() * 255) + 1,
+        ZPAddress = Math.floor(Math.random() * 150) + 1,
+        XRegister = Math.floor(Math.random() * 100) + 1,
         OperandAddress = (XRegister + ZPAddress) & 0xFF,
         PCStart = 0x4000;
 
@@ -10658,8 +10658,8 @@ test("0x61 - ADC (Indirect, X)", function() {
         BytesUsed = 2,
         AddressByte1 = 0x81,
         AddressByte2 = 0x21,
-        XRegister = Math.floor(Math.random() * 255) + 1,
-        ZPAddress = Math.floor(Math.random() * 255) + 1,
+        XRegister = Math.floor(Math.random() * 200) + 1,
+        ZPAddress = Math.floor(Math.random() * 200) + 1,
         OperandAddress = MOS6502._MAKE_ADDRESS(AddressByte1, AddressByte2),
         PCStart = 0x4000;
 
@@ -10863,7 +10863,7 @@ test("0x71 - ADC (Indirect, Y) (Same Page)", function() {
         AddressByte1 = 0x81,
         AddressByte2 = 0x21,
         YRegister = 0x21,
-        ZPAddress = Math.floor(Math.random() * 255) + 1,
+        ZPAddress = Math.floor(Math.random() * 200) + 1,
         OperandAddress = MOS6502._MAKE_ADDRESS(AddressByte1, AddressByte2) + YRegister,
         PCStart = 0x4000;
 
@@ -11067,7 +11067,7 @@ test("0x71 - ADC (Indirect, Y) (Cross Page)", function() {
         AddressByte1 = 0x81,
         AddressByte2 = 0x21,
         YRegister = 0x81,
-        ZPAddress = Math.floor(Math.random() * 255) + 1,
+        ZPAddress = Math.floor(Math.random() * 200) + 1,
         OperandAddress = MOS6502._MAKE_ADDRESS(AddressByte1, AddressByte2) + YRegister,
         PCStart = 0x4000;
 
