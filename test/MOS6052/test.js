@@ -12047,35 +12047,307 @@ test("0x70 - BVS (Relative)", function() {
 
 //</editor-fold>
 
+/*********************************************************************************************************************/
+
+//<editor-fold desc="SEI Tests">
+
+QUnit.module("Instruction - SEI", {
+    setup: function() {
+        MOS6502.init();
+    }
+});
+
+test("0x78 - SEI (Implied)",function() {
+    /**
+     *    Instruction = SEI - Set interrupt disable status.
+     * Affected Flags = None
+     *    Total Tests = 1
+     */
+    var OPCODE = 0x78,
+        PCStart = 0x4000,
+        CycleCost = 2,
+        BytesUsed = 1;
+
+    MOS6502._RAM[PCStart] = OPCODE;
+
+    MOS6502._PC = PCStart;
+    MOS6502._CYCLES = 0;
+    MOS6502._P = 0x20;
+
+    MOS6502.emulateCycle();
+
+    equal(MOS6502._P, 0x24, "Interrupt set successfully.");
+
+    equal(MOS6502._PC, PCStart + BytesUsed, "Program counter incremented successfully.");
+
+    equal(MOS6502._CYCLES, CycleCost, "Cycles calculated correctly.");
+});
+
+//</editor-fold>
+
+/*********************************************************************************************************************/
+
+//<editor-fold desc="STA Tests">
+
+QUnit.module("Instruction - STA", {
+    setup: function() {
+        MOS6502.init();
+    }
+});
+
+test("0x85 - STA (Zero Page)",function() {
+    /**
+     *    Instruction = STA - Store accumulator in memory.
+     * Affected Flags = None
+     *    Total Tests = 1
+     */
+    var OPCODE = 0x85,
+        PCStart = 0x4000,
+        ZPAddress = Math.floor(Math.random() * 254) + 1,
+        OperandLocation = ZPAddress,
+        Accumulator = Math.floor(Math.random() * 254) + 1,
+        CycleCost = 3,
+        BytesUsed = 2;
+
+    MOS6502._RAM[PCStart] = OPCODE;
+    MOS6502._RAM[PCStart + 1] = ZPAddress;
+
+    MOS6502._PC = PCStart;
+    MOS6502._CYCLES = 0;
+    MOS6502._A = Accumulator;
+
+    MOS6502.emulateCycle();
+
+    equal(MOS6502._RAM[OperandLocation], Accumulator, "Accumulator stored successfully.");
+
+    equal(MOS6502._PC, PCStart + BytesUsed, "Program counter incremented successfully.");
+
+    equal(MOS6502._CYCLES, CycleCost, "Cycles calculated correctly.");
+});
+
+test("0x95 - STA (Zero Page, X)",function() {
+    /**
+     *    Instruction = STA - Store accumulator in memory.
+     * Affected Flags = None
+     *    Total Tests = 1
+     */
+    var OPCODE = 0x95,
+        PCStart = 0x4000,
+        ZPAddress = 0x31,
+        XRegister = 0x21,
+        OperandLocation = ZPAddress + XRegister,
+        Accumulator = Math.floor(Math.random() * 254) + 1,
+        CycleCost = 4,
+        BytesUsed = 2;
+
+    MOS6502._RAM[PCStart] = OPCODE;
+    MOS6502._RAM[PCStart + 1] = ZPAddress;
+    MOS6502._X = XRegister;
+
+    MOS6502._PC = PCStart;
+    MOS6502._CYCLES = 0;
+    MOS6502._A = Accumulator;
+
+    MOS6502.emulateCycle();
+
+    equal(MOS6502._RAM[OperandLocation], Accumulator, "Accumulator stored successfully.");
+
+    equal(MOS6502._PC, PCStart + BytesUsed, "Program counter incremented successfully.");
+
+    equal(MOS6502._CYCLES, CycleCost, "Cycles calculated correctly.");
+});
+
+test("0x8D - STA (Absolute)",function() {
+    /**
+     *    Instruction = STA - Store accumulator in memory.
+     * Affected Flags = None
+     *    Total Tests = 1
+     */
+    var OPCODE = 0x8D,
+        PCStart = 0x4000,
+        AddressByte1 = 0x31,
+        AddressByte2 = 0x21,
+        OperandLocation = MOS6502._MAKE_ADDRESS(AddressByte1,AddressByte2),
+        Accumulator = Math.floor(Math.random() * 254) + 1,
+        CycleCost = 4,
+        BytesUsed = 3;
+
+    MOS6502._RAM[PCStart] = OPCODE;
+    MOS6502._RAM[PCStart + 1] = AddressByte1;
+    MOS6502._RAM[PCStart + 2] = AddressByte2;
+
+    MOS6502._PC = PCStart;
+    MOS6502._CYCLES = 0;
+    MOS6502._A = Accumulator;
+
+    MOS6502.emulateCycle();
+
+    equal(MOS6502._RAM[OperandLocation], Accumulator, "Accumulator stored successfully.");
+
+    equal(MOS6502._PC, PCStart + BytesUsed, "Program counter incremented successfully.");
+
+    equal(MOS6502._CYCLES, CycleCost, "Cycles calculated correctly.");
+});
+
+test("0x9D - STA (Absolute, X)",function() {
+    /**
+     *    Instruction = STA - Store accumulator in memory.
+     * Affected Flags = None
+     *    Total Tests = 1
+     */
+    var OPCODE = 0x9D,
+        PCStart = 0x4000,
+        AddressByte1 = 0x31,
+        AddressByte2 = 0x21,
+        XRegister = 0x41,
+        OperandLocation = MOS6502._MAKE_ADDRESS(AddressByte1,AddressByte2) + XRegister,
+        Accumulator = Math.floor(Math.random() * 254) + 1,
+        CycleCost = 5,
+        BytesUsed = 3;
+
+    MOS6502._RAM[PCStart] = OPCODE;
+    MOS6502._RAM[PCStart + 1] = AddressByte1;
+    MOS6502._RAM[PCStart + 2] = AddressByte2;
+    MOS6502._X = XRegister;
+
+    MOS6502._PC = PCStart;
+    MOS6502._CYCLES = 0;
+    MOS6502._A = Accumulator;
+
+    MOS6502.emulateCycle();
+
+    equal(MOS6502._RAM[OperandLocation], Accumulator, "Accumulator stored successfully.");
+
+    equal(MOS6502._PC, PCStart + BytesUsed, "Program counter incremented successfully.");
+
+    equal(MOS6502._CYCLES, CycleCost, "Cycles calculated correctly.");
+});
+
+test("0x99 - STA (Absolute, Y)",function() {
+    /**
+     *    Instruction = STA - Store accumulator in memory.
+     * Affected Flags = None
+     *    Total Tests = 1
+     */
+    var OPCODE = 0x99,
+        PCStart = 0x4000,
+        AddressByte1 = 0x31,
+        AddressByte2 = 0x21,
+        YRegister = 0x41,
+        OperandLocation = MOS6502._MAKE_ADDRESS(AddressByte1,AddressByte2) + YRegister,
+        Accumulator = Math.floor(Math.random() * 254) + 1,
+        CycleCost = 5,
+        BytesUsed = 3;
+
+    MOS6502._RAM[PCStart] = OPCODE;
+    MOS6502._RAM[PCStart + 1] = AddressByte1;
+    MOS6502._RAM[PCStart + 2] = AddressByte2;
+    MOS6502._Y = YRegister;
+
+    MOS6502._PC = PCStart;
+    MOS6502._CYCLES = 0;
+    MOS6502._A = Accumulator;
+
+    MOS6502.emulateCycle();
+
+    equal(MOS6502._RAM[OperandLocation], Accumulator, "Accumulator stored successfully.");
+
+    equal(MOS6502._PC, PCStart + BytesUsed, "Program counter incremented successfully.");
+
+    equal(MOS6502._CYCLES, CycleCost, "Cycles calculated correctly.");
+});
+
+test("0x81 - STA (Indirect, X)",function() {
+    /**
+     *    Instruction = STA - Store accumulator in memory.
+     * Affected Flags = None
+     *    Total Tests = 1
+     */
+    var OPCODE = 0x81,
+        PCStart = 0x4000,
+        AddressByte1 = 0x31,
+        AddressByte2 = 0x21,
+        XRegister = 0x41,
+        ZPAddress = 0x51,
+        OperandLocation = MOS6502._MAKE_ADDRESS(AddressByte1,AddressByte2),
+        Accumulator = Math.floor(Math.random() * 254) + 1,
+        CycleCost = 6,
+        BytesUsed = 2;
+
+    MOS6502._RAM[PCStart] = OPCODE;
+    MOS6502._RAM[PCStart + 1] = ZPAddress;
+    MOS6502._RAM[ZPAddress + XRegister] = AddressByte1;
+    MOS6502._RAM[ZPAddress + XRegister + 1] = AddressByte2;
+    MOS6502._X = XRegister;
+
+    MOS6502._PC = PCStart;
+    MOS6502._CYCLES = 0;
+    MOS6502._A = Accumulator;
+
+    MOS6502.emulateCycle();
+
+    equal(MOS6502._RAM[OperandLocation], Accumulator, "Accumulator stored successfully.");
+
+    equal(MOS6502._PC, PCStart + BytesUsed, "Program counter incremented successfully.");
+
+    equal(MOS6502._CYCLES, CycleCost, "Cycles calculated correctly.");
+});
+
+test("0x91 - STA (Indirect, Y)",function() {
+    /**
+     *    Instruction = STA - Store accumulator in memory.
+     * Affected Flags = None
+     *    Total Tests = 1
+     */
+    var OPCODE = 0x91,
+        PCStart = 0x4000,
+        AddressByte1 = 0x31,
+        AddressByte2 = 0x21,
+        YRegister = 0x41,
+        ZPAddress = 0x51,
+        OperandLocation = MOS6502._MAKE_ADDRESS(AddressByte1,AddressByte2) + YRegister,
+        Accumulator = Math.floor(Math.random() * 254) + 1,
+        CycleCost = 6,
+        BytesUsed = 2;
+
+    MOS6502._RAM[PCStart] = OPCODE;
+    MOS6502._RAM[PCStart + 1] = ZPAddress;
+    MOS6502._RAM[ZPAddress] = AddressByte1;
+    MOS6502._RAM[ZPAddress + 1] = AddressByte2;
+    MOS6502._Y = YRegister;
+
+    MOS6502._PC = PCStart;
+    MOS6502._CYCLES = 0;
+    MOS6502._A = Accumulator;
+
+    MOS6502.emulateCycle();
+
+    equal(MOS6502._RAM[OperandLocation], Accumulator, "Accumulator stored successfully.");
+
+    equal(MOS6502._PC, PCStart + BytesUsed, "Program counter incremented successfully.");
+
+    equal(MOS6502._CYCLES, CycleCost, "Cycles calculated correctly.");
+});
+
+//</editor-fold>
+
 /**
  * Tests to be implemented:
 
- // 0x70 - 0x7F
- case (0x70) : me.BVS(); break;
- case (0x71) : me.ADC(); break;
- case (0x78) : me.SEI(); break;
-
  // 0x80 - 0x8F
- case (0x81) : me.STA(); break;
  case (0x84) : me.STY(); break;
- case (0x85) : me.STA(); break;
  case (0x86) : me.STX(); break;
  case (0x88) : me.DEY(); break;
  case (0x8A) : me.TXA(); break;
  case (0x8C) : me.STY(); break;
- case (0x8D) : me.STA(); break;
  case (0x8E) : me.STX(); break;
 
  // 0x90 - 0x9F
  case (0x90) : me.BCC(); break;
- case (0x91) : me.STA(); break;
  case (0x94) : me.STY(); break;
- case (0x95) : me.STA(); break;
  case (0x96) : me.STX(); break;
  case (0x98) : me.TYA(); break;
- case (0x99) : me.STA(); break;
  case (0x9A) : me.TXS(); break;
- case (0x9D) : me.STA(); break;
 
  // 0xA0 - 0xAF
  case (0xA0) : me.LDY(); break;
