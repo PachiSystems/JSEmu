@@ -11914,11 +11914,141 @@ test("0x68 - PLA (Implied)",function() {
 
 //</editor-fold>
 
+/*********************************************************************************************************************/
+
+//<editor-fold desc="BVS Tests">
+
+QUnit.module("Instruction - BVS", {
+    setup: function() {
+        MOS6502.init();
+    }
+});
+
+test("0x70 - BVS (Relative)", function() {
+    /**
+     *    Instruction = BVS - Branch on overflow set
+     * Affected Flags = None
+     *    Total Tests = 5
+     */
+
+    var OPCODE = 0x70,
+        relativePlusSamePage = 64,
+        relativeMinusSamePage = 192,
+        relativePlusNextPage = 127,
+        relativeMinusNextPage = 129,
+        CycleCost = 2,
+        BytesUsed = 2,
+        PCStart = 0x4080,
+        PCStartHigh = 0x40E0,
+        PCStartLow = 0x4010;
+
+    MOS6502._PC = PCStart;
+    MOS6502._RAM[PCStart] = OPCODE;
+    MOS6502._RAM[PCStartHigh] = OPCODE;
+    MOS6502._RAM[PCStartLow] = OPCODE;
+    MOS6502._CYCLES = 0;
+
+    /**
+     * Test 1: Overflow clear (no branch, but 2 cycles used)
+     */
+
+        // Enable overflow.
+    MOS6502._P = 0x20;
+
+    MOS6502.emulateCycle();
+
+    equal(MOS6502._PC,
+            PCStart + BytesUsed,
+        "Overflow clear: Program Counter set correctly.");
+
+    equal(MOS6502._CYCLES,
+        CycleCost,
+        "Overflow clear: Cycles set correctly.");
+
+    /**
+     * Test 2: Overflow set. Branch forward to same page. (3 cycles)
+     */
+
+    MOS6502._P = 0x60;
+    MOS6502._PC = PCStart;
+    MOS6502._RAM[PCStart + 1] = relativePlusSamePage;
+    MOS6502._CYCLES = 0;
+
+    MOS6502.emulateCycle();
+
+    equal(MOS6502._PC,
+            PCStart + relativePlusSamePage,
+        "Overflow set, branch forward, same page: Program Counter set correctly.");
+
+    equal(MOS6502._CYCLES,
+            CycleCost + 1,
+        "Overflow set, branch forward, same page: Cycles set correctly.");
+
+    /**
+     * Test 3: Overflow set. Branch backward to same page. (3 cycles)
+     */
+
+    MOS6502._P = 0x60;
+    MOS6502._PC = PCStart;
+    MOS6502._RAM[PCStart + 1] = relativeMinusSamePage;
+    MOS6502._CYCLES = 0;
+
+    MOS6502.emulateCycle();
+
+    equal(MOS6502._PC,
+            (PCStart + relativeMinusSamePage) - 256,
+        "Overflow set, branch backwards, same page: Program Counter set correctly.");
+
+    equal(MOS6502._CYCLES,
+            CycleCost + 1,
+        "Overflow set, branch backwards, same page: Cycles set correctly.");
+
+    /**
+     * Test 4: Overflow set. Branch forward to different page. (4 cycles)
+     *
+     * NOTE: It's not possible to branch to another page from 0x4080. Using 0x40E0 for forward branch.
+     */
+
+    MOS6502._P = 0x60;
+    MOS6502._PC = PCStartHigh;
+    MOS6502._RAM[PCStartHigh + 1] = relativePlusNextPage;
+    MOS6502._CYCLES = 0;
+
+    MOS6502.emulateCycle();
+
+    equal(MOS6502._PC,
+            PCStartHigh + relativePlusNextPage,
+        "Overflow set, branch forward, different page: Program Counter set correctly.");
+
+    equal(MOS6502._CYCLES,
+            CycleCost + 2,
+        "Overflow set, branch forward, different page: Cycles set correctly.");
+
+    /**
+     * Test 5: Overflow set. Branch backward to different page. (4 cycles)
+     */
+
+    MOS6502._P = 0x60;
+    MOS6502._PC = PCStartLow;
+    MOS6502._RAM[PCStartLow + 1] = relativeMinusNextPage;
+    MOS6502._CYCLES = 0;
+
+    MOS6502.emulateCycle();
+
+    equal(MOS6502._PC,
+            (PCStartLow + relativeMinusNextPage) - 256,
+        "Overflow set, branch backwards, different page: Program Counter set correctly.");
+
+    equal(MOS6502._CYCLES,
+            CycleCost + 2,
+        "Overflow set, branch backwards, different page: Cycles set correctly.");
+
+});
+
+//</editor-fold>
+
 /**
  * Tests to be implemented:
-
- // 0x60 - 0x6F
- case (0x68) : me.PLA(); break;
 
  // 0x70 - 0x7F
  case (0x70) : me.BVS(); break;
