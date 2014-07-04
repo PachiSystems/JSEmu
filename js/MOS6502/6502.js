@@ -2549,14 +2549,14 @@ MOS6502.prototype.ROR = function() {
         case (0x6A): OPER = me._A; break;
         case (0x66): OPER = me.ReadZeroPage(byte1); break;
         case (0x76): OPER = me.ReadZeroPageX(byte1); break;
-        case (0x6E): OPER = me.ReadAbsolute(byte1); break;
-        case (0x7E): OPER = me.ReadAbsoluteX(byte1); break;
+        case (0x6E): OPER = me.ReadAbsolute(byte1,byte2); break;
+        case (0x7E): OPER = me.ReadAbsoluteX(byte1,byte2); break;
 
         default: console.error("Illegal ROR opcode passed. (0x" + opCode.toString(16) + ")" ); break;
 
     }
 
-    carry = (me._IF_CARRY()) ? 0x80 : 0;
+    carry = me._IF_CARRY() ? 0x80 : 0;
     me._SET_CARRY(OPER & 0x1);
     OPER = ((OPER >> 1) + carry) & 0xFF;
 

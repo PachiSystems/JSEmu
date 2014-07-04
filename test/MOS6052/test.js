@@ -6331,9 +6331,9 @@ test("0x3E - ROL (Absolute, X)",function() {
      */
     var OPCODE = 0x3E,
         PCStart = 0x4000,
-        AddressByte1 = Math.floor(Math.random() * (255-120+1) + 120),
-        AddressByte2 = Math.floor(Math.random() * (255-120+1) + 120),
-        XRegister = Math.floor(Math.random() * 255) + 1,
+        AddressByte1 = 0x31,
+        AddressByte2 = 0x21,
+        XRegister = 0x41,
         OperandLocation = MOS6502._MAKE_ADDRESS(AddressByte1,AddressByte2) + XRegister,
         CycleCost = 7,
         BytesUsed = 3;
@@ -10658,8 +10658,8 @@ test("0x61 - ADC (Indirect, X)", function() {
         BytesUsed = 2,
         AddressByte1 = 0x81,
         AddressByte2 = 0x21,
-        XRegister = Math.floor(Math.random() * 200) + 1,
-        ZPAddress = Math.floor(Math.random() * 200) + 1,
+        XRegister = 0x21,
+        ZPAddress = 0x21,
         OperandAddress = MOS6502._MAKE_ADDRESS(AddressByte1, AddressByte2),
         PCStart = 0x4000;
 
@@ -11260,21 +11260,627 @@ test("0x71 - ADC (Indirect, Y) (Cross Page)", function() {
 
 //</editor-fold>
 
+/*********************************************************************************************************************/
+
+//<editor-fold desc="ROR Tests">
+
+QUnit.module("Instruction - ROR", {
+    setup: function() {
+        MOS6502.init();
+    }
+});
+
+test("0x6A - ROR (Accumulator)",function() {
+    /**
+     *    Instruction = ROR - Rotate one bit right (memory or accumulator).
+     * Affected Flags = Sign, Zero, Carry
+     *    Total Tests = 5
+     */
+    var OPCODE = 0x6A,
+        PCStart = 0x4000,
+        CycleCost = 2,
+        BytesUsed = 1;
+
+    MOS6502._RAM[PCStart] = OPCODE;
+
+    /**
+     * Test 1: Set none.
+     */
+    MOS6502._A = 102;
+    MOS6502._P = 0x20;
+
+    MOS6502._PC = PCStart;
+
+    MOS6502.emulateCycle();
+
+    equal(MOS6502._A,
+        51,
+        "Test 1: Set none - ROR successfully applied.");
+
+    equal(MOS6502._P,
+        0x20,
+        "Test 1: Set none - Status Register correctly set.");
+
+    /**
+     * Test 2: Carry set. Sets sign.
+     */
+    MOS6502._A = 102;
+    MOS6502._P = 0x21;
+
+    MOS6502._PC = PCStart;
+
+    MOS6502.emulateCycle();
+
+    equal(MOS6502._A,
+        179,
+        "Test 2: Carry set. ROR sets sign. - ROR successfully applied.");
+
+    equal(MOS6502._P,
+        0xA0,
+        "Test 2: Carry set. ROR sets sign. - Status Register correctly set.");
+
+    /**
+     * Test 3: Carry set. ROR Sets sign and carry.
+     */
+    MOS6502._A = 89;
+    MOS6502._P = 0x21;
+
+    MOS6502._PC = PCStart;
+    MOS6502._CYCLES = 0;
+
+    MOS6502.emulateCycle();
+
+    equal(MOS6502._A,
+        172,
+        "Test 3: Carry set. ROR Sets sign and carry - ROR successfully applied.");
+
+    equal(MOS6502._P,
+        0xA1,
+        "Test 3: Carry set. ROR Sets sign and carry - Status Register correctly set.");
+
+    /**
+     * Test 4: Carry not set. ROR Sets zero.
+     */
+    MOS6502._A = 0;
+    MOS6502._P = 0x20;
+
+    MOS6502._PC = PCStart;
+
+    MOS6502.emulateCycle();
+
+    equal(MOS6502._A,
+        0,
+        "Test 4: Carry not set. ROR Sets zero - ROR successfully applied.");
+
+    equal(MOS6502._P,
+        0x22,
+        "Test 4: Carry not set. ROR Sets zero - Status Register correctly set.");
+
+    /**
+     * Test 5: Carry not set. ROR Sets zero and carry.
+     */
+    MOS6502._A = 1;
+    MOS6502._P = 0x20;
+
+    MOS6502._PC = PCStart;
+    MOS6502._CYCLES = 0;
+
+    MOS6502.emulateCycle();
+
+    equal(MOS6502._A,
+        0,
+        "Test 5: Carry not set. ROR Sets zero and carry - ROR successfully applied.");
+
+    equal(MOS6502._P,
+        0x23,
+        "Test 5: Carry not set. ROR Sets zero and carry - Status Register correctly set.");
+
+    equal(MOS6502._PC,
+            PCStart + BytesUsed,
+        "Program Counter incremented successfully.");
+
+    equal(MOS6502._CYCLES,
+        CycleCost,
+        "Cycles incremented correctly.");
+
+
+});
+
+test("0x66 - ROR (Zero Page)",function() {
+    /**
+     *    Instruction = ROR - Rotate one bit right (memory or accumulator).
+     * Affected Flags = Sign, Zero, Carry
+     *    Total Tests = 5
+     */
+    var OPCODE = 0x66,
+        PCStart = 0x4000,
+        CycleCost = 5,
+        ZPAddress = 0x40,
+        OperandLocation = ZPAddress,
+        BytesUsed = 2;
+
+    MOS6502._RAM[PCStart] = OPCODE;
+    MOS6502._RAM[PCStart + 1] = ZPAddress;
+
+    /**
+     * Test 1: Set none.
+     */
+    MOS6502._RAM[OperandLocation] = 102;
+    MOS6502._P = 0x20;
+
+    MOS6502._PC = PCStart;
+
+    MOS6502.emulateCycle();
+
+    equal(MOS6502._RAM[OperandLocation],
+        51,
+        "Test 1: Set none - ROR successfully applied.");
+
+    equal(MOS6502._P,
+        0x20,
+        "Test 1: Set none - Status Register correctly set.");
+
+    /**
+     * Test 2: Carry set. Sets sign.
+     */
+    MOS6502._RAM[OperandLocation] = 102;
+    MOS6502._P = 0x21;
+
+    MOS6502._PC = PCStart;
+
+    MOS6502.emulateCycle();
+
+    equal(MOS6502._RAM[OperandLocation],
+        179,
+        "Test 2: Carry set. ROR sets sign. - ROR successfully applied.");
+
+    equal(MOS6502._P,
+        0xA0,
+        "Test 2: Carry set. ROR sets sign. - Status Register correctly set.");
+
+    /**
+     * Test 3: Carry set. ROR Sets sign and carry.
+     */
+    MOS6502._RAM[OperandLocation] = 89;
+    MOS6502._P = 0x21;
+
+    MOS6502._PC = PCStart;
+    MOS6502._CYCLES = 0;
+
+    MOS6502.emulateCycle();
+
+    equal(MOS6502._RAM[OperandLocation],
+        172,
+        "Test 3: Carry set. ROR Sets sign and carry - ROR successfully applied.");
+
+    equal(MOS6502._P,
+        0xA1,
+        "Test 3: Carry set. ROR Sets sign and carry - Status Register correctly set.");
+
+    /**
+     * Test 4: Carry not set. ROR Sets zero.
+     */
+    MOS6502._RAM[OperandLocation] = 0;
+    MOS6502._P = 0x20;
+
+    MOS6502._PC = PCStart;
+
+    MOS6502.emulateCycle();
+
+    equal(MOS6502._RAM[OperandLocation],
+        0,
+        "Test 4: Carry not set. ROR Sets zero - ROR successfully applied.");
+
+    equal(MOS6502._P,
+        0x22,
+        "Test 4: Carry not set. ROR Sets zero - Status Register correctly set.");
+
+    /**
+     * Test 5: Carry not set. ROR Sets zero and carry.
+     */
+    MOS6502._RAM[OperandLocation] = 1;
+    MOS6502._P = 0x20;
+
+    MOS6502._PC = PCStart;
+    MOS6502._CYCLES = 0;
+
+    MOS6502.emulateCycle();
+
+    equal(MOS6502._RAM[OperandLocation],
+        0,
+        "Test 5: Carry not set. ROR Sets zero and carry - ROR successfully applied.");
+
+    equal(MOS6502._P,
+        0x23,
+        "Test 5: Carry not set. ROR Sets zero and carry - Status Register correctly set.");
+
+    equal(MOS6502._PC,
+            PCStart + BytesUsed,
+        "Program Counter incremented successfully.");
+
+    equal(MOS6502._CYCLES,
+        CycleCost,
+        "Cycles incremented correctly.");
+
+
+});
+
+test("0x76 - ROR (Zero Page, X)",function() {
+    /**
+     *    Instruction = ROR - Rotate one bit right (memory or accumulator).
+     * Affected Flags = Sign, Zero, Carry
+     *    Total Tests = 5
+     */
+    var OPCODE = 0x76,
+        PCStart = 0x4000,
+        CycleCost = 6,
+        ZPAddress = 0x40,
+        XRegister = 0x21,
+        OperandLocation = ZPAddress + XRegister,
+        BytesUsed = 2;
+
+    MOS6502._RAM[PCStart] = OPCODE;
+    MOS6502._RAM[PCStart + 1] = ZPAddress;
+
+    /**
+     * Test 1: Set none.
+     */
+    MOS6502._RAM[OperandLocation] = 102;
+    MOS6502._P = 0x20;
+
+    MOS6502._PC = PCStart;
+
+    MOS6502.emulateCycle();
+
+    equal(MOS6502._RAM[OperandLocation],
+        51,
+        "Test 1: Set none - ROR successfully applied.");
+
+    equal(MOS6502._P,
+        0x20,
+        "Test 1: Set none - Status Register correctly set.");
+
+    /**
+     * Test 2: Carry set. Sets sign.
+     */
+    MOS6502._RAM[OperandLocation] = 102;
+    MOS6502._P = 0x21;
+
+    MOS6502._PC = PCStart;
+
+    MOS6502.emulateCycle();
+
+    equal(MOS6502._RAM[OperandLocation],
+        179,
+        "Test 2: Carry set. ROR sets sign. - ROR successfully applied.");
+
+    equal(MOS6502._P,
+        0xA0,
+        "Test 2: Carry set. ROR sets sign. - Status Register correctly set.");
+
+    /**
+     * Test 3: Carry set. ROR Sets sign and carry.
+     */
+    MOS6502._RAM[OperandLocation] = 89;
+    MOS6502._P = 0x21;
+
+    MOS6502._PC = PCStart;
+    MOS6502._CYCLES = 0;
+
+    MOS6502.emulateCycle();
+
+    equal(MOS6502._RAM[OperandLocation],
+        172,
+        "Test 3: Carry set. ROR Sets sign and carry - ROR successfully applied.");
+
+    equal(MOS6502._P,
+        0xA1,
+        "Test 3: Carry set. ROR Sets sign and carry - Status Register correctly set.");
+
+    /**
+     * Test 4: Carry not set. ROR Sets zero.
+     */
+    MOS6502._RAM[OperandLocation] = 0;
+    MOS6502._P = 0x20;
+
+    MOS6502._PC = PCStart;
+
+    MOS6502.emulateCycle();
+
+    equal(MOS6502._RAM[OperandLocation],
+        0,
+        "Test 4: Carry not set. ROR Sets zero - ROR successfully applied.");
+
+    equal(MOS6502._P,
+        0x22,
+        "Test 4: Carry not set. ROR Sets zero - Status Register correctly set.");
+
+    /**
+     * Test 5: Carry not set. ROR Sets zero and carry.
+     */
+    MOS6502._RAM[OperandLocation] = 1;
+    MOS6502._P = 0x20;
+
+    MOS6502._PC = PCStart;
+    MOS6502._CYCLES = 0;
+
+    MOS6502.emulateCycle();
+
+    equal(MOS6502._RAM[OperandLocation],
+        0,
+        "Test 5: Carry not set. ROR Sets zero and carry - ROR successfully applied.");
+
+    equal(MOS6502._P,
+        0x23,
+        "Test 5: Carry not set. ROR Sets zero and carry - Status Register correctly set.");
+
+    equal(MOS6502._PC,
+            PCStart + BytesUsed,
+        "Program Counter incremented successfully.");
+
+    equal(MOS6502._CYCLES,
+        CycleCost,
+        "Cycles incremented correctly.");
+
+
+});
+
+test("0x6E - ROR (Absolute)",function() {
+    /**
+     *    Instruction = ROR - Rotate one bit right (memory or accumulator).
+     * Affected Flags = Sign, Zero, Carry
+     *    Total Tests = 5
+     */
+    var OPCODE = 0x6E,
+        PCStart = 0x4000,
+        CycleCost = 6,
+        AddressByte1 = 0x21,
+        AddressByte2 = 0x31,
+        BytesUsed = 3,
+        OperandLocation = MOS6502._MAKE_ADDRESS(AddressByte1,AddressByte2);
+
+    MOS6502._RAM[PCStart] = OPCODE;
+    MOS6502._RAM[PCStart + 1] = AddressByte1;
+    MOS6502._RAM[PCStart + 2] = AddressByte2;
+
+    /**
+     * Test 1: Set none.
+     */
+    MOS6502._RAM[OperandLocation] = 102;
+    MOS6502._P = 0x20;
+
+    MOS6502._PC = PCStart;
+
+    MOS6502.emulateCycle();
+
+    equal(MOS6502._RAM[OperandLocation],
+        51,
+        "Test 1: Set none - ROR successfully applied.");
+
+    equal(MOS6502._P,
+        0x20,
+        "Test 1: Set none - Status Register correctly set.");
+
+    /**
+     * Test 2: Carry set. Sets sign.
+     */
+    MOS6502._RAM[OperandLocation] = 102;
+    MOS6502._P = 0x21;
+
+    MOS6502._PC = PCStart;
+
+    MOS6502.emulateCycle();
+
+    equal(MOS6502._RAM[OperandLocation],
+        179,
+        "Test 2: Carry set. ROR sets sign. - ROR successfully applied.");
+
+    equal(MOS6502._P,
+        0xA0,
+        "Test 2: Carry set. ROR sets sign. - Status Register correctly set.");
+
+    /**
+     * Test 3: Carry set. ROR Sets sign and carry.
+     */
+    MOS6502._RAM[OperandLocation] = 89;
+    MOS6502._P = 0x21;
+
+    MOS6502._PC = PCStart;
+    MOS6502._CYCLES = 0;
+
+    MOS6502.emulateCycle();
+
+    equal(MOS6502._RAM[OperandLocation],
+        172,
+        "Test 3: Carry set. ROR Sets sign and carry - ROR successfully applied.");
+
+    equal(MOS6502._P,
+        0xA1,
+        "Test 3: Carry set. ROR Sets sign and carry - Status Register correctly set.");
+
+    /**
+     * Test 4: Carry not set. ROR Sets zero.
+     */
+    MOS6502._RAM[OperandLocation] = 0;
+    MOS6502._P = 0x20;
+
+    MOS6502._PC = PCStart;
+
+    MOS6502.emulateCycle();
+
+    equal(MOS6502._RAM[OperandLocation],
+        0,
+        "Test 4: Carry not set. ROR Sets zero - ROR successfully applied.");
+
+    equal(MOS6502._P,
+        0x22,
+        "Test 4: Carry not set. ROR Sets zero - Status Register correctly set.");
+
+    /**
+     * Test 5: Carry not set. ROR Sets zero and carry.
+     */
+    MOS6502._RAM[OperandLocation] = 1;
+    MOS6502._P = 0x20;
+
+    MOS6502._PC = PCStart;
+    MOS6502._CYCLES = 0;
+
+    MOS6502.emulateCycle();
+
+    equal(MOS6502._RAM[OperandLocation],
+        0,
+        "Test 5: Carry not set. ROR Sets zero and carry - ROR successfully applied.");
+
+    equal(MOS6502._P,
+        0x23,
+        "Test 5: Carry not set. ROR Sets zero and carry - Status Register correctly set.");
+
+    equal(MOS6502._PC,
+            PCStart + BytesUsed,
+        "Program Counter incremented successfully.");
+
+    equal(MOS6502._CYCLES,
+        CycleCost,
+        "Cycles incremented correctly.");
+
+
+});
+
+test("0x7E - ROR (Absolute, X)",function() {
+    /**
+     *    Instruction = ROR - Rotate one bit right (memory or accumulator).
+     * Affected Flags = Sign, Zero, Carry
+     *    Total Tests = 5
+     */
+    var OPCODE = 0x7E,
+        PCStart = 0x4000,
+        CycleCost = 7,
+        AddressByte1 = 0x31,
+        AddressByte2 = 0x21,
+        XRegister = 0x40,
+        OperandLocation = MOS6502._MAKE_ADDRESS(AddressByte1,AddressByte2) + XRegister,
+        BytesUsed = 3;
+
+    MOS6502._RAM[PCStart] = OPCODE;
+    MOS6502._RAM[PCStart + 1] = AddressByte1;
+    MOS6502._RAM[PCStart + 2] = AddressByte2;
+    MOS6502._X = XRegister;
+
+    /**
+     * Test 1: Set none.
+     */
+    MOS6502._RAM[OperandLocation] = 102;
+    MOS6502._P = 0x20;
+
+    MOS6502._PC = PCStart;
+
+    MOS6502.emulateCycle();
+
+    equal(MOS6502._RAM[OperandLocation],
+        51,
+        "Test 1: Set none - ROR successfully applied.");
+
+    equal(MOS6502._P,
+        0x20,
+        "Test 1: Set none - Status Register correctly set.");
+
+    /**
+     * Test 2: Carry set. Sets sign.
+     */
+    MOS6502._RAM[OperandLocation] = 102;
+    MOS6502._P = 0x21;
+
+    MOS6502._PC = PCStart;
+
+    MOS6502.emulateCycle();
+
+    equal(MOS6502._RAM[OperandLocation],
+        179,
+        "Test 2: Carry set. ROR sets sign. - ROR successfully applied.");
+
+    equal(MOS6502._P,
+        0xA0,
+        "Test 2: Carry set. ROR sets sign. - Status Register correctly set.");
+
+    /**
+     * Test 3: Carry set. ROR Sets sign and carry.
+     */
+    MOS6502._RAM[OperandLocation] = 89;
+    MOS6502._P = 0x21;
+
+    MOS6502._PC = PCStart;
+    MOS6502._CYCLES = 0;
+
+    MOS6502.emulateCycle();
+
+    equal(MOS6502._RAM[OperandLocation],
+        172,
+        "Test 3: Carry set. ROR Sets sign and carry - ROR successfully applied.");
+
+    equal(MOS6502._P,
+        0xA1,
+        "Test 3: Carry set. ROR Sets sign and carry - Status Register correctly set.");
+
+    /**
+     * Test 4: Carry not set. ROR Sets zero.
+     */
+    MOS6502._RAM[OperandLocation] = 0;
+    MOS6502._P = 0x20;
+
+    MOS6502._PC = PCStart;
+
+    MOS6502.emulateCycle();
+
+    equal(MOS6502._RAM[OperandLocation],
+        0,
+        "Test 4: Carry not set. ROR Sets zero - ROR successfully applied.");
+
+    equal(MOS6502._P,
+        0x22,
+        "Test 4: Carry not set. ROR Sets zero - Status Register correctly set.");
+
+    /**
+     * Test 5: Carry not set. ROR Sets zero and carry.
+     */
+    MOS6502._RAM[OperandLocation] = 1;
+    MOS6502._P = 0x20;
+
+    MOS6502._PC = PCStart;
+    MOS6502._CYCLES = 0;
+
+    MOS6502.emulateCycle();
+
+    equal(MOS6502._RAM[OperandLocation],
+        0,
+        "Test 5: Carry not set. ROR Sets zero and carry - ROR successfully applied.");
+
+    equal(MOS6502._P,
+        0x23,
+        "Test 5: Carry not set. ROR Sets zero and carry - Status Register correctly set.");
+
+    equal(MOS6502._PC,
+            PCStart + BytesUsed,
+        "Program Counter incremented successfully.");
+
+    equal(MOS6502._CYCLES,
+        CycleCost,
+        "Cycles incremented correctly.");
+
+
+});
+
+//</editor-fold>
+
 /**
  * Tests to be implemented:
 
  // 0x60 - 0x6F
- case (0x66) : me.ROR(); break;
  case (0x68) : me.PLA(); break;
- case (0x6A) : me.ROR(); break;
- case (0x6E) : me.ROR(); break;
 
  // 0x70 - 0x7F
  case (0x70) : me.BVS(); break;
  case (0x71) : me.ADC(); break;
- case (0x76) : me.ROR(); break;
  case (0x78) : me.SEI(); break;
- case (0x7E) : me.ROR(); break;
 
  // 0x80 - 0x8F
  case (0x81) : me.STA(); break;
