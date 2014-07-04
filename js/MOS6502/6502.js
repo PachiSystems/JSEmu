@@ -529,13 +529,13 @@ MOS6502.prototype._PUSH = function(byte) {
      of instructions that operate on the Stack Pointer, which doesn't get changed anywhere.
      */
         
-    var me = this,
-        SP = me._SP;
+    var me = this;
 
-    me._RAM[ SP ] = (byte & 0xFF);
-    SP--;
-    if (SP < 0x0100) SP = 0x01FF;
-    me._SP = SP;
+    me._RAM[ me._SP ] = (byte & 0xFF);
+
+    me._SP--;
+
+    if (me._SP < 0x0100) me._SP = 0x01FF;
 };
 
 MOS6502.prototype._PULL = function() {
@@ -546,16 +546,15 @@ MOS6502.prototype._PULL = function() {
      change the implementation of these to go back to an array in the future depending on performance.
      */
         
-    var me = this,
-        SP = me._SP,
-        OPER;
+    var me = this;
 
     me._SP++;
-    OPER = me._RAM[ me._SP ];
+
     if (me._SP > 0x01FF) {
         me._SP = 0x0100;
     }
-    return OPER;
+
+    return me._RAM[ me._SP ];
     
 };
 
@@ -2399,9 +2398,9 @@ MOS6502.prototype.PLA = function() {
     switch (opCode) {
         // Get Operand
         case (0x68):
-            OPER = me._PULL();
-            me._SET_SIGN(OPER);
-            me._SET_ZERO(OPER);
+            me._A = me._PULL();
+            //me._SET_SIGN(OPER);
+            //me._SET_ZERO(OPER);
             me._CYCLES += 4;
             me._PC += 1;
             break;

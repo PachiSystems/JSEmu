@@ -11871,6 +11871,49 @@ test("0x7E - ROR (Absolute, X)",function() {
 
 //</editor-fold>
 
+/*********************************************************************************************************************/
+
+//<editor-fold desc="PLA Tests">
+
+QUnit.module("Instruction - PLA", {
+    setup: function() {
+        MOS6502.init();
+    }
+});
+
+test("0x68 - PLA (Implied)",function() {
+    /**
+     *    Instruction = PLA - Pull accumulator from stack.
+     * Affected Flags = None
+     *    Total Tests = 1
+     */
+    var OPCODE = 0x68,
+        PCStart = 0x4000,
+        CycleCost = 4,
+        Accumulator = Math.floor(Math.random() * 254) + 1,
+        BytesUsed = 1;
+
+    MOS6502._RAM[PCStart] = OPCODE;
+    MOS6502._SP = 0x01FE;
+    MOS6502._RAM[0x01FF] = Accumulator;
+
+    MOS6502._PC = PCStart;
+    MOS6502._CYCLES = 0;
+
+    MOS6502.emulateCycle();
+
+    equal(MOS6502._A,Accumulator,"Accumulator restored successfully.");
+
+    equal(MOS6502._SP,0x01FF,"Stack pointer correctly set");
+
+    equal(MOS6502._PC,PCStart + BytesUsed,"Program counter increased correctly.");
+
+    equal(MOS6502._CYCLES,CycleCost,"Cycles increased correctly.");
+
+});
+
+//</editor-fold>
+
 /**
  * Tests to be implemented:
 
