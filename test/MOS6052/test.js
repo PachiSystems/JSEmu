@@ -12331,21 +12331,266 @@ test("0x91 - STA (Indirect, Y)",function() {
 
 //</editor-fold>
 
+/*********************************************************************************************************************/
+
+//<editor-fold desc="STY Tests">
+
+QUnit.module("Instruction - STY", {
+    setup: function() {
+        MOS6502.init();
+    }
+});
+
+test("0x84 - STY (Zero Page)",function() {
+    /**
+     *    Instruction = STY - Store index Y in memory.
+     * Affected Flags = None
+     *    Total Tests = 1
+     */
+    var OPCODE = 0x84,
+        PCStart = 0x4000,
+        ZPAddress = Math.floor(Math.random() * 254) + 1,
+        OperandLocation = ZPAddress,
+        YRegister = Math.floor(Math.random() * 254) + 1,
+        CycleCost = 3,
+        BytesUsed = 2;
+
+    MOS6502._RAM[PCStart] = OPCODE;
+    MOS6502._RAM[PCStart + 1] = ZPAddress;
+
+    MOS6502._PC = PCStart;
+    MOS6502._CYCLES = 0;
+    MOS6502._Y = YRegister;
+
+    MOS6502.emulateCycle();
+
+    equal(MOS6502._RAM[OperandLocation], YRegister, "Y Index stored successfully.");
+
+    equal(MOS6502._PC, PCStart + BytesUsed, "Program counter incremented successfully.");
+
+    equal(MOS6502._CYCLES, CycleCost, "Cycles calculated correctly.");
+});
+
+test("0x94 - STY (Zero Page, X)",function() {
+    /**
+     *    Instruction = STY - Store index Y in memory.
+     * Affected Flags = None
+     *    Total Tests = 1
+     */
+    var OPCODE = 0x94,
+        PCStart = 0x4000,
+        ZPAddress = 0x31,
+        XRegister = 0x21,
+        OperandLocation = ZPAddress + XRegister,
+        YRegister = Math.floor(Math.random() * 254) + 1,
+        CycleCost = 4,
+        BytesUsed = 2;
+
+    MOS6502._RAM[PCStart] = OPCODE;
+    MOS6502._RAM[PCStart + 1] = ZPAddress;
+    MOS6502._X = XRegister;
+    MOS6502._Y = YRegister;
+
+    MOS6502._PC = PCStart;
+    MOS6502._CYCLES = 0;
+
+    MOS6502.emulateCycle();
+
+    equal(MOS6502._RAM[OperandLocation], YRegister, "Y Index stored successfully.");
+
+    equal(MOS6502._PC, PCStart + BytesUsed, "Program counter incremented successfully.");
+
+    equal(MOS6502._CYCLES, CycleCost, "Cycles calculated correctly.");
+});
+
+test("0x8C - STY (Absolute)",function() {
+    /**
+     *    Instruction = STY - Store index Y in memory.
+     * Affected Flags = None
+     *    Total Tests = 1
+     */
+    var OPCODE = 0x8C,
+        PCStart = 0x4000,
+        AddressByte1 = 0x31,
+        AddressByte2 = 0x21,
+        OperandLocation = MOS6502._MAKE_ADDRESS(AddressByte1,AddressByte2),
+        YRegister = Math.floor(Math.random() * 254) + 1,
+        CycleCost = 4,
+        BytesUsed = 3;
+
+    MOS6502._RAM[PCStart] = OPCODE;
+    MOS6502._RAM[PCStart + 1] = AddressByte1;
+    MOS6502._RAM[PCStart + 2] = AddressByte2;
+    MOS6502._Y = YRegister;
+
+    MOS6502._PC = PCStart;
+    MOS6502._CYCLES = 0;
+
+    MOS6502.emulateCycle();
+
+    equal(MOS6502._RAM[OperandLocation], YRegister, "Y Index stored successfully.");
+
+    equal(MOS6502._PC, PCStart + BytesUsed, "Program counter incremented successfully.");
+
+    equal(MOS6502._CYCLES, CycleCost, "Cycles calculated correctly.");
+});
+
+//</editor-fold>
+
+/*********************************************************************************************************************/
+
+//<editor-fold desc="STX Tests">
+
+QUnit.module("Instruction - STX", {
+    setup: function() {
+        MOS6502.init();
+    }
+});
+
+test("0x86 - STX (Zero Page)",function() {
+    /**
+     *    Instruction = STX - Store index X in memory.
+     * Affected Flags = None
+     *    Total Tests = 1
+     */
+    var OPCODE = 0x86,
+        PCStart = 0x4000,
+        ZPAddress = Math.floor(Math.random() * 254) + 1,
+        OperandLocation = ZPAddress,
+        XRegister = Math.floor(Math.random() * 254) + 1,
+        CycleCost = 3,
+        BytesUsed = 2;
+
+    MOS6502._RAM[PCStart] = OPCODE;
+    MOS6502._RAM[PCStart + 1] = ZPAddress;
+
+    MOS6502._PC = PCStart;
+    MOS6502._CYCLES = 0;
+    MOS6502._X = XRegister;
+
+    MOS6502.emulateCycle();
+
+    equal(MOS6502._RAM[OperandLocation], XRegister, "X Index stored successfully.");
+
+    equal(MOS6502._PC, PCStart + BytesUsed, "Program counter incremented successfully.");
+
+    equal(MOS6502._CYCLES, CycleCost, "Cycles calculated correctly.");
+});
+
+test("0x96 - STY (Zero Page, Y)",function() {
+    /**
+     *    Instruction = STX - Store index X in memory.
+     * Affected Flags = None
+     *    Total Tests = 1
+     */
+    var OPCODE = 0x96,
+        PCStart = 0x4000,
+        ZPAddress = 0x31,
+        YRegister = 0x21,
+        OperandLocation = ZPAddress + YRegister,
+        XRegister = Math.floor(Math.random() * 254) + 1,
+        CycleCost = 4,
+        BytesUsed = 2;
+
+    MOS6502._RAM[PCStart] = OPCODE;
+    MOS6502._RAM[PCStart + 1] = ZPAddress;
+    MOS6502._X = XRegister;
+    MOS6502._Y = YRegister;
+
+    MOS6502._PC = PCStart;
+    MOS6502._CYCLES = 0;
+
+    MOS6502.emulateCycle();
+
+    equal(MOS6502._RAM[OperandLocation], XRegister, "X Index stored successfully.");
+
+    equal(MOS6502._PC, PCStart + BytesUsed, "Program counter incremented successfully.");
+
+    equal(MOS6502._CYCLES, CycleCost, "Cycles calculated correctly.");
+});
+
+test("0x8E - STY (Absolute)",function() {
+    /**
+     *    Instruction = STX - Store index X in memory.
+     * Affected Flags = None
+     *    Total Tests = 1
+     */
+    var OPCODE = 0x8E,
+        PCStart = 0x4000,
+        AddressByte1 = 0x31,
+        AddressByte2 = 0x21,
+        OperandLocation = MOS6502._MAKE_ADDRESS(AddressByte1,AddressByte2),
+        XRegister = Math.floor(Math.random() * 254) + 1,
+        CycleCost = 4,
+        BytesUsed = 3;
+
+    MOS6502._RAM[PCStart] = OPCODE;
+    MOS6502._RAM[PCStart + 1] = AddressByte1;
+    MOS6502._RAM[PCStart + 2] = AddressByte2;
+    MOS6502._X = XRegister;
+
+    MOS6502._PC = PCStart;
+    MOS6502._CYCLES = 0;
+
+    MOS6502.emulateCycle();
+
+    equal(MOS6502._RAM[OperandLocation], XRegister, "X Index stored successfully.");
+
+    equal(MOS6502._PC, PCStart + BytesUsed, "Program counter incremented successfully.");
+
+    equal(MOS6502._CYCLES, CycleCost, "Cycles calculated correctly.");
+});
+
+//</editor-fold>
+
+/*********************************************************************************************************************/
+
+//<editor-fold desc="DEY Tests">
+
+QUnit.module("Instruction - DEY", {
+    setup: function() {
+        MOS6502.init();
+    }
+});
+
+test("0x88 - DEY (Implied)",function() {
+    /**
+     *    Instruction = DEY - Decrement index Y by one.
+     * Affected Flags = None
+     *    Total Tests = 1
+     */
+    var OPCODE = 0x88,
+        PCStart = 0x4000,
+        YRegister = Math.floor(Math.random() * 254) + 1,
+        CycleCost = 2,
+        BytesUsed = 1;
+
+    MOS6502._RAM[PCStart] = OPCODE;
+
+    MOS6502._PC = PCStart;
+    MOS6502._CYCLES = 0;
+    MOS6502._Y = YRegister;
+
+    MOS6502.emulateCycle();
+
+    equal(MOS6502._Y, YRegister - 1, "Y Index decremented successfully.");
+
+    equal(MOS6502._PC, PCStart + BytesUsed, "Program counter incremented successfully.");
+
+    equal(MOS6502._CYCLES, CycleCost, "Cycles calculated correctly.");
+});
+
+//</editor-fold>
+
 /**
  * Tests to be implemented:
 
  // 0x80 - 0x8F
- case (0x84) : me.STY(); break;
- case (0x86) : me.STX(); break;
  case (0x88) : me.DEY(); break;
  case (0x8A) : me.TXA(); break;
- case (0x8C) : me.STY(); break;
- case (0x8E) : me.STX(); break;
 
  // 0x90 - 0x9F
  case (0x90) : me.BCC(); break;
- case (0x94) : me.STY(); break;
- case (0x96) : me.STX(); break;
  case (0x98) : me.TYA(); break;
  case (0x9A) : me.TXS(); break;
 
