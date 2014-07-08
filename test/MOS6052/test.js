@@ -743,9 +743,9 @@ test("Write Absolute X", function() {
      */
 
     var randomData = Math.floor(Math.random() * 255) + 1,
-        randomX = Math.floor(Math.random() * 255) + 1,
-        randomAddress1 = Math.floor(Math.random() * 255) + 1,
-        randomAddress2 = Math.floor(Math.random() * 255) + 1;
+        randomX = 0x21,
+        randomAddress1 = 0x31,
+        randomAddress2 = 0x41;
 
     MOS6502._X = randomX;
     MOS6502.WriteAbsoluteX(randomAddress1, randomAddress2, randomData);
@@ -12582,12 +12582,82 @@ test("0x88 - DEY (Implied)",function() {
 
 //</editor-fold>
 
+/*********************************************************************************************************************/
+
+//<editor-fold desc="TXA Tests">
+
+QUnit.module("Instruction - TXA", {
+    setup: function() {
+        MOS6502.init();
+    }
+});
+
+test("0x8A - TXA (Implied)",function() {
+    /**
+     *    Instruction = TXA - Transfer index X to accumulator.
+     * Affected Flags = Sign, Zero
+     *    Total Tests = 3
+     */
+    var OPCODE = 0x8A,
+        PCStart = 0x4000,
+        CycleCost = 2,
+        BytesUsed = 1;
+
+    MOS6502._RAM[PCStart] = OPCODE;
+
+    /**
+     * Test 1: Set none.
+     */
+
+    MOS6502._PC = PCStart;
+    MOS6502._P = 0x20;
+    MOS6502._X = 0x60;
+
+    MOS6502.emulateCycle();
+
+    equal(MOS6502._A, 0x60, "Test 1: Accumulator set successfully.");
+
+    equal(MOS6502._P, 0x20, "Test 1: Status register set correctly.");
+
+    /**
+     * Test 2: Set zero.
+     */
+
+    MOS6502._PC = PCStart;
+    MOS6502._P = 0x20;
+    MOS6502._X = 0x00;
+
+    MOS6502.emulateCycle();
+
+    equal(MOS6502._A, 0x00, "Test 2: Accumulator set successfully.");
+
+    equal(MOS6502._P, 0x22, "Test 2: Status register set correctly.");
+
+    /**
+     * Test 3: Set sign.
+     */
+
+    MOS6502._PC = PCStart;
+    MOS6502._P = 0x20;
+    MOS6502._CYCLES = 0;
+    MOS6502._X = 0x82;
+
+    MOS6502.emulateCycle();
+
+    equal(MOS6502._A, 0x82, "Test 3: Accumulator set successfully.");
+
+    equal(MOS6502._P, 0xA0, "Test 3: Status register set correctly.");
+
+    equal(MOS6502._PC, PCStart + BytesUsed, "Program counter incremented successfully.");
+
+    equal(MOS6502._CYCLES, CycleCost, "Cycles calculated correctly.");
+});
+
+//</editor-fold>
+
+
 /**
  * Tests to be implemented:
-
- // 0x80 - 0x8F
- case (0x88) : me.DEY(); break;
- case (0x8A) : me.TXA(); break;
 
  // 0x90 - 0x9F
  case (0x90) : me.BCC(); break;
