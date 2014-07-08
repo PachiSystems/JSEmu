@@ -12861,13 +12861,48 @@ test("0x98 - TYA (Implied)",function() {
 
 //</editor-fold>
 
+/*********************************************************************************************************************/
+
+//<editor-fold desc="TXS Tests">
+
+QUnit.module("Instruction - TXS", {
+    setup: function() {
+        MOS6502.init();
+    }
+});
+
+test("0x9A - TXS (Implied)",function() {
+    /**
+     *    Instruction = TXS - Transfer index X to stack pointer.
+     * Affected Flags = None
+     *    Total Tests = 1
+     */
+    var OPCODE = 0x9A,
+        PCStart = 0x4000,
+        XRegister = Math.floor(Math.random() * 255) + 1,
+        CycleCost = 2,
+        BytesUsed = 1;
+
+    MOS6502._RAM[PCStart] = OPCODE;
+
+    MOS6502._PC = PCStart;
+    MOS6502._X = XRegister;
+    MOS6502._CYCLES = 0;
+
+    MOS6502.emulateCycle();
+
+    equal(MOS6502._SP, XRegister, "Stack Pointer set successfully.");
+
+    equal(MOS6502._PC, PCStart + BytesUsed, "Program counter incremented successfully.");
+
+    equal(MOS6502._CYCLES, CycleCost, "Cycles calculated correctly.");
+});
+
+//</editor-fold>
+
 
 /**
  * Tests to be implemented:
-
- // 0x90 - 0x9F
- case (0x98) : me.TYA(); break;
- case (0x9A) : me.TXS(); break;
 
  // 0xA0 - 0xAF
  case (0xA0) : me.LDY(); break;

@@ -3096,8 +3096,7 @@ MOS6502.prototype.TXS = function() {
     switch (opCode) {
         // Get Operand
         case (0x9A):
-            OPER = me._X;
-            me._SP = OPER;
+            me._SP = me._X;
             me._CYCLES += 2;
             me._PC += 1;
             break;
