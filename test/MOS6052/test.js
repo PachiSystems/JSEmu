@@ -13287,7 +13287,7 @@ test("0xBC - LDY (Absolute, X) (Cross Page)",function() {
 
 /*********************************************************************************************************************/
 
-//<editor-fold desc="LDY Tests">
+//<editor-fold desc="LDA Tests">
 
 QUnit.module("Instruction - LDA", {
     setup: function() {
@@ -13989,6 +13989,392 @@ test("0xB1 - LDA (Indirect, Y) (Cross Page)",function() {
     MOS6502.emulateCycle();
 
     equal(MOS6502._A, 0, "Test 3: Memory loaded into accumulator correctly.");
+
+    equal(MOS6502._P, 0x22, "Test 3: Status register set correctly.");
+
+    equal(MOS6502._PC, PCStart + BytesUsed, "Program counter incremented successfully.");
+
+    equal(MOS6502._CYCLES, CycleCost, "Cycles calculated correctly.");
+});
+
+//</editor-fold>
+
+/*********************************************************************************************************************/
+
+//<editor-fold desc="LDX Tests">
+
+QUnit.module("Instruction - LDX", {
+    setup: function() {
+        MOS6502.init();
+    }
+});
+
+test("0xA2 - LDX (Immediate)",function() {
+    /**
+     *    Instruction = LDX - Load index X with memory.
+     * Affected Flags = None
+     *    Total Tests = 3
+     */
+    var OPCODE = 0xA2,
+        PCStart = 0x4000,
+        RandomByte = Math.floor(Math.random() * 255) + 1,
+        CycleCost = 2,
+        BytesUsed = 2;
+
+    MOS6502._RAM[PCStart] = OPCODE;
+
+    /**
+     * Test 1: Set none.
+     */
+    MOS6502._PC = PCStart;
+    MOS6502._RAM[PCStart + 1] = 0x53;
+
+    MOS6502.emulateCycle();
+
+    equal(MOS6502._X, 0x53, "Test 1: Memory loaded into index X correctly.");
+
+    equal(MOS6502._P, 0x20, "Test 1: Status register set correctly.");
+
+    /**
+     * Test 2: Set sign.
+     */
+    MOS6502._PC = PCStart;
+    MOS6502._RAM[PCStart + 1] = 0x83;
+    MOS6502._P = 0x20;
+
+    MOS6502.emulateCycle();
+
+    equal(MOS6502._X, 0x83, "Test 2: Memory loaded into index X correctly.");
+
+    equal(MOS6502._P, 0xA0, "Test 2: Status register set correctly.");
+
+    /**
+     * Test 3: Set zero.
+     */
+    MOS6502._PC = PCStart;
+    MOS6502._RAM[PCStart + 1] = 0;
+    MOS6502._CYCLES = 0;
+    MOS6502._P = 0x20;
+
+    MOS6502.emulateCycle();
+
+    equal(MOS6502._X, 0, "Test 3: Memory loaded into index X correctly.");
+
+    equal(MOS6502._P, 0x22, "Test 3: Status register set correctly.");
+
+    equal(MOS6502._PC, PCStart + BytesUsed, "Program counter incremented successfully.");
+
+    equal(MOS6502._CYCLES, CycleCost, "Cycles calculated correctly.");
+});
+
+test("0xA6 - LDX (Zero Page)",function() {
+    /**
+     *    Instruction = LDX - Load index X with memory.
+     * Affected Flags = None
+     *    Total Tests = 3
+     */
+    var OPCODE = 0xA6,
+        PCStart = 0x4000,
+        RandomByte = Math.floor(Math.random() * 255) + 1,
+        ZPAddress = Math.floor(Math.random() * 254) + 1,
+        CycleCost = 3,
+        BytesUsed = 2;
+
+    MOS6502._RAM[PCStart] = OPCODE;
+    MOS6502._RAM[PCStart + 1] = ZPAddress;
+
+    /**
+     * Test 1: Set none.
+     */
+    MOS6502._PC = PCStart;
+    MOS6502._RAM[ZPAddress] = 0x53;
+
+    MOS6502.emulateCycle();
+
+    equal(MOS6502._X, 0x53, "Test 1: Memory loaded into index X correctly.");
+
+    equal(MOS6502._P, 0x20, "Test 1: Status register set correctly.");
+
+    /**
+     * Test 2: Set sign.
+     */
+    MOS6502._PC = PCStart;
+    MOS6502._RAM[ZPAddress] = 0x83;
+    MOS6502._P = 0x20;
+
+    MOS6502.emulateCycle();
+
+    equal(MOS6502._X, 0x83, "Test 2: Memory loaded into index X correctly.");
+
+    equal(MOS6502._P, 0xA0, "Test 2: Status register set correctly.");
+
+    /**
+     * Test 3: Set zero.
+     */
+    MOS6502._PC = PCStart;
+    MOS6502._RAM[ZPAddress] = 0;
+    MOS6502._CYCLES = 0;
+    MOS6502._P = 0x20;
+
+    MOS6502.emulateCycle();
+
+    equal(MOS6502._X, 0, "Test 3: Memory loaded into index X correctly.");
+
+    equal(MOS6502._P, 0x22, "Test 3: Status register set correctly.");
+
+    equal(MOS6502._PC, PCStart + BytesUsed, "Program counter incremented successfully.");
+
+    equal(MOS6502._CYCLES, CycleCost, "Cycles calculated correctly.");
+});
+
+test("0xB6 - LDX (Zero Page, Y)",function() {
+    /**
+     *    Instruction = LDX - Load index X with memory.
+     * Affected Flags = None
+     *    Total Tests = 3
+     */
+    var OPCODE = 0xB6,
+        PCStart = 0x4000,
+        RandomByte = Math.floor(Math.random() * 255) + 1,
+        ZPAddress = Math.floor(Math.random() * 254) + 1,
+        YRegister = Math.floor(Math.random() * 254) + 1,
+        FullAddress = (ZPAddress + YRegister) & 0xFF,
+        CycleCost = 4,
+        BytesUsed = 2;
+
+    MOS6502._RAM[PCStart] = OPCODE;
+    MOS6502._RAM[PCStart + 1] = ZPAddress;
+    MOS6502._Y = YRegister;
+
+    /**
+     * Test 1: Set none.
+     */
+    MOS6502._PC = PCStart;
+    MOS6502._RAM[FullAddress] = 0x53;
+
+    MOS6502.emulateCycle();
+
+    equal(MOS6502._X, 0x53, "Test 1: Memory loaded into index X correctly.");
+
+    equal(MOS6502._P, 0x20, "Test 1: Status register set correctly.");
+
+    /**
+     * Test 2: Set sign.
+     */
+    MOS6502._PC = PCStart;
+    MOS6502._RAM[FullAddress] = 0x83;
+    MOS6502._P = 0x20;
+
+    MOS6502.emulateCycle();
+
+    equal(MOS6502._X, 0x83, "Test 2: Memory loaded into index X correctly.");
+
+    equal(MOS6502._P, 0xA0, "Test 2: Status register set correctly.");
+
+    /**
+     * Test 3: Set zero.
+     */
+    MOS6502._PC = PCStart;
+    MOS6502._RAM[FullAddress] = 0;
+    MOS6502._CYCLES = 0;
+    MOS6502._P = 0x20;
+
+    MOS6502.emulateCycle();
+
+    equal(MOS6502._X, 0, "Test 3: Memory loaded into index X correctly.");
+
+    equal(MOS6502._P, 0x22, "Test 3: Status register set correctly.");
+
+    equal(MOS6502._PC, PCStart + BytesUsed, "Program counter incremented successfully.");
+
+    equal(MOS6502._CYCLES, CycleCost, "Cycles calculated correctly.");
+});
+
+test("0xAE - LDX (Absolute)",function() {
+    /**
+     *    Instruction = LDX - Load index X with memory.
+     * Affected Flags = None
+     *    Total Tests = 3
+     */
+    var OPCODE = 0xAE,
+        PCStart = 0x4000,
+        RandomByte = Math.floor(Math.random() * 255) + 1,
+        AddressByte1 = 0x21,
+        AddressByte2 = 0x31,
+        FullAddress = MOS6502._MAKE_ADDRESS(AddressByte1,AddressByte2),
+        CycleCost = 4,
+        BytesUsed = 3;
+
+    MOS6502._RAM[PCStart] = OPCODE;
+    MOS6502._RAM[PCStart + 1] = AddressByte1;
+    MOS6502._RAM[PCStart + 2] = AddressByte2;
+
+    /**
+     * Test 1: Set none.
+     */
+    MOS6502._PC = PCStart;
+    MOS6502._RAM[FullAddress] = 0x53;
+
+    MOS6502.emulateCycle();
+
+    equal(MOS6502._X, 0x53, "Test 1: Memory loaded into index X correctly.");
+
+    equal(MOS6502._P, 0x20, "Test 1: Status register set correctly.");
+
+    /**
+     * Test 2: Set sign.
+     */
+    MOS6502._PC = PCStart;
+    MOS6502._RAM[FullAddress] = 0x83;
+    MOS6502._P = 0x20;
+
+    MOS6502.emulateCycle();
+
+    equal(MOS6502._X, 0x83, "Test 2: Memory loaded into index X correctly.");
+
+    equal(MOS6502._P, 0xA0, "Test 2: Status register set correctly.");
+
+    /**
+     * Test 3: Set zero.
+     */
+    MOS6502._PC = PCStart;
+    MOS6502._RAM[FullAddress] = 0;
+    MOS6502._CYCLES = 0;
+    MOS6502._P = 0x20;
+
+    MOS6502.emulateCycle();
+
+    equal(MOS6502._X, 0, "Test 3: Memory loaded into index X correctly.");
+
+    equal(MOS6502._P, 0x22, "Test 3: Status register set correctly.");
+
+    equal(MOS6502._PC, PCStart + BytesUsed, "Program counter incremented successfully.");
+
+    equal(MOS6502._CYCLES, CycleCost, "Cycles calculated correctly.");
+});
+
+test("0xBE - LDX (Absolute, Y) (Same Page)",function() {
+    /**
+     *    Instruction = LDX - Load index X with memory.
+     * Affected Flags = None
+     *    Total Tests = 3
+     */
+    var OPCODE = 0xBE,
+        PCStart = 0x4000,
+        RandomByte = Math.floor(Math.random() * 255) + 1,
+        AddressByte1 = 0x21,
+        AddressByte2 = 0x31,
+        YRegister = 0x2F,
+        FullAddress = MOS6502._MAKE_ADDRESS(AddressByte1,AddressByte2) + YRegister,
+        CycleCost = 4,
+        BytesUsed = 3;
+
+    MOS6502._RAM[PCStart] = OPCODE;
+    MOS6502._RAM[PCStart + 1] = AddressByte1;
+    MOS6502._RAM[PCStart + 2] = AddressByte2;
+    MOS6502._Y = YRegister;
+
+    /**
+     * Test 1: Set none.
+     */
+    MOS6502._PC = PCStart;
+    MOS6502._RAM[FullAddress] = 0x53;
+
+    MOS6502.emulateCycle();
+
+    equal(MOS6502._X, 0x53, "Test 1: Memory loaded into index X correctly.");
+
+    equal(MOS6502._P, 0x20, "Test 1: Status register set correctly.");
+
+    /**
+     * Test 2: Set sign.
+     */
+    MOS6502._PC = PCStart;
+    MOS6502._RAM[FullAddress] = 0x83;
+    MOS6502._P = 0x20;
+
+    MOS6502.emulateCycle();
+
+    equal(MOS6502._X, 0x83, "Test 2: Memory loaded into index X correctly.");
+
+    equal(MOS6502._P, 0xA0, "Test 2: Status register set correctly.");
+
+    /**
+     * Test 3: Set zero.
+     */
+    MOS6502._PC = PCStart;
+    MOS6502._RAM[FullAddress] = 0;
+    MOS6502._CYCLES = 0;
+    MOS6502._P = 0x20;
+
+    MOS6502.emulateCycle();
+
+    equal(MOS6502._X, 0, "Test 3: Memory loaded into index X correctly.");
+
+    equal(MOS6502._P, 0x22, "Test 3: Status register set correctly.");
+
+    equal(MOS6502._PC, PCStart + BytesUsed, "Program counter incremented successfully.");
+
+    equal(MOS6502._CYCLES, CycleCost, "Cycles calculated correctly.");
+});
+
+test("0xBE - LDX (Absolute, Y) (Cross Page)",function() {
+    /**
+     *    Instruction = LDX - Load index X with memory.
+     * Affected Flags = None
+     *    Total Tests = 3
+     */
+    var OPCODE = 0xBE,
+        PCStart = 0x4000,
+        RandomByte = Math.floor(Math.random() * 255) + 1,
+        AddressByte1 = 0x21,
+        AddressByte2 = 0x31,
+        YRegister = 0xFF,
+        FullAddress = MOS6502._MAKE_ADDRESS(AddressByte1,AddressByte2) + YRegister,
+        CycleCost = 5,
+        BytesUsed = 3;
+
+    MOS6502._RAM[PCStart] = OPCODE;
+    MOS6502._RAM[PCStart + 1] = AddressByte1;
+    MOS6502._RAM[PCStart + 2] = AddressByte2;
+    MOS6502._Y = YRegister;
+
+    /**
+     * Test 1: Set none.
+     */
+    MOS6502._PC = PCStart;
+    MOS6502._RAM[FullAddress] = 0x53;
+
+    MOS6502.emulateCycle();
+
+    equal(MOS6502._X, 0x53, "Test 1: Memory loaded into index X correctly.");
+
+    equal(MOS6502._P, 0x20, "Test 1: Status register set correctly.");
+
+    /**
+     * Test 2: Set sign.
+     */
+    MOS6502._PC = PCStart;
+    MOS6502._RAM[FullAddress] = 0x83;
+    MOS6502._P = 0x20;
+
+    MOS6502.emulateCycle();
+
+    equal(MOS6502._X, 0x83, "Test 2: Memory loaded into index X correctly.");
+
+    equal(MOS6502._P, 0xA0, "Test 2: Status register set correctly.");
+
+    /**
+     * Test 3: Set zero.
+     */
+    MOS6502._PC = PCStart;
+    MOS6502._RAM[FullAddress] = 0;
+    MOS6502._CYCLES = 0;
+    MOS6502._P = 0x20;
+
+    MOS6502.emulateCycle();
+
+    equal(MOS6502._X, 0, "Test 3: Memory loaded into index X correctly.");
 
     equal(MOS6502._P, 0x22, "Test 3: Status register set correctly.");
 
