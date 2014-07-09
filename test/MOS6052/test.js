@@ -13285,6 +13285,720 @@ test("0xBC - LDY (Absolute, X) (Cross Page)",function() {
 
 //</editor-fold>
 
+/*********************************************************************************************************************/
+
+//<editor-fold desc="LDY Tests">
+
+QUnit.module("Instruction - LDA", {
+    setup: function() {
+        MOS6502.init();
+    }
+});
+
+test("0xA9 - LDA (Immediate)",function() {
+    /**
+     *    Instruction = LDA - Load accumulator with memory.
+     * Affected Flags = Sign, Zero
+     *    Total Tests = 3
+     */
+    var OPCODE = 0xA9,
+        PCStart = 0x4000,
+        RandomByte = Math.floor(Math.random() * 255) + 1,
+        CycleCost = 2,
+        BytesUsed = 2;
+
+    MOS6502._RAM[PCStart] = OPCODE;
+
+    /**
+     * Test 1: Set none.
+     */
+    MOS6502._PC = PCStart;
+    MOS6502._RAM[PCStart + 1] = 0x53;
+
+    MOS6502.emulateCycle();
+
+    equal(MOS6502._A, 0x53, "Test 1: Memory loaded into accumulator correctly.");
+
+    equal(MOS6502._P, 0x20, "Test 1: Status register set correctly.");
+
+    /**
+     * Test 2: Set sign.
+     */
+    MOS6502._PC = PCStart;
+    MOS6502._RAM[PCStart + 1] = 0x83;
+    MOS6502._P = 0x20;
+
+    MOS6502.emulateCycle();
+
+    equal(MOS6502._A, 0x83, "Test 2: Memory loaded into accumulator correctly.");
+
+    equal(MOS6502._P, 0xA0, "Test 2: Status register set correctly.");
+
+    /**
+     * Test 3: Set zero.
+     */
+    MOS6502._PC = PCStart;
+    MOS6502._RAM[PCStart + 1] = 0;
+    MOS6502._CYCLES = 0;
+    MOS6502._P = 0x20;
+
+    MOS6502.emulateCycle();
+
+    equal(MOS6502._A, 0, "Test 3: Memory loaded into accumulator correctly.");
+
+    equal(MOS6502._P, 0x22, "Test 3: Status register set correctly.");
+
+    equal(MOS6502._PC, PCStart + BytesUsed, "Program counter incremented successfully.");
+
+    equal(MOS6502._CYCLES, CycleCost, "Cycles calculated correctly.");
+});
+
+test("0xA5 - LDA (Zero Page)",function() {
+    /**
+     *    Instruction = LDA - Load accumulator with memory.
+     * Affected Flags = Sign, Zero
+     *    Total Tests = 3
+     */
+    var OPCODE = 0xA5,
+        PCStart = 0x4000,
+        RandomByte = Math.floor(Math.random() * 255) + 1,
+        ZPAddress = Math.floor(Math.random() * 254) + 1,
+        CycleCost = 3,
+        BytesUsed = 2;
+
+    MOS6502._RAM[PCStart] = OPCODE;
+    MOS6502._RAM[PCStart + 1] = ZPAddress;
+
+    /**
+     * Test 1: Set none.
+     */
+    MOS6502._PC = PCStart;
+    MOS6502._RAM[ZPAddress] = 0x53;
+
+    MOS6502.emulateCycle();
+
+    equal(MOS6502._A, 0x53, "Test 1: Memory loaded into accumulator correctly.");
+
+    equal(MOS6502._P, 0x20, "Test 1: Status register set correctly.");
+
+    /**
+     * Test 2: Set sign.
+     */
+    MOS6502._PC = PCStart;
+    MOS6502._RAM[ZPAddress] = 0x83;
+    MOS6502._P = 0x20;
+
+    MOS6502.emulateCycle();
+
+    equal(MOS6502._A, 0x83, "Test 2: Memory loaded into accumulator correctly.");
+
+    equal(MOS6502._P, 0xA0, "Test 2: Status register set correctly.");
+
+    /**
+     * Test 3: Set zero.
+     */
+    MOS6502._PC = PCStart;
+    MOS6502._RAM[ZPAddress] = 0;
+    MOS6502._CYCLES = 0;
+    MOS6502._P = 0x20;
+
+    MOS6502.emulateCycle();
+
+    equal(MOS6502._A, 0, "Test 3: Memory loaded into accumulator correctly.");
+
+    equal(MOS6502._P, 0x22, "Test 3: Status register set correctly.");
+
+    equal(MOS6502._PC, PCStart + BytesUsed, "Program counter incremented successfully.");
+
+    equal(MOS6502._CYCLES, CycleCost, "Cycles calculated correctly.");
+});
+
+test("0xB5 - LDA (Zero Page, X)",function() {
+    /**
+     *    Instruction = LDA - Load accumulator with memory.
+     * Affected Flags = Sign, Zero
+     *    Total Tests = 3
+     */
+    var OPCODE = 0xB5,
+        PCStart = 0x4000,
+        RandomByte = Math.floor(Math.random() * 255) + 1,
+        ZPAddress = Math.floor(Math.random() * 254) + 1,
+        XRegister = Math.floor(Math.random() * 254) + 1,
+        CycleCost = 4,
+        BytesUsed = 2;
+
+    MOS6502._RAM[PCStart] = OPCODE;
+    MOS6502._RAM[PCStart + 1] = ZPAddress;
+    MOS6502._X = XRegister;
+
+    /**
+     * Test 1: Set none.
+     */
+    MOS6502._PC = PCStart;
+    MOS6502._RAM[(ZPAddress + XRegister) & 0xFF] = 0x53;
+
+    MOS6502.emulateCycle();
+
+    equal(MOS6502._A, 0x53, "Test 1: Memory loaded into accumulator correctly.");
+
+    equal(MOS6502._P, 0x20, "Test 1: Status register set correctly.");
+
+    /**
+     * Test 2: Set sign.
+     */
+    MOS6502._PC = PCStart;
+    MOS6502._RAM[(ZPAddress + XRegister) & 0xFF] = 0x83;
+    MOS6502._P = 0x20;
+
+    MOS6502.emulateCycle();
+
+    equal(MOS6502._A, 0x83, "Test 2: Memory loaded into accumulator correctly.");
+
+    equal(MOS6502._P, 0xA0, "Test 2: Status register set correctly.");
+
+    /**
+     * Test 3: Set zero.
+     */
+    MOS6502._PC = PCStart;
+    MOS6502._RAM[(ZPAddress + XRegister) & 0xFF] = 0;
+    MOS6502._CYCLES = 0;
+    MOS6502._P = 0x20;
+
+    MOS6502.emulateCycle();
+
+    equal(MOS6502._A, 0, "Test 3: Memory loaded into accumulator correctly.");
+
+    equal(MOS6502._P, 0x22, "Test 3: Status register set correctly.");
+
+    equal(MOS6502._PC, PCStart + BytesUsed, "Program counter incremented successfully.");
+
+    equal(MOS6502._CYCLES, CycleCost, "Cycles calculated correctly.");
+});
+
+test("0xAD - LDA (Absolute)",function() {
+    /**
+     *    Instruction = LDA - Load accumulator with memory.
+     * Affected Flags = Sign, Zero
+     *    Total Tests = 3
+     */
+    var OPCODE = 0xAD,
+        PCStart = 0x4000,
+        RandomByte = Math.floor(Math.random() * 255) + 1,
+        AddressByte1 = 0x21,
+        AddressByte2 = 0x31,
+        FullAddress = MOS6502._MAKE_ADDRESS(AddressByte1,AddressByte2),
+        CycleCost = 4,
+        BytesUsed = 3;
+
+    MOS6502._RAM[PCStart] = OPCODE;
+    MOS6502._RAM[PCStart + 1] = AddressByte1;
+    MOS6502._RAM[PCStart + 2] = AddressByte2;
+
+    /**
+     * Test 1: Set none.
+     */
+    MOS6502._PC = PCStart;
+    MOS6502._RAM[FullAddress] = 0x53;
+
+    MOS6502.emulateCycle();
+
+    equal(MOS6502._A, 0x53, "Test 1: Memory loaded into accumulator correctly.");
+
+    equal(MOS6502._P, 0x20, "Test 1: Status register set correctly.");
+
+    /**
+     * Test 2: Set sign.
+     */
+    MOS6502._PC = PCStart;
+    MOS6502._RAM[FullAddress] = 0x83;
+    MOS6502._P = 0x20;
+
+    MOS6502.emulateCycle();
+
+    equal(MOS6502._A, 0x83, "Test 2: Memory loaded into accumulator correctly.");
+
+    equal(MOS6502._P, 0xA0, "Test 2: Status register set correctly.");
+
+    /**
+     * Test 3: Set zero.
+     */
+    MOS6502._PC = PCStart;
+    MOS6502._RAM[FullAddress] = 0;
+    MOS6502._CYCLES = 0;
+    MOS6502._P = 0x20;
+
+    MOS6502.emulateCycle();
+
+    equal(MOS6502._A, 0, "Test 3: Memory loaded into accumulator correctly.");
+
+    equal(MOS6502._P, 0x22, "Test 3: Status register set correctly.");
+
+    equal(MOS6502._PC, PCStart + BytesUsed, "Program counter incremented successfully.");
+
+    equal(MOS6502._CYCLES, CycleCost, "Cycles calculated correctly.");
+});
+
+test("0xBD - LDA (Absolute, X) (Same Page)",function() {
+    /**
+     *    Instruction = LDA - Load accumulator with memory.
+     * Affected Flags = Sign, Zero
+     *    Total Tests = 3
+     */
+    var OPCODE = 0xBD,
+        PCStart = 0x4000,
+        RandomByte = Math.floor(Math.random() * 255) + 1,
+        AddressByte1 = 0x21,
+        AddressByte2 = 0x31,
+        XRegister = 0x2F,
+        FullAddress = MOS6502._MAKE_ADDRESS(AddressByte1,AddressByte2) + XRegister,
+        CycleCost = 4,
+        BytesUsed = 3;
+
+    MOS6502._RAM[PCStart] = OPCODE;
+    MOS6502._RAM[PCStart + 1] = AddressByte1;
+    MOS6502._RAM[PCStart + 2] = AddressByte2;
+    MOS6502._X = XRegister;
+
+    /**
+     * Test 1: Set none.
+     */
+    MOS6502._PC = PCStart;
+    MOS6502._RAM[FullAddress] = 0x53;
+
+    MOS6502.emulateCycle();
+
+    equal(MOS6502._A, 0x53, "Test 1: Memory loaded into accumulator correctly.");
+
+    equal(MOS6502._P, 0x20, "Test 1: Status register set correctly.");
+
+    /**
+     * Test 2: Set sign.
+     */
+    MOS6502._PC = PCStart;
+    MOS6502._RAM[FullAddress] = 0x83;
+    MOS6502._P = 0x20;
+
+    MOS6502.emulateCycle();
+
+    equal(MOS6502._A, 0x83, "Test 2: Memory loaded into accumulator correctly.");
+
+    equal(MOS6502._P, 0xA0, "Test 2: Status register set correctly.");
+
+    /**
+     * Test 3: Set zero.
+     */
+    MOS6502._PC = PCStart;
+    MOS6502._RAM[FullAddress] = 0;
+    MOS6502._CYCLES = 0;
+    MOS6502._P = 0x20;
+
+    MOS6502.emulateCycle();
+
+    equal(MOS6502._A, 0, "Test 3: Memory loaded into accumulator correctly.");
+
+    equal(MOS6502._P, 0x22, "Test 3: Status register set correctly.");
+
+    equal(MOS6502._PC, PCStart + BytesUsed, "Program counter incremented successfully.");
+
+    equal(MOS6502._CYCLES, CycleCost, "Cycles calculated correctly.");
+});
+
+test("0xBD - LDA (Absolute, X) (Cross Page)",function() {
+    /**
+     *    Instruction = LDA - Load accumulator with memory.
+     * Affected Flags = Sign, Zero
+     *    Total Tests = 3
+     */
+    var OPCODE = 0xBD,
+        PCStart = 0x4000,
+        RandomByte = Math.floor(Math.random() * 255) + 1,
+        AddressByte1 = 0x21,
+        AddressByte2 = 0x31,
+        XRegister = 0xFF,
+        FullAddress = MOS6502._MAKE_ADDRESS(AddressByte1,AddressByte2) + XRegister,
+        CycleCost = 5,
+        BytesUsed = 3;
+
+    MOS6502._RAM[PCStart] = OPCODE;
+    MOS6502._RAM[PCStart + 1] = AddressByte1;
+    MOS6502._RAM[PCStart + 2] = AddressByte2;
+    MOS6502._X = XRegister;
+
+    /**
+     * Test 1: Set none.
+     */
+    MOS6502._PC = PCStart;
+    MOS6502._RAM[FullAddress] = 0x53;
+
+    MOS6502.emulateCycle();
+
+    equal(MOS6502._A, 0x53, "Test 1: Memory loaded into accumulator correctly.");
+
+    equal(MOS6502._P, 0x20, "Test 1: Status register set correctly.");
+
+    /**
+     * Test 2: Set sign.
+     */
+    MOS6502._PC = PCStart;
+    MOS6502._RAM[FullAddress] = 0x83;
+    MOS6502._P = 0x20;
+
+    MOS6502.emulateCycle();
+
+    equal(MOS6502._A, 0x83, "Test 2: Memory loaded into accumulator correctly.");
+
+    equal(MOS6502._P, 0xA0, "Test 2: Status register set correctly.");
+
+    /**
+     * Test 3: Set zero.
+     */
+    MOS6502._PC = PCStart;
+    MOS6502._RAM[FullAddress] = 0;
+    MOS6502._CYCLES = 0;
+    MOS6502._P = 0x20;
+
+    MOS6502.emulateCycle();
+
+    equal(MOS6502._A, 0, "Test 3: Memory loaded into accumulator correctly.");
+
+    equal(MOS6502._P, 0x22, "Test 3: Status register set correctly.");
+
+    equal(MOS6502._PC, PCStart + BytesUsed, "Program counter incremented successfully.");
+
+    equal(MOS6502._CYCLES, CycleCost, "Cycles calculated correctly.");
+});
+
+test("0xB9 - LDA (Absolute, Y) (Same Page)",function() {
+    /**
+     *    Instruction = LDA - Load accumulator with memory.
+     * Affected Flags = Sign, Zero
+     *    Total Tests = 3
+     */
+    var OPCODE = 0xB9,
+        PCStart = 0x4000,
+        RandomByte = Math.floor(Math.random() * 255) + 1,
+        AddressByte1 = 0x21,
+        AddressByte2 = 0x31,
+        YRegister = 0x2F,
+        FullAddress = MOS6502._MAKE_ADDRESS(AddressByte1,AddressByte2) + YRegister,
+        CycleCost = 4,
+        BytesUsed = 3;
+
+    MOS6502._RAM[PCStart] = OPCODE;
+    MOS6502._RAM[PCStart + 1] = AddressByte1;
+    MOS6502._RAM[PCStart + 2] = AddressByte2;
+    MOS6502._Y = YRegister;
+
+    /**
+     * Test 1: Set none.
+     */
+    MOS6502._PC = PCStart;
+    MOS6502._RAM[FullAddress] = 0x53;
+
+    MOS6502.emulateCycle();
+
+    equal(MOS6502._A, 0x53, "Test 1: Memory loaded into accumulator correctly.");
+
+    equal(MOS6502._P, 0x20, "Test 1: Status register set correctly.");
+
+    /**
+     * Test 2: Set sign.
+     */
+    MOS6502._PC = PCStart;
+    MOS6502._RAM[FullAddress] = 0x83;
+    MOS6502._P = 0x20;
+
+    MOS6502.emulateCycle();
+
+    equal(MOS6502._A, 0x83, "Test 2: Memory loaded into accumulator correctly.");
+
+    equal(MOS6502._P, 0xA0, "Test 2: Status register set correctly.");
+
+    /**
+     * Test 3: Set zero.
+     */
+    MOS6502._PC = PCStart;
+    MOS6502._RAM[FullAddress] = 0;
+    MOS6502._CYCLES = 0;
+    MOS6502._P = 0x20;
+
+    MOS6502.emulateCycle();
+
+    equal(MOS6502._A, 0, "Test 3: Memory loaded into accumulator correctly.");
+
+    equal(MOS6502._P, 0x22, "Test 3: Status register set correctly.");
+
+    equal(MOS6502._PC, PCStart + BytesUsed, "Program counter incremented successfully.");
+
+    equal(MOS6502._CYCLES, CycleCost, "Cycles calculated correctly.");
+});
+
+test("0xB9 - LDA (Absolute, Y) (Cross Page)",function() {
+    /**
+     *    Instruction = LDA - Load accumulator with memory.
+     * Affected Flags = Sign, Zero
+     *    Total Tests = 3
+     */
+    var OPCODE = 0xB9,
+        PCStart = 0x4000,
+        RandomByte = Math.floor(Math.random() * 255) + 1,
+        AddressByte1 = 0x21,
+        AddressByte2 = 0x31,
+        YRegister = 0xFF,
+        FullAddress = MOS6502._MAKE_ADDRESS(AddressByte1,AddressByte2) + YRegister,
+        CycleCost = 5,
+        BytesUsed = 3;
+
+    MOS6502._RAM[PCStart] = OPCODE;
+    MOS6502._RAM[PCStart + 1] = AddressByte1;
+    MOS6502._RAM[PCStart + 2] = AddressByte2;
+    MOS6502._Y = YRegister;
+
+    /**
+     * Test 1: Set none.
+     */
+    MOS6502._PC = PCStart;
+    MOS6502._RAM[FullAddress] = 0x53;
+
+    MOS6502.emulateCycle();
+
+    equal(MOS6502._A, 0x53, "Test 1: Memory loaded into accumulator correctly.");
+
+    equal(MOS6502._P, 0x20, "Test 1: Status register set correctly.");
+
+    /**
+     * Test 2: Set sign.
+     */
+    MOS6502._PC = PCStart;
+    MOS6502._RAM[FullAddress] = 0x83;
+    MOS6502._P = 0x20;
+
+    MOS6502.emulateCycle();
+
+    equal(MOS6502._A, 0x83, "Test 2: Memory loaded into accumulator correctly.");
+
+    equal(MOS6502._P, 0xA0, "Test 2: Status register set correctly.");
+
+    /**
+     * Test 3: Set zero.
+     */
+    MOS6502._PC = PCStart;
+    MOS6502._RAM[FullAddress] = 0;
+    MOS6502._CYCLES = 0;
+    MOS6502._P = 0x20;
+
+    MOS6502.emulateCycle();
+
+    equal(MOS6502._A, 0, "Test 3: Memory loaded into accumulator correctly.");
+
+    equal(MOS6502._P, 0x22, "Test 3: Status register set correctly.");
+
+    equal(MOS6502._PC, PCStart + BytesUsed, "Program counter incremented successfully.");
+
+    equal(MOS6502._CYCLES, CycleCost, "Cycles calculated correctly.");
+});
+
+test("0xA1 - LDA (Indirect, X)",function() {
+    /**
+     *    Instruction = LDA - Load accumulator with memory.
+     * Affected Flags = Sign, Zero
+     *    Total Tests = 3
+     */
+    var OPCODE = 0xA1,
+        PCStart = 0x4000,
+        RandomByte = Math.floor(Math.random() * 255) + 1,
+        AddressByte1 = 0x21,
+        AddressByte2 = 0x31,
+        ZPAddress = 0x41,
+        XRegister = 0x2F,
+        FullAddress = MOS6502._MAKE_ADDRESS(AddressByte1,AddressByte2),
+        CycleCost = 6,
+        BytesUsed = 2;
+
+    MOS6502._RAM[PCStart] = OPCODE;
+    MOS6502._RAM[PCStart + 1] = ZPAddress;
+    MOS6502._RAM[(ZPAddress + XRegister) & 0xFF] = AddressByte1;
+    MOS6502._RAM[(ZPAddress + XRegister + 1) & 0xFF] = AddressByte2;
+    MOS6502._X = XRegister;
+
+    /**
+     * Test 1: Set none.
+     */
+    MOS6502._PC = PCStart;
+    MOS6502._RAM[FullAddress] = 0x53;
+
+    MOS6502.emulateCycle();
+
+    equal(MOS6502._A, 0x53, "Test 1: Memory loaded into accumulator correctly.");
+
+    equal(MOS6502._P, 0x20, "Test 1: Status register set correctly.");
+
+    /**
+     * Test 2: Set sign.
+     */
+    MOS6502._PC = PCStart;
+    MOS6502._RAM[FullAddress] = 0x83;
+    MOS6502._P = 0x20;
+
+    MOS6502.emulateCycle();
+
+    equal(MOS6502._A, 0x83, "Test 2: Memory loaded into accumulator correctly.");
+
+    equal(MOS6502._P, 0xA0, "Test 2: Status register set correctly.");
+
+    /**
+     * Test 3: Set zero.
+     */
+    MOS6502._PC = PCStart;
+    MOS6502._RAM[FullAddress] = 0;
+    MOS6502._CYCLES = 0;
+    MOS6502._P = 0x20;
+
+    MOS6502.emulateCycle();
+
+    equal(MOS6502._A, 0, "Test 3: Memory loaded into accumulator correctly.");
+
+    equal(MOS6502._P, 0x22, "Test 3: Status register set correctly.");
+
+    equal(MOS6502._PC, PCStart + BytesUsed, "Program counter incremented successfully.");
+
+    equal(MOS6502._CYCLES, CycleCost, "Cycles calculated correctly.");
+});
+
+test("0xB1 - LDA (Indirect, Y) (Same Page)",function() {
+    /**
+     *    Instruction = LDA - Load accumulator with memory.
+     * Affected Flags = Sign, Zero
+     *    Total Tests = 3
+     */
+    var OPCODE = 0xB1,
+        PCStart = 0x4000,
+        AddressByte1 = 0x21,
+        AddressByte2 = 0x31,
+        ZPAddress = 0x41,
+        YRegister = 0x2F,
+        FullAddress = MOS6502._MAKE_ADDRESS(AddressByte1,AddressByte2) + YRegister,
+        CycleCost = 5,
+        BytesUsed = 2;
+
+    MOS6502._RAM[PCStart] = OPCODE;
+    MOS6502._RAM[PCStart + 1] = ZPAddress;
+    MOS6502._RAM[ZPAddress] = AddressByte1;
+    MOS6502._RAM[ZPAddress + 1] = AddressByte2;
+    MOS6502._Y = YRegister;
+
+    /**
+     * Test 1: Set none.
+     */
+    MOS6502._PC = PCStart;
+    MOS6502._RAM[FullAddress] = 0x53;
+
+    MOS6502.emulateCycle();
+
+    equal(MOS6502._A, 0x53, "Test 1: Memory loaded into accumulator correctly.");
+
+    equal(MOS6502._P, 0x20, "Test 1: Status register set correctly.");
+
+    /**
+     * Test 2: Set sign.
+     */
+    MOS6502._PC = PCStart;
+    MOS6502._RAM[FullAddress] = 0x83;
+    MOS6502._P = 0x20;
+
+    MOS6502.emulateCycle();
+
+    equal(MOS6502._A, 0x83, "Test 2: Memory loaded into accumulator correctly.");
+
+    equal(MOS6502._P, 0xA0, "Test 2: Status register set correctly.");
+
+    /**
+     * Test 3: Set zero.
+     */
+    MOS6502._PC = PCStart;
+    MOS6502._RAM[FullAddress] = 0;
+    MOS6502._CYCLES = 0;
+    MOS6502._P = 0x20;
+
+    MOS6502.emulateCycle();
+
+    equal(MOS6502._A, 0, "Test 3: Memory loaded into accumulator correctly.");
+
+    equal(MOS6502._P, 0x22, "Test 3: Status register set correctly.");
+
+    equal(MOS6502._PC, PCStart + BytesUsed, "Program counter incremented successfully.");
+
+    equal(MOS6502._CYCLES, CycleCost, "Cycles calculated correctly.");
+});
+
+test("0xB1 - LDA (Indirect, Y) (Cross Page)",function() {
+    /**
+     *    Instruction = LDA - Load accumulator with memory.
+     * Affected Flags = Sign, Zero
+     *    Total Tests = 3
+     */
+    var OPCODE = 0xB1,
+        PCStart = 0x4000,
+        AddressByte1 = 0x21,
+        AddressByte2 = 0x31,
+        ZPAddress = 0x41,
+        YRegister = 0xFF,
+        FullAddress = MOS6502._MAKE_ADDRESS(AddressByte1,AddressByte2) + YRegister,
+        CycleCost = 6,
+        BytesUsed = 2;
+
+    MOS6502._RAM[PCStart] = OPCODE;
+    MOS6502._RAM[PCStart + 1] = ZPAddress;
+    MOS6502._RAM[ZPAddress] = AddressByte1;
+    MOS6502._RAM[ZPAddress + 1] = AddressByte2;
+    MOS6502._Y = YRegister;
+
+    /**
+     * Test 1: Set none.
+     */
+    MOS6502._PC = PCStart;
+    MOS6502._RAM[FullAddress] = 0x53;
+
+    MOS6502.emulateCycle();
+
+    equal(MOS6502._A, 0x53, "Test 1: Memory loaded into accumulator correctly.");
+
+    equal(MOS6502._P, 0x20, "Test 1: Status register set correctly.");
+
+    /**
+     * Test 2: Set sign.
+     */
+    MOS6502._PC = PCStart;
+    MOS6502._RAM[FullAddress] = 0x83;
+    MOS6502._P = 0x20;
+
+    MOS6502.emulateCycle();
+
+    equal(MOS6502._A, 0x83, "Test 2: Memory loaded into accumulator correctly.");
+
+    equal(MOS6502._P, 0xA0, "Test 2: Status register set correctly.");
+
+    /**
+     * Test 3: Set zero.
+     */
+    MOS6502._PC = PCStart;
+    MOS6502._RAM[FullAddress] = 0;
+    MOS6502._CYCLES = 0;
+    MOS6502._P = 0x20;
+
+    MOS6502.emulateCycle();
+
+    equal(MOS6502._A, 0, "Test 3: Memory loaded into accumulator correctly.");
+
+    equal(MOS6502._P, 0x22, "Test 3: Status register set correctly.");
+
+    equal(MOS6502._PC, PCStart + BytesUsed, "Program counter incremented successfully.");
+
+    equal(MOS6502._CYCLES, CycleCost, "Cycles calculated correctly.");
+});
+
+//</editor-fold>
+
 
 /**
  * Tests to be implemented:
