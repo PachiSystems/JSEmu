@@ -14455,13 +14455,79 @@ test("0xA8 - TAY (Implied)",function() {
 
 //</editor-fold>
 
+/*********************************************************************************************************************/
+
+//<editor-fold desc="TAX Tests">
+
+QUnit.module("Instruction - TAX", {
+    setup: function() {
+        MOS6502.init();
+    }
+});
+
+test("0xAA - TAX (Implied)",function() {
+    /**
+     *    Instruction = TAX - Transfer accumulator to index X.
+     * Affected Flags = Sign, Zero
+     *    Total Tests = 3
+     */
+    var OPCODE = 0xAA,
+        PCStart = 0x4000,
+        CycleCost = 2,
+        BytesUsed = 1;
+
+    MOS6502._RAM[PCStart] = OPCODE;
+
+    /**
+     * Test 1: Set none.
+     */
+    MOS6502._PC = PCStart;
+    MOS6502._A = 0x53;
+    MOS6502._P = 0x20;
+
+    MOS6502.emulateCycle();
+
+    equal(MOS6502._X, 0x53, "Test 1: Accumulator loaded into index X correctly.");
+
+    equal(MOS6502._P, 0x20, "Test 1: Status register set correctly.");
+
+    /**
+     * Test 2: Set sign.
+     */
+    MOS6502._PC = PCStart;
+    MOS6502._A = 0x83;
+    MOS6502._P = 0x20;
+
+    MOS6502.emulateCycle();
+
+    equal(MOS6502._X, 0x83, "Test 2: Accumulator loaded into index X correctly.");
+
+    equal(MOS6502._P, 0xA0, "Test 2: Status register set correctly.");
+
+    /**
+     * Test 3: Set zero.
+     */
+    MOS6502._PC = PCStart;
+    MOS6502._A = 0;
+    MOS6502._CYCLES = 0;
+    MOS6502._P = 0x20;
+
+    MOS6502.emulateCycle();
+
+    equal(MOS6502._X, 0, "Test 3: Accumulator loaded into index X correctly.");
+
+    equal(MOS6502._P, 0x22, "Test 3: Status register set correctly.");
+
+    equal(MOS6502._PC, PCStart + BytesUsed, "Program counter incremented successfully.");
+
+    equal(MOS6502._CYCLES, CycleCost, "Cycles calculated correctly.");
+});
+
+//</editor-fold>
+
 
 /**
  * Tests to be implemented:
-
- // 0xA0 - 0xAF
- case (0xA8) : me.TAY(); break;
- case (0xAA) : me.TAX(); break;
 
  // 0xB0 - 0xBF
  case (0xB0) : me.BCS(); break;
