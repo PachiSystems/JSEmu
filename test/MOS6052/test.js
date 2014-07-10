@@ -14658,13 +14658,63 @@ test("0xB0 - BCS (Relative)", function() {
 
 //</editor-fold>
 
+/*********************************************************************************************************************/
+
+//<editor-fold desc="CLV Tests">
+
+QUnit.module("Instruction - CLV", {
+    setup: function() {
+        MOS6502.init();
+    }
+});
+
+test("0xB8 - CLV (Implied)",function() {
+    /**
+     *    Instruction = CLV - Clear overflow flag.
+     * Affected Flags = Sign, Zero
+     *    Total Tests = 2
+     */
+    var OPCODE = 0xB8,
+        PCStart = 0x4000,
+        CycleCost = 2,
+        BytesUsed = 1;
+
+    MOS6502._RAM[PCStart] = OPCODE;
+
+    /**
+     * Test 1: Clear overflow when set.
+     */
+    MOS6502._PC = PCStart;
+    MOS6502._P = 0x60;
+
+    MOS6502.emulateCycle();
+
+    equal(MOS6502._P, 0x20, "Test 1: Status register set correctly.");
+
+    /**
+     * Test 2: Clear overflow when overflow not set.
+     */
+    MOS6502._PC = PCStart;
+    MOS6502._P = 0x20;
+    MOS6502._CYCLES = 0;
+
+    MOS6502.emulateCycle();
+
+    equal(MOS6502._P, 0x20, "Test 2: Status register set correctly.");
+
+    equal(MOS6502._PC, PCStart + BytesUsed, "Program counter incremented successfully.");
+
+    equal(MOS6502._CYCLES, CycleCost, "Cycles calculated correctly.");
+
+});
+
+//</editor-fold>
+
 
 /**
  * Tests to be implemented:
 
  // 0xB0 - 0xBF
- case (0xB0) : me.BCS(); break;
- case (0xB8) : me.CLV(); break;
  case (0xBA) : me.TSX(); break;
 
  // 0xC0 - 0xCF
