@@ -14710,12 +14710,80 @@ test("0xB8 - CLV (Implied)",function() {
 
 //</editor-fold>
 
+/*********************************************************************************************************************/
+
+//<editor-fold desc="TXS Tests">
+
+QUnit.module("Instruction - TSX", {
+    setup: function() {
+        MOS6502.init();
+    }
+});
+
+test("0xBA - TSX (Implied)",function() {
+    /**
+     *    Instruction = TSX - Transfer stack pointer to index X.
+     * Affected Flags = Sign, Zero
+     *    Total Tests = 3
+     */
+    var OPCODE = 0xBA,
+        PCStart = 0x4000,
+        XRegister = Math.floor(Math.random() * 255) + 1,
+        CycleCost = 2,
+        BytesUsed = 1;
+
+    MOS6502._RAM[PCStart] = OPCODE;
+
+    /**
+     * Test 1: Set none.
+     */
+    MOS6502._PC = PCStart;
+    MOS6502._SP = 0x53;
+    MOS6502._P = 0x20;
+
+    MOS6502.emulateCycle();
+
+    equal(MOS6502._X, 0x53, "Test 1: Stack pointer transfered to index X correctly.");
+
+    equal(MOS6502._P, 0x20, "Test 1: Status register set correctly.");
+
+    /**
+     * Test 2: Set sign.
+     */
+    MOS6502._PC = PCStart;
+    MOS6502._SP = 0x83;
+    MOS6502._P = 0x20;
+
+    MOS6502.emulateCycle();
+
+    equal(MOS6502._X, 0x83, "Test 2: Stack pointer transfered to index X correctly.");
+
+    equal(MOS6502._P, 0xA0, "Test 2: Status register set correctly.");
+
+    /**
+     * Test 3: Set zero.
+     */
+    MOS6502._PC = PCStart;
+    MOS6502._SP = 0;
+    MOS6502._CYCLES = 0;
+    MOS6502._P = 0x20;
+
+    MOS6502.emulateCycle();
+
+    equal(MOS6502._X, 0, "Test 3: Stack pointer transfered to index X correctly.");
+
+    equal(MOS6502._P, 0x22, "Test 3: Status register set correctly.");
+
+    equal(MOS6502._PC, PCStart + BytesUsed, "Program counter incremented successfully.");
+
+    equal(MOS6502._CYCLES, CycleCost, "Cycles calculated correctly.");
+});
+
+//</editor-fold>
+
 
 /**
  * Tests to be implemented:
-
- // 0xB0 - 0xBF
- case (0xBA) : me.TSX(); break;
 
  // 0xC0 - 0xCF
  case (0xC0) : me.CPY(); break;
