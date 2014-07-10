@@ -14385,31 +14385,88 @@ test("0xBE - LDX (Absolute, Y) (Cross Page)",function() {
 
 //</editor-fold>
 
+/*********************************************************************************************************************/
+
+//<editor-fold desc="TAY Tests">
+
+QUnit.module("Instruction - TAY", {
+    setup: function() {
+        MOS6502.init();
+    }
+});
+
+test("0xA8 - TAY (Implied)",function() {
+    /**
+     *    Instruction = TAY - Transfer accumulator to index Y.
+     * Affected Flags = Sign, Zero
+     *    Total Tests = 3
+     */
+    var OPCODE = 0xA8,
+        PCStart = 0x4000,
+        CycleCost = 2,
+        BytesUsed = 1;
+
+    MOS6502._RAM[PCStart] = OPCODE;
+
+    /**
+     * Test 1: Set none.
+     */
+    MOS6502._PC = PCStart;
+    MOS6502._A = 0x53;
+    MOS6502._P = 0x20;
+
+    MOS6502.emulateCycle();
+
+    equal(MOS6502._Y, 0x53, "Test 1: Accumulator loaded into index Y correctly.");
+
+    equal(MOS6502._P, 0x20, "Test 1: Status register set correctly.");
+
+    /**
+     * Test 2: Set sign.
+     */
+    MOS6502._PC = PCStart;
+    MOS6502._A = 0x83;
+    MOS6502._P = 0x20;
+
+    MOS6502.emulateCycle();
+
+    equal(MOS6502._Y, 0x83, "Test 2: Accumulator loaded into index Y correctly.");
+
+    equal(MOS6502._P, 0xA0, "Test 2: Status register set correctly.");
+
+    /**
+     * Test 3: Set zero.
+     */
+    MOS6502._PC = PCStart;
+    MOS6502._A = 0;
+    MOS6502._CYCLES = 0;
+    MOS6502._P = 0x20;
+
+    MOS6502.emulateCycle();
+
+    equal(MOS6502._Y, 0, "Test 3: Accumulator loaded into index Y correctly.");
+
+    equal(MOS6502._P, 0x22, "Test 3: Status register set correctly.");
+
+    equal(MOS6502._PC, PCStart + BytesUsed, "Program counter incremented successfully.");
+
+    equal(MOS6502._CYCLES, CycleCost, "Cycles calculated correctly.");
+});
+
+//</editor-fold>
+
 
 /**
  * Tests to be implemented:
 
  // 0xA0 - 0xAF
- case (0xA1) : me.LDA(); break;
- case (0xA2) : me.LDX(); break;
- case (0xA5) : me.LDA(); break;
- case (0xA6) : me.LDX(); break;
  case (0xA8) : me.TAY(); break;
- case (0xA9) : me.LDA(); break;
  case (0xAA) : me.TAX(); break;
- case (0xAD) : me.LDA(); break;
- case (0xAE) : me.LDX(); break;
 
  // 0xB0 - 0xBF
  case (0xB0) : me.BCS(); break;
- case (0xB1) : me.LDA(); break;
- case (0xB5) : me.LDA(); break;
- case (0xB6) : me.LDX(); break;
  case (0xB8) : me.CLV(); break;
- case (0xB9) : me.LDA(); break;
  case (0xBA) : me.TSX(); break;
- case (0xBD) : me.LDA(); break;
- case (0xBE) : me.LDX(); break;
 
  // 0xC0 - 0xCF
  case (0xC0) : me.CPY(); break;
