@@ -15987,21 +15987,89 @@ test("0xDE - DEC (Absolute, X)",function() {
 
 //</editor-fold>
 
+/*********************************************************************************************************************/
+
+//<editor-fold desc="INY Tests">
+
+QUnit.module("Instruction - INY", {
+    setup: function() {
+        MOS6502.init();
+    }
+});
+
+test("0xC8 - INY (Implied)",function() {
+    /**
+     *    Instruction = INY - Increment index Y by one.
+     * Affected Flags = Sign, Zero
+     *    Total Tests = 1
+     */
+    var OPCODE = 0xC8,
+        PCStart = 0x4000,
+        CycleCost = 2,
+        BytesUsed = 1;
+
+    MOS6502._RAM[PCStart] = OPCODE;
+
+    /**
+     * Test 1: Set none.
+     */
+
+    MOS6502._PC = PCStart;
+    MOS6502._P = 0x20;
+    MOS6502._Y = 0x21;
+
+    MOS6502.emulateCycle();
+
+    equal(MOS6502._Y, 0x22, "Test 1: Y Index incremented successfully.");
+
+    equal(MOS6502._P, 0x20, "Test 1: Status register set correctly");
+
+    /**
+     * Test 2: Set sign.
+     */
+
+    MOS6502._PC = PCStart;
+    MOS6502._P = 0x20;
+    MOS6502._Y = 0xF0;
+
+    MOS6502.emulateCycle();
+
+    equal(MOS6502._Y, 0xF1, "Test 2: Y Index incremented successfully.");
+
+    equal(MOS6502._P, 0xA0, "Test 2: Status register set correctly");
+
+    /**
+     * Test 3: Set zero.
+     */
+
+    MOS6502._PC = PCStart;
+    MOS6502._P = 0x20;
+    MOS6502._CYCLES = 0;
+    MOS6502._Y = 0xFF;
+
+    MOS6502.emulateCycle();
+
+    equal(MOS6502._Y, 0x00, "Test 3: Y Index incremented successfully.");
+
+    equal(MOS6502._P, 0x22, "Test 3: Status register set correctly");
+
+    equal(MOS6502._PC, PCStart + BytesUsed, "Program counter incremented successfully.");
+
+    equal(MOS6502._CYCLES, CycleCost, "Cycles calculated correctly.");
+});
+
+//</editor-fold>
+
 
 /**
  * Tests to be implemented:
 
  // 0xC0 - 0xCF
- case (0xC6) : me.DEC(); break;
- case (0xC8) : me.INY(); break;
  case (0xCA) : me.DEX(); break;
- case (0xCE) : me.DEC(); break;
 
  // 0xD0 - 0xDF
  case (0xD0) : me.BNE(); break;
- case (0xD6) : me.DEC(); break;
  case (0xD8) : me.CLD(); break;
- case (0xDE) : me.DEC(); break;
 
  // 0xE0 - 0xEF
  case (0xE0) : me.CPX(); break;

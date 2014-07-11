@@ -1946,7 +1946,8 @@ MOS6502.prototype.INY = function() {
 
     }
 
-    OPER = (OPER + 1) & 0xFF;
+    OPER++;
+    OPER &= 0xFF;
     me._SET_SIGN(OPER);
     me._SET_ZERO(OPER);
     me._Y = OPER;
