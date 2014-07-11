@@ -171,8 +171,13 @@ MOS6502.prototype.loadImage = function (romImage) {
                     console.log(me._NUM_INSTRUCTIONS++);
                 } else {
                     console.log((me._RAM[0x0210] === 0xFF) ? "All tests passed" : "Test failed: " + me._RAM[0x0210]);
+                    return;
                 }
 
+                if (me._RAM[me._PC] == 0) {
+                    console.log((me._RAM[0x0210] === 0xFF) ? "All tests passed" : "Test failed: " + me._RAM[0x0210]);
+                    return;
+                }
                 me.emulateCycle();
 
                 requestAnimFrame(cpuCycle);
@@ -1274,12 +1279,12 @@ MOS6502.prototype.BRK = function() {
     me._PUSH( (me._PC >> 8) & 0xFF);
     me._PUSH( me._PC & 0xFF );
 
-    me._SET_BREAK((1));
+    me._SET_BREAK(true);
 
     // Push the status register onto the stack.
     me._PUSH( me._P );
 
-    me._SET_INTERRUPT((1));
+    me._SET_INTERRUPT(true);
 
     me._PC = me._MAKE_ADDRESS( me._RAM[0xFFFE], me._RAM[0xFFFF]);
 
@@ -1550,10 +1555,11 @@ MOS6502.prototype.CMP = function() {
 
     }
 
+    me._SET_CARRY(me._A >= OPER);
+    me._SET_ZERO(me._A == OPER ? 0 : 1);
     OPER = me._A - OPER;
-    me._SET_CARRY(OPER < 0x100);
+    OPER = (OPER < 0) ? OPER + 256 : OPER;
     me._SET_SIGN(OPER);
-    me._SET_ZERO(OPER &= 0xFFF);
 
 };
 
@@ -1632,7 +1638,6 @@ MOS6502.prototype.CPY = function() {
 
     }
 
-    console.log("CPY: Y = " + me._Y + " | Mem = " + OPER + " | Result = " + (me._Y - OPER));
     me._SET_CARRY(me._Y >= OPER);
     me._SET_ZERO(me._Y == OPER ? 0 : 1);
     OPER = me._Y - OPER;
