@@ -15651,6 +15651,342 @@ test("0xD1 - CMP (Indirect, Y) (Cross Page)",function() {
 
 //</editor-fold>
 
+/*********************************************************************************************************************/
+
+//<editor-fold desc="DEC Tests">
+
+QUnit.module("Instruction - DEC", {
+    setup: function() {
+        MOS6502.init();
+    }
+});
+
+test("0xC6 - DEC (Zero Page)",function() {
+    /**
+     *    Instruction = DEC - Decrement memory by one.
+     * Affected Flags = Sign, Zero
+     *    Total Tests = 4
+     */
+    var OPCODE = 0xC6,
+        PCStart = 0x4000,
+        ZPAddress = 0x41,
+        MemoryLocation = ZPAddress,
+        CycleCost = 5,
+        BytesUsed = 2;
+
+    MOS6502._RAM[PCStart] = OPCODE;
+    MOS6502._RAM[PCStart + 1] = ZPAddress;
+
+    /**
+     * Test 1: Set none.
+     */
+
+    MOS6502._PC = PCStart;
+    MOS6502._P = 0x20;
+    MOS6502._CYCLES = 0;
+    MOS6502._RAM[MemoryLocation] = 0x20;
+
+    MOS6502.emulateCycle();
+
+    equal(MOS6502._RAM[MemoryLocation], 0x1F, "Test 1: Memory decremented successfully.");
+
+    equal(MOS6502._P,0x20,"Test 1: Status register set correctly.");
+
+    /**
+     * Test 2: Set sign from high number.
+     */
+
+    MOS6502._PC = PCStart;
+    MOS6502._P = 0x20;
+    MOS6502._RAM[MemoryLocation] = 0xFF;
+
+    MOS6502.emulateCycle();
+
+    equal(MOS6502._RAM[MemoryLocation], 0xFE, "Test 2: Memory decremented successfully.");
+
+    equal(MOS6502._P,0xA0,"Test 2: Status register set correctly.");
+
+    /**
+     * Test 3: Set sign from subtracting from zero.
+     */
+
+    MOS6502._PC = PCStart;
+    MOS6502._P = 0x20;
+    MOS6502._RAM[MemoryLocation] = 0x0;
+
+    MOS6502.emulateCycle();
+
+    equal(MOS6502._RAM[MemoryLocation], 0xFF, "Test 3: Memory decremented successfully.");
+
+    equal(MOS6502._P,0xA0,"Test 3: Status register set correctly.");
+
+    /**
+     * Test 4: Set zero.
+     */
+
+    MOS6502._PC = PCStart;
+    MOS6502._P = 0x20;
+    MOS6502._CYCLES = 0;
+    MOS6502._RAM[MemoryLocation] = 0x01;
+
+    MOS6502.emulateCycle();
+
+    equal(MOS6502._RAM[MemoryLocation], 0x00, "Test 4: Memory decremented successfully.");
+
+    equal(MOS6502._P,0x22,"Test 4: Status register set correctly.");
+
+    equal(MOS6502._PC, PCStart + BytesUsed, "Program counter incremented successfully.");
+
+    equal(MOS6502._CYCLES, CycleCost, "Cycles calculated correctly.");
+});
+
+test("0xD6 - DEC (Zero Page, X)",function() {
+    /**
+     *    Instruction = DEC - Decrement memory by one.
+     * Affected Flags = Sign, Zero
+     *    Total Tests = 4
+     */
+    var OPCODE = 0xD6,
+        PCStart = 0x4000,
+        ZPAddress = 0x41,
+        XRegister = 0x51,
+        MemoryLocation = ZPAddress + XRegister,
+        CycleCost = 6,
+        BytesUsed = 2;
+
+    MOS6502._RAM[PCStart] = OPCODE;
+    MOS6502._RAM[PCStart + 1] = ZPAddress;
+    MOS6502._X = XRegister;
+
+    /**
+     * Test 1: Set none.
+     */
+
+    MOS6502._PC = PCStart;
+    MOS6502._P = 0x20;
+    MOS6502._CYCLES = 0;
+    MOS6502._RAM[MemoryLocation] = 0x20;
+
+    MOS6502.emulateCycle();
+
+    equal(MOS6502._RAM[MemoryLocation], 0x1F, "Test 1: Memory decremented successfully.");
+
+    equal(MOS6502._P,0x20,"Test 1: Status register set correctly.");
+
+    /**
+     * Test 2: Set sign from high number.
+     */
+
+    MOS6502._PC = PCStart;
+    MOS6502._P = 0x20;
+    MOS6502._RAM[MemoryLocation] = 0xFF;
+
+    MOS6502.emulateCycle();
+
+    equal(MOS6502._RAM[MemoryLocation], 0xFE, "Test 2: Memory decremented successfully.");
+
+    equal(MOS6502._P,0xA0,"Test 2: Status register set correctly.");
+
+    /**
+     * Test 3: Set sign from subtracting from zero.
+     */
+
+    MOS6502._PC = PCStart;
+    MOS6502._P = 0x20;
+    MOS6502._RAM[MemoryLocation] = 0x0;
+
+    MOS6502.emulateCycle();
+
+    equal(MOS6502._RAM[MemoryLocation], 0xFF, "Test 3: Memory decremented successfully.");
+
+    equal(MOS6502._P,0xA0,"Test 3: Status register set correctly.");
+
+    /**
+     * Test 4: Set zero.
+     */
+
+    MOS6502._PC = PCStart;
+    MOS6502._P = 0x20;
+    MOS6502._CYCLES = 0;
+    MOS6502._RAM[MemoryLocation] = 0x01;
+
+    MOS6502.emulateCycle();
+
+    equal(MOS6502._RAM[MemoryLocation], 0x00, "Test 4: Memory decremented successfully.");
+
+    equal(MOS6502._P,0x22,"Test 4: Status register set correctly.");
+
+    equal(MOS6502._PC, PCStart + BytesUsed, "Program counter incremented successfully.");
+
+    equal(MOS6502._CYCLES, CycleCost, "Cycles calculated correctly.");
+});
+
+test("0xCE - DEC (Absolute)",function() {
+    /**
+     *    Instruction = DEC - Decrement memory by one.
+     * Affected Flags = Sign, Zero
+     *    Total Tests = 4
+     */
+    var OPCODE = 0xCE,
+        PCStart = 0x4000,
+        AddressByte1 = 0x21,
+        AddressByte2 = 0x31,
+        MemoryLocation = MOS6502._MAKE_ADDRESS(AddressByte1,AddressByte2),
+        CycleCost = 6,
+        BytesUsed = 3;
+
+    MOS6502._RAM[PCStart] = OPCODE;
+    MOS6502._RAM[PCStart + 1] = AddressByte1;
+    MOS6502._RAM[PCStart + 2] = AddressByte2;
+
+    /**
+     * Test 1: Set none.
+     */
+
+    MOS6502._PC = PCStart;
+    MOS6502._P = 0x20;
+    MOS6502._CYCLES = 0;
+    MOS6502._RAM[MemoryLocation] = 0x20;
+
+    MOS6502.emulateCycle();
+
+    equal(MOS6502._RAM[MemoryLocation], 0x1F, "Test 1: Memory decremented successfully.");
+
+    equal(MOS6502._P,0x20,"Test 1: Status register set correctly.");
+
+    /**
+     * Test 2: Set sign from high number.
+     */
+
+    MOS6502._PC = PCStart;
+    MOS6502._P = 0x20;
+    MOS6502._RAM[MemoryLocation] = 0xFF;
+
+    MOS6502.emulateCycle();
+
+    equal(MOS6502._RAM[MemoryLocation], 0xFE, "Test 2: Memory decremented successfully.");
+
+    equal(MOS6502._P,0xA0,"Test 2: Status register set correctly.");
+
+    /**
+     * Test 3: Set sign from subtracting from zero.
+     */
+
+    MOS6502._PC = PCStart;
+    MOS6502._P = 0x20;
+    MOS6502._RAM[MemoryLocation] = 0x0;
+
+    MOS6502.emulateCycle();
+
+    equal(MOS6502._RAM[MemoryLocation], 0xFF, "Test 3: Memory decremented successfully.");
+
+    equal(MOS6502._P,0xA0,"Test 3: Status register set correctly.");
+
+    /**
+     * Test 4: Set zero.
+     */
+
+    MOS6502._PC = PCStart;
+    MOS6502._P = 0x20;
+    MOS6502._CYCLES = 0;
+    MOS6502._RAM[MemoryLocation] = 0x01;
+
+    MOS6502.emulateCycle();
+
+    equal(MOS6502._RAM[MemoryLocation], 0x00, "Test 4: Memory decremented successfully.");
+
+    equal(MOS6502._P,0x22,"Test 4: Status register set correctly.");
+
+    equal(MOS6502._PC, PCStart + BytesUsed, "Program counter incremented successfully.");
+
+    equal(MOS6502._CYCLES, CycleCost, "Cycles calculated correctly.");
+});
+
+test("0xDE - DEC (Absolute, X)",function() {
+    /**
+     *    Instruction = DEC - Decrement memory by one.
+     * Affected Flags = Sign, Zero
+     *    Total Tests = 4
+     */
+    var OPCODE = 0xDE,
+        PCStart = 0x4000,
+        AddressByte1 = 0x21,
+        AddressByte2 = 0x31,
+        XRegister = 0x41,
+        MemoryLocation = MOS6502._MAKE_ADDRESS(AddressByte1,AddressByte2) + XRegister,
+        CycleCost = 7,
+        BytesUsed = 3;
+
+    MOS6502._RAM[PCStart] = OPCODE;
+    MOS6502._RAM[PCStart + 1] = AddressByte1;
+    MOS6502._RAM[PCStart + 2] = AddressByte2;
+    MOS6502._X = XRegister;
+
+    /**
+     * Test 1: Set none.
+     */
+
+    MOS6502._PC = PCStart;
+    MOS6502._P = 0x20;
+    MOS6502._CYCLES = 0;
+    MOS6502._RAM[MemoryLocation] = 0x20;
+
+    MOS6502.emulateCycle();
+
+    equal(MOS6502._RAM[MemoryLocation], 0x1F, "Test 1: Memory decremented successfully.");
+
+    equal(MOS6502._P,0x20,"Test 1: Status register set correctly.");
+
+    /**
+     * Test 2: Set sign from high number.
+     */
+
+    MOS6502._PC = PCStart;
+    MOS6502._P = 0x20;
+    MOS6502._RAM[MemoryLocation] = 0xFF;
+
+    MOS6502.emulateCycle();
+
+    equal(MOS6502._RAM[MemoryLocation], 0xFE, "Test 2: Memory decremented successfully.");
+
+    equal(MOS6502._P,0xA0,"Test 2: Status register set correctly.");
+
+    /**
+     * Test 3: Set sign from subtracting from zero.
+     */
+
+    MOS6502._PC = PCStart;
+    MOS6502._P = 0x20;
+    MOS6502._RAM[MemoryLocation] = 0x0;
+
+    MOS6502.emulateCycle();
+
+    equal(MOS6502._RAM[MemoryLocation], 0xFF, "Test 3: Memory decremented successfully.");
+
+    equal(MOS6502._P,0xA0,"Test 3: Status register set correctly.");
+
+    /**
+     * Test 4: Set zero.
+     */
+
+    MOS6502._PC = PCStart;
+    MOS6502._P = 0x20;
+    MOS6502._CYCLES = 0;
+    MOS6502._RAM[MemoryLocation] = 0x01;
+
+    MOS6502.emulateCycle();
+
+    equal(MOS6502._RAM[MemoryLocation], 0x00, "Test 4: Memory decremented successfully.");
+
+    equal(MOS6502._P,0x22,"Test 4: Status register set correctly.");
+
+    equal(MOS6502._PC, PCStart + BytesUsed, "Program counter incremented successfully.");
+
+    equal(MOS6502._CYCLES, CycleCost, "Cycles calculated correctly.");
+});
+
+//</editor-fold>
+
 
 /**
  * Tests to be implemented:

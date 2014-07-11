@@ -1683,9 +1683,10 @@ MOS6502.prototype.DEC = function() {
 
     }
 
-    OPER = (OPER - 1) & 0xFF;
+    OPER = OPER - 1;
+    OPER = (OPER < 0) ? OPER + 256 : OPER; // Two's complement...
     me._SET_SIGN(OPER);
-    me._SET_ZERO(OPER &= 0xFF);
+    me._SET_ZERO(OPER);
 
     switch (opCode) {
         // Increment cycles, pc and write operand.
