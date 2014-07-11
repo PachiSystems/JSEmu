@@ -1632,10 +1632,12 @@ MOS6502.prototype.CPY = function() {
 
     }
 
+    console.log("CPY: Y = " + me._Y + " | Mem = " + OPER + " | Result = " + (me._Y - OPER));
+    me._SET_CARRY(me._Y >= OPER);
+    me._SET_ZERO(me._Y == OPER ? 0 : 1);
     OPER = me._Y - OPER;
-    me._SET_CARRY(OPER < 0x100);
+    OPER = (OPER < 0) ? OPER + 256 : OPER;
     me._SET_SIGN(OPER);
-    me._SET_ZERO(OPER &= 0xFF);
 
 };
 
