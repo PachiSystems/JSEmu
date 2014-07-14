@@ -18557,12 +18557,84 @@ test("0xFE - INC (Absolute, X)",function() {
 
 //</editor-fold>
 
+/*********************************************************************************************************************/
+
+//<editor-fold desc="INX Tests">
+
+QUnit.module("Instruction - INX", {
+    setup: function() {
+        MOS6502.init();
+    }
+});
+
+test("0xE8 - INX (Implied)",function() {
+    /**
+     *    Instruction = INX - Increment index X by one.
+     * Affected Flags = Sign, Zero
+     *    Total Tests = 1
+     */
+    var OPCODE = 0xE8,
+        PCStart = 0x4000,
+        CycleCost = 2,
+        BytesUsed = 1;
+
+    MOS6502._RAM[PCStart] = OPCODE;
+
+    /**
+     * Test 1: Set none.
+     */
+
+    MOS6502._PC = PCStart;
+    MOS6502._P = 0x20;
+    MOS6502._X = 0x21;
+
+    MOS6502.emulateCycle();
+
+    equal(MOS6502._X, 0x22, "Test 1: X Index incremented successfully.");
+
+    equal(MOS6502._P, 0x20, "Test 1: Status register set correctly");
+
+    /**
+     * Test 2: Set sign.
+     */
+
+    MOS6502._PC = PCStart;
+    MOS6502._P = 0x20;
+    MOS6502._X = 0xF0;
+
+    MOS6502.emulateCycle();
+
+    equal(MOS6502._X, 0xF1, "Test 2: X Index incremented successfully.");
+
+    equal(MOS6502._P, 0xA0, "Test 2: Status register set correctly");
+
+    /**
+     * Test 3: Set zero.
+     */
+
+    MOS6502._PC = PCStart;
+    MOS6502._P = 0x20;
+    MOS6502._CYCLES = 0;
+    MOS6502._X = 0xFF;
+
+    MOS6502.emulateCycle();
+
+    equal(MOS6502._X, 0x00, "Test 3: X Index incremented successfully.");
+
+    equal(MOS6502._P, 0x22, "Test 3: Status register set correctly");
+
+    equal(MOS6502._PC, PCStart + BytesUsed, "Program counter incremented successfully.");
+
+    equal(MOS6502._CYCLES, CycleCost, "Cycles calculated correctly.");
+});
+
+//</editor-fold>
+
 
 /**
  * Tests to be implemented:
 
  // 0xE0 - 0xEF
- case (0xE8) : me.INX(); break;
  case (0xEA) : me.NOP(); break;
 
  // 0xF0 - 0xFF
