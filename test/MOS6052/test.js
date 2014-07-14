@@ -3963,7 +3963,7 @@ test("0x25 - AND (Zero Page)", function(){
     var OPCODE = 0x25,
         CycleCost = 3,
         BytesUsed = 2,
-        ZPAddress = Math.floor(Math.random() * 256) + 1,
+        ZPAddress = Math.floor(Math.random() * 254) + 1,
         PCStart = 0x4000;
 
     MOS6502._RAM[PCStart] = OPCODE;
@@ -4065,8 +4065,8 @@ test("0x35 - AND (Zero Page, X)", function(){
     var OPCODE = 0x35,
         CycleCost = 4,
         BytesUsed = 2,
-        ZPAddress = Math.floor(Math.random() * 256) + 1,
-        XRegister = Math.floor(Math.random() * 256) + 1,
+        ZPAddress = Math.floor(Math.random() * 254) + 1,
+        XRegister = Math.floor(Math.random() * 254) + 1,
         PCStart = 0x4000;
 
     MOS6502._RAM[PCStart] = OPCODE;
@@ -16358,7 +16358,7 @@ test("0xD8 - CLD (Implied)",function() {
 
 /*********************************************************************************************************************/
 
-//<editor-fold desc="CPY Tests">
+//<editor-fold desc="CPX Tests">
 
 QUnit.module("Instruction - CPX", {
     setup: function() {
@@ -16540,30 +16540,1756 @@ test("0xEC - CPX (Absolute)",function() {
 
 //</editor-fold>
 
+/*********************************************************************************************************************/
+
+//<editor-fold desc="SBC Tests">
+
+QUnit.module("Instruction - SBC", {
+    setup: function() {
+        MOS6502.init();
+    }
+});
+
+test("0xE9 - SBC (Immediate)", function() {
+    /**
+     *    Instruction = SBC - Subtract memory from accumulator with borrow.
+     * Affected Flags = Sign, Zero, Carry, Overflow
+     *    Total Tests = 9
+     */
+
+    var OPCODE = 0xE9,
+        PCStart = 0x4000,
+        MemoryLocation = PCStart + 1,
+        BytesUsed = 2,
+        CycleCost = 2;
+
+    MOS6502._RAM[PCStart] = OPCODE;
+
+    /**
+     * Test 1: 00 - 00 and C = 0 gives 99 and N=1 V=0 Z=0 C=0
+     */
+
+    MOS6502._A = 0;
+    MOS6502._RAM[MemoryLocation] = 0;
+
+    MOS6502._P = 0x20 + 0x08;
+    MOS6502._PC = PCStart;
+
+    MOS6502.emulateCycle();
+
+    equal(MOS6502._P, 0x20 + 0x80 + 0x08, "Test 1: Status register set correctly.");
+
+    equal(MOS6502._A, 0x99, "Test 1: Memory subtracted from accumulator correctly.");
+
+    /**
+     * Test 2: 00 - 00 and C = 1 gives 00 and N=0 V=0 Z=1 C=1
+     */
+
+    MOS6502._A = 0;
+    MOS6502._RAM[MemoryLocation] = 0;
+
+    MOS6502._P = 0x20 + 0x08 + 0x01;
+    MOS6502._PC = PCStart;
+
+    MOS6502.emulateCycle();
+
+    equal(MOS6502._P, 0x20 + 0x08 + 0x02 + 0x01, "Test 2: Status register set correctly.");
+
+    equal(MOS6502._A, 0x00, "Test 2: Memory subtracted from accumulator correctly.");
+
+    /**
+     * Test 3: 00 - 01 and C=1 gives 99 and N=1 V=0 Z=0 C=0
+     */
+
+    MOS6502._A = 0x00;
+    MOS6502._RAM[MemoryLocation] = 0x01;
+
+    MOS6502._P = 0x20 + 0x08 + 0x01;
+    MOS6502._PC = PCStart;
+
+    MOS6502.emulateCycle();
+
+    equal(MOS6502._P, 0x20 + 0x80 + 0x08, "Test 3: Status register set correctly.");
+
+    equal(MOS6502._A, 0x99, "Test 3: Memory subtracted from accumulator correctly.");
+
+    /**
+     * Test 4: 0a - 00 and C=1 gives 0a and N=0 V=0 Z=0 C=1
+     */
+
+    MOS6502._A = 0x0A;
+    MOS6502._RAM[MemoryLocation] = 0x00;
+
+    MOS6502._P = 0x20 + 0x08 + 0x01;
+    MOS6502._PC = PCStart;
+
+    MOS6502.emulateCycle();
+
+    equal(MOS6502._P, 0x20 + 0x08 + 0x01, "Test 4: Status register set correctly.");
+
+    equal(MOS6502._A, 0x0A, "Test 4: Memory subtracted from accumulator correctly.");
+
+    /**
+     * Test 5: 0b - 00 and C=0 gives 0a and N=0 V=0 Z=0 C=1
+     */
+
+    MOS6502._A = 0x0B;
+    MOS6502._RAM[MemoryLocation] = 0x00;
+
+    MOS6502._P = 0x20 + 0x08;
+    MOS6502._PC = PCStart;
+
+    MOS6502.emulateCycle();
+
+    equal(MOS6502._P, 0x20 + 0x08 + 0x01, "Test 5: Status register set correctly.");
+
+    equal(MOS6502._A, 0x0A, "Test 5: Memory subtracted from accumulator correctly.");
+
+    /**
+     * Test 6: 9a - 00 and C=1 gives 9a and N=1 V=0 Z=0 C=1
+     */
+
+    MOS6502._A = 0x9A;
+    MOS6502._RAM[MemoryLocation] = 0x00;
+
+    MOS6502._P = 0x20 + 0x08 + 0x01;
+    MOS6502._PC = PCStart;
+
+    MOS6502.emulateCycle();
+
+    equal(MOS6502._P, 0x20 + 0x80 + 0x08 + 0x01, "Test 6: Status register set correctly.");
+
+    equal(MOS6502._A, 0x9A, "Test 6: Memory subtracted from accumulator correctly.");
+
+    /**
+     * Test 7: 9b - 00 and C=0 gives 9a and N=1 V=0 Z=0 C=1
+     */
+
+    MOS6502._A = 0x9B;
+    MOS6502._RAM[MemoryLocation] = 0x00;
+
+    MOS6502._P = 0x20 + 0x08;
+    MOS6502._PC = PCStart;
+    MOS6502._CYCLES = 0;
+
+    MOS6502.emulateCycle();
+
+    equal(MOS6502._P, 0x20 + 0x80 + 0x08 + 0x01, "Test 7: Status register set correctly.");
+
+    equal(MOS6502._A, 0x9A, "Test 7: Memory subtracted from accumulator correctly.");
+
+    /**
+     * Test 8: 00 - 00 and C=0 gives FF and N=1 V=0 Z=0 C=0
+     *         DECIMAL MODE OFF
+     */
+
+    MOS6502._A = 0x00;
+    MOS6502._RAM[MemoryLocation] = 0x00;
+
+    MOS6502._P = 0x20;
+    MOS6502._PC = PCStart;
+    MOS6502._CYCLES = 0;
+
+    MOS6502.emulateCycle();
+
+    equal(MOS6502._P, 0x20 + 0x80, "Test 8: Status register set correctly.");
+
+    equal(MOS6502._A, 0xFF, "Test 8: Memory subtracted from accumulator correctly.");
+
+    equal(MOS6502._PC, PCStart + BytesUsed, "Program counter incremented correctly.");
+
+    equal(MOS6502._CYCLES, CycleCost, "Cycle cost calculated correctly.");
+
+});
+
+test("0xE5 - SBC (Zero Page)", function() {
+    /**
+     *    Instruction = SBC - Subtract memory from accumulator with borrow.
+     * Affected Flags = Sign, Zero, Carry, Overflow
+     *    Total Tests = 9
+     */
+
+    var OPCODE = 0xE5,
+        PCStart = 0x4000,
+        ZPAddress = 0x41,
+        MemoryLocation = ZPAddress,
+        BytesUsed = 2,
+        CycleCost = 3;
+
+    MOS6502._RAM[PCStart] = OPCODE;
+    MOS6502._RAM[PCStart + 1] = ZPAddress;
+
+    /**
+     * Test 1: 00 - 00 and C = 0 gives 99 and N=1 V=0 Z=0 C=0
+     */
+
+    MOS6502._A = 0;
+    MOS6502._RAM[MemoryLocation] = 0;
+
+    MOS6502._P = 0x20 + 0x08;
+    MOS6502._PC = PCStart;
+
+    MOS6502.emulateCycle();
+
+    equal(MOS6502._P, 0x20 + 0x80 + 0x08, "Test 1: Status register set correctly.");
+
+    equal(MOS6502._A, 0x99, "Test 1: Memory subtracted from accumulator correctly.");
+
+    /**
+     * Test 2: 00 - 00 and C = 1 gives 00 and N=0 V=0 Z=1 C=1
+     */
+
+    MOS6502._A = 0;
+    MOS6502._RAM[MemoryLocation] = 0;
+
+    MOS6502._P = 0x20 + 0x08 + 0x01;
+    MOS6502._PC = PCStart;
+
+    MOS6502.emulateCycle();
+
+    equal(MOS6502._P, 0x20 + 0x08 + 0x02 + 0x01, "Test 2: Status register set correctly.");
+
+    equal(MOS6502._A, 0x00, "Test 2: Memory subtracted from accumulator correctly.");
+
+    /**
+     * Test 3: 00 - 01 and C=1 gives 99 and N=1 V=0 Z=0 C=0
+     */
+
+    MOS6502._A = 0x00;
+    MOS6502._RAM[MemoryLocation] = 0x01;
+
+    MOS6502._P = 0x20 + 0x08 + 0x01;
+    MOS6502._PC = PCStart;
+
+    MOS6502.emulateCycle();
+
+    equal(MOS6502._P, 0x20 + 0x80 + 0x08, "Test 3: Status register set correctly.");
+
+    equal(MOS6502._A, 0x99, "Test 3: Memory subtracted from accumulator correctly.");
+
+    /**
+     * Test 4: 0a - 00 and C=1 gives 0a and N=0 V=0 Z=0 C=1
+     */
+
+    MOS6502._A = 0x0A;
+    MOS6502._RAM[MemoryLocation] = 0x00;
+
+    MOS6502._P = 0x20 + 0x08 + 0x01;
+    MOS6502._PC = PCStart;
+
+    MOS6502.emulateCycle();
+
+    equal(MOS6502._P, 0x20 + 0x08 + 0x01, "Test 4: Status register set correctly.");
+
+    equal(MOS6502._A, 0x0A, "Test 4: Memory subtracted from accumulator correctly.");
+
+    /**
+     * Test 5: 0b - 00 and C=0 gives 0a and N=0 V=0 Z=0 C=1
+     */
+
+    MOS6502._A = 0x0B;
+    MOS6502._RAM[MemoryLocation] = 0x00;
+
+    MOS6502._P = 0x20 + 0x08;
+    MOS6502._PC = PCStart;
+
+    MOS6502.emulateCycle();
+
+    equal(MOS6502._P, 0x20 + 0x08 + 0x01, "Test 5: Status register set correctly.");
+
+    equal(MOS6502._A, 0x0A, "Test 5: Memory subtracted from accumulator correctly.");
+
+    /**
+     * Test 6: 9a - 00 and C=1 gives 9a and N=1 V=0 Z=0 C=1
+     */
+
+    MOS6502._A = 0x9A;
+    MOS6502._RAM[MemoryLocation] = 0x00;
+
+    MOS6502._P = 0x20 + 0x08 + 0x01;
+    MOS6502._PC = PCStart;
+
+    MOS6502.emulateCycle();
+
+    equal(MOS6502._P, 0x20 + 0x80 + 0x08 + 0x01, "Test 6: Status register set correctly.");
+
+    equal(MOS6502._A, 0x9A, "Test 6: Memory subtracted from accumulator correctly.");
+
+    /**
+     * Test 7: 9b - 00 and C=0 gives 9a and N=1 V=0 Z=0 C=1
+     */
+
+    MOS6502._A = 0x9B;
+    MOS6502._RAM[MemoryLocation] = 0x00;
+
+    MOS6502._P = 0x20 + 0x08;
+    MOS6502._PC = PCStart;
+
+    MOS6502.emulateCycle();
+
+    equal(MOS6502._P, 0x20 + 0x80 + 0x08 + 0x01, "Test 7: Status register set correctly.");
+
+    equal(MOS6502._A, 0x9A, "Test 7: Memory subtracted from accumulator correctly.");
+
+    /**
+     * Test 8: 00 - 00 and C=0 gives FF and N=1 V=0 Z=0 C=0
+     *         DECIMAL MODE OFF
+     */
+
+    MOS6502._A = 0x00;
+    MOS6502._RAM[MemoryLocation] = 0x00;
+
+    MOS6502._P = 0x20;
+    MOS6502._PC = PCStart;
+    MOS6502._CYCLES = 0;
+
+    MOS6502.emulateCycle();
+
+    equal(MOS6502._P, 0x20 + 0x80, "Test 8: Status register set correctly.");
+
+    equal(MOS6502._A, 0xFF, "Test 8: Memory subtracted from accumulator correctly.");
+
+    equal(MOS6502._PC, PCStart + BytesUsed, "Program counter incremented correctly.");
+
+    equal(MOS6502._CYCLES, CycleCost, "Cycle cost calculated correctly.");
+
+});
+
+test("0xF5 - SBC (Zero Page, X)", function() {
+    /**
+     *    Instruction = SBC - Subtract memory from accumulator with borrow.
+     * Affected Flags = Sign, Zero, Carry, Overflow
+     *    Total Tests = 9
+     */
+
+    var OPCODE = 0xF5,
+        PCStart = 0x4000,
+        ZPAddress = 0x41,
+        XRegister = 0x51,
+        MemoryLocation = ZPAddress + XRegister,
+        BytesUsed = 2,
+        CycleCost = 4;
+
+    MOS6502._RAM[PCStart] = OPCODE;
+    MOS6502._RAM[PCStart + 1] = ZPAddress;
+    MOS6502._X = XRegister;
+
+    /**
+     * Test 1: 00 - 00 and C = 0 gives 99 and N=1 V=0 Z=0 C=0
+     */
+
+    MOS6502._A = 0;
+    MOS6502._RAM[MemoryLocation] = 0;
+
+    MOS6502._P = 0x20 + 0x08;
+    MOS6502._PC = PCStart;
+
+    MOS6502.emulateCycle();
+
+    equal(MOS6502._P, 0x20 + 0x80 + 0x08, "Test 1: Status register set correctly.");
+
+    equal(MOS6502._A, 0x99, "Test 1: Memory subtracted from accumulator correctly.");
+
+    /**
+     * Test 2: 00 - 00 and C = 1 gives 00 and N=0 V=0 Z=1 C=1
+     */
+
+    MOS6502._A = 0;
+    MOS6502._RAM[MemoryLocation] = 0;
+
+    MOS6502._P = 0x20 + 0x08 + 0x01;
+    MOS6502._PC = PCStart;
+
+    MOS6502.emulateCycle();
+
+    equal(MOS6502._P, 0x20 + 0x08 + 0x02 + 0x01, "Test 2: Status register set correctly.");
+
+    equal(MOS6502._A, 0x00, "Test 2: Memory subtracted from accumulator correctly.");
+
+    /**
+     * Test 3: 00 - 01 and C=1 gives 99 and N=1 V=0 Z=0 C=0
+     */
+
+    MOS6502._A = 0x00;
+    MOS6502._RAM[MemoryLocation] = 0x01;
+
+    MOS6502._P = 0x20 + 0x08 + 0x01;
+    MOS6502._PC = PCStart;
+
+    MOS6502.emulateCycle();
+
+    equal(MOS6502._P, 0x20 + 0x80 + 0x08, "Test 3: Status register set correctly.");
+
+    equal(MOS6502._A, 0x99, "Test 3: Memory subtracted from accumulator correctly.");
+
+    /**
+     * Test 4: 0a - 00 and C=1 gives 0a and N=0 V=0 Z=0 C=1
+     */
+
+    MOS6502._A = 0x0A;
+    MOS6502._RAM[MemoryLocation] = 0x00;
+
+    MOS6502._P = 0x20 + 0x08 + 0x01;
+    MOS6502._PC = PCStart;
+
+    MOS6502.emulateCycle();
+
+    equal(MOS6502._P, 0x20 + 0x08 + 0x01, "Test 4: Status register set correctly.");
+
+    equal(MOS6502._A, 0x0A, "Test 4: Memory subtracted from accumulator correctly.");
+
+    /**
+     * Test 5: 0b - 00 and C=0 gives 0a and N=0 V=0 Z=0 C=1
+     */
+
+    MOS6502._A = 0x0B;
+    MOS6502._RAM[MemoryLocation] = 0x00;
+
+    MOS6502._P = 0x20 + 0x08;
+    MOS6502._PC = PCStart;
+
+    MOS6502.emulateCycle();
+
+    equal(MOS6502._P, 0x20 + 0x08 + 0x01, "Test 5: Status register set correctly.");
+
+    equal(MOS6502._A, 0x0A, "Test 5: Memory subtracted from accumulator correctly.");
+
+    /**
+     * Test 6: 9a - 00 and C=1 gives 9a and N=1 V=0 Z=0 C=1
+     */
+
+    MOS6502._A = 0x9A;
+    MOS6502._RAM[MemoryLocation] = 0x00;
+
+    MOS6502._P = 0x20 + 0x08 + 0x01;
+    MOS6502._PC = PCStart;
+
+    MOS6502.emulateCycle();
+
+    equal(MOS6502._P, 0x20 + 0x80 + 0x08 + 0x01, "Test 6: Status register set correctly.");
+
+    equal(MOS6502._A, 0x9A, "Test 6: Memory subtracted from accumulator correctly.");
+
+    /**
+     * Test 7: 9b - 00 and C=0 gives 9a and N=1 V=0 Z=0 C=1
+     */
+
+    MOS6502._A = 0x9B;
+    MOS6502._RAM[MemoryLocation] = 0x00;
+
+    MOS6502._P = 0x20 + 0x08;
+    MOS6502._PC = PCStart;
+
+    MOS6502.emulateCycle();
+
+    equal(MOS6502._P, 0x20 + 0x80 + 0x08 + 0x01, "Test 7: Status register set correctly.");
+
+    equal(MOS6502._A, 0x9A, "Test 7: Memory subtracted from accumulator correctly.");
+
+    /**
+     * Test 8: 00 - 00 and C=0 gives FF and N=1 V=0 Z=0 C=0
+     *         DECIMAL MODE OFF
+     */
+
+    MOS6502._A = 0x00;
+    MOS6502._RAM[MemoryLocation] = 0x00;
+
+    MOS6502._P = 0x20;
+    MOS6502._PC = PCStart;
+    MOS6502._CYCLES = 0;
+
+    MOS6502.emulateCycle();
+
+    equal(MOS6502._P, 0x20 + 0x80, "Test 8: Status register set correctly.");
+
+    equal(MOS6502._A, 0xFF, "Test 8: Memory subtracted from accumulator correctly.");
+
+    equal(MOS6502._PC, PCStart + BytesUsed, "Program counter incremented correctly.");
+
+    equal(MOS6502._CYCLES, CycleCost, "Cycle cost calculated correctly.");
+
+});
+
+test("0xED - SBC (Absolute)", function() {
+    /**
+     *    Instruction = SBC - Subtract memory from accumulator with borrow.
+     * Affected Flags = Sign, Zero, Carry, Overflow
+     *    Total Tests = 9
+     */
+
+    var OPCODE = 0xED,
+        PCStart = 0x4000,
+        ZPAddress = 0x41,
+        AddressByte1 = 0x21,
+        AddressByte2 = 0x31,
+        MemoryLocation = MOS6502._MAKE_ADDRESS(AddressByte1, AddressByte2),
+        BytesUsed = 3,
+        CycleCost = 4;
+
+    MOS6502._RAM[PCStart] = OPCODE;
+    MOS6502._RAM[PCStart + 1] = AddressByte1;
+    MOS6502._RAM[PCStart + 2] = AddressByte2;
+
+    /**
+     * Test 1: 00 - 00 and C = 0 gives 99 and N=1 V=0 Z=0 C=0
+     */
+
+    MOS6502._A = 0;
+    MOS6502._RAM[MemoryLocation] = 0;
+
+    MOS6502._P = 0x20 + 0x08;
+    MOS6502._PC = PCStart;
+
+    MOS6502.emulateCycle();
+
+    equal(MOS6502._P, 0x20 + 0x80 + 0x08, "Test 1: Status register set correctly.");
+
+    equal(MOS6502._A, 0x99, "Test 1: Memory subtracted from accumulator correctly.");
+
+    /**
+     * Test 2: 00 - 00 and C = 1 gives 00 and N=0 V=0 Z=1 C=1
+     */
+
+    MOS6502._A = 0;
+    MOS6502._RAM[MemoryLocation] = 0;
+
+    MOS6502._P = 0x20 + 0x08 + 0x01;
+    MOS6502._PC = PCStart;
+
+    MOS6502.emulateCycle();
+
+    equal(MOS6502._P, 0x20 + 0x08 + 0x02 + 0x01, "Test 2: Status register set correctly.");
+
+    equal(MOS6502._A, 0x00, "Test 2: Memory subtracted from accumulator correctly.");
+
+    /**
+     * Test 3: 00 - 01 and C=1 gives 99 and N=1 V=0 Z=0 C=0
+     */
+
+    MOS6502._A = 0x00;
+    MOS6502._RAM[MemoryLocation] = 0x01;
+
+    MOS6502._P = 0x20 + 0x08 + 0x01;
+    MOS6502._PC = PCStart;
+
+    MOS6502.emulateCycle();
+
+    equal(MOS6502._P, 0x20 + 0x80 + 0x08, "Test 3: Status register set correctly.");
+
+    equal(MOS6502._A, 0x99, "Test 3: Memory subtracted from accumulator correctly.");
+
+    /**
+     * Test 4: 0a - 00 and C=1 gives 0a and N=0 V=0 Z=0 C=1
+     */
+
+    MOS6502._A = 0x0A;
+    MOS6502._RAM[MemoryLocation] = 0x00;
+
+    MOS6502._P = 0x20 + 0x08 + 0x01;
+    MOS6502._PC = PCStart;
+
+    MOS6502.emulateCycle();
+
+    equal(MOS6502._P, 0x20 + 0x08 + 0x01, "Test 4: Status register set correctly.");
+
+    equal(MOS6502._A, 0x0A, "Test 4: Memory subtracted from accumulator correctly.");
+
+    /**
+     * Test 5: 0b - 00 and C=0 gives 0a and N=0 V=0 Z=0 C=1
+     */
+
+    MOS6502._A = 0x0B;
+    MOS6502._RAM[MemoryLocation] = 0x00;
+
+    MOS6502._P = 0x20 + 0x08;
+    MOS6502._PC = PCStart;
+
+    MOS6502.emulateCycle();
+
+    equal(MOS6502._P, 0x20 + 0x08 + 0x01, "Test 5: Status register set correctly.");
+
+    equal(MOS6502._A, 0x0A, "Test 5: Memory subtracted from accumulator correctly.");
+
+    /**
+     * Test 6: 9a - 00 and C=1 gives 9a and N=1 V=0 Z=0 C=1
+     */
+
+    MOS6502._A = 0x9A;
+    MOS6502._RAM[MemoryLocation] = 0x00;
+
+    MOS6502._P = 0x20 + 0x08 + 0x01;
+    MOS6502._PC = PCStart;
+
+    MOS6502.emulateCycle();
+
+    equal(MOS6502._P, 0x20 + 0x80 + 0x08 + 0x01, "Test 6: Status register set correctly.");
+
+    equal(MOS6502._A, 0x9A, "Test 6: Memory subtracted from accumulator correctly.");
+
+    /**
+     * Test 7: 9b - 00 and C=0 gives 9a and N=1 V=0 Z=0 C=1
+     */
+
+    MOS6502._A = 0x9B;
+    MOS6502._RAM[MemoryLocation] = 0x00;
+
+    MOS6502._P = 0x20 + 0x08;
+    MOS6502._PC = PCStart;
+
+    MOS6502.emulateCycle();
+
+    equal(MOS6502._P, 0x20 + 0x80 + 0x08 + 0x01, "Test 7: Status register set correctly.");
+
+    equal(MOS6502._A, 0x9A, "Test 7: Memory subtracted from accumulator correctly.");
+
+    /**
+     * Test 8: 00 - 00 and C=0 gives FF and N=1 V=0 Z=0 C=0
+     *         DECIMAL MODE OFF
+     */
+
+    MOS6502._A = 0x00;
+    MOS6502._RAM[MemoryLocation] = 0x00;
+
+    MOS6502._P = 0x20;
+    MOS6502._PC = PCStart;
+    MOS6502._CYCLES = 0;
+
+    MOS6502.emulateCycle();
+
+    equal(MOS6502._P, 0x20 + 0x80, "Test 8: Status register set correctly.");
+
+    equal(MOS6502._A, 0xFF, "Test 8: Memory subtracted from accumulator correctly.");
+
+    equal(MOS6502._PC, PCStart + BytesUsed, "Program counter incremented correctly.");
+
+    equal(MOS6502._CYCLES, CycleCost, "Cycle cost calculated correctly.");
+
+});
+
+test("0xFD - SBC (Absolute, X) (Same Page)", function() {
+    /**
+     *    Instruction = SBC - Subtract memory from accumulator with borrow.
+     * Affected Flags = Sign, Zero, Carry, Overflow
+     *    Total Tests = 9
+     */
+
+    var OPCODE = 0xFD,
+        PCStart = 0x4000,
+        ZPAddress = 0x41,
+        AddressByte1 = 0x21,
+        AddressByte2 = 0x31,
+        XRegister = 0x51,
+        MemoryLocation = MOS6502._MAKE_ADDRESS(AddressByte1, AddressByte2) + XRegister,
+        BytesUsed = 3,
+        CycleCost = 4;
+
+    MOS6502._RAM[PCStart] = OPCODE;
+    MOS6502._RAM[PCStart + 1] = AddressByte1;
+    MOS6502._RAM[PCStart + 2] = AddressByte2;
+    MOS6502._X = XRegister;
+
+    /**
+     * Test 1: 00 - 00 and C = 0 gives 99 and N=1 V=0 Z=0 C=0
+     */
+
+    MOS6502._A = 0;
+    MOS6502._RAM[MemoryLocation] = 0;
+
+    MOS6502._P = 0x20 + 0x08;
+    MOS6502._PC = PCStart;
+
+    MOS6502.emulateCycle();
+
+    equal(MOS6502._P, 0x20 + 0x80 + 0x08, "Test 1: Status register set correctly.");
+
+    equal(MOS6502._A, 0x99, "Test 1: Memory subtracted from accumulator correctly.");
+
+    /**
+     * Test 2: 00 - 00 and C = 1 gives 00 and N=0 V=0 Z=1 C=1
+     */
+
+    MOS6502._A = 0;
+    MOS6502._RAM[MemoryLocation] = 0;
+
+    MOS6502._P = 0x20 + 0x08 + 0x01;
+    MOS6502._PC = PCStart;
+
+    MOS6502.emulateCycle();
+
+    equal(MOS6502._P, 0x20 + 0x08 + 0x02 + 0x01, "Test 2: Status register set correctly.");
+
+    equal(MOS6502._A, 0x00, "Test 2: Memory subtracted from accumulator correctly.");
+
+    /**
+     * Test 3: 00 - 01 and C=1 gives 99 and N=1 V=0 Z=0 C=0
+     */
+
+    MOS6502._A = 0x00;
+    MOS6502._RAM[MemoryLocation] = 0x01;
+
+    MOS6502._P = 0x20 + 0x08 + 0x01;
+    MOS6502._PC = PCStart;
+
+    MOS6502.emulateCycle();
+
+    equal(MOS6502._P, 0x20 + 0x80 + 0x08, "Test 3: Status register set correctly.");
+
+    equal(MOS6502._A, 0x99, "Test 3: Memory subtracted from accumulator correctly.");
+
+    /**
+     * Test 4: 0a - 00 and C=1 gives 0a and N=0 V=0 Z=0 C=1
+     */
+
+    MOS6502._A = 0x0A;
+    MOS6502._RAM[MemoryLocation] = 0x00;
+
+    MOS6502._P = 0x20 + 0x08 + 0x01;
+    MOS6502._PC = PCStart;
+
+    MOS6502.emulateCycle();
+
+    equal(MOS6502._P, 0x20 + 0x08 + 0x01, "Test 4: Status register set correctly.");
+
+    equal(MOS6502._A, 0x0A, "Test 4: Memory subtracted from accumulator correctly.");
+
+    /**
+     * Test 5: 0b - 00 and C=0 gives 0a and N=0 V=0 Z=0 C=1
+     */
+
+    MOS6502._A = 0x0B;
+    MOS6502._RAM[MemoryLocation] = 0x00;
+
+    MOS6502._P = 0x20 + 0x08;
+    MOS6502._PC = PCStart;
+
+    MOS6502.emulateCycle();
+
+    equal(MOS6502._P, 0x20 + 0x08 + 0x01, "Test 5: Status register set correctly.");
+
+    equal(MOS6502._A, 0x0A, "Test 5: Memory subtracted from accumulator correctly.");
+
+    /**
+     * Test 6: 9a - 00 and C=1 gives 9a and N=1 V=0 Z=0 C=1
+     */
+
+    MOS6502._A = 0x9A;
+    MOS6502._RAM[MemoryLocation] = 0x00;
+
+    MOS6502._P = 0x20 + 0x08 + 0x01;
+    MOS6502._PC = PCStart;
+
+    MOS6502.emulateCycle();
+
+    equal(MOS6502._P, 0x20 + 0x80 + 0x08 + 0x01, "Test 6: Status register set correctly.");
+
+    equal(MOS6502._A, 0x9A, "Test 6: Memory subtracted from accumulator correctly.");
+
+    /**
+     * Test 7: 9b - 00 and C=0 gives 9a and N=1 V=0 Z=0 C=1
+     */
+
+    MOS6502._A = 0x9B;
+    MOS6502._RAM[MemoryLocation] = 0x00;
+
+    MOS6502._P = 0x20 + 0x08;
+    MOS6502._PC = PCStart;
+
+    MOS6502.emulateCycle();
+
+    equal(MOS6502._P, 0x20 + 0x80 + 0x08 + 0x01, "Test 7: Status register set correctly.");
+
+    equal(MOS6502._A, 0x9A, "Test 7: Memory subtracted from accumulator correctly.");
+
+    /**
+     * Test 8: 00 - 00 and C=0 gives FF and N=1 V=0 Z=0 C=0
+     *         DECIMAL MODE OFF
+     */
+
+    MOS6502._A = 0x00;
+    MOS6502._RAM[MemoryLocation] = 0x00;
+
+    MOS6502._P = 0x20;
+    MOS6502._PC = PCStart;
+    MOS6502._CYCLES = 0;
+
+    MOS6502.emulateCycle();
+
+    equal(MOS6502._P, 0x20 + 0x80, "Test 8: Status register set correctly.");
+
+    equal(MOS6502._A, 0xFF, "Test 8: Memory subtracted from accumulator correctly.");
+
+    equal(MOS6502._PC, PCStart + BytesUsed, "Program counter incremented correctly.");
+
+    equal(MOS6502._CYCLES, CycleCost, "Cycle cost calculated correctly.");
+
+});
+
+test("0xFD - SBC (Absolute, X) (Cross Page)", function() {
+    /**
+     *    Instruction = SBC - Subtract memory from accumulator with borrow.
+     * Affected Flags = Sign, Zero, Carry, Overflow
+     *    Total Tests = 9
+     */
+
+    var OPCODE = 0xFD,
+        PCStart = 0x4000,
+        ZPAddress = 0x41,
+        AddressByte1 = 0x21,
+        AddressByte2 = 0x31,
+        XRegister = 0xFF,
+        MemoryLocation = MOS6502._MAKE_ADDRESS(AddressByte1, AddressByte2) + XRegister,
+        BytesUsed = 3,
+        CycleCost = 5;
+
+    MOS6502._RAM[PCStart] = OPCODE;
+    MOS6502._RAM[PCStart + 1] = AddressByte1;
+    MOS6502._RAM[PCStart + 2] = AddressByte2;
+    MOS6502._X = XRegister;
+
+    /**
+     * Test 1: 00 - 00 and C = 0 gives 99 and N=1 V=0 Z=0 C=0
+     */
+
+    MOS6502._A = 0;
+    MOS6502._RAM[MemoryLocation] = 0;
+
+    MOS6502._P = 0x20 + 0x08;
+    MOS6502._PC = PCStart;
+
+    MOS6502.emulateCycle();
+
+    equal(MOS6502._P, 0x20 + 0x80 + 0x08, "Test 1: Status register set correctly.");
+
+    equal(MOS6502._A, 0x99, "Test 1: Memory subtracted from accumulator correctly.");
+
+    /**
+     * Test 2: 00 - 00 and C = 1 gives 00 and N=0 V=0 Z=1 C=1
+     */
+
+    MOS6502._A = 0;
+    MOS6502._RAM[MemoryLocation] = 0;
+
+    MOS6502._P = 0x20 + 0x08 + 0x01;
+    MOS6502._PC = PCStart;
+
+    MOS6502.emulateCycle();
+
+    equal(MOS6502._P, 0x20 + 0x08 + 0x02 + 0x01, "Test 2: Status register set correctly.");
+
+    equal(MOS6502._A, 0x00, "Test 2: Memory subtracted from accumulator correctly.");
+
+    /**
+     * Test 3: 00 - 01 and C=1 gives 99 and N=1 V=0 Z=0 C=0
+     */
+
+    MOS6502._A = 0x00;
+    MOS6502._RAM[MemoryLocation] = 0x01;
+
+    MOS6502._P = 0x20 + 0x08 + 0x01;
+    MOS6502._PC = PCStart;
+
+    MOS6502.emulateCycle();
+
+    equal(MOS6502._P, 0x20 + 0x80 + 0x08, "Test 3: Status register set correctly.");
+
+    equal(MOS6502._A, 0x99, "Test 3: Memory subtracted from accumulator correctly.");
+
+    /**
+     * Test 4: 0a - 00 and C=1 gives 0a and N=0 V=0 Z=0 C=1
+     */
+
+    MOS6502._A = 0x0A;
+    MOS6502._RAM[MemoryLocation] = 0x00;
+
+    MOS6502._P = 0x20 + 0x08 + 0x01;
+    MOS6502._PC = PCStart;
+
+    MOS6502.emulateCycle();
+
+    equal(MOS6502._P, 0x20 + 0x08 + 0x01, "Test 4: Status register set correctly.");
+
+    equal(MOS6502._A, 0x0A, "Test 4: Memory subtracted from accumulator correctly.");
+
+    /**
+     * Test 5: 0b - 00 and C=0 gives 0a and N=0 V=0 Z=0 C=1
+     */
+
+    MOS6502._A = 0x0B;
+    MOS6502._RAM[MemoryLocation] = 0x00;
+
+    MOS6502._P = 0x20 + 0x08;
+    MOS6502._PC = PCStart;
+
+    MOS6502.emulateCycle();
+
+    equal(MOS6502._P, 0x20 + 0x08 + 0x01, "Test 5: Status register set correctly.");
+
+    equal(MOS6502._A, 0x0A, "Test 5: Memory subtracted from accumulator correctly.");
+
+    /**
+     * Test 6: 9a - 00 and C=1 gives 9a and N=1 V=0 Z=0 C=1
+     */
+
+    MOS6502._A = 0x9A;
+    MOS6502._RAM[MemoryLocation] = 0x00;
+
+    MOS6502._P = 0x20 + 0x08 + 0x01;
+    MOS6502._PC = PCStart;
+
+    MOS6502.emulateCycle();
+
+    equal(MOS6502._P, 0x20 + 0x80 + 0x08 + 0x01, "Test 6: Status register set correctly.");
+
+    equal(MOS6502._A, 0x9A, "Test 6: Memory subtracted from accumulator correctly.");
+
+    /**
+     * Test 7: 9b - 00 and C=0 gives 9a and N=1 V=0 Z=0 C=1
+     */
+
+    MOS6502._A = 0x9B;
+    MOS6502._RAM[MemoryLocation] = 0x00;
+
+    MOS6502._P = 0x20 + 0x08;
+    MOS6502._PC = PCStart;
+
+    MOS6502.emulateCycle();
+
+    equal(MOS6502._P, 0x20 + 0x80 + 0x08 + 0x01, "Test 7: Status register set correctly.");
+
+    equal(MOS6502._A, 0x9A, "Test 7: Memory subtracted from accumulator correctly.");
+
+    /**
+     * Test 8: 00 - 00 and C=0 gives FF and N=1 V=0 Z=0 C=0
+     *         DECIMAL MODE OFF
+     */
+
+    MOS6502._A = 0x00;
+    MOS6502._RAM[MemoryLocation] = 0x00;
+
+    MOS6502._P = 0x20;
+    MOS6502._PC = PCStart;
+    MOS6502._CYCLES = 0;
+
+    MOS6502.emulateCycle();
+
+    equal(MOS6502._P, 0x20 + 0x80, "Test 8: Status register set correctly.");
+
+    equal(MOS6502._A, 0xFF, "Test 8: Memory subtracted from accumulator correctly.");
+
+    equal(MOS6502._PC, PCStart + BytesUsed, "Program counter incremented correctly.");
+
+    equal(MOS6502._CYCLES, CycleCost, "Cycle cost calculated correctly.");
+
+});
+
+test("0xF9 - SBC (Absolute, Y) (Same Page)", function() {
+    /**
+     *    Instruction = SBC - Subtract memory from accumulator with borrow.
+     * Affected Flags = Sign, Zero, Carry, Overflow
+     *    Total Tests = 9
+     */
+
+    var OPCODE = 0xF9,
+        PCStart = 0x4000,
+        ZPAddress = 0x41,
+        AddressByte1 = 0x21,
+        AddressByte2 = 0x31,
+        YRegister = 0x51,
+        MemoryLocation = MOS6502._MAKE_ADDRESS(AddressByte1, AddressByte2) + YRegister,
+        BytesUsed = 3,
+        CycleCost = 4;
+
+    MOS6502._RAM[PCStart] = OPCODE;
+    MOS6502._RAM[PCStart + 1] = AddressByte1;
+    MOS6502._RAM[PCStart + 2] = AddressByte2;
+    MOS6502._Y = YRegister;
+
+    /**
+     * Test 1: 00 - 00 and C = 0 gives 99 and N=1 V=0 Z=0 C=0
+     */
+
+    MOS6502._A = 0;
+    MOS6502._RAM[MemoryLocation] = 0;
+
+    MOS6502._P = 0x20 + 0x08;
+    MOS6502._PC = PCStart;
+
+    MOS6502.emulateCycle();
+
+    equal(MOS6502._P, 0x20 + 0x80 + 0x08, "Test 1: Status register set correctly.");
+
+    equal(MOS6502._A, 0x99, "Test 1: Memory subtracted from accumulator correctly.");
+
+    /**
+     * Test 2: 00 - 00 and C = 1 gives 00 and N=0 V=0 Z=1 C=1
+     */
+
+    MOS6502._A = 0;
+    MOS6502._RAM[MemoryLocation] = 0;
+
+    MOS6502._P = 0x20 + 0x08 + 0x01;
+    MOS6502._PC = PCStart;
+
+    MOS6502.emulateCycle();
+
+    equal(MOS6502._P, 0x20 + 0x08 + 0x02 + 0x01, "Test 2: Status register set correctly.");
+
+    equal(MOS6502._A, 0x00, "Test 2: Memory subtracted from accumulator correctly.");
+
+    /**
+     * Test 3: 00 - 01 and C=1 gives 99 and N=1 V=0 Z=0 C=0
+     */
+
+    MOS6502._A = 0x00;
+    MOS6502._RAM[MemoryLocation] = 0x01;
+
+    MOS6502._P = 0x20 + 0x08 + 0x01;
+    MOS6502._PC = PCStart;
+
+    MOS6502.emulateCycle();
+
+    equal(MOS6502._P, 0x20 + 0x80 + 0x08, "Test 3: Status register set correctly.");
+
+    equal(MOS6502._A, 0x99, "Test 3: Memory subtracted from accumulator correctly.");
+
+    /**
+     * Test 4: 0a - 00 and C=1 gives 0a and N=0 V=0 Z=0 C=1
+     */
+
+    MOS6502._A = 0x0A;
+    MOS6502._RAM[MemoryLocation] = 0x00;
+
+    MOS6502._P = 0x20 + 0x08 + 0x01;
+    MOS6502._PC = PCStart;
+
+    MOS6502.emulateCycle();
+
+    equal(MOS6502._P, 0x20 + 0x08 + 0x01, "Test 4: Status register set correctly.");
+
+    equal(MOS6502._A, 0x0A, "Test 4: Memory subtracted from accumulator correctly.");
+
+    /**
+     * Test 5: 0b - 00 and C=0 gives 0a and N=0 V=0 Z=0 C=1
+     */
+
+    MOS6502._A = 0x0B;
+    MOS6502._RAM[MemoryLocation] = 0x00;
+
+    MOS6502._P = 0x20 + 0x08;
+    MOS6502._PC = PCStart;
+
+    MOS6502.emulateCycle();
+
+    equal(MOS6502._P, 0x20 + 0x08 + 0x01, "Test 5: Status register set correctly.");
+
+    equal(MOS6502._A, 0x0A, "Test 5: Memory subtracted from accumulator correctly.");
+
+    /**
+     * Test 6: 9a - 00 and C=1 gives 9a and N=1 V=0 Z=0 C=1
+     */
+
+    MOS6502._A = 0x9A;
+    MOS6502._RAM[MemoryLocation] = 0x00;
+
+    MOS6502._P = 0x20 + 0x08 + 0x01;
+    MOS6502._PC = PCStart;
+
+    MOS6502.emulateCycle();
+
+    equal(MOS6502._P, 0x20 + 0x80 + 0x08 + 0x01, "Test 6: Status register set correctly.");
+
+    equal(MOS6502._A, 0x9A, "Test 6: Memory subtracted from accumulator correctly.");
+
+    /**
+     * Test 7: 9b - 00 and C=0 gives 9a and N=1 V=0 Z=0 C=1
+     */
+
+    MOS6502._A = 0x9B;
+    MOS6502._RAM[MemoryLocation] = 0x00;
+
+    MOS6502._P = 0x20 + 0x08;
+    MOS6502._PC = PCStart;
+
+    MOS6502.emulateCycle();
+
+    equal(MOS6502._P, 0x20 + 0x80 + 0x08 + 0x01, "Test 7: Status register set correctly.");
+
+    equal(MOS6502._A, 0x9A, "Test 7: Memory subtracted from accumulator correctly.");
+
+    /**
+     * Test 8: 00 - 00 and C=0 gives FF and N=1 V=0 Z=0 C=0
+     *         DECIMAL MODE OFF
+     */
+
+    MOS6502._A = 0x00;
+    MOS6502._RAM[MemoryLocation] = 0x00;
+
+    MOS6502._P = 0x20;
+    MOS6502._PC = PCStart;
+    MOS6502._CYCLES = 0;
+
+    MOS6502.emulateCycle();
+
+    equal(MOS6502._P, 0x20 + 0x80, "Test 8: Status register set correctly.");
+
+    equal(MOS6502._A, 0xFF, "Test 8: Memory subtracted from accumulator correctly.");
+
+    equal(MOS6502._PC, PCStart + BytesUsed, "Program counter incremented correctly.");
+
+    equal(MOS6502._CYCLES, CycleCost, "Cycle cost calculated correctly.");
+
+});
+
+test("0xF9 - SBC (Absolute, Y) (Cross Page)", function() {
+    /**
+     *    Instruction = SBC - Subtract memory from accumulator with borrow.
+     * Affected Flags = Sign, Zero, Carry, Overflow
+     *    Total Tests = 9
+     */
+
+    var OPCODE = 0xF9,
+        PCStart = 0x4000,
+        ZPAddress = 0x41,
+        AddressByte1 = 0x21,
+        AddressByte2 = 0x31,
+        YRegister = 0xFF,
+        MemoryLocation = MOS6502._MAKE_ADDRESS(AddressByte1, AddressByte2) + YRegister,
+        BytesUsed = 3,
+        CycleCost = 5;
+
+    MOS6502._RAM[PCStart] = OPCODE;
+    MOS6502._RAM[PCStart + 1] = AddressByte1;
+    MOS6502._RAM[PCStart + 2] = AddressByte2;
+    MOS6502._Y = YRegister;
+
+    /**
+     * Test 1: 00 - 00 and C = 0 gives 99 and N=1 V=0 Z=0 C=0
+     */
+
+    MOS6502._A = 0;
+    MOS6502._RAM[MemoryLocation] = 0;
+
+    MOS6502._P = 0x20 + 0x08;
+    MOS6502._PC = PCStart;
+
+    MOS6502.emulateCycle();
+
+    equal(MOS6502._P, 0x20 + 0x80 + 0x08, "Test 1: Status register set correctly.");
+
+    equal(MOS6502._A, 0x99, "Test 1: Memory subtracted from accumulator correctly.");
+
+    /**
+     * Test 2: 00 - 00 and C = 1 gives 00 and N=0 V=0 Z=1 C=1
+     */
+
+    MOS6502._A = 0;
+    MOS6502._RAM[MemoryLocation] = 0;
+
+    MOS6502._P = 0x20 + 0x08 + 0x01;
+    MOS6502._PC = PCStart;
+
+    MOS6502.emulateCycle();
+
+    equal(MOS6502._P, 0x20 + 0x08 + 0x02 + 0x01, "Test 2: Status register set correctly.");
+
+    equal(MOS6502._A, 0x00, "Test 2: Memory subtracted from accumulator correctly.");
+
+    /**
+     * Test 3: 00 - 01 and C=1 gives 99 and N=1 V=0 Z=0 C=0
+     */
+
+    MOS6502._A = 0x00;
+    MOS6502._RAM[MemoryLocation] = 0x01;
+
+    MOS6502._P = 0x20 + 0x08 + 0x01;
+    MOS6502._PC = PCStart;
+
+    MOS6502.emulateCycle();
+
+    equal(MOS6502._P, 0x20 + 0x80 + 0x08, "Test 3: Status register set correctly.");
+
+    equal(MOS6502._A, 0x99, "Test 3: Memory subtracted from accumulator correctly.");
+
+    /**
+     * Test 4: 0a - 00 and C=1 gives 0a and N=0 V=0 Z=0 C=1
+     */
+
+    MOS6502._A = 0x0A;
+    MOS6502._RAM[MemoryLocation] = 0x00;
+
+    MOS6502._P = 0x20 + 0x08 + 0x01;
+    MOS6502._PC = PCStart;
+
+    MOS6502.emulateCycle();
+
+    equal(MOS6502._P, 0x20 + 0x08 + 0x01, "Test 4: Status register set correctly.");
+
+    equal(MOS6502._A, 0x0A, "Test 4: Memory subtracted from accumulator correctly.");
+
+    /**
+     * Test 5: 0b - 00 and C=0 gives 0a and N=0 V=0 Z=0 C=1
+     */
+
+    MOS6502._A = 0x0B;
+    MOS6502._RAM[MemoryLocation] = 0x00;
+
+    MOS6502._P = 0x20 + 0x08;
+    MOS6502._PC = PCStart;
+
+    MOS6502.emulateCycle();
+
+    equal(MOS6502._P, 0x20 + 0x08 + 0x01, "Test 5: Status register set correctly.");
+
+    equal(MOS6502._A, 0x0A, "Test 5: Memory subtracted from accumulator correctly.");
+
+    /**
+     * Test 6: 9a - 00 and C=1 gives 9a and N=1 V=0 Z=0 C=1
+     */
+
+    MOS6502._A = 0x9A;
+    MOS6502._RAM[MemoryLocation] = 0x00;
+
+    MOS6502._P = 0x20 + 0x08 + 0x01;
+    MOS6502._PC = PCStart;
+
+    MOS6502.emulateCycle();
+
+    equal(MOS6502._P, 0x20 + 0x80 + 0x08 + 0x01, "Test 6: Status register set correctly.");
+
+    equal(MOS6502._A, 0x9A, "Test 6: Memory subtracted from accumulator correctly.");
+
+    /**
+     * Test 7: 9b - 00 and C=0 gives 9a and N=1 V=0 Z=0 C=1
+     */
+
+    MOS6502._A = 0x9B;
+    MOS6502._RAM[MemoryLocation] = 0x00;
+
+    MOS6502._P = 0x20 + 0x08;
+    MOS6502._PC = PCStart;
+
+    MOS6502.emulateCycle();
+
+    equal(MOS6502._P, 0x20 + 0x80 + 0x08 + 0x01, "Test 7: Status register set correctly.");
+
+    equal(MOS6502._A, 0x9A, "Test 7: Memory subtracted from accumulator correctly.");
+
+    /**
+     * Test 8: 00 - 00 and C=0 gives FF and N=1 V=0 Z=0 C=0
+     *         DECIMAL MODE OFF
+     */
+
+    MOS6502._A = 0x00;
+    MOS6502._RAM[MemoryLocation] = 0x00;
+
+    MOS6502._P = 0x20;
+    MOS6502._PC = PCStart;
+    MOS6502._CYCLES = 0;
+
+    MOS6502.emulateCycle();
+
+    equal(MOS6502._P, 0x20 + 0x80, "Test 8: Status register set correctly.");
+
+    equal(MOS6502._A, 0xFF, "Test 8: Memory subtracted from accumulator correctly.");
+
+    equal(MOS6502._PC, PCStart + BytesUsed, "Program counter incremented correctly.");
+
+    equal(MOS6502._CYCLES, CycleCost, "Cycle cost calculated correctly.");
+
+});
+
+test("0xE1 - SBC (Indirect, X)", function() {
+    /**
+     *    Instruction = SBC - Subtract memory from accumulator with borrow.
+     * Affected Flags = Sign, Zero, Carry, Overflow
+     *    Total Tests = 9
+     */
+
+    var OPCODE = 0xE1,
+        PCStart = 0x4000,
+        ZPAddress = 0x41,
+        AddressByte1 = 0x21,
+        AddressByte2 = 0x31,
+        XRegister = 0x51,
+        MemoryLocation = MOS6502._MAKE_ADDRESS(AddressByte1, AddressByte2),
+        BytesUsed = 2,
+        CycleCost = 6;
+
+    MOS6502._RAM[PCStart] = OPCODE;
+    MOS6502._RAM[PCStart + 1] = ZPAddress;
+    MOS6502._RAM[ZPAddress + XRegister] = AddressByte1;
+    MOS6502._RAM[ZPAddress + XRegister + 1] = AddressByte2;
+    MOS6502._X = XRegister;
+
+    /**
+     * Test 1: 00 - 00 and C = 0 gives 99 and N=1 V=0 Z=0 C=0
+     */
+
+    MOS6502._A = 0;
+    MOS6502._RAM[MemoryLocation] = 0;
+
+    MOS6502._P = 0x20 + 0x08;
+    MOS6502._PC = PCStart;
+
+    MOS6502.emulateCycle();
+
+    equal(MOS6502._P, 0x20 + 0x80 + 0x08, "Test 1: Status register set correctly.");
+
+    equal(MOS6502._A, 0x99, "Test 1: Memory subtracted from accumulator correctly.");
+
+    /**
+     * Test 2: 00 - 00 and C = 1 gives 00 and N=0 V=0 Z=1 C=1
+     */
+
+    MOS6502._A = 0;
+    MOS6502._RAM[MemoryLocation] = 0;
+
+    MOS6502._P = 0x20 + 0x08 + 0x01;
+    MOS6502._PC = PCStart;
+
+    MOS6502.emulateCycle();
+
+    equal(MOS6502._P, 0x20 + 0x08 + 0x02 + 0x01, "Test 2: Status register set correctly.");
+
+    equal(MOS6502._A, 0x00, "Test 2: Memory subtracted from accumulator correctly.");
+
+    /**
+     * Test 3: 00 - 01 and C=1 gives 99 and N=1 V=0 Z=0 C=0
+     */
+
+    MOS6502._A = 0x00;
+    MOS6502._RAM[MemoryLocation] = 0x01;
+
+    MOS6502._P = 0x20 + 0x08 + 0x01;
+    MOS6502._PC = PCStart;
+
+    MOS6502.emulateCycle();
+
+    equal(MOS6502._P, 0x20 + 0x80 + 0x08, "Test 3: Status register set correctly.");
+
+    equal(MOS6502._A, 0x99, "Test 3: Memory subtracted from accumulator correctly.");
+
+    /**
+     * Test 4: 0a - 00 and C=1 gives 0a and N=0 V=0 Z=0 C=1
+     */
+
+    MOS6502._A = 0x0A;
+    MOS6502._RAM[MemoryLocation] = 0x00;
+
+    MOS6502._P = 0x20 + 0x08 + 0x01;
+    MOS6502._PC = PCStart;
+
+    MOS6502.emulateCycle();
+
+    equal(MOS6502._P, 0x20 + 0x08 + 0x01, "Test 4: Status register set correctly.");
+
+    equal(MOS6502._A, 0x0A, "Test 4: Memory subtracted from accumulator correctly.");
+
+    /**
+     * Test 5: 0b - 00 and C=0 gives 0a and N=0 V=0 Z=0 C=1
+     */
+
+    MOS6502._A = 0x0B;
+    MOS6502._RAM[MemoryLocation] = 0x00;
+
+    MOS6502._P = 0x20 + 0x08;
+    MOS6502._PC = PCStart;
+
+    MOS6502.emulateCycle();
+
+    equal(MOS6502._P, 0x20 + 0x08 + 0x01, "Test 5: Status register set correctly.");
+
+    equal(MOS6502._A, 0x0A, "Test 5: Memory subtracted from accumulator correctly.");
+
+    /**
+     * Test 6: 9a - 00 and C=1 gives 9a and N=1 V=0 Z=0 C=1
+     */
+
+    MOS6502._A = 0x9A;
+    MOS6502._RAM[MemoryLocation] = 0x00;
+
+    MOS6502._P = 0x20 + 0x08 + 0x01;
+    MOS6502._PC = PCStart;
+
+    MOS6502.emulateCycle();
+
+    equal(MOS6502._P, 0x20 + 0x80 + 0x08 + 0x01, "Test 6: Status register set correctly.");
+
+    equal(MOS6502._A, 0x9A, "Test 6: Memory subtracted from accumulator correctly.");
+
+    /**
+     * Test 7: 9b - 00 and C=0 gives 9a and N=1 V=0 Z=0 C=1
+     */
+
+    MOS6502._A = 0x9B;
+    MOS6502._RAM[MemoryLocation] = 0x00;
+
+    MOS6502._P = 0x20 + 0x08;
+    MOS6502._PC = PCStart;
+
+    MOS6502.emulateCycle();
+
+    equal(MOS6502._P, 0x20 + 0x80 + 0x08 + 0x01, "Test 7: Status register set correctly.");
+
+    equal(MOS6502._A, 0x9A, "Test 7: Memory subtracted from accumulator correctly.");
+
+    /**
+     * Test 8: 00 - 00 and C=0 gives FF and N=1 V=0 Z=0 C=0
+     *         DECIMAL MODE OFF
+     */
+
+    MOS6502._A = 0x00;
+    MOS6502._RAM[MemoryLocation] = 0x00;
+
+    MOS6502._P = 0x20;
+    MOS6502._PC = PCStart;
+    MOS6502._CYCLES = 0;
+
+    MOS6502.emulateCycle();
+
+    equal(MOS6502._P, 0x20 + 0x80, "Test 8: Status register set correctly.");
+
+    equal(MOS6502._A, 0xFF, "Test 8: Memory subtracted from accumulator correctly.");
+
+    equal(MOS6502._PC, PCStart + BytesUsed, "Program counter incremented correctly.");
+
+    equal(MOS6502._CYCLES, CycleCost, "Cycle cost calculated correctly.");
+
+});
+
+test("0xF1 - SBC (Indirect, Y) (Same Page)", function() {
+    /**
+     *    Instruction = SBC - Subtract memory from accumulator with borrow.
+     * Affected Flags = Sign, Zero, Carry, Overflow
+     *    Total Tests = 9
+     */
+
+    var OPCODE = 0xF1,
+        PCStart = 0x4000,
+        ZPAddress = 0x41,
+        AddressByte1 = 0x21,
+        AddressByte2 = 0x31,
+        YRegister = 0x51,
+        MemoryLocation = MOS6502._MAKE_ADDRESS(AddressByte1, AddressByte2) + YRegister,
+        BytesUsed = 2,
+        CycleCost = 5;
+
+    MOS6502._RAM[PCStart] = OPCODE;
+    MOS6502._RAM[PCStart + 1] = ZPAddress;
+    MOS6502._RAM[ZPAddress] = AddressByte1;
+    MOS6502._RAM[ZPAddress + 1] = AddressByte2;
+    MOS6502._Y = YRegister;
+
+    /**
+     * Test 1: 00 - 00 and C = 0 gives 99 and N=1 V=0 Z=0 C=0
+     */
+
+    MOS6502._A = 0;
+    MOS6502._RAM[MemoryLocation] = 0;
+
+    MOS6502._P = 0x20 + 0x08;
+    MOS6502._PC = PCStart;
+
+    MOS6502.emulateCycle();
+
+    equal(MOS6502._P, 0x20 + 0x80 + 0x08, "Test 1: Status register set correctly.");
+
+    equal(MOS6502._A, 0x99, "Test 1: Memory subtracted from accumulator correctly.");
+
+    /**
+     * Test 2: 00 - 00 and C = 1 gives 00 and N=0 V=0 Z=1 C=1
+     */
+
+    MOS6502._A = 0;
+    MOS6502._RAM[MemoryLocation] = 0;
+
+    MOS6502._P = 0x20 + 0x08 + 0x01;
+    MOS6502._PC = PCStart;
+
+    MOS6502.emulateCycle();
+
+    equal(MOS6502._P, 0x20 + 0x08 + 0x02 + 0x01, "Test 2: Status register set correctly.");
+
+    equal(MOS6502._A, 0x00, "Test 2: Memory subtracted from accumulator correctly.");
+
+    /**
+     * Test 3: 00 - 01 and C=1 gives 99 and N=1 V=0 Z=0 C=0
+     */
+
+    MOS6502._A = 0x00;
+    MOS6502._RAM[MemoryLocation] = 0x01;
+
+    MOS6502._P = 0x20 + 0x08 + 0x01;
+    MOS6502._PC = PCStart;
+
+    MOS6502.emulateCycle();
+
+    equal(MOS6502._P, 0x20 + 0x80 + 0x08, "Test 3: Status register set correctly.");
+
+    equal(MOS6502._A, 0x99, "Test 3: Memory subtracted from accumulator correctly.");
+
+    /**
+     * Test 4: 0a - 00 and C=1 gives 0a and N=0 V=0 Z=0 C=1
+     */
+
+    MOS6502._A = 0x0A;
+    MOS6502._RAM[MemoryLocation] = 0x00;
+
+    MOS6502._P = 0x20 + 0x08 + 0x01;
+    MOS6502._PC = PCStart;
+
+    MOS6502.emulateCycle();
+
+    equal(MOS6502._P, 0x20 + 0x08 + 0x01, "Test 4: Status register set correctly.");
+
+    equal(MOS6502._A, 0x0A, "Test 4: Memory subtracted from accumulator correctly.");
+
+    /**
+     * Test 5: 0b - 00 and C=0 gives 0a and N=0 V=0 Z=0 C=1
+     */
+
+    MOS6502._A = 0x0B;
+    MOS6502._RAM[MemoryLocation] = 0x00;
+
+    MOS6502._P = 0x20 + 0x08;
+    MOS6502._PC = PCStart;
+
+    MOS6502.emulateCycle();
+
+    equal(MOS6502._P, 0x20 + 0x08 + 0x01, "Test 5: Status register set correctly.");
+
+    equal(MOS6502._A, 0x0A, "Test 5: Memory subtracted from accumulator correctly.");
+
+    /**
+     * Test 6: 9a - 00 and C=1 gives 9a and N=1 V=0 Z=0 C=1
+     */
+
+    MOS6502._A = 0x9A;
+    MOS6502._RAM[MemoryLocation] = 0x00;
+
+    MOS6502._P = 0x20 + 0x08 + 0x01;
+    MOS6502._PC = PCStart;
+
+    MOS6502.emulateCycle();
+
+    equal(MOS6502._P, 0x20 + 0x80 + 0x08 + 0x01, "Test 6: Status register set correctly.");
+
+    equal(MOS6502._A, 0x9A, "Test 6: Memory subtracted from accumulator correctly.");
+
+    /**
+     * Test 7: 9b - 00 and C=0 gives 9a and N=1 V=0 Z=0 C=1
+     */
+
+    MOS6502._A = 0x9B;
+    MOS6502._RAM[MemoryLocation] = 0x00;
+
+    MOS6502._P = 0x20 + 0x08;
+    MOS6502._PC = PCStart;
+
+    MOS6502.emulateCycle();
+
+    equal(MOS6502._P, 0x20 + 0x80 + 0x08 + 0x01, "Test 7: Status register set correctly.");
+
+    equal(MOS6502._A, 0x9A, "Test 7: Memory subtracted from accumulator correctly.");
+
+    /**
+     * Test 8: 00 - 00 and C=0 gives FF and N=1 V=0 Z=0 C=0
+     *         DECIMAL MODE OFF
+     */
+
+    MOS6502._A = 0x00;
+    MOS6502._RAM[MemoryLocation] = 0x00;
+
+    MOS6502._P = 0x20;
+    MOS6502._PC = PCStart;
+    MOS6502._CYCLES = 0;
+
+    MOS6502.emulateCycle();
+
+    equal(MOS6502._P, 0x20 + 0x80, "Test 8: Status register set correctly.");
+
+    equal(MOS6502._A, 0xFF, "Test 8: Memory subtracted from accumulator correctly.");
+
+    equal(MOS6502._PC, PCStart + BytesUsed, "Program counter incremented correctly.");
+
+    equal(MOS6502._CYCLES, CycleCost, "Cycle cost calculated correctly.");
+
+});
+
+test("0xF1 - SBC (Indirect, Y) (Cross Page)", function() {
+    /**
+     *    Instruction = SBC - Subtract memory from accumulator with borrow.
+     * Affected Flags = Sign, Zero, Carry, Overflow
+     *    Total Tests = 9
+     */
+
+    var OPCODE = 0xF1,
+        PCStart = 0x4000,
+        ZPAddress = 0x41,
+        AddressByte1 = 0x21,
+        AddressByte2 = 0x31,
+        YRegister = 0xFF,
+        MemoryLocation = MOS6502._MAKE_ADDRESS(AddressByte1, AddressByte2) + YRegister,
+        BytesUsed = 2,
+        CycleCost = 5;
+
+    MOS6502._RAM[PCStart] = OPCODE;
+    MOS6502._RAM[PCStart + 1] = ZPAddress;
+    MOS6502._RAM[ZPAddress] = AddressByte1;
+    MOS6502._RAM[ZPAddress + 1] = AddressByte2;
+    MOS6502._Y = YRegister;
+
+    /**
+     * Test 1: 00 - 00 and C = 0 gives 99 and N=1 V=0 Z=0 C=0
+     */
+
+    MOS6502._A = 0;
+    MOS6502._RAM[MemoryLocation] = 0;
+
+    MOS6502._P = 0x20 + 0x08;
+    MOS6502._PC = PCStart;
+
+    MOS6502.emulateCycle();
+
+    equal(MOS6502._P, 0x20 + 0x80 + 0x08, "Test 1: Status register set correctly.");
+
+    equal(MOS6502._A, 0x99, "Test 1: Memory subtracted from accumulator correctly.");
+
+    /**
+     * Test 2: 00 - 00 and C = 1 gives 00 and N=0 V=0 Z=1 C=1
+     */
+
+    MOS6502._A = 0;
+    MOS6502._RAM[MemoryLocation] = 0;
+
+    MOS6502._P = 0x20 + 0x08 + 0x01;
+    MOS6502._PC = PCStart;
+
+    MOS6502.emulateCycle();
+
+    equal(MOS6502._P, 0x20 + 0x08 + 0x02 + 0x01, "Test 2: Status register set correctly.");
+
+    equal(MOS6502._A, 0x00, "Test 2: Memory subtracted from accumulator correctly.");
+
+    /**
+     * Test 3: 00 - 01 and C=1 gives 99 and N=1 V=0 Z=0 C=0
+     */
+
+    MOS6502._A = 0x00;
+    MOS6502._RAM[MemoryLocation] = 0x01;
+
+    MOS6502._P = 0x20 + 0x08 + 0x01;
+    MOS6502._PC = PCStart;
+
+    MOS6502.emulateCycle();
+
+    equal(MOS6502._P, 0x20 + 0x80 + 0x08, "Test 3: Status register set correctly.");
+
+    equal(MOS6502._A, 0x99, "Test 3: Memory subtracted from accumulator correctly.");
+
+    /**
+     * Test 4: 0a - 00 and C=1 gives 0a and N=0 V=0 Z=0 C=1
+     */
+
+    MOS6502._A = 0x0A;
+    MOS6502._RAM[MemoryLocation] = 0x00;
+
+    MOS6502._P = 0x20 + 0x08 + 0x01;
+    MOS6502._PC = PCStart;
+
+    MOS6502.emulateCycle();
+
+    equal(MOS6502._P, 0x20 + 0x08 + 0x01, "Test 4: Status register set correctly.");
+
+    equal(MOS6502._A, 0x0A, "Test 4: Memory subtracted from accumulator correctly.");
+
+    /**
+     * Test 5: 0b - 00 and C=0 gives 0a and N=0 V=0 Z=0 C=1
+     */
+
+    MOS6502._A = 0x0B;
+    MOS6502._RAM[MemoryLocation] = 0x00;
+
+    MOS6502._P = 0x20 + 0x08;
+    MOS6502._PC = PCStart;
+
+    MOS6502.emulateCycle();
+
+    equal(MOS6502._P, 0x20 + 0x08 + 0x01, "Test 5: Status register set correctly.");
+
+    equal(MOS6502._A, 0x0A, "Test 5: Memory subtracted from accumulator correctly.");
+
+    /**
+     * Test 6: 9a - 00 and C=1 gives 9a and N=1 V=0 Z=0 C=1
+     */
+
+    MOS6502._A = 0x9A;
+    MOS6502._RAM[MemoryLocation] = 0x00;
+
+    MOS6502._P = 0x20 + 0x08 + 0x01;
+    MOS6502._PC = PCStart;
+
+    MOS6502.emulateCycle();
+
+    equal(MOS6502._P, 0x20 + 0x80 + 0x08 + 0x01, "Test 6: Status register set correctly.");
+
+    equal(MOS6502._A, 0x9A, "Test 6: Memory subtracted from accumulator correctly.");
+
+    /**
+     * Test 7: 9b - 00 and C=0 gives 9a and N=1 V=0 Z=0 C=1
+     */
+
+    MOS6502._A = 0x9B;
+    MOS6502._RAM[MemoryLocation] = 0x00;
+
+    MOS6502._P = 0x20 + 0x08;
+    MOS6502._PC = PCStart;
+
+    MOS6502.emulateCycle();
+
+    equal(MOS6502._P, 0x20 + 0x80 + 0x08 + 0x01, "Test 7: Status register set correctly.");
+
+    equal(MOS6502._A, 0x9A, "Test 7: Memory subtracted from accumulator correctly.");
+
+    /**
+     * Test 8: 00 - 00 and C=0 gives FF and N=1 V=0 Z=0 C=0
+     *         DECIMAL MODE OFF
+     */
+
+    MOS6502._A = 0x00;
+    MOS6502._RAM[MemoryLocation] = 0x00;
+
+    MOS6502._P = 0x20;
+    MOS6502._PC = PCStart;
+    MOS6502._CYCLES = 0;
+
+    MOS6502.emulateCycle();
+
+    equal(MOS6502._P, 0x20 + 0x80, "Test 8: Status register set correctly.");
+
+    equal(MOS6502._A, 0xFF, "Test 8: Memory subtracted from accumulator correctly.");
+
+    equal(MOS6502._PC, PCStart + BytesUsed, "Program counter incremented correctly.");
+
+    equal(MOS6502._CYCLES, CycleCost, "Cycle cost calculated correctly.");
+
+});
+
+//</editor-fold>
+
 
 /**
  * Tests to be implemented:
 
  // 0xE0 - 0xEF
- case (0xE0) : me.CPX(); break;
- case (0xE1) : me.SBC(); break;
- case (0xE4) : me.CPX(); break;
- case (0xE5) : me.SBC(); break;
  case (0xE6) : me.INC(); break;
  case (0xE8) : me.INX(); break;
- case (0xE9) : me.SBC(); break;
  case (0xEA) : me.NOP(); break;
- case (0xEC) : me.CPX(); break;
- case (0xED) : me.SBC(); break;
  case (0xEE) : me.INC(); break;
 
  // 0xF0 - 0xFF
  case (0xF0) : me.BEQ(); break;
- case (0xF1) : me.SBC(); break;
- case (0xF5) : me.SBC(); break;
  case (0xF6) : me.INC(); break;
  case (0xF8) : me.SED(); break;
- case (0xF9) : me.SBC(); break;
- case (0xFD) : me.SBC(); break;
  case (0xFE) : me.INC(); break;
  */

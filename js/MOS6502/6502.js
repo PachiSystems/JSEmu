@@ -719,33 +719,8 @@ MOS6502.prototype.ADC = function ADC() {
 
     }
 
-    /* This is the second attempt at implementing ADC:
-    var data = OPER + me._A + (me._IF_CARRY() ? 1 : 0);
+    // This is the third attempt at implementing ADC:
 
-    me._SET_ZERO(data & 0xFF);
-
-    if (me._IF_DECIMAL()) {
-
-        if(((me._A & 0xF) + (OPER & 0xF) + (me._IF_CARRY() ? 1 : 0)) > 9) data += 6;
-
-        me._SET_SIGN(data);
-        me._SET_OVERFLOW(!((me._A ^ OPER) & 0x80) && ((me._A ^ data) & 0x80));
-
-        if (data > 0x99) data += 0x60;
-
-        me._SET_CARRY(data > 0x99);
-
-    } else {
-
-        me._SET_SIGN(data);
-        me._SET_OVERFLOW(!((me._A ^ OPER) & 0x80) && ((me._A ^ data) & 0x80));
-        me._SET_CARRY(data > 0xFF);
-    }
-
-    me._A = data & 0xFF;
-    */
-
-    // And here's the third:
     var tmp;
 
     if ((0x80 & (me._A ^ OPER)) > 0) {
@@ -2702,6 +2677,7 @@ MOS6502.prototype.SBC = function() {
 
     }
 
+    /*
     var temp = me._A - OPER - (me._IF_CARRY() ? 0 : 1);
 
     me._SET_OVERFLOW( ( (me._A ^ temp) & 0x80) && ( (me._A ^ OPER) & 0x80));
@@ -2715,6 +2691,71 @@ MOS6502.prototype.SBC = function() {
     }
     me._SET_CARRY(temp < 0x100);
     me._A = (temp & 0xFF);
+    */
+
+    // Try to do SBC in a similar fashion to ADC...
+    var tmp,w;
+
+    if( (0x80 & (me._A ^ OPER)) > 0) {
+        me._SET_OVERFLOW(true);
+    } else {
+        me._SET_OVERFLOW(false);
+    }
+
+    if (me._IF_DECIMAL()) {
+
+        tmp = 0xF + (me._A & 0xF) - (OPER & 0xF) + (me._IF_CARRY() ? 1 : 0);
+
+        if (tmp < 0x10) {
+
+            w = 0;
+            tmp -= 6;
+
+        } else {
+
+            w = 0x10;
+            tmp -= 0x10;
+
+        }
+
+        w += 0xF0 + (me._A & 0xF0) - (OPER & 0XF0);
+
+        if (w < 0x100) {
+
+            me._SET_CARRY(false);
+
+            if(me._IF_OVERFLOW() && w < 0x80) { me._SET_OVERFLOW(false); }
+
+            w -= 0x60;
+
+        } else {
+
+            me._SET_CARRY(true);
+
+            if(me._IF_OVERFLOW() && w >= 0x180) { me._SET_OVERFLOW(false); }
+
+        }
+
+        w += tmp;
+
+    } else {
+
+        w = 0xFF + me._A - OPER + (me._IF_CARRY() ? 1 : 0);
+
+        if ( w < 0x100 ) {
+            me._SET_CARRY(false);
+            if(me._IF_OVERFLOW() && w < 0x80) { me._SET_OVERFLOW(false); }
+        } else {
+            me._SET_CARRY(true);
+            if(me._IF_OVERFLOW() && w >= 0x180) { me._SET_OVERFLOW(false); }
+        }
+    }
+
+    me._A = w & 0xFF;
+
+    me._SET_ZERO(me._A);
+
+    me._SET_SIGN(me._A);
 
 };
 
