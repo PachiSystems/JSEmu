@@ -18277,19 +18277,295 @@ test("0xF1 - SBC (Indirect, Y) (Cross Page)", function() {
 
 //</editor-fold>
 
+/*********************************************************************************************************************/
+
+//<editor-fold desc="INC Tests">
+
+QUnit.module("Instruction - INC", {
+    setup: function() {
+        MOS6502.init();
+    }
+});
+
+test("0xE6 - INC (Zero Page)",function() {
+    /**
+     *    Instruction = INC - Increment memory by one.
+     * Affected Flags = Sign, Zero
+     *    Total Tests = 4
+     */
+    var OPCODE = 0xE6,
+        PCStart = 0x4000,
+        ZPAddress = 0x41,
+        MemoryLocation = ZPAddress,
+        CycleCost = 5,
+        BytesUsed = 2;
+
+    MOS6502._RAM[PCStart] = OPCODE;
+    MOS6502._RAM[PCStart + 1] = ZPAddress;
+
+    /**
+     * Test 1: Set none.
+     */
+
+    MOS6502._PC = PCStart;
+    MOS6502._P = 0x20;
+    MOS6502._CYCLES = 0;
+    MOS6502._RAM[MemoryLocation] = 0x20;
+
+    MOS6502.emulateCycle();
+
+    equal(MOS6502._RAM[MemoryLocation], 0x21, "Test 1: Memory incremented successfully.");
+
+    equal(MOS6502._P,0x20,"Test 1: Status register set correctly.");
+
+    /**
+     * Test 2: Set sign.
+     */
+
+    MOS6502._PC = PCStart;
+    MOS6502._P = 0x20;
+    MOS6502._RAM[MemoryLocation] = 0xFE;
+
+    MOS6502.emulateCycle();
+
+    equal(MOS6502._RAM[MemoryLocation], 0xFF, "Test 2: Memory incremented successfully.");
+
+    equal(MOS6502._P,0xA0,"Test 2: Status register set correctly.");
+
+    /**
+     * Test 3: Set zero.
+     */
+
+    MOS6502._PC = PCStart;
+    MOS6502._P = 0x20;
+    MOS6502._CYCLES = 0;
+    MOS6502._RAM[MemoryLocation] = 0xFF;
+
+    MOS6502.emulateCycle();
+
+    equal(MOS6502._RAM[MemoryLocation], 0x00, "Test 3: Memory incremented successfully.");
+
+    equal(MOS6502._P,0x22,"Test 3: Status register set correctly.");
+
+    equal(MOS6502._PC, PCStart + BytesUsed, "Program counter incremented successfully.");
+
+    equal(MOS6502._CYCLES, CycleCost, "Cycles calculated correctly.");
+});
+
+test("0xF6 - INC (Zero Page, X)",function() {
+    /**
+     *    Instruction = INC - Increment memory by one.
+     * Affected Flags = Sign, Zero
+     *    Total Tests = 4
+     */
+    var OPCODE = 0xF6,
+        PCStart = 0x4000,
+        ZPAddress = 0x41,
+        XRegister = 0x51,
+        MemoryLocation = ZPAddress + XRegister,
+        CycleCost = 6,
+        BytesUsed = 2;
+
+    MOS6502._RAM[PCStart] = OPCODE;
+    MOS6502._RAM[PCStart + 1] = ZPAddress;
+    MOS6502._X = XRegister;
+
+    /**
+     * Test 1: Set none.
+     */
+
+    MOS6502._PC = PCStart;
+    MOS6502._P = 0x20;
+    MOS6502._CYCLES = 0;
+    MOS6502._RAM[MemoryLocation] = 0x20;
+
+    MOS6502.emulateCycle();
+
+    equal(MOS6502._RAM[MemoryLocation], 0x21, "Test 1: Memory incremented successfully.");
+
+    equal(MOS6502._P,0x20,"Test 1: Status register set correctly.");
+
+    /**
+     * Test 2: Set sign.
+     */
+
+    MOS6502._PC = PCStart;
+    MOS6502._P = 0x20;
+    MOS6502._RAM[MemoryLocation] = 0xFE;
+
+    MOS6502.emulateCycle();
+
+    equal(MOS6502._RAM[MemoryLocation], 0xFF, "Test 2: Memory incremented successfully.");
+
+    equal(MOS6502._P,0xA0,"Test 2: Status register set correctly.");
+
+    /**
+     * Test 3: Set zero.
+     */
+
+    MOS6502._PC = PCStart;
+    MOS6502._P = 0x20;
+    MOS6502._CYCLES = 0;
+    MOS6502._RAM[MemoryLocation] = 0xFF;
+
+    MOS6502.emulateCycle();
+
+    equal(MOS6502._RAM[MemoryLocation], 0x00, "Test 3: Memory incremented successfully.");
+
+    equal(MOS6502._P,0x22,"Test 3: Status register set correctly.");
+
+    equal(MOS6502._PC, PCStart + BytesUsed, "Program counter incremented successfully.");
+
+    equal(MOS6502._CYCLES, CycleCost, "Cycles calculated correctly.");
+});
+
+test("0xEE - INC (Absolute)",function() {
+    /**
+     *    Instruction = INC - Increment memory by one.
+     * Affected Flags = Sign, Zero
+     *    Total Tests = 4
+     */
+    var OPCODE = 0xEE,
+        PCStart = 0x4000,
+        AddressByte1 = 0x21,
+        AddressByte2 = 0x31,
+        MemoryLocation = MOS6502._MAKE_ADDRESS(AddressByte1,AddressByte2),
+        CycleCost = 6,
+        BytesUsed = 3;
+
+    MOS6502._RAM[PCStart] = OPCODE;
+    MOS6502._RAM[PCStart + 1] = AddressByte1;
+    MOS6502._RAM[PCStart + 2] = AddressByte2;
+
+    /**
+     * Test 1: Set none.
+     */
+
+    MOS6502._PC = PCStart;
+    MOS6502._P = 0x20;
+    MOS6502._CYCLES = 0;
+    MOS6502._RAM[MemoryLocation] = 0x20;
+
+    MOS6502.emulateCycle();
+
+    equal(MOS6502._RAM[MemoryLocation], 0x21, "Test 1: Memory incremented successfully.");
+
+    equal(MOS6502._P,0x20,"Test 1: Status register set correctly.");
+
+    /**
+     * Test 2: Set sign.
+     */
+
+    MOS6502._PC = PCStart;
+    MOS6502._P = 0x20;
+    MOS6502._RAM[MemoryLocation] = 0xFE;
+
+    MOS6502.emulateCycle();
+
+    equal(MOS6502._RAM[MemoryLocation], 0xFF, "Test 2: Memory incremented successfully.");
+
+    equal(MOS6502._P,0xA0,"Test 2: Status register set correctly.");
+
+    /**
+     * Test 3: Set zero.
+     */
+
+    MOS6502._PC = PCStart;
+    MOS6502._P = 0x20;
+    MOS6502._CYCLES = 0;
+    MOS6502._RAM[MemoryLocation] = 0xFF;
+
+    MOS6502.emulateCycle();
+
+    equal(MOS6502._RAM[MemoryLocation], 0x00, "Test 3: Memory incremented successfully.");
+
+    equal(MOS6502._P,0x22,"Test 3: Status register set correctly.");
+
+    equal(MOS6502._PC, PCStart + BytesUsed, "Program counter incremented successfully.");
+
+    equal(MOS6502._CYCLES, CycleCost, "Cycles calculated correctly.");
+});
+
+test("0xFE - INC (Absolute, X)",function() {
+    /**
+     *    Instruction = INC - Increment memory by one.
+     * Affected Flags = Sign, Zero
+     *    Total Tests = 4
+     */
+    var OPCODE = 0xFE,
+        PCStart = 0x4000,
+        AddressByte1 = 0x21,
+        AddressByte2 = 0x31,
+        XRegister = 0x41,
+        MemoryLocation = MOS6502._MAKE_ADDRESS(AddressByte1,AddressByte2) + XRegister,
+        CycleCost = 7,
+        BytesUsed = 3;
+
+    MOS6502._RAM[PCStart] = OPCODE;
+    MOS6502._RAM[PCStart + 1] = AddressByte1;
+    MOS6502._RAM[PCStart + 2] = AddressByte2;
+    MOS6502._X = XRegister;
+
+    /**
+     * Test 1: Set none.
+     */
+
+    MOS6502._PC = PCStart;
+    MOS6502._P = 0x20;
+    MOS6502._CYCLES = 0;
+    MOS6502._RAM[MemoryLocation] = 0x20;
+
+    MOS6502.emulateCycle();
+
+    equal(MOS6502._RAM[MemoryLocation], 0x21, "Test 1: Memory incremented successfully.");
+
+    equal(MOS6502._P,0x20,"Test 1: Status register set correctly.");
+
+    /**
+     * Test 2: Set sign.
+     */
+
+    MOS6502._PC = PCStart;
+    MOS6502._P = 0x20;
+    MOS6502._RAM[MemoryLocation] = 0xFE;
+
+    MOS6502.emulateCycle();
+
+    equal(MOS6502._RAM[MemoryLocation], 0xFF, "Test 2: Memory incremented successfully.");
+
+    equal(MOS6502._P,0xA0,"Test 2: Status register set correctly.");
+
+    /**
+     * Test 3: Set zero.
+     */
+
+    MOS6502._PC = PCStart;
+    MOS6502._P = 0x20;
+    MOS6502._CYCLES = 0;
+    MOS6502._RAM[MemoryLocation] = 0xFF;
+
+    MOS6502.emulateCycle();
+
+    equal(MOS6502._RAM[MemoryLocation], 0x00, "Test 3: Memory incremented successfully.");
+
+    equal(MOS6502._P,0x22,"Test 3: Status register set correctly.");
+
+    equal(MOS6502._PC, PCStart + BytesUsed, "Program counter incremented successfully.");
+
+    equal(MOS6502._CYCLES, CycleCost, "Cycles calculated correctly.");
+});
+
+//</editor-fold>
+
 
 /**
  * Tests to be implemented:
 
  // 0xE0 - 0xEF
- case (0xE6) : me.INC(); break;
  case (0xE8) : me.INX(); break;
  case (0xEA) : me.NOP(); break;
- case (0xEE) : me.INC(); break;
 
  // 0xF0 - 0xFF
  case (0xF0) : me.BEQ(); break;
- case (0xF6) : me.INC(); break;
  case (0xF8) : me.SED(); break;
- case (0xFE) : me.INC(); break;
  */
