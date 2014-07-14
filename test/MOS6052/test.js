@@ -18630,6 +18630,44 @@ test("0xE8 - INX (Implied)",function() {
 
 //</editor-fold>
 
+/*********************************************************************************************************************/
+
+//<editor-fold desc="NOP Tests">
+
+QUnit.module("Instruction - NOP", {
+    setup: function() {
+        MOS6502.init();
+    }
+});
+
+test("0xEA - NOP (Implied)", function() {
+    /**
+     *    Instruction = CLI - Clear interrupt disable bit
+     * Affected Flags = None
+     *    Total Tests = 1
+     */
+
+    var OPCODE = 0xEA,
+        CycleCost = 2,
+        BytesUsed = 1,
+        PCStart = 0x4000;
+
+    MOS6502._RAM[PCStart] = OPCODE;
+
+    MOS6502._PC = PCStart;
+    MOS6502._CYCLES = 0;
+    MOS6502._P = 0x20;
+
+    MOS6502.emulateCycle();
+
+    equal(MOS6502._PC,PCStart + BytesUsed,"Program counter incremented correctly.");
+
+    equal(MOS6502._CYCLES,CycleCost,"Cycles set correctly.");
+
+});
+
+//</editor-fold>
+
 
 /**
  * Tests to be implemented:
