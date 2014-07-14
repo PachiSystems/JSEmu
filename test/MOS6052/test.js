@@ -16304,13 +16304,61 @@ test("0xD0 - BNE (Relative)", function() {
 
 //</editor-fold>
 
+/*********************************************************************************************************************/
+
+//<editor-fold desc="CLD Tests">
+
+QUnit.module("Instruction - CLD", {
+    setup: function() {
+        MOS6502.init();
+    }
+});
+
+test("0xD8 - CLD (Implied)",function() {
+    /**
+     *    Instruction = CLD - Clear decimal mode.
+     * Affected Flags = Sign, Zero
+     *    Total Tests = 2
+     */
+    var OPCODE = 0xD8,
+        PCStart = 0x4000,
+        CycleCost = 2,
+        BytesUsed = 1;
+
+    MOS6502._RAM[PCStart] = OPCODE;
+
+    /**
+     * Test 1: Clear decimal mode when set.
+     */
+    MOS6502._PC = PCStart;
+    MOS6502._P = 0x28;
+
+    MOS6502.emulateCycle();
+
+    equal(MOS6502._P, 0x20, "Test 1: Status register set correctly.");
+
+    /**
+     * Test 2: Clear decimal mode when decimal mode not set.
+     */
+    MOS6502._PC = PCStart;
+    MOS6502._P = 0x20;
+    MOS6502._CYCLES = 0;
+
+    MOS6502.emulateCycle();
+
+    equal(MOS6502._P, 0x20, "Test 2: Status register set correctly.");
+
+    equal(MOS6502._PC, PCStart + BytesUsed, "Program counter incremented successfully.");
+
+    equal(MOS6502._CYCLES, CycleCost, "Cycles calculated correctly.");
+
+});
+
+//</editor-fold>
+
 
 /**
  * Tests to be implemented:
-
- // 0xD0 - 0xDF
- case (0xD0) : me.BNE(); break;
- case (0xD8) : me.CLD(); break;
 
  // 0xE0 - 0xEF
  case (0xE0) : me.CPX(); break;
