@@ -16356,6 +16356,190 @@ test("0xD8 - CLD (Implied)",function() {
 
 //</editor-fold>
 
+/*********************************************************************************************************************/
+
+//<editor-fold desc="CPY Tests">
+
+QUnit.module("Instruction - CPX", {
+    setup: function() {
+        MOS6502.init();
+    }
+});
+
+test("0xE0 - CPX (Immediate)",function() {
+    /**
+     *    Instruction = CPX - Compare Memory and Index X.
+     * Affected Flags = Sign, Zero, Carry
+     *    Total Tests = 3
+     */
+    var OPCODE = 0xE0,
+        PCStart = 0x4000,
+        CycleCost = 2,
+        BytesUsed = 2;
+
+    MOS6502._RAM[PCStart] = OPCODE;
+
+    /**
+     * Test 1: Set sign.
+     */
+    MOS6502._PC = PCStart;
+    MOS6502._RAM[PCStart + 1] = 0x53;
+    MOS6502._X = 0x51;
+    MOS6502._P = 0x20;
+
+    MOS6502.emulateCycle();
+
+    equal(MOS6502._P, 0xA0, "Test 1: Status register set correctly.");
+
+    /**
+     * Test 2: Set zero & carry.
+     */
+    MOS6502._PC = PCStart;
+    MOS6502._RAM[PCStart + 1] = 0x53;
+    MOS6502._X = 0x53;
+    MOS6502._P = 0x20;
+
+    MOS6502.emulateCycle();
+
+    equal(MOS6502._P, 0x23, "Test 2: Status register set correctly.");
+
+    /**
+     * Test 3: Set carry.
+     */
+    MOS6502._PC = PCStart;
+    MOS6502._RAM[PCStart + 1] = 0x53;
+    MOS6502._X = 0x56;
+    MOS6502._P = 0x20;
+    MOS6502._CYCLES = 0;
+
+    MOS6502.emulateCycle();
+
+    equal(MOS6502._P, 0x21, "Test 3: Status register set correctly.");
+
+    equal(MOS6502._PC, PCStart + BytesUsed, "Program counter incremented successfully.");
+
+    equal(MOS6502._CYCLES, CycleCost, "Cycles calculated correctly.");
+});
+
+test("0xE4 - CPX (Zero Page)",function() {
+    /**
+     *    Instruction = CPX - Compare memory and index X.
+     * Affected Flags = Sign, Zero, Carry
+     *    Total Tests = 3
+     */
+    var OPCODE = 0xE4,
+        PCStart = 0x4000,
+        ZPAddress = 0x41,
+        CycleCost = 3,
+        BytesUsed = 2;
+
+    MOS6502._RAM[PCStart] = OPCODE;
+    MOS6502._RAM[PCStart + 1] = ZPAddress;
+
+    /**
+     * Test 1: Set sign.
+     */
+    MOS6502._PC = PCStart;
+    MOS6502._RAM[ZPAddress] = 0x53;
+    MOS6502._X = 0x51;
+    MOS6502._P = 0x20;
+
+    MOS6502.emulateCycle();
+
+    equal(MOS6502._P, 0xA0, "Test 1: Status register set correctly.");
+
+    /**
+     * Test 2: Set zero & carry.
+     */
+    MOS6502._PC = PCStart;
+    MOS6502._RAM[ZPAddress] = 0x53;
+    MOS6502._X = 0x53;
+    MOS6502._P = 0x20;
+
+    MOS6502.emulateCycle();
+
+    equal(MOS6502._P, 0x23, "Test 2: Status register set correctly.");
+
+    /**
+     * Test 3: Set carry.
+     */
+    MOS6502._PC = PCStart;
+    MOS6502._RAM[ZPAddress] = 0x53;
+    MOS6502._X = 0x56;
+    MOS6502._P = 0x20;
+    MOS6502._CYCLES = 0;
+
+    MOS6502.emulateCycle();
+
+    equal(MOS6502._P, 0x21, "Test 3: Status register set correctly.");
+
+    equal(MOS6502._PC, PCStart + BytesUsed, "Program counter incremented successfully.");
+
+    equal(MOS6502._CYCLES, CycleCost, "Cycles calculated correctly.");
+});
+
+test("0xEC - CPX (Absolute)",function() {
+    /**
+     *    Instruction = CPX - Compare memory and index X.
+     * Affected Flags = Sign, Zero, Carry
+     *    Total Tests = 3
+     */
+    var OPCODE = 0xEC,
+        PCStart = 0x4000,
+        CycleCost = 4,
+        AddressByte1 = 0x21,
+        AddressByte2 = 0x31,
+        Address = MOS6502._MAKE_ADDRESS(AddressByte1, AddressByte2),
+        BytesUsed = 3;
+
+    MOS6502._RAM[PCStart] = OPCODE;
+    MOS6502._RAM[PCStart + 1] = AddressByte1;
+    MOS6502._RAM[PCStart + 2] = AddressByte2
+
+    /**
+     * Test 1: Set sign.
+     */
+    MOS6502._PC = PCStart;
+    MOS6502._RAM[Address] = 0x53;
+    MOS6502._X = 0x51;
+    MOS6502._P = 0x20;
+
+    MOS6502.emulateCycle();
+
+    equal(MOS6502._P, 0xA0, "Test 1: Status register set correctly.");
+
+    /**
+     * Test 2: Set zero & carry.
+     */
+    MOS6502._PC = PCStart;
+    MOS6502._RAM[Address] = 0x53;
+    MOS6502._X = 0x53;
+    MOS6502._P = 0x20;
+
+    MOS6502.emulateCycle();
+
+    equal(MOS6502._P, 0x23, "Test 2: Status register set correctly.");
+
+    /**
+     * Test 3: Set carry.
+     */
+    MOS6502._PC = PCStart;
+    MOS6502._RAM[Address] = 0x53;
+    MOS6502._X = 0x56;
+    MOS6502._P = 0x20;
+    MOS6502._CYCLES = 0;
+
+    MOS6502.emulateCycle();
+
+    equal(MOS6502._P, 0x21, "Test 3: Status register set correctly.");
+
+    equal(MOS6502._PC, PCStart + BytesUsed, "Program counter incremented successfully.");
+
+    equal(MOS6502._CYCLES, CycleCost, "Cycles calculated correctly.");
+});
+
+//</editor-fold>
+
 
 /**
  * Tests to be implemented:
