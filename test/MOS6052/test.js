@@ -16171,6 +16171,139 @@ test("0xCA - DEX (Implied)",function() {
 
 //</editor-fold>
 
+/*********************************************************************************************************************/
+
+//<editor-fold desc="BNE Tests">
+
+QUnit.module("Instruction - BNE", {
+    setup: function() {
+        MOS6502.init();
+    }
+});
+
+test("0xD0 - BNE (Relative)", function() {
+    /**
+     *    Instruction = BNE - Branch on result not zero
+     * Affected Flags = None
+     *    Total Tests = 5
+     */
+
+    var OPCODE = 0xD0,
+        relativePlusSamePage = 64,
+        relativeMinusSamePage = 192,
+        relativePlusNextPage = 127,
+        relativeMinusNextPage = 129,
+        CycleCost = 2,
+        BytesUsed = 2,
+        PCStart = 0x4080,
+        PCStartHigh = 0x40E0,
+        PCStartLow = 0x4010;
+
+    MOS6502._PC = PCStart;
+    MOS6502._RAM[PCStart] = OPCODE;
+    MOS6502._RAM[PCStartHigh] = OPCODE;
+    MOS6502._RAM[PCStartLow] = OPCODE;
+    MOS6502._CYCLES = 0;
+
+    /**
+     * Test 1: Zero set (no branch, but 2 cycles used)
+     */
+
+        // Enable overflow.
+    MOS6502._P = 0x22;
+
+    MOS6502.emulateCycle();
+
+    equal(MOS6502._PC,
+            PCStart + BytesUsed,
+        "Zero set: Program Counter set correctly.");
+
+    equal(MOS6502._CYCLES,
+        CycleCost,
+        "Zero set: Cycles set correctly.");
+
+    /**
+     * Test 2: Zero clear. Branch forward to same page. (3 cycles)
+     */
+
+    MOS6502._P = 0x20;
+    MOS6502._PC = PCStart;
+    MOS6502._RAM[PCStart + 1] = relativePlusSamePage;
+    MOS6502._CYCLES = 0;
+
+    MOS6502.emulateCycle();
+
+    equal(MOS6502._PC,
+            PCStart + relativePlusSamePage,
+        "Zero clear, branch forward, same page: Program Counter set correctly.");
+
+    equal(MOS6502._CYCLES,
+            CycleCost + 1,
+        "Zero clear, branch forward, same page: Cycles set correctly.");
+
+    /**
+     * Test 3: Zero clear. Branch backward to same page. (3 cycles)
+     */
+
+    MOS6502._P = 0x20;
+    MOS6502._PC = PCStart;
+    MOS6502._RAM[PCStart + 1] = relativeMinusSamePage;
+    MOS6502._CYCLES = 0;
+
+    MOS6502.emulateCycle();
+
+    equal(MOS6502._PC,
+            (PCStart + relativeMinusSamePage) - 256,
+        "Zero clear, branch backwards, same page: Program Counter set correctly.");
+
+    equal(MOS6502._CYCLES,
+            CycleCost + 1,
+        "Zero clear, branch backwards, same page: Cycles set correctly.");
+
+    /**
+     * Test 4: Zero clear. Branch forward to different page. (4 cycles)
+     *
+     * NOTE: It's not possible to branch to another page from 0x4080. Using 0x40E0 for forward branch.
+     */
+
+    MOS6502._P = 0x21;
+    MOS6502._PC = PCStartHigh;
+    MOS6502._RAM[PCStartHigh + 1] = relativePlusNextPage;
+    MOS6502._CYCLES = 0;
+
+    MOS6502.emulateCycle();
+
+    equal(MOS6502._PC,
+            PCStartHigh + relativePlusNextPage,
+        "Zero clear, branch forward, different page: Program Counter set correctly.");
+
+    equal(MOS6502._CYCLES,
+            CycleCost + 2,
+        "Zero clear, branch forward, different page: Cycles set correctly.");
+
+    /**
+     * Test 5: Zero clear. Branch backward to different page. (4 cycles)
+     */
+
+    MOS6502._P = 0x21;
+    MOS6502._PC = PCStartLow;
+    MOS6502._RAM[PCStartLow + 1] = relativeMinusNextPage;
+    MOS6502._CYCLES = 0;
+
+    MOS6502.emulateCycle();
+
+    equal(MOS6502._PC,
+            (PCStartLow + relativeMinusNextPage) - 256,
+        "Zero clear, branch backwards, different page: Program Counter set correctly.");
+
+    equal(MOS6502._CYCLES,
+            CycleCost + 2,
+        "Zero clear, branch backwards, different page: Cycles set correctly.");
+
+});
+
+//</editor-fold>
+
 
 /**
  * Tests to be implemented:
