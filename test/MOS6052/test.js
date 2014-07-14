@@ -12556,24 +12556,60 @@ QUnit.module("Instruction - DEY", {
 test("0x88 - DEY (Implied)",function() {
     /**
      *    Instruction = DEY - Decrement index Y by one.
-     * Affected Flags = None
+     * Affected Flags = Sign, Zero
      *    Total Tests = 1
      */
     var OPCODE = 0x88,
         PCStart = 0x4000,
-        YRegister = Math.floor(Math.random() * 254) + 1,
         CycleCost = 2,
         BytesUsed = 1;
 
     MOS6502._RAM[PCStart] = OPCODE;
 
+    /**
+     * Test 1: Set none.
+     */
     MOS6502._PC = PCStart;
-    MOS6502._CYCLES = 0;
-    MOS6502._Y = YRegister;
+    MOS6502._P = 0x20;
+    MOS6502._Y = 0x31;
 
     MOS6502.emulateCycle();
 
-    equal(MOS6502._Y, YRegister - 1, "Y Index decremented successfully.");
+    equal(MOS6502._Y, 0x30, "Test 1: Y Index decremented successfully.");
+
+    equal(MOS6502._P, 0x20, "Test 1: Status register set correctly.");
+
+    /**
+     * Test 2: Set zero.
+     */
+    MOS6502._PC = PCStart;
+    MOS6502._P = 0x20;
+    MOS6502._CYCLES = 0;
+    MOS6502._Y = 0x01;
+
+    MOS6502.emulateCycle();
+
+    equal(MOS6502._Y, 0x00, "Test 2: Y Index decremented successfully.");
+
+    equal(MOS6502._P, 0x22, "Test 2: Status register set correctly.");
+
+    equal(MOS6502._PC, PCStart + BytesUsed, "Program counter incremented successfully.");
+
+    equal(MOS6502._CYCLES, CycleCost, "Cycles calculated correctly.");
+
+    /**
+     * Test 3: Set sign.
+     */
+    MOS6502._PC = PCStart;
+    MOS6502._P = 0x20;
+    MOS6502._CYCLES = 0;
+    MOS6502._Y = 0x00;
+
+    MOS6502.emulateCycle();
+
+    equal(MOS6502._Y, 0xFF, "Test 3: Y Index decremented successfully.");
+
+    equal(MOS6502._P, 0xA0, "Test 3: Status register set correctly.");
 
     equal(MOS6502._PC, PCStart + BytesUsed, "Program counter incremented successfully.");
 
@@ -16060,12 +16096,84 @@ test("0xC8 - INY (Implied)",function() {
 
 //</editor-fold>
 
+/*********************************************************************************************************************/
+
+//<editor-fold desc="DEX Tests">
+
+QUnit.module("Instruction - DEX", {
+    setup: function() {
+        MOS6502.init();
+    }
+});
+
+test("0xCA - DEX (Implied)",function() {
+    /**
+     *    Instruction = DEX - Decrement index X by one.
+     * Affected Flags = Sign, Zero
+     *    Total Tests = 1
+     */
+    var OPCODE = 0xCA,
+        PCStart = 0x4000,
+        CycleCost = 2,
+        BytesUsed = 1;
+
+    MOS6502._RAM[PCStart] = OPCODE;
+
+    /**
+     * Test 1: Set none.
+     */
+    MOS6502._PC = PCStart;
+    MOS6502._P = 0x20;
+    MOS6502._X = 0x31;
+
+    MOS6502.emulateCycle();
+
+    equal(MOS6502._X, 0x30, "Test 1: X Index decremented successfully.");
+
+    equal(MOS6502._P, 0x20, "Test 1: Status register set correctly.");
+
+    /**
+     * Test 2: Set zero.
+     */
+    MOS6502._PC = PCStart;
+    MOS6502._P = 0x20;
+    MOS6502._CYCLES = 0;
+    MOS6502._X = 0x01;
+
+    MOS6502.emulateCycle();
+
+    equal(MOS6502._X, 0x00, "Test 2: X Index decremented successfully.");
+
+    equal(MOS6502._P, 0x22, "Test 2: Status register set correctly.");
+
+    equal(MOS6502._PC, PCStart + BytesUsed, "Program counter incremented successfully.");
+
+    equal(MOS6502._CYCLES, CycleCost, "Cycles calculated correctly.");
+
+    /**
+     * Test 3: Set sign.
+     */
+    MOS6502._PC = PCStart;
+    MOS6502._P = 0x20;
+    MOS6502._CYCLES = 0;
+    MOS6502._X = 0x00;
+
+    MOS6502.emulateCycle();
+
+    equal(MOS6502._X, 0xFF, "Test 3: X Index decremented successfully.");
+
+    equal(MOS6502._P, 0xA0, "Test 3: Status register set correctly.");
+
+    equal(MOS6502._PC, PCStart + BytesUsed, "Program counter incremented successfully.");
+
+    equal(MOS6502._CYCLES, CycleCost, "Cycles calculated correctly.");
+});
+
+//</editor-fold>
+
 
 /**
  * Tests to be implemented:
-
- // 0xC0 - 0xCF
- case (0xCA) : me.DEX(); break;
 
  // 0xD0 - 0xDF
  case (0xD0) : me.BNE(); break;
@@ -16093,20 +16201,4 @@ test("0xC8 - INY (Implied)",function() {
  case (0xF9) : me.SBC(); break;
  case (0xFD) : me.SBC(); break;
  case (0xFE) : me.INC(); break;
- */
-
-/**
- Template:
-
-//<editor-fold desc = " Tests">
-
-QUnit.module("Instruction - ", {
-    setup: function() {
-        MOS6502.init();
-    }
-});
-
-test("0x -  ()", function() {});
-
-//</editor-fold>
  */
