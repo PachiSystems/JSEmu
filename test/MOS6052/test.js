@@ -18801,11 +18801,40 @@ test("0xF0 - BEQ (Relative)", function() {
 
 //</editor-fold>
 
+/*********************************************************************************************************************/
 
-/**
- * Tests to be implemented:
+//<editor-fold desc="SED Tests">
 
- // 0xF0 - 0xFF
- case (0xF0) : me.BEQ(); break;
- case (0xF8) : me.SED(); break;
- */
+QUnit.module("Instruction - SED", {
+    setup: function() {
+        MOS6502.init();
+    }
+});
+
+test("0xF8 - SED (Implied)",function() {
+    /**
+     *    Instruction = SED - Set decimal mode.
+     * Affected Flags = None
+     *    Total Tests = 1
+     */
+    var OPCODE = 0xF8,
+        PCStart = 0x4000,
+        CycleCost = 2,
+        BytesUsed = 1;
+
+    MOS6502._RAM[PCStart] = OPCODE;
+
+    MOS6502._PC = PCStart;
+    MOS6502._CYCLES = 0;
+    MOS6502._P = 0x20;
+
+    MOS6502.emulateCycle();
+
+    equal(MOS6502._P, 0x28, "Decimal mode set successfully.");
+
+    equal(MOS6502._PC, PCStart + BytesUsed, "Program counter incremented successfully.");
+
+    equal(MOS6502._CYCLES, CycleCost, "Cycles calculated correctly.");
+});
+
+//</editor-fold>
