@@ -16253,7 +16253,7 @@ test("0xD0 - BNE (Relative)", function() {
     MOS6502.emulateCycle();
 
     equal(MOS6502._PC,
-            (PCStart + relativeMinusSamePage) - 256,
+            (PCStart + relativeMinusSamePage) - 255,
         "Zero clear, branch backwards, same page: Program Counter set correctly.");
 
     equal(MOS6502._CYCLES,
@@ -16293,7 +16293,7 @@ test("0xD0 - BNE (Relative)", function() {
     MOS6502.emulateCycle();
 
     equal(MOS6502._PC,
-            (PCStartLow + relativeMinusNextPage) - 256,
+            (PCStartLow + relativeMinusNextPage) - 255,
         "Zero clear, branch backwards, different page: Program Counter set correctly.");
 
     equal(MOS6502._CYCLES,

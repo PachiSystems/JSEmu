@@ -136,7 +136,7 @@ MOS6502.prototype.loadImage = function (romImage) {
      * Load the program into ROM memory. Check to make sure it's not too big as well...
      */
     if (romImage == "TEST_MODE") {
-        xhr.open("GET","../roms/MOS6502/TestSuite.bin");
+        xhr.open("GET","../roms/MOS6502/TestSuite2.bin");
     } else {
         xhr.open("GET",romImage);
     }
@@ -152,6 +152,8 @@ MOS6502.prototype.loadImage = function (romImage) {
 
                 if (romImage == "TEST_MODE") {
                     me._RAM[(i + 0x4000)] = program[i];
+                    me._RAM[0xFFFC] = 0x00;
+                    me._RAM[0xFFFD] = 0x40;
                 } else {
                     me._RAM[(i + 0x8000)] = program[i];
                 }
@@ -162,12 +164,15 @@ MOS6502.prototype.loadImage = function (romImage) {
         me._PC = me._MAKE_ADDRESS( me._RAM[0xFFFC], me._RAM[0xFFFD] );
 
             // Emulation loop to trigger once our ROM has finished loading.
+        console.log("PC: 0x" + me._PC.toString(16));
+        console.log("OPCODE: 0x" + me._RAM[me._PC].toString(16));
 
             requestAnimFrame(function cpuCycle() {
 
                 if(me._PC !== 0x45C0) {
                     console.log("PC: 0x" + me._PC.toString(16));
                     console.log("OPCODE: 0x" + me._RAM[me._PC].toString(16));
+                    console.log("X: 0x" + me._X.toString(16));
                     console.log(me._NUM_INSTRUCTIONS++);
                 } else {
                     console.log((me._RAM[0x0210] === 0xFF) ? "All tests passed" : "Test failed: " + me._RAM[0x0210]);
@@ -204,290 +209,290 @@ MOS6502.prototype.emulateCycle = function() {
         // 0x00 - 0x0F
         case (0x00) : me.BRK(); break;
         case (0x01) : me.ORA(); break;
-        case (0x02) : break;  // Future expansion
-        case (0x03) : break;  // Future expansion
-        case (0x04) : break;  // Future expansion
+        //case (0x02) : break;  // Future expansion
+        //case (0x03) : break;  // Future expansion
+        //case (0x04) : break;  // Future expansion
         case (0x05) : me.ORA(); break;
         case (0x06) : me.ASL(); break;
-        case (0x07) : break;  // Future expansion
+        //case (0x07) : break;  // Future expansion
         case (0x08) : me.PHP(); break;
         case (0x09) : me.ORA(); break;
         case (0x0A) : me.ASL(); break;
-        case (0x0B) : break;  // Future expansion
-        case (0x0C) : break;  // Future expansion
+        //case (0x0B) : break;  // Future expansion
+        //case (0x0C) : break;  // Future expansion
         case (0x0D) : me.ORA(); break;
         case (0x0E) : me.ASL(); break;
-        case (0x0F) : break;  // Future expansion
+        //case (0x0F) : break;  // Future expansion
 
         // 0x10 - 0x1F
         case (0x10) : me.BPL(); break;
         case (0x11) : me.ORA(); break;
-        case (0x12) : break;  // Future expansion
-        case (0x13) : break;  // Future expansion
-        case (0x14) : break;  // Future expansion
+        //case (0x12) : break;  // Future expansion
+        //case (0x13) : break;  // Future expansion
+        //case (0x14) : break;  // Future expansion
         case (0x15) : me.ORA(); break;
         case (0x16) : me.ASL(); break;
-        case (0x17) : break;  // Future expansion
+        //case (0x17) : break;  // Future expansion
         case (0x18) : me.CLC(); break;
         case (0x19) : me.ORA(); break;
-        case (0x1A) : break;  // Future expansion
-        case (0x1B) : break;  // Future expansion
-        case (0x1C) : break;  // Future expansion
+        //case (0x1A) : break;  // Future expansion
+        //case (0x1B) : break;  // Future expansion
+        //case (0x1C) : break;  // Future expansion
         case (0x1D) : me.ORA(); break;
         case (0x1E) : me.ASL(); break;
-        case (0x1F) : break;  // Future expansion
+        //case (0x1F) : break;  // Future expansion
 
         // 0x20 - 0x2F
         case (0x20) : me.JSR(); break;
         case (0x21) : me.AND(); break;
-        case (0x22) : break;  // Future expansion
-        case (0x23) : break;  // Future expansion
+        //case (0x22) : break;  // Future expansion
+        //case (0x23) : break;  // Future expansion
         case (0x24) : me.BIT(); break;
         case (0x25) : me.AND(); break;
         case (0x26) : me.ROL(); break;
-        case (0x27) : break;  // Future expansion
+        //case (0x27) : break;  // Future expansion
         case (0x28) : me.PLP(); break;
         case (0x29) : me.AND(); break;
         case (0x2A) : me.ROL(); break;
-        case (0x2B) : break;  // Future expansion
+        //case (0x2B) : break;  // Future expansion
         case (0x2C) : me.BIT(); break;
         case (0x2D) : me.AND(); break;
         case (0x2E) : me.ROL(); break;
-        case (0x2F) : break;  // Future expansion
+        //case (0x2F) : break;  // Future expansion
 
         // 0x30 - 0x3F
         case (0x30) : me.BMI(); break;
         case (0x31) : me.AND(); break;
-        case (0x32) : break;  // Future expansion
-        case (0x33) : break;  // Future expansion
-        case (0x34) : break;  // Future expansion
+        //case (0x32) : break;  // Future expansion
+        //case (0x33) : break;  // Future expansion
+        //case (0x34) : break;  // Future expansion
         case (0x35) : me.AND(); break;
         case (0x36) : me.ROL(); break;
-        case (0x37) : break;  // Future expansion
+        //case (0x37) : break;  // Future expansion
         case (0x38) : me.SEC(); break;
         case (0x39) : me.AND(); break;
-        case (0x3A) : break;  // Future expansion
-        case (0x3B) : break;  // Future expansion
-        case (0x3C) : break;  // Future expansion
+        //case (0x3A) : break;  // Future expansion
+        //case (0x3B) : break;  // Future expansion
+        //case (0x3C) : break;  // Future expansion
         case (0x3D) : me.AND(); break;
         case (0x3E) : me.ROL(); break;
-        case (0x3F) : break;  // Future expansion
+        //case (0x3F) : break;  // Future expansion
 
         // 0x40 - 0x4F
         case (0x40) : me.RTI(); break;
         case (0x41) : me.EOR(); break;
-        case (0x42) : break;  // Future expansion
-        case (0x43) : break;  // Future expansion
-        case (0x44) : break;  // Future expansion
+        //case (0x42) : break;  // Future expansion
+        //case (0x43) : break;  // Future expansion
+        //case (0x44) : break;  // Future expansion
         case (0x45) : me.EOR(); break;
         case (0x46) : me.LSR(); break;
-        case (0x47) : break;  // Future expansion
+        //case (0x47) : break;  // Future expansion
         case (0x48) : me.PHA(); break;
         case (0x49) : me.EOR(); break;
         case (0x4A) : me.LSR(); break;
-        case (0x4B) : break;  // Future expansion
+        //case (0x4B) : break;  // Future expansion
         case (0x4C) : me.JMP(); break;
         case (0x4D) : me.EOR(); break;
         case (0x4E) : me.LSR(); break;
-        case (0x4F) : break;  // Future expansion
+        //case (0x4F) : break;  // Future expansion
 
         // 0x50 - 0x5F
         case (0x50) : me.BVC(); break;
         case (0x51) : me.EOR(); break;
-        case (0x52) : break;  // Future expansion
-        case (0x53) : break;  // Future expansion
-        case (0x54) : break;  // Future expansion
+        //case (0x52) : break;  // Future expansion
+        //case (0x53) : break;  // Future expansion
+        //case (0x54) : break;  // Future expansion
         case (0x55) : me.EOR(); break;
         case (0x56) : me.LSR(); break;
-        case (0x57) : break;  // Future expansion
+        //case (0x57) : break;  // Future expansion
         case (0x58) : me.CLI(); break;
         case (0x59) : me.EOR(); break;
-        case (0x5A) : break;  // Future expansion
-        case (0x5B) : break;  // Future expansion
-        case (0x5C) : break;  // Future expansion
+        //case (0x5A) : break;  // Future expansion
+        //case (0x5B) : break;  // Future expansion
+        //case (0x5C) : break;  // Future expansion
         case (0x5D) : me.EOR(); break;
         case (0x5E) : me.LSR(); break;
-        case (0x5F) : break;  // Future expansion
+        //case (0x5F) : break;  // Future expansion
 
         // 0x60 - 0x6F
         case (0x60) : me.RTS(); break;
         case (0x61) : me.ADC(); break;
-        case (0x62) : break;  // Future expansion
-        case (0x63) : break;  // Future expansion
-        case (0x64) : break;  // Future expansion
+        //case (0x62) : break;  // Future expansion
+        //case (0x63) : break;  // Future expansion
+        //case (0x64) : break;  // Future expansion
         case (0x65) : me.ADC(); break;
         case (0x66) : me.ROR(); break;
-        case (0x67) : break;  // Future expansion
+        //case (0x67) : break;  // Future expansion
         case (0x68) : me.PLA(); break;
         case (0x69) : me.ADC(); break;
         case (0x6A) : me.ROR(); break;
-        case (0x6B) : break;  // Future expansion
+        //case (0x6B) : break;  // Future expansion
         case (0x6C) : me.JMP(); break;
         case (0x6D) : me.ADC(); break;
         case (0x6E) : me.ROR(); break;
-        case (0x6F) : break;  // Future expansion
+        //case (0x6F) : break;  // Future expansion
 
         // 0x70 - 0x7F
         case (0x70) : me.BVS(); break;
         case (0x71) : me.ADC(); break;
-        case (0x72) : break;  // Future expansion
-        case (0x73) : break;  // Future expansion
-        case (0x74) : break;  // Future expansion
+        //case (0x72) : break;  // Future expansion
+        //case (0x73) : break;  // Future expansion
+        //case (0x74) : break;  // Future expansion
         case (0x75) : me.ADC(); break;
         case (0x76) : me.ROR(); break;
-        case (0x77) : break;  // Future expansion
+        //case (0x77) : break;  // Future expansion
         case (0x78) : me.SEI(); break;
         case (0x79) : me.ADC(); break;
-        case (0x7A) : break;  // Future expansion
-        case (0x7B) : break;  // Future expansion
-        case (0x7C) : break;  // Future expansion
+        //case (0x7A) : break;  // Future expansion
+        //case (0x7B) : break;  // Future expansion
+        //case (0x7C) : break;  // Future expansion
         case (0x7D) : me.ADC(); break;
         case (0x7E) : me.ROR(); break;
-        case (0x7F) : break;  // Future expansion
+        //case (0x7F) : break;  // Future expansion
 
         // 0x80 - 0x8F
-        case (0x80) : break;  // Future expansion
+        //case (0x80) : break;  // Future expansion
         case (0x81) : me.STA(); break;
-        case (0x82) : break;  // Future expansion
-        case (0x83) : break;  // Future expansion
+        //case (0x82) : break;  // Future expansion
+        //case (0x83) : break;  // Future expansion
         case (0x84) : me.STY(); break;
         case (0x85) : me.STA(); break;
         case (0x86) : me.STX(); break;
-        case (0x87) : break;  // Future expansion
+        //case (0x87) : break;  // Future expansion
         case (0x88) : me.DEY(); break;
-        case (0x89) : break;  // Future expansion
+        //case (0x89) : break;  // Future expansion
         case (0x8A) : me.TXA(); break;
-        case (0x8B) : break;  // Future expansion
+        //case (0x8B) : break;  // Future expansion
         case (0x8C) : me.STY(); break;
         case (0x8D) : me.STA(); break;
         case (0x8E) : me.STX(); break;
-        case (0x8F) : break;  // Future expansion
+        //case (0x8F) : break;  // Future expansion
 
         // 0x90 - 0x9F
         case (0x90) : me.BCC(); break;
         case (0x91) : me.STA(); break;
-        case (0x92) : break;  // Future expansion
-        case (0x93) : break;  // Future expansion
+        //case (0x92) : break;  // Future expansion
+        //case (0x93) : break;  // Future expansion
         case (0x94) : me.STY(); break;
         case (0x95) : me.STA(); break;
         case (0x96) : me.STX(); break;
-        case (0x97) : break;  // Future expansion
+        //case (0x97) : break;  // Future expansion
         case (0x98) : me.TYA(); break;
         case (0x99) : me.STA(); break;
         case (0x9A) : me.TXS(); break;
-        case (0x9B) : break;  // Future expansion
-        case (0x9C) : break;  // Future expansion
+        //case (0x9B) : break;  // Future expansion
+        //case (0x9C) : break;  // Future expansion
         case (0x9D) : me.STA(); break;
-        case (0x9E) : break;  // Future expansion
-        case (0x9F) : break;  // Future expansion
+        //case (0x9E) : break;  // Future expansion
+        //case (0x9F) : break;  // Future expansion
 
         // 0xA0 - 0xAF
         case (0xA0) : me.LDY(); break;
         case (0xA1) : me.LDA(); break;
         case (0xA2) : me.LDX(); break;
-        case (0xA3) : break;  // Future expansion
+        //case (0xA3) : break;  // Future expansion
         case (0xA4) : me.LDY(); break;
         case (0xA5) : me.LDA(); break;
         case (0xA6) : me.LDX(); break;
-        case (0xA7) : break;  // Future expansion
+        //case (0xA7) : break;  // Future expansion
         case (0xA8) : me.TAY(); break;
         case (0xA9) : me.LDA(); break;
         case (0xAA) : me.TAX(); break;
-        case (0xAB) : break;  // Future expansion
+        //case (0xAB) : break;  // Future expansion
         case (0xAC) : me.LDY(); break;
         case (0xAD) : me.LDA(); break;
         case (0xAE) : me.LDX(); break;
-        case (0xAF) : break;  // Future expansion
+        //case (0xAF) : break;  // Future expansion
 
         // 0xB0 - 0xBF
         case (0xB0) : me.BCS(); break;
         case (0xB1) : me.LDA(); break;
-        case (0xB2) : break;  // Future expansion
-        case (0xB3) : break;  // Future expansion
+        //case (0xB2) : break;  // Future expansion
+        //case (0xB3) : break;  // Future expansion
         case (0xB4) : me.LDY(); break;
         case (0xB5) : me.LDA(); break;
         case (0xB6) : me.LDX(); break;
-        case (0xB7) : break;  // Future expansion
+        //case (0xB7) : break;  // Future expansion
         case (0xB8) : me.CLV(); break;
         case (0xB9) : me.LDA(); break;
         case (0xBA) : me.TSX(); break;
-        case (0xBB) : break;  // Future expansion
+        //case (0xBB) : break;  // Future expansion
         case (0xBC) : me.LDY(); break;
         case (0xBD) : me.LDA(); break;
         case (0xBE) : me.LDX(); break;
-        case (0xBF) : break;  // Future expansion
+        //case (0xBF) : break;  // Future expansion
 
         // 0xC0 - 0xCF
         case (0xC0) : me.CPY(); break;
         case (0xC1) : me.CMP(); break;
-        case (0xC2) : break;  // Future expansion
-        case (0xC3) : break;  // Future expansion
+        //case (0xC2) : break;  // Future expansion
+        //case (0xC3) : break;  // Future expansion
         case (0xC4) : me.CPY(); break;
         case (0xC5) : me.CMP(); break;
         case (0xC6) : me.DEC(); break;
-        case (0xC7) : break;  // Future expansion
+        //case (0xC7) : break;  // Future expansion
         case (0xC8) : me.INY(); break;
         case (0xC9) : me.CMP(); break;
         case (0xCA) : me.DEX(); break;
-        case (0xCB) : break;  // Future expansion
+        //case (0xCB) : break;  // Future expansion
         case (0xCC) : me.CPY(); break;
         case (0xCD) : me.CMP(); break;
         case (0xCE) : me.DEC(); break;
-        case (0xCF) : break;  // Future expansion
+        //case (0xCF) : break;  // Future expansion
 
         // 0xD0 - 0xDF
         case (0xD0) : me.BNE(); break;
         case (0xD1) : me.CMP(); break;
-        case (0xD2) : break;  // Future expansion
-        case (0xD3) : break;  // Future expansion
-        case (0xD4) : break;  // Future expansion
+        //case (0xD2) : break;  // Future expansion
+        //case (0xD3) : break;  // Future expansion
+        //case (0xD4) : break;  // Future expansion
         case (0xD5) : me.CMP(); break;
         case (0xD6) : me.DEC(); break;
-        case (0xD7) : break;  // Future expansion
+        //case (0xD7) : break;  // Future expansion
         case (0xD8) : me.CLD(); break;
         case (0xD9) : me.CMP(); break;
-        case (0xDA) : break;  // Future expansion
-        case (0xDB) : break;  // Future expansion
-        case (0xDC) : break;  // Future expansion
+        //case (0xDA) : break;  // Future expansion
+        //case (0xDB) : break;  // Future expansion
+        //case (0xDC) : break;  // Future expansion
         case (0xDD) : me.CMP(); break;
         case (0xDE) : me.DEC(); break;
-        case (0xDF) : break;  // Future expansion
+        //case (0xDF) : break;  // Future expansion
 
         // 0xE0 - 0xEF
         case (0xE0) : me.CPX(); break;
         case (0xE1) : me.SBC(); break;
-        case (0xE2) : break;  // Future expansion
-        case (0xE3) : break;  // Future expansion
+        //case (0xE2) : break;  // Future expansion
+        //case (0xE3) : break;  // Future expansion
         case (0xE4) : me.CPX(); break;
         case (0xE5) : me.SBC(); break;
         case (0xE6) : me.INC(); break;
-        case (0xE7) : break;  // Future expansion
+        //case (0xE7) : break;  // Future expansion
         case (0xE8) : me.INX(); break;
         case (0xE9) : me.SBC(); break;
         case (0xEA) : me.NOP(); break;
-        case (0xEB) : break;  // Future expansion
+        //case (0xEB) : break;  // Future expansion
         case (0xEC) : me.CPX(); break;
         case (0xED) : me.SBC(); break;
         case (0xEE) : me.INC(); break;
-        case (0xEF) : break;  // Future expansion
+        //case (0xEF) : break;  // Future expansion
 
         // 0xF0 - 0xFF
         case (0xF0) : me.BEQ(); break;
         case (0xF1) : me.SBC(); break;
-        case (0xF2) : break;  // Future expansion
-        case (0xF3) : break;  // Future expansion
-        case (0xF4) : break;  // Future expansion
+        //case (0xF2) : break;  // Future expansion
+        //case (0xF3) : break;  // Future expansion
+        //case (0xF4) : break;  // Future expansion
         case (0xF5) : me.SBC(); break;
         case (0xF6) : me.INC(); break;
-        case (0xF7) : break;  // Future expansion
+        //case (0xF7) : break;  // Future expansion
         case (0xF8) : me.SED(); break;
         case (0xF9) : me.SBC(); break;
-        case (0xFA) : break;  // Future expansion
-        case (0xFB) : break;  // Future expansion
-        case (0xFC) : break;  // Future expansion
+        //case (0xFA) : break;  // Future expansion
+        //case (0xFB) : break;  // Future expansion
+        //case (0xFC) : break;  // Future expansion
         case (0xFD) : me.SBC(); break;
         case (0xFE) : me.INC(); break;
-        case (0xFF) : break;  // Future expansion
+        //case (0xFF) : break;  // Future expansion
 
         default:
             console.error("Illegal OPCODE: 0x" + OPCODE.toString(16));
@@ -1158,7 +1163,7 @@ MOS6502.prototype.BNE = function() {
     if(!me._IF_ZERO()) {
 
         // So... Since there are no signed numbers in JS... We have to work it out.
-        var relAddress = ( OPER < 0x80 ) ? OPER : OPER - 256;
+        var relAddress = ( OPER < 0x80 ) ? OPER : OPER - 255;
 
         me._CYCLES += (me._PC & 0xFF00) !=  ( (me._PC + relAddress) & 0xFF00) ? 2 : 1;
 
@@ -1532,8 +1537,7 @@ MOS6502.prototype.CMP = function() {
 
     me._SET_CARRY(me._A >= OPER);
     me._SET_ZERO(me._A == OPER ? 0 : 1);
-    OPER = me._A - OPER;
-    OPER = (OPER < 0) ? OPER + 256 : OPER;
+    OPER = (me._A - OPER) & 0xFF;
     me._SET_SIGN(OPER);
 
 };
@@ -1574,8 +1578,7 @@ MOS6502.prototype.CPX = function() {
 
     me._SET_CARRY(me._X >= OPER);
     me._SET_ZERO(me._X == OPER ? 0 : 1);
-    OPER = me._X - OPER;
-    OPER = (OPER < 0) ? OPER + 256 : OPER;
+    OPER = (me._X - OPER) & 0xFF;
     me._SET_SIGN(OPER);
 
 };
@@ -1616,8 +1619,7 @@ MOS6502.prototype.CPY = function() {
 
     me._SET_CARRY(me._Y >= OPER);
     me._SET_ZERO(me._Y == OPER ? 0 : 1);
-    OPER = me._Y - OPER;
-    OPER = (OPER < 0) ? OPER + 256 : OPER;
+    OPER = (me._Y - OPER) & 0xFF;
     me._SET_SIGN(OPER);
 
 };
@@ -1659,8 +1661,7 @@ MOS6502.prototype.DEC = function() {
 
     }
 
-    OPER = OPER - 1;
-    OPER = (OPER < 0) ? OPER + 256 : OPER; // Two's complement...
+    OPER = (OPER - 1) & 0xFF;
     me._SET_SIGN(OPER);
     me._SET_ZERO(OPER);
 
@@ -1922,8 +1923,7 @@ MOS6502.prototype.INY = function() {
 
     }
 
-    OPER++;
-    OPER &= 0xFF;
+    OPER = (OPER + 1) & 0xFF;
     me._SET_SIGN(OPER);
     me._SET_ZERO(OPER);
     me._Y = OPER;
@@ -2053,6 +2053,8 @@ MOS6502.prototype.LDA = function() {
         default: console.error("Illegal LDA opcode passed. (0x" + opCode.toString(16) + ")" ); break;
 
     }
+
+    console.log('LDA');
 
     me._SET_SIGN(OPER);
     me._SET_ZERO(OPER);
