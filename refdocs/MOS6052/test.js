@@ -43,308 +43,6 @@ test("Make Address", function() {
 
 });
 
-test("If / Set Carry", function() {
-
-    /**
-     * _SET_CARRY
-     * This should set the carry flag in the P register.
-     */
-
-    /**
-     * _IF_CARRY
-     * This should return true if the carry flag is set in the P register.
-     */
-
-    // Make sure it's all empty first.
-    MOS6502._P = 0x20;
-
-    equal(MOS6502._IF_CARRY(),
-        false,
-        "Carry flag not set.");
-
-    // Now we'll try to set the carry flag.
-    MOS6502._SET_CARRY(true);
-
-    equal(MOS6502._IF_CARRY(),
-        true,
-        "_IF_CARRY detected carry flag set");
-
-    equal(MOS6502._P,
-        0x21,
-        "P register correctly set.");
-
-    // Now try to unset the carry flag.
-    MOS6502._SET_CARRY(false);
-
-    equal(MOS6502._IF_CARRY(),
-        false,
-        "_IF_CARRY detected carry flag not set.");
-
-    equal(MOS6502._P,
-        0x20,
-        "P register set to correct value.");
-
-});
-
-test("If / Set Zero", function() {
-
-    /**
-     * _SET_ZERO
-     * This should set the zero flag in the P register.
-     */
-
-    /**
-     * _IF_ZERO
-     * This should return true if the zero flag is set in the P register.
-     */
-
-        // Make sure it's all empty first.
-    MOS6502._P = 0x20;
-
-    equal(MOS6502._IF_ZERO(),
-        false,
-        "Zero flag not set.");
-
-    // Now we'll try to set the zero flag.
-    MOS6502._SET_ZERO(0);
-
-    equal(MOS6502._IF_ZERO(),
-        true,
-        "_IF_ZERO detected zero flag set");
-
-    equal(MOS6502._P,
-        0x22,
-        "P register correctly set.");
-
-    // Now try to unset the zero flag.
-    MOS6502._SET_ZERO(1);
-
-    equal(MOS6502._IF_ZERO(),
-        false,
-        "_IF_ZERO detected zero flag not set.");
-
-    equal(MOS6502._P,
-        0x20,
-        "P register set to correct value.");
-
-});
-
-test("If / Set Interrupt", function() {
-
-    /**
-     * _SET_INTERRUPT
-     * This should set the interrupt flag in the P register.
-     */
-
-    /**
-     * _IF_INTERRUPT
-     * This should return true if the interrupt flag is set in the P register.
-     */
-
-        // Make sure it's all empty first.
-    MOS6502._P = 0x20;
-
-    equal(MOS6502._IF_INTERRUPT(),
-        false,
-        "Interrupt flag not set.");
-
-    // Now we'll try to set the zero flag.
-    MOS6502._SET_INTERRUPT(true);
-
-    equal(MOS6502._IF_INTERRUPT(),
-        true,
-        "_IF_INTERRUPT detected interrupt flag set");
-
-    equal(MOS6502._P,
-        0x24,
-        "P register correctly set.");
-
-    // Now try to unset the zero flag.
-    MOS6502._SET_INTERRUPT(false);
-
-    equal(MOS6502._IF_INTERRUPT(),
-        false,
-        "_IF_INTERRUPT detected interrupt flag not set.");
-
-    equal(MOS6502._P,
-        0x20,
-        "P register set to correct value.");
-
-});
-
-test("If / Set Decimal", function() {
-
-    /**
-     * _SET_DECIMAL
-     * This should set the decimal flag in the P register.
-     */
-
-    /**
-     * _IF_DECIMAL
-     * This should return true if the decimal flag is set in the P register.
-     */
-
-        // Make sure it's all empty first.
-    MOS6502._P = 0x20;
-
-    equal(MOS6502._IF_DECIMAL(),
-        false,
-        "Decimal flag not set.");
-
-    // Now we'll try to set the zero flag.
-    MOS6502._SET_DECIMAL(true);
-
-    equal(MOS6502._IF_DECIMAL(),
-        true,
-        "_IF_DECIMAL detected decimal flag set");
-
-    equal(MOS6502._P,
-        0x28,
-        "P register correctly set.");
-
-    // Now try to unset the zero flag.
-    MOS6502._SET_DECIMAL(false);
-
-    equal(MOS6502._IF_DECIMAL(),
-        false,
-        "_IF_DECIMAL detected decimal flag not set.");
-
-    equal(MOS6502._P,
-        0x20,
-        "P register set to correct value.");
-
-});
-
-test("If / Set Break", function() {
-
-    /**
-     * _SET_BREAK
-     * This should set the break flag in the P register.
-     */
-
-    /**
-     * _IF_BREAK
-     * This should return true if the break flag is set in the P register.
-     */
-
-        // Make sure it's all empty first.
-    MOS6502._P = 0x20;
-
-    equal(MOS6502._IF_BREAK(),
-        false,
-        "Break flag not set.");
-
-    // Now we'll try to set the zero flag.
-    MOS6502._SET_BREAK(true);
-
-    equal(MOS6502._IF_BREAK(),
-        true,
-        "_IF_BREAK detected break flag set");
-
-    equal(MOS6502._P,
-        0x30,
-        "P register correctly set.");
-
-    // Now try to unset the zero flag.
-    MOS6502._SET_BREAK(false);
-
-    equal(MOS6502._IF_BREAK(),
-        false,
-        "_IF_BREAK detected break flag not set.");
-
-    equal(MOS6502._P,
-        0x20,
-        "P register set to correct value.");
-
-});
-
-test("If / Set Overflow", function() {
-
-    /**
-     * _SET_OVERFLOW
-     * This should set the break flag in the P register.
-     */
-
-    /**
-     * _IF_OVERFLOW
-     * This should return true if the break flag is set in the P register.
-     */
-
-        // Make sure it's all empty first.
-    MOS6502._P = 0x20;
-
-    equal(MOS6502._IF_OVERFLOW(),
-        false,
-        "Overflow flag not set.");
-
-    // Now we'll try to set the zero flag.
-    MOS6502._SET_OVERFLOW(true);
-
-    equal(MOS6502._IF_OVERFLOW(),
-        true,
-        "_IF_OVERFLOW detected overflow flag set");
-
-    equal(MOS6502._P,
-        0x60,
-        "P register correctly set.");
-
-    // Now try to unset the zero flag.
-    MOS6502._SET_OVERFLOW(false);
-
-    equal(MOS6502._IF_OVERFLOW(),
-        false,
-        "_IF_OVERFLOW detected overflow flag not set.");
-
-    equal(MOS6502._P,
-        0x20,
-        "P register set to correct value.");
-
-});
-
-test("If / Set Sign", function() {
-
-    /**
-     * _SET_SIGN
-     * This should set the sign flag in the P register.
-     */
-
-    /**
-     * _IF_SIGN
-     * This should return true if the sign flag is set in the P register.
-     */
-
-        // Make sure it's all empty first.
-    MOS6502._P = 0x20;
-
-
-    equal(MOS6502._IF_SIGN(),
-        false,
-        "Overflow flag not set.");
-
-    // Now we'll try to set the zero flag.
-    MOS6502._SET_SIGN(0x80);
-
-    equal(MOS6502._IF_SIGN(),
-        true,
-        "_IF_SIGN detected sign flag set");
-
-    equal(MOS6502._P,
-        0xA0,
-        "P register correctly set.");
-
-    // Now try to unset the zero flag.
-    MOS6502._SET_SIGN(0x00);
-
-    equal(MOS6502._IF_SIGN(),
-        false,
-        "_IF_SIGN detected sign flag not set.");
-
-    equal(MOS6502._P,
-        0x20,
-        "P register set to correct value.");
-
-});
-
 //</editor-fold>
 
 /*********************************************************************************************************************/
@@ -859,117 +557,64 @@ test("0x09 - ORA (Immediate)", function() {
 
     /**
      * Test 1: Set Sign
-     *
-     * Before ORA Applied:
-     *         Operand: 01010101 (85)
-     *     Accumulator: 10000000 (128)
-     * Status Register: 00100000 (32)
-     *
-     * After ORA Applied:
-     *     Accumulator: 11010101 (213)
-     * Status Register: 10100000 (160)
      */
 
     MOS6502._PC = PCStart;
     MOS6502._RAM[OperandAddress] = 85;
     MOS6502._A = 128;
-    MOS6502._P = 0x20;
     MOS6502._CYCLES = 0;
 
     MOS6502.emulateCycle();
 
 
-    equal(MOS6502._A,
-        213,
-        "Set sign: Accumulator set correctly.");
+    equal(MOS6502._A, 0xD5, "Set sign: Accumulator set correctly.");
 
-    equal(MOS6502._P,
-        160,
-        "Set sign: Status register set correctly.");
+    equal(MOS6502._statusRegister.dumpStatus(), 0xB0, "Set sign: Status register set correctly.");
 
-    equal(MOS6502._PC,
-        PCStart + BytesUsed,
-        "Set sign: PC incremented correctly.");
+    equal(MOS6502._PC, PCStart + BytesUsed, "Set sign: PC incremented correctly.");
 
-    equal(MOS6502._CYCLES,
-        CycleCost,
-        "Set sign: CYCLES incremented correctly.");
+    equal(MOS6502._CYCLES, CycleCost, "Set sign: CYCLES incremented correctly.");
 
     /**
      * Test 2: Set Zero
-     *
-     * Before ORA Applied:
-     *         Operand: 00000000 (0)
-     *     Accumulator: 00000000 (0)
-     * Status Register: 00100000 (32)
-     *
-     * After ORA Applied:
-     *     Accumulator: 00000000 (0)
-     * Status Register: 00100010 (34)
      */
 
     MOS6502._PC = PCStart;
     MOS6502._RAM[OperandAddress] = 0;
     MOS6502._A = 0;
-    MOS6502._P = 0x20;
     MOS6502._CYCLES = 0;
 
     MOS6502.emulateCycle();
 
 
-    equal(MOS6502._A,
-        0,
-        "Set zero: Accumulator set correctly.");
+    equal(MOS6502._A, 0, "Set zero: Accumulator set correctly.");
 
-    equal(MOS6502._P,
-        34,
-        "Set zero: Status register set correctly.");
+    equal(MOS6502._statusRegister.dumpStatus(), 0x32, "Set zero: Status register set correctly.");
 
-    equal(MOS6502._PC,
-            PCStart + BytesUsed,
-        "Set zero: PC incremented correctly.");
+    equal(MOS6502._PC, PCStart + BytesUsed, "Set zero: PC incremented correctly.");
 
-    equal(MOS6502._CYCLES,
-        CycleCost,
-        "Set zero: CYCLES incremented correctly.");
+    equal(MOS6502._CYCLES, CycleCost, "Set zero: CYCLES incremented correctly.");
 
     /**
      * Test 3: Set None
-     *
-     * Before ORA Applied:
-     *         Operand: 01100110 (102)
-     *     Accumulator: 01100001 (97)
-     * Status Register: 00100000 (32)
-     *
-     * After ORA Applied:
-     *     Accumulator: 01100111 (103)
-     * Status Register: 00100000 (32)
      */
 
     MOS6502._PC = PCStart;
     MOS6502._RAM[OperandAddress] = 102;
     MOS6502._A = 97;
-    MOS6502._P = 0x20;
     MOS6502._CYCLES = 0;
 
     MOS6502.emulateCycle();
 
 
-    equal(MOS6502._A,
-        103,
-        "Set none: Accumulator set correctly.");
+    equal(MOS6502._A, 103, "Set none: Accumulator set correctly.");
 
-    equal(MOS6502._P,
-        32,
-        "Set none: Status register set correctly.");
+    equal(MOS6502._statusRegister.dumpStatus(), 0x30, "Set none: Status register set correctly.");
 
-    equal(MOS6502._PC,
-            PCStart + BytesUsed,
-        "Set none: PC incremented correctly.");
+    equal(MOS6502._PC, PCStart + BytesUsed, "Set none: PC incremented correctly.");
 
-    equal(MOS6502._CYCLES,
-        CycleCost,
-        "Set none: CYCLES incremented correctly.");
+    equal(MOS6502._CYCLES, CycleCost, "Set none: CYCLES incremented correctly.");
+
 });
 
 test("0x05 - ORA (Zero Page)", function() {
@@ -990,117 +635,63 @@ test("0x05 - ORA (Zero Page)", function() {
 
     /**
      * Test 1: Set Sign
-     *
-     * Before ORA Applied:
-     *         Operand: 01010101 (85)
-     *     Accumulator: 10000000 (128)
-     * Status Register: 00100000 (32)
-     *
-     * After ORA Applied:
-     *     Accumulator: 11010101 (213)
-     * Status Register: 10100000 (160)
      */
 
     MOS6502._PC = PCStart;
     MOS6502._RAM[OperandAddress] = 85;
     MOS6502._A = 128;
-    MOS6502._P = 0x20;
     MOS6502._CYCLES = 0;
 
     MOS6502.emulateCycle();
 
 
-    equal(MOS6502._A,
-        213,
-        "Set sign: Accumulator set correctly.");
+    equal(MOS6502._A, 213, "Set sign: Accumulator set correctly.");
 
-    equal(MOS6502._P,
-        160,
-        "Set sign: Status register set correctly.");
+    equal(MOS6502._statusRegister.dumpStatus(), 0xB0, "Set sign: Status register set correctly.");
 
-    equal(MOS6502._PC,
-            PCStart + BytesUsed,
-        "Set sign: PC incremented correctly.");
+    equal(MOS6502._PC, PCStart + BytesUsed, "Set sign: PC incremented correctly.");
 
-    equal(MOS6502._CYCLES,
-        CycleCost,
-        "Set sign: CYCLES incremented correctly.");
+    equal(MOS6502._CYCLES, CycleCost, "Set sign: CYCLES incremented correctly.");
 
     /**
      * Test 2: Set Zero
-     *
-     * Before ORA Applied:
-     *         Operand: 00000000 (0)
-     *     Accumulator: 00000000 (0)
-     * Status Register: 00100000 (32)
-     *
-     * After ORA Applied:
-     *     Accumulator: 00000000 (0)
-     * Status Register: 00100010 (34)
      */
 
     MOS6502._PC = PCStart;
     MOS6502._RAM[OperandAddress] = 0;
     MOS6502._A = 0;
-    MOS6502._P = 0x20;
     MOS6502._CYCLES = 0;
 
     MOS6502.emulateCycle();
 
 
-    equal(MOS6502._A,
-        0,
-        "Set zero: Accumulator set correctly.");
+    equal(MOS6502._A, 0, "Set zero: Accumulator set correctly.");
 
-    equal(MOS6502._P,
-        34,
-        "Set zero: Status register set correctly.");
+    equal(MOS6502._statusRegister.dumpStatus(), 0x32, "Set zero: Status register set correctly.");
 
-    equal(MOS6502._PC,
-            PCStart + BytesUsed,
-        "Set zero: PC incremented correctly.");
+    equal(MOS6502._PC, PCStart + BytesUsed, "Set zero: PC incremented correctly.");
 
-    equal(MOS6502._CYCLES,
-        CycleCost,
-        "Set zero: CYCLES incremented correctly.");
+    equal(MOS6502._CYCLES, CycleCost, "Set zero: CYCLES incremented correctly.");
 
     /**
      * Test 3: Set None
-     *
-     * Before ORA Applied:
-     *         Operand: 01100110 (102)
-     *     Accumulator: 01100001 (97)
-     * Status Register: 00100000 (32)
-     *
-     * After ORA Applied:
-     *     Accumulator: 01100111 (103)
-     * Status Register: 00100000 (32)
      */
 
     MOS6502._PC = PCStart;
     MOS6502._RAM[OperandAddress] = 102;
     MOS6502._A = 97;
-    MOS6502._P = 0x20;
     MOS6502._CYCLES = 0;
 
     MOS6502.emulateCycle();
 
 
-    equal(MOS6502._A,
-        103,
-        "Set none: Accumulator set correctly.");
+    equal(MOS6502._A, 103, "Set none: Accumulator set correctly.");
 
-    equal(MOS6502._P,
-        32,
-        "Set none: Status register set correctly.");
+    equal(MOS6502._statusRegister.dumpStatus(), 0x30, "Set none: Status register set correctly.");
 
-    equal(MOS6502._PC,
-            PCStart + BytesUsed,
-        "Set none: PC incremented correctly.");
+    equal(MOS6502._PC, PCStart + BytesUsed, "Set none: PC incremented correctly.");
 
-    equal(MOS6502._CYCLES,
-        CycleCost,
-        "Set none: CYCLES incremented correctly.");
+    equal(MOS6502._CYCLES, CycleCost, "Set none: CYCLES incremented correctly.");
 
 });
 
@@ -1124,117 +715,63 @@ test("0x15 - ORA (Zero Page, X)", function() {
 
     /**
      * Test 1: Set Sign
-     *
-     * Before ORA Applied:
-     *         Operand: 01010101 (85)
-     *     Accumulator: 10000000 (128)
-     * Status Register: 00100000 (32)
-     *
-     * After ORA Applied:
-     *     Accumulator: 11010101 (213)
-     * Status Register: 10100000 (160)
      */
 
     MOS6502._PC = PCStart;
     MOS6502._RAM[OperandAddress] = 85;
     MOS6502._A = 128;
-    MOS6502._P = 0x20;
     MOS6502._CYCLES = 0;
 
     MOS6502.emulateCycle();
 
 
-    equal(MOS6502._A,
-        213,
-        "Set sign: Accumulator set correctly.");
+    equal(MOS6502._A, 213, "Set sign: Accumulator set correctly.");
 
-    equal(MOS6502._P,
-        160,
-        "Set sign: Status register set correctly.");
+    equal(MOS6502._statusRegister.dumpStatus(), 0xB0, "Set sign: Status register set correctly.");
 
-    equal(MOS6502._PC,
-            PCStart + BytesUsed,
-        "Set sign: PC incremented correctly.");
+    equal(MOS6502._PC, PCStart + BytesUsed, "Set sign: PC incremented correctly.");
 
-    equal(MOS6502._CYCLES,
-        CycleCost,
-        "Set sign: CYCLES incremented correctly.");
+    equal(MOS6502._CYCLES, CycleCost, "Set sign: CYCLES incremented correctly.");
 
     /**
      * Test 2: Set Zero
-     *
-     * Before ORA Applied:
-     *         Operand: 00000000 (0)
-     *     Accumulator: 00000000 (0)
-     * Status Register: 00100000 (32)
-     *
-     * After ORA Applied:
-     *     Accumulator: 00000000 (0)
-     * Status Register: 00100010 (34)
      */
 
     MOS6502._PC = PCStart;
     MOS6502._RAM[OperandAddress] = 0;
     MOS6502._A = 0;
-    MOS6502._P = 0x20;
     MOS6502._CYCLES = 0;
 
     MOS6502.emulateCycle();
 
 
-    equal(MOS6502._A,
-        0,
-        "Set zero: Accumulator set correctly.");
+    equal(MOS6502._A, 0, "Set zero: Accumulator set correctly.");
 
-    equal(MOS6502._P,
-        34,
-        "Set zero: Status register set correctly.");
+    equal(MOS6502._statusRegister.dumpStatus(), 0x32, "Set zero: Status register set correctly.");
 
-    equal(MOS6502._PC,
-            PCStart + BytesUsed,
-        "Set zero: PC incremented correctly.");
+    equal(MOS6502._PC, PCStart + BytesUsed, "Set zero: PC incremented correctly.");
 
-    equal(MOS6502._CYCLES,
-        CycleCost,
-        "Set zero: CYCLES incremented correctly.");
+    equal(MOS6502._CYCLES, CycleCost, "Set zero: CYCLES incremented correctly.");
 
     /**
      * Test 3: Set None
-     *
-     * Before ORA Applied:
-     *         Operand: 01100110 (102)
-     *     Accumulator: 01100001 (97)
-     * Status Register: 00100000 (32)
-     *
-     * After ORA Applied:
-     *     Accumulator: 01100111 (103)
-     * Status Register: 00100000 (32)
      */
 
     MOS6502._PC = PCStart;
     MOS6502._RAM[OperandAddress] = 102;
     MOS6502._A = 97;
-    MOS6502._P = 0x20;
     MOS6502._CYCLES = 0;
 
     MOS6502.emulateCycle();
 
 
-    equal(MOS6502._A,
-        103,
-        "Set none: Accumulator set correctly.");
+    equal(MOS6502._A, 103, "Set none: Accumulator set correctly.");
 
-    equal(MOS6502._P,
-        32,
-        "Set none: Status register set correctly.");
+    equal(MOS6502._statusRegister.dumpStatus(), 0x30, "Set none: Status register set correctly.");
 
-    equal(MOS6502._PC,
-            PCStart + BytesUsed,
-        "Set none: PC incremented correctly.");
+    equal(MOS6502._PC, PCStart + BytesUsed, "Set none: PC incremented correctly.");
 
-    equal(MOS6502._CYCLES,
-        CycleCost,
-        "Set none: CYCLES incremented correctly.");
+    equal(MOS6502._CYCLES, CycleCost, "Set none: CYCLES incremented correctly.");
 });
 
 test("0x0D - ORA (Absolute)", function() {
@@ -1257,117 +794,63 @@ test("0x0D - ORA (Absolute)", function() {
 
     /**
      * Test 1: Set Sign
-     *
-     * Before ORA Applied:
-     *         Operand: 01010101 (85)
-     *     Accumulator: 10000000 (128)
-     * Status Register: 00100000 (32)
-     *
-     * After ORA Applied:
-     *     Accumulator: 11010101 (213)
-     * Status Register: 10100000 (160)
      */
 
     MOS6502._PC = PCStart;
     MOS6502._RAM[OperandAddress] = 85;
     MOS6502._A = 128;
-    MOS6502._P = 0x20;
     MOS6502._CYCLES = 0;
 
     MOS6502.emulateCycle();
 
 
-    equal(MOS6502._A,
-        213,
-        "Set sign: Accumulator set correctly.");
+    equal(MOS6502._A, 213, "Set sign: Accumulator set correctly.");
 
-    equal(MOS6502._P,
-        160,
-        "Set sign: Status register set correctly.");
+    equal(MOS6502._statusRegister.dumpStatus(), 0xB0, "Set sign: Status register set correctly.");
 
-    equal(MOS6502._PC,
-            PCStart + BytesUsed,
-        "Set sign: PC incremented correctly.");
+    equal(MOS6502._PC, PCStart + BytesUsed, "Set sign: PC incremented correctly.");
 
-    equal(MOS6502._CYCLES,
-        CycleCost,
-        "Set sign: CYCLES incremented correctly.");
+    equal(MOS6502._CYCLES, CycleCost, "Set sign: CYCLES incremented correctly.");
 
     /**
      * Test 2: Set Zero
-     *
-     * Before ORA Applied:
-     *         Operand: 00000000 (0)
-     *     Accumulator: 00000000 (0)
-     * Status Register: 00100000 (32)
-     *
-     * After ORA Applied:
-     *     Accumulator: 00000000 (0)
-     * Status Register: 00100010 (34)
      */
 
     MOS6502._PC = PCStart;
     MOS6502._RAM[OperandAddress] = 0;
     MOS6502._A = 0;
-    MOS6502._P = 0x20;
     MOS6502._CYCLES = 0;
 
     MOS6502.emulateCycle();
 
 
-    equal(MOS6502._A,
-        0,
-        "Set zero: Accumulator set correctly.");
+    equal(MOS6502._A, 0, "Set zero: Accumulator set correctly.");
 
-    equal(MOS6502._P,
-        34,
-        "Set zero: Status register set correctly.");
+    equal(MOS6502._statusRegister.dumpStatus(), 0x32, "Set zero: Status register set correctly.");
 
-    equal(MOS6502._PC,
-            PCStart + BytesUsed,
-        "Set zero: PC incremented correctly.");
+    equal(MOS6502._PC, PCStart + BytesUsed, "Set zero: PC incremented correctly.");
 
-    equal(MOS6502._CYCLES,
-        CycleCost,
-        "Set zero: CYCLES incremented correctly.");
+    equal(MOS6502._CYCLES, CycleCost, "Set zero: CYCLES incremented correctly.");
 
     /**
      * Test 3: Set None
-     *
-     * Before ORA Applied:
-     *         Operand: 01100110 (102)
-     *     Accumulator: 01100001 (97)
-     * Status Register: 00100000 (32)
-     *
-     * After ORA Applied:
-     *     Accumulator: 01100111 (103)
-     * Status Register: 00100000 (32)
      */
 
     MOS6502._PC = PCStart;
     MOS6502._RAM[OperandAddress] = 102;
     MOS6502._A = 97;
-    MOS6502._P = 0x20;
     MOS6502._CYCLES = 0;
 
     MOS6502.emulateCycle();
 
 
-    equal(MOS6502._A,
-        103,
-        "Set none: Accumulator set correctly.");
+    equal(MOS6502._A, 103, "Set none: Accumulator set correctly.");
 
-    equal(MOS6502._P,
-        32,
-        "Set none: Status register set correctly.");
+    equal(MOS6502._statusRegister.dumpStatus(), 0x30, "Set none: Status register set correctly.");
 
-    equal(MOS6502._PC,
-            PCStart + BytesUsed,
-        "Set none: PC incremented correctly.");
+    equal(MOS6502._PC, PCStart + BytesUsed, "Set none: PC incremented correctly.");
 
-    equal(MOS6502._CYCLES,
-        CycleCost,
-        "Set none: CYCLES incremented correctly.");
+    equal(MOS6502._CYCLES, CycleCost, "Set none: CYCLES incremented correctly.");
 });
 
 test("0x1D - ORA (Absolute, X) [Same Page]", function() {
@@ -1392,117 +875,63 @@ test("0x1D - ORA (Absolute, X) [Same Page]", function() {
 
     /**
      * Test 1: Set Sign
-     *
-     * Before ORA Applied:
-     *         Operand: 01010101 (85)
-     *     Accumulator: 10000000 (128)
-     * Status Register: 00100000 (32)
-     *
-     * After ORA Applied:
-     *     Accumulator: 11010101 (213)
-     * Status Register: 10100000 (160)
      */
 
     MOS6502._PC = PCStart;
     MOS6502._RAM[OperandAddress] = 85;
     MOS6502._A = 128;
-    MOS6502._P = 0x20;
     MOS6502._CYCLES = 0;
 
     MOS6502.emulateCycle();
 
 
-    equal(MOS6502._A,
-        213,
-        "Set sign: Accumulator set correctly.");
+    equal(MOS6502._A, 213, "Set sign: Accumulator set correctly.");
 
-    equal(MOS6502._P,
-        160,
-        "Set sign: Status register set correctly.");
+    equal(MOS6502._statusRegister.dumpStatus(), 0xB0, "Set sign: Status register set correctly.");
 
-    equal(MOS6502._PC,
-            PCStart + BytesUsed,
-        "Set sign: PC incremented correctly.");
+    equal(MOS6502._PC, PCStart + BytesUsed, "Set sign: PC incremented correctly.");
 
-    equal(MOS6502._CYCLES,
-        CycleCost,
-        "Set sign: CYCLES incremented correctly.");
+    equal(MOS6502._CYCLES, CycleCost, "Set sign: CYCLES incremented correctly.");
 
     /**
      * Test 2: Set Zero
-     *
-     * Before ORA Applied:
-     *         Operand: 00000000 (0)
-     *     Accumulator: 00000000 (0)
-     * Status Register: 00100000 (32)
-     *
-     * After ORA Applied:
-     *     Accumulator: 00000000 (0)
-     * Status Register: 00100010 (34)
      */
 
     MOS6502._PC = PCStart;
     MOS6502._RAM[OperandAddress] = 0;
     MOS6502._A = 0;
-    MOS6502._P = 0x20;
     MOS6502._CYCLES = 0;
 
     MOS6502.emulateCycle();
 
 
-    equal(MOS6502._A,
-        0,
-        "Set zero: Accumulator set correctly.");
+    equal(MOS6502._A, 0, "Set zero: Accumulator set correctly.");
 
-    equal(MOS6502._P,
-        34,
-        "Set zero: Status register set correctly.");
+    equal(MOS6502._statusRegister.dumpStatus(), 0x32, "Set zero: Status register set correctly.");
 
-    equal(MOS6502._PC,
-            PCStart + BytesUsed,
-        "Set zero: PC incremented correctly.");
+    equal(MOS6502._PC, PCStart + BytesUsed, "Set zero: PC incremented correctly.");
 
-    equal(MOS6502._CYCLES,
-        CycleCost,
-        "Set zero: CYCLES incremented correctly.");
+    equal(MOS6502._CYCLES, CycleCost, "Set zero: CYCLES incremented correctly.");
 
     /**
      * Test 3: Set None
-     *
-     * Before ORA Applied:
-     *         Operand: 01100110 (102)
-     *     Accumulator: 01100001 (97)
-     * Status Register: 00100000 (32)
-     *
-     * After ORA Applied:
-     *     Accumulator: 01100111 (103)
-     * Status Register: 00100000 (32)
      */
 
     MOS6502._PC = PCStart;
     MOS6502._RAM[OperandAddress] = 102;
     MOS6502._A = 97;
-    MOS6502._P = 0x20;
     MOS6502._CYCLES = 0;
 
     MOS6502.emulateCycle();
 
 
-    equal(MOS6502._A,
-        103,
-        "Set none: Accumulator set correctly.");
+    equal(MOS6502._A, 103, "Set none: Accumulator set correctly.");
 
-    equal(MOS6502._P,
-        32,
-        "Set none: Status register set correctly.");
+    equal(MOS6502._statusRegister.dumpStatus(), 0x30, "Set none: Status register set correctly.");
 
-    equal(MOS6502._PC,
-            PCStart + BytesUsed,
-        "Set none: PC incremented correctly.");
+    equal(MOS6502._PC, PCStart + BytesUsed, "Set none: PC incremented correctly.");
 
-    equal(MOS6502._CYCLES,
-        CycleCost,
-        "Set none: CYCLES incremented correctly.");
+    equal(MOS6502._CYCLES, CycleCost, "Set none: CYCLES incremented correctly.");
 
 });
 
@@ -1528,117 +957,63 @@ test("0x1D - ORA (Absolute, X) [Page Boundary Crossed]", function() {
 
     /**
      * Test 1: Set Sign
-     *
-     * Before ORA Applied:
-     *         Operand: 01010101 (85)
-     *     Accumulator: 10000000 (128)
-     * Status Register: 00100000 (32)
-     *
-     * After ORA Applied:
-     *     Accumulator: 11010101 (213)
-     * Status Register: 10100000 (160)
      */
 
     MOS6502._PC = PCStart;
     MOS6502._RAM[OperandAddress] = 85;
     MOS6502._A = 128;
-    MOS6502._P = 0x20;
     MOS6502._CYCLES = 0;
 
     MOS6502.emulateCycle();
 
 
-    equal(MOS6502._A,
-        213,
-        "Set sign: Accumulator set correctly.");
+    equal(MOS6502._A, 213, "Set sign: Accumulator set correctly.");
 
-    equal(MOS6502._P,
-        160,
-        "Set sign: Status register set correctly.");
+    equal(MOS6502._statusRegister.dumpStatus(), 0xB0, "Set sign: Status register set correctly.");
 
-    equal(MOS6502._PC,
-            PCStart + BytesUsed,
-        "Set sign: PC incremented correctly.");
+    equal(MOS6502._PC, PCStart + BytesUsed, "Set sign: PC incremented correctly.");
 
-    equal(MOS6502._CYCLES,
-        CycleCost,
-        "Set sign: CYCLES incremented correctly.");
+    equal(MOS6502._CYCLES, CycleCost, "Set sign: CYCLES incremented correctly.");
 
     /**
      * Test 2: Set Zero
-     *
-     * Before ORA Applied:
-     *         Operand: 00000000 (0)
-     *     Accumulator: 00000000 (0)
-     * Status Register: 00100000 (32)
-     *
-     * After ORA Applied:
-     *     Accumulator: 00000000 (0)
-     * Status Register: 00100010 (34)
      */
 
     MOS6502._PC = PCStart;
     MOS6502._RAM[OperandAddress] = 0;
     MOS6502._A = 0;
-    MOS6502._P = 0x20;
     MOS6502._CYCLES = 0;
 
     MOS6502.emulateCycle();
 
 
-    equal(MOS6502._A,
-        0,
-        "Set zero: Accumulator set correctly.");
+    equal(MOS6502._A, 0, "Set zero: Accumulator set correctly.");
 
-    equal(MOS6502._P,
-        34,
-        "Set zero: Status register set correctly.");
+    equal(MOS6502._statusRegister.dumpStatus(), 0x32, "Set zero: Status register set correctly.");
 
-    equal(MOS6502._PC,
-            PCStart + BytesUsed,
-        "Set zero: PC incremented correctly.");
+    equal(MOS6502._PC, PCStart + BytesUsed, "Set zero: PC incremented correctly.");
 
-    equal(MOS6502._CYCLES,
-        CycleCost,
-        "Set zero: CYCLES incremented correctly.");
+    equal(MOS6502._CYCLES, CycleCost, "Set zero: CYCLES incremented correctly.");
 
     /**
      * Test 3: Set None
-     *
-     * Before ORA Applied:
-     *         Operand: 01100110 (102)
-     *     Accumulator: 01100001 (97)
-     * Status Register: 00100000 (32)
-     *
-     * After ORA Applied:
-     *     Accumulator: 01100111 (103)
-     * Status Register: 00100000 (32)
      */
 
     MOS6502._PC = PCStart;
     MOS6502._RAM[OperandAddress] = 102;
     MOS6502._A = 97;
-    MOS6502._P = 0x20;
     MOS6502._CYCLES = 0;
 
     MOS6502.emulateCycle();
 
 
-    equal(MOS6502._A,
-        103,
-        "Set none: Accumulator set correctly.");
+    equal(MOS6502._A, 103, "Set none: Accumulator set correctly.");
 
-    equal(MOS6502._P,
-        32,
-        "Set none: Status register set correctly.");
+    equal(MOS6502._statusRegister.dumpStatus(), 0x30, "Set none: Status register set correctly.");
 
-    equal(MOS6502._PC,
-            PCStart + BytesUsed,
-        "Set none: PC incremented correctly.");
+    equal(MOS6502._PC, PCStart + BytesUsed, "Set none: PC incremented correctly.");
 
-    equal(MOS6502._CYCLES,
-        CycleCost,
-        "Set none: CYCLES incremented correctly.");
+    equal(MOS6502._CYCLES, CycleCost, "Set none: CYCLES incremented correctly.");
 
 });
 
@@ -1664,33 +1039,19 @@ test("0x19 - ORA (Absolute, Y) [Same Page]", function() {
 
     /**
      * Test 1: Set Sign
-     *
-     * Before ORA Applied:
-     *         Operand: 01010101 (85)
-     *     Accumulator: 10000000 (128)
-     * Status Register: 00100000 (32)
-     *
-     * After ORA Applied:
-     *     Accumulator: 11010101 (213)
-     * Status Register: 10100000 (160)
      */
 
     MOS6502._PC = PCStart;
     MOS6502._RAM[OperandAddress] = 85;
     MOS6502._A = 128;
-    MOS6502._P = 0x20;
     MOS6502._CYCLES = 0;
 
     MOS6502.emulateCycle();
 
 
-    equal(MOS6502._A,
-        213,
-        "Set sign: Accumulator set correctly.");
+    equal(MOS6502._A, 213, "Set sign: Accumulator set correctly.");
 
-    equal(MOS6502._P,
-        160,
-        "Set sign: Status register set correctly.");
+    equal(MOS6502._statusRegister.dumpStatus(), 0xB0, "Set sign: Status register set correctly.");
 
     equal(MOS6502._PC,
             PCStart + BytesUsed,
@@ -1702,79 +1063,45 @@ test("0x19 - ORA (Absolute, Y) [Same Page]", function() {
 
     /**
      * Test 2: Set Zero
-     *
-     * Before ORA Applied:
-     *         Operand: 00000000 (0)
-     *     Accumulator: 00000000 (0)
-     * Status Register: 00100000 (32)
-     *
-     * After ORA Applied:
-     *     Accumulator: 00000000 (0)
-     * Status Register: 00100010 (34)
      */
 
     MOS6502._PC = PCStart;
     MOS6502._RAM[OperandAddress] = 0;
     MOS6502._A = 0;
-    MOS6502._P = 0x20;
+    
     MOS6502._CYCLES = 0;
 
     MOS6502.emulateCycle();
 
 
-    equal(MOS6502._A,
-        0,
-        "Set zero: Accumulator set correctly.");
+    equal(MOS6502._A, 0, "Set zero: Accumulator set correctly.");
 
-    equal(MOS6502._P,
-        34,
-        "Set zero: Status register set correctly.");
+    equal(MOS6502._statusRegister.dumpStatus(), 0x32, "Set zero: Status register set correctly.");
 
-    equal(MOS6502._PC,
-            PCStart + BytesUsed,
-        "Set zero: PC incremented correctly.");
+    equal(MOS6502._PC, PCStart + BytesUsed, "Set zero: PC incremented correctly.");
 
-    equal(MOS6502._CYCLES,
-        CycleCost,
-        "Set zero: CYCLES incremented correctly.");
+    equal(MOS6502._CYCLES, CycleCost, "Set zero: CYCLES incremented correctly.");
 
     /**
      * Test 3: Set None
-     *
-     * Before ORA Applied:
-     *         Operand: 01100110 (102)
-     *     Accumulator: 01100001 (97)
-     * Status Register: 00100000 (32)
-     *
-     * After ORA Applied:
-     *     Accumulator: 01100111 (103)
-     * Status Register: 00100000 (32)
      */
 
     MOS6502._PC = PCStart;
     MOS6502._RAM[OperandAddress] = 102;
     MOS6502._A = 97;
-    MOS6502._P = 0x20;
+    
     MOS6502._CYCLES = 0;
 
     MOS6502.emulateCycle();
 
 
-    equal(MOS6502._A,
-        103,
-        "Set none: Accumulator set correctly.");
+    equal(MOS6502._A, 103, "Set none: Accumulator set correctly.");
 
-    equal(MOS6502._P,
-        32,
-        "Set none: Status register set correctly.");
+    equal(MOS6502._statusRegister.dumpStatus(), 0x30, "Set none: Status register set correctly.");
 
-    equal(MOS6502._PC,
-            PCStart + BytesUsed,
-        "Set none: PC incremented correctly.");
+    equal(MOS6502._PC, PCStart + BytesUsed, "Set none: PC incremented correctly.");
 
-    equal(MOS6502._CYCLES,
-        CycleCost,
-        "Set none: CYCLES incremented correctly.");
+    equal(MOS6502._CYCLES, CycleCost, "Set none: CYCLES incremented correctly.");
 
 });
 
@@ -1800,117 +1127,66 @@ test("0x19 - ORA (Absolute, Y) [Page Boundary Crossed]", function() {
 
     /**
      * Test 1: Set Sign
-     *
-     * Before ORA Applied:
-     *         Operand: 01010101 (85)
-     *     Accumulator: 10000000 (128)
-     * Status Register: 00100000 (32)
-     *
-     * After ORA Applied:
-     *     Accumulator: 11010101 (213)
-     * Status Register: 10100000 (160)
      */
 
     MOS6502._PC = PCStart;
     MOS6502._RAM[OperandAddress] = 85;
     MOS6502._A = 128;
-    MOS6502._P = 0x20;
+    
     MOS6502._CYCLES = 0;
 
     MOS6502.emulateCycle();
 
 
-    equal(MOS6502._A,
-        213,
-        "Set sign: Accumulator set correctly.");
+    equal(MOS6502._A, 213, "Set sign: Accumulator set correctly.");
 
-    equal(MOS6502._P,
-        160,
-        "Set sign: Status register set correctly.");
+    equal(MOS6502._statusRegister.dumpStatus(), 0xB0, "Set sign: Status register set correctly.");
 
-    equal(MOS6502._PC,
-            PCStart + BytesUsed,
-        "Set sign: PC incremented correctly.");
+    equal(MOS6502._PC, PCStart + BytesUsed, "Set sign: PC incremented correctly.");
 
-    equal(MOS6502._CYCLES,
-        CycleCost,
-        "Set sign: CYCLES incremented correctly.");
+    equal(MOS6502._CYCLES, CycleCost, "Set sign: CYCLES incremented correctly.");
 
     /**
      * Test 2: Set Zero
-     *
-     * Before ORA Applied:
-     *         Operand: 00000000 (0)
-     *     Accumulator: 00000000 (0)
-     * Status Register: 00100000 (32)
-     *
-     * After ORA Applied:
-     *     Accumulator: 00000000 (0)
-     * Status Register: 00100010 (34)
      */
 
     MOS6502._PC = PCStart;
     MOS6502._RAM[OperandAddress] = 0;
     MOS6502._A = 0;
-    MOS6502._P = 0x20;
+    
     MOS6502._CYCLES = 0;
 
     MOS6502.emulateCycle();
 
 
-    equal(MOS6502._A,
-        0,
-        "Set zero: Accumulator set correctly.");
+    equal(MOS6502._A, 0, "Set zero: Accumulator set correctly.");
 
-    equal(MOS6502._P,
-        34,
-        "Set zero: Status register set correctly.");
+    equal(MOS6502._statusRegister.dumpStatus(), 0x32, "Set zero: Status register set correctly.");
 
-    equal(MOS6502._PC,
-            PCStart + BytesUsed,
-        "Set zero: PC incremented correctly.");
+    equal(MOS6502._PC, PCStart + BytesUsed, "Set zero: PC incremented correctly.");
 
-    equal(MOS6502._CYCLES,
-        CycleCost,
-        "Set zero: CYCLES incremented correctly.");
+    equal(MOS6502._CYCLES, CycleCost, "Set zero: CYCLES incremented correctly.");
 
     /**
      * Test 3: Set None
-     *
-     * Before ORA Applied:
-     *         Operand: 01100110 (102)
-     *     Accumulator: 01100001 (97)
-     * Status Register: 00100000 (32)
-     *
-     * After ORA Applied:
-     *     Accumulator: 01100111 (103)
-     * Status Register: 00100000 (32)
      */
 
     MOS6502._PC = PCStart;
     MOS6502._RAM[OperandAddress] = 102;
     MOS6502._A = 97;
-    MOS6502._P = 0x20;
+    
     MOS6502._CYCLES = 0;
 
     MOS6502.emulateCycle();
 
 
-    equal(MOS6502._A,
-        103,
-        "Set none: Accumulator set correctly.");
+    equal(MOS6502._A, 103, "Set none: Accumulator set correctly.");
 
-    equal(MOS6502._P,
-        32,
-        "Set none: Status register set correctly.");
+    equal(MOS6502._statusRegister.dumpStatus(), 0x30, "Set none: Status register set correctly.");
 
-    equal(MOS6502._PC,
-            PCStart + BytesUsed,
-        "Set none: PC incremented correctly.");
+    equal(MOS6502._PC, PCStart + BytesUsed, "Set none: PC incremented correctly.");
 
-    equal(MOS6502._CYCLES,
-        CycleCost,
-        "Set none: CYCLES incremented correctly.");
+    equal(MOS6502._CYCLES, CycleCost, "Set none: CYCLES incremented correctly.");
 
 });
 
@@ -1938,117 +1214,66 @@ test("0x01 - ORA (Indirect, X)", function() {
 
     /**
      * Test 1: Set Sign
-     *
-     * Before ORA Applied:
-     *         Operand: 01010101 (85)
-     *     Accumulator: 10000000 (128)
-     * Status Register: 00100000 (32)
-     *
-     * After ORA Applied:
-     *     Accumulator: 11010101 (213)
-     * Status Register: 10100000 (160)
      */
 
     MOS6502._PC = PCStart;
     MOS6502._RAM[OperandAddress] = 85;
     MOS6502._A = 128;
-    MOS6502._P = 0x20;
+    
     MOS6502._CYCLES = 0;
 
     MOS6502.emulateCycle();
 
 
-    equal(MOS6502._A,
-        213,
-        "Set sign: Accumulator set correctly.");
+    equal(MOS6502._A, 213, "Set sign: Accumulator set correctly.");
 
-    equal(MOS6502._P,
-        160,
-        "Set sign: Status register set correctly.");
+    equal(MOS6502._statusRegister.dumpStatus(), 0xB0, "Set sign: Status register set correctly.");
 
-    equal(MOS6502._PC,
-            PCStart + BytesUsed,
-        "Set sign: PC incremented correctly.");
+    equal(MOS6502._PC, PCStart + BytesUsed, "Set sign: PC incremented correctly.");
 
-    equal(MOS6502._CYCLES,
-        CycleCost,
-        "Set sign: CYCLES incremented correctly.");
+    equal(MOS6502._CYCLES, CycleCost, "Set sign: CYCLES incremented correctly.");
 
     /**
      * Test 2: Set Zero
-     *
-     * Before ORA Applied:
-     *         Operand: 00000000 (0)
-     *     Accumulator: 00000000 (0)
-     * Status Register: 00100000 (32)
-     *
-     * After ORA Applied:
-     *     Accumulator: 00000000 (0)
-     * Status Register: 00100010 (34)
      */
 
     MOS6502._PC = PCStart;
     MOS6502._RAM[OperandAddress] = 0;
     MOS6502._A = 0;
-    MOS6502._P = 0x20;
+    
     MOS6502._CYCLES = 0;
 
     MOS6502.emulateCycle();
 
 
-    equal(MOS6502._A,
-        0,
-        "Set zero: Accumulator set correctly.");
+    equal(MOS6502._A, 0, "Set zero: Accumulator set correctly.");
 
-    equal(MOS6502._P,
-        34,
-        "Set zero: Status register set correctly.");
+    equal(MOS6502._statusRegister.dumpStatus(), 0x32, "Set zero: Status register set correctly.");
 
-    equal(MOS6502._PC,
-            PCStart + BytesUsed,
-        "Set zero: PC incremented correctly.");
+    equal(MOS6502._PC, PCStart + BytesUsed, "Set zero: PC incremented correctly.");
 
-    equal(MOS6502._CYCLES,
-        CycleCost,
-        "Set zero: CYCLES incremented correctly.");
+    equal(MOS6502._CYCLES, CycleCost, "Set zero: CYCLES incremented correctly.");
 
     /**
      * Test 3: Set None
-     *
-     * Before ORA Applied:
-     *         Operand: 01100110 (102)
-     *     Accumulator: 01100001 (97)
-     * Status Register: 00100000 (32)
-     *
-     * After ORA Applied:
-     *     Accumulator: 01100111 (103)
-     * Status Register: 00100000 (32)
      */
 
     MOS6502._PC = PCStart;
     MOS6502._RAM[OperandAddress] = 102;
     MOS6502._A = 97;
-    MOS6502._P = 0x20;
+    
     MOS6502._CYCLES = 0;
 
     MOS6502.emulateCycle();
 
 
-    equal(MOS6502._A,
-        103,
-        "Set none: Accumulator set correctly.");
+    equal(MOS6502._A, 103, "Set none: Accumulator set correctly.");
 
-    equal(MOS6502._P,
-        32,
-        "Set none: Status register set correctly.");
+    equal(MOS6502._statusRegister.dumpStatus(), 0x30, "Set none: Status register set correctly.");
 
-    equal(MOS6502._PC,
-            PCStart + BytesUsed,
-        "Set none: PC incremented correctly.");
+    equal(MOS6502._PC, PCStart + BytesUsed, "Set none: PC incremented correctly.");
 
-    equal(MOS6502._CYCLES,
-        CycleCost,
-        "Set none: CYCLES incremented correctly.");
+    equal(MOS6502._CYCLES, CycleCost, "Set none: CYCLES incremented correctly.");
 
 });
 
@@ -2076,117 +1301,66 @@ test("0x11 - ORA (Indirect, Y) [Same Page]", function() {
 
     /**
      * Test 1: Set Sign
-     *
-     * Before ORA Applied:
-     *         Operand: 01010101 (85)
-     *     Accumulator: 10000000 (128)
-     * Status Register: 00100000 (32)
-     *
-     * After ORA Applied:
-     *     Accumulator: 11010101 (213)
-     * Status Register: 10100000 (160)
      */
 
     MOS6502._PC = PCStart;
     MOS6502._RAM[OperandAddress] = 85;
     MOS6502._A = 128;
-    MOS6502._P = 0x20;
+    
     MOS6502._CYCLES = 0;
 
     MOS6502.emulateCycle();
 
 
-    equal(MOS6502._A,
-        213,
-        "Set sign: Accumulator set correctly.");
+    equal(MOS6502._A, 213, "Set sign: Accumulator set correctly.");
 
-    equal(MOS6502._P,
-        160,
-        "Set sign: Status register set correctly.");
+    equal(MOS6502._statusRegister.dumpStatus(), 0xB0, "Set sign: Status register set correctly.");
 
-    equal(MOS6502._PC,
-            PCStart + BytesUsed,
-        "Set sign: PC incremented correctly.");
+    equal(MOS6502._PC, PCStart + BytesUsed, "Set sign: PC incremented correctly.");
 
-    equal(MOS6502._CYCLES,
-        CycleCost,
-        "Set sign: CYCLES incremented correctly.");
+    equal(MOS6502._CYCLES, CycleCost, "Set sign: CYCLES incremented correctly.");
 
     /**
      * Test 2: Set Zero
-     *
-     * Before ORA Applied:
-     *         Operand: 00000000 (0)
-     *     Accumulator: 00000000 (0)
-     * Status Register: 00100000 (32)
-     *
-     * After ORA Applied:
-     *     Accumulator: 00000000 (0)
-     * Status Register: 00100010 (34)
      */
 
     MOS6502._PC = PCStart;
     MOS6502._RAM[OperandAddress] = 0;
     MOS6502._A = 0;
-    MOS6502._P = 0x20;
+    
     MOS6502._CYCLES = 0;
 
     MOS6502.emulateCycle();
 
 
-    equal(MOS6502._A,
-        0,
-        "Set zero: Accumulator set correctly.");
+    equal(MOS6502._A, 0, "Set zero: Accumulator set correctly.");
 
-    equal(MOS6502._P,
-        34,
-        "Set zero: Status register set correctly.");
+    equal(MOS6502._statusRegister.dumpStatus(), 0x32, "Set zero: Status register set correctly.");
 
-    equal(MOS6502._PC,
-            PCStart + BytesUsed,
-        "Set zero: PC incremented correctly.");
+    equal(MOS6502._PC, PCStart + BytesUsed, "Set zero: PC incremented correctly.");
 
-    equal(MOS6502._CYCLES,
-        CycleCost,
-        "Set zero: CYCLES incremented correctly.");
+    equal(MOS6502._CYCLES, CycleCost, "Set zero: CYCLES incremented correctly.");
 
     /**
      * Test 3: Set None
-     *
-     * Before ORA Applied:
-     *         Operand: 01100110 (102)
-     *     Accumulator: 01100001 (97)
-     * Status Register: 00100000 (32)
-     *
-     * After ORA Applied:
-     *     Accumulator: 01100111 (103)
-     * Status Register: 00100000 (32)
      */
 
     MOS6502._PC = PCStart;
     MOS6502._RAM[OperandAddress] = 102;
     MOS6502._A = 97;
-    MOS6502._P = 0x20;
+    
     MOS6502._CYCLES = 0;
 
     MOS6502.emulateCycle();
 
 
-    equal(MOS6502._A,
-        103,
-        "Set none: Accumulator set correctly.");
+    equal(MOS6502._A, 103, "Set none: Accumulator set correctly.");
 
-    equal(MOS6502._P,
-        32,
-        "Set none: Status register set correctly.");
+    equal(MOS6502._statusRegister.dumpStatus(), 0x30, "Set none: Status register set correctly.");
 
-    equal(MOS6502._PC,
-            PCStart + BytesUsed,
-        "Set none: PC incremented correctly.");
+    equal(MOS6502._PC, PCStart + BytesUsed, "Set none: PC incremented correctly.");
 
-    equal(MOS6502._CYCLES,
-        CycleCost,
-        "Set none: CYCLES incremented correctly.");
+    equal(MOS6502._CYCLES, CycleCost, "Set none: CYCLES incremented correctly.");
 
 });
 
@@ -2214,75 +1388,43 @@ test("0x11 - ORA (Indirect, Y) [Page Boundary Crossed]", function() {
 
     /**
      * Test 1: Set Sign
-     *
-     * Before ORA Applied:
-     *         Operand: 01010101 (85)
-     *     Accumulator: 10000000 (128)
-     * Status Register: 00100000 (32)
-     *
-     * After ORA Applied:
-     *     Accumulator: 11010101 (213)
-     * Status Register: 10100000 (160)
      */
 
     MOS6502._PC = PCStart;
     MOS6502._RAM[OperandAddress] = 85;
     MOS6502._A = 128;
-    MOS6502._P = 0x20;
+    
     MOS6502._CYCLES = 0;
 
     MOS6502.emulateCycle();
 
 
-    equal(MOS6502._A,
-        213,
-        "Set sign: Accumulator set correctly.");
+    equal(MOS6502._A, 213, "Set sign: Accumulator set correctly.");
 
-    equal(MOS6502._P,
-        160,
-        "Set sign: Status register set correctly.");
+    equal(MOS6502._statusRegister.dumpStatus(), 0xB0, "Set sign: Status register set correctly.");
 
-    equal(MOS6502._PC,
-            PCStart + BytesUsed,
-        "Set sign: PC incremented correctly.");
+    equal(MOS6502._PC, PCStart + BytesUsed, "Set sign: PC incremented correctly.");
 
-    equal(MOS6502._CYCLES,
-        CycleCost,
-        "Set sign: CYCLES incremented correctly.");
+    equal(MOS6502._CYCLES, CycleCost, "Set sign: CYCLES incremented correctly.");
 
     /**
      * Test 2: Set Zero
-     *
-     * Before ORA Applied:
-     *         Operand: 00000000 (0)
-     *     Accumulator: 00000000 (0)
-     * Status Register: 00100000 (32)
-     *
-     * After ORA Applied:
-     *     Accumulator: 00000000 (0)
-     * Status Register: 00100010 (34)
      */
 
     MOS6502._PC = PCStart;
     MOS6502._RAM[OperandAddress] = 0;
     MOS6502._A = 0;
-    MOS6502._P = 0x20;
+    
     MOS6502._CYCLES = 0;
 
     MOS6502.emulateCycle();
 
 
-    equal(MOS6502._A,
-        0,
-        "Set zero: Accumulator set correctly.");
+    equal(MOS6502._A, 0, "Set zero: Accumulator set correctly.");
 
-    equal(MOS6502._P,
-        34,
-        "Set zero: Status register set correctly.");
+    equal(MOS6502._statusRegister.dumpStatus(), 0x32, "Set zero: Status register set correctly.");
 
-    equal(MOS6502._PC,
-            PCStart + BytesUsed,
-        "Set zero: PC incremented correctly.");
+    equal(MOS6502._PC, PCStart + BytesUsed, "Set zero: PC incremented correctly.");
 
     equal(MOS6502._CYCLES,
         CycleCost,
@@ -2290,41 +1432,24 @@ test("0x11 - ORA (Indirect, Y) [Page Boundary Crossed]", function() {
 
     /**
      * Test 3: Set None
-     *
-     * Before ORA Applied:
-     *         Operand: 01100110 (102)
-     *     Accumulator: 01100001 (97)
-     * Status Register: 00100000 (32)
-     *
-     * After ORA Applied:
-     *     Accumulator: 01100111 (103)
-     * Status Register: 00100000 (32)
      */
 
     MOS6502._PC = PCStart;
     MOS6502._RAM[OperandAddress] = 102;
     MOS6502._A = 97;
-    MOS6502._P = 0x20;
+    
     MOS6502._CYCLES = 0;
 
     MOS6502.emulateCycle();
 
 
-    equal(MOS6502._A,
-        103,
-        "Set none: Accumulator set correctly.");
+    equal(MOS6502._A, 103, "Set none: Accumulator set correctly.");
 
-    equal(MOS6502._P,
-        32,
-        "Set none: Status register set correctly.");
+    equal(MOS6502._statusRegister.dumpStatus(), 0x30, "Set none: Status register set correctly.");
 
-    equal(MOS6502._PC,
-            PCStart + BytesUsed,
-        "Set none: PC incremented correctly.");
+    equal(MOS6502._PC, PCStart + BytesUsed, "Set none: PC incremented correctly.");
 
-    equal(MOS6502._CYCLES,
-        CycleCost,
-        "Set none: CYCLES incremented correctly.");
+    equal(MOS6502._CYCLES, CycleCost, "Set none: CYCLES incremented correctly.");
 
 });
 
@@ -2342,41 +1467,26 @@ QUnit.module("Instruction - BRK", {
 
 test("0x00 - BRK (Implied)", function() {
     /**
-     * BRK
-     * Pre-state:
-     *          PC = 0x4000
-     *      CYCLES = 0
-     *           P = 0x20
-     *      0x4000 = 0x00
-     *      0xFFFE = 0x40
-     *      0xFFFF = 0x40
-     *
-     * Post-state:
-     *          PC = 0x4040
-     *      CYCLES = 7
-     *           P = 0x34 (Break & Interrupt set)
+     *    Instruction: BRK - Force Break
+     * Affected Flags: Interrupt
+     *    Total Tests: 1
      */
 
     MOS6502._PC = 0x4000;
     MOS6502._CYCLES = 0;
-    MOS6502._P = 0x20;
+    
     MOS6502._RAM[0x4000] = 0x00;
     MOS6502._RAM[0xFFFE] = 0x40;
     MOS6502._RAM[0xFFFF] = 0x40;
 
     MOS6502.emulateCycle();
 
-    equal(MOS6502._PC,
-        0x4040,
-        "PC set correctly.");
+    equal(MOS6502._PC, 0x4040, "PC set correctly.");
 
-    equal(MOS6502._CYCLES,
-        7,
-        "CYCLES incremented correctly.");
+    equal(MOS6502._CYCLES, 7, "CYCLES incremented correctly.");
 
-    equal(MOS6502._P,
-        0x34,
-        "Status Register set correctly.");
+    equal(MOS6502._statusRegister.dumpStatus(), 0x34, "Status Register set correctly.");
+
 });
 
 //</editor-fold>
@@ -2407,67 +1517,35 @@ test("0x0A - ASL (Accumulator)", function() {
 
     /**
      * Test 1: Set carry.
-     *
-     * Before ASL Applied:
-     *         Operand: 10101010 (170)
-     * Status Register: 00100000 (32)
-     *
-     * After ASL applied:
-     *         Operand: 01010100 (84)
-     * Status Register: 00100001 (33)
      */
     MOS6502._PC = PCStart;
     MOS6502._A = 170;
-    MOS6502._P = 32;
     MOS6502._CYCLES = 0;
 
     MOS6502.emulateCycle();
 
-    equal(MOS6502._A,
-          84,
-        "Set carry: Operand shifted correctly.");
+    equal(MOS6502._A, 84, "Set carry: Operand shifted correctly.");
 
-    equal(MOS6502._P,
-        33,
-        "Set carry: Status Register set correctly.");
+    equal(MOS6502._statusRegister.dumpStatus(), 0x31, "Set carry: Status Register set correctly.");
 
-    equal(MOS6502._PC,
-            PCStart + BytesUsed,
-        "Set carry: Program Counter set correctly.");
+    equal(MOS6502._PC, PCStart + BytesUsed, "Set carry: Program Counter set correctly.");
 
-    equal(MOS6502._CYCLES,
-        CycleCost,
-        "Set carry: Cycles set correctly.");
+    equal(MOS6502._CYCLES, CycleCost, "Set carry: Cycles set correctly.");
 
     /**
      * Test 2: Set carry & zero.
-     *
-     * Before ASL Applied:
-     *         Operand: 10000000 (128)
-     * Status Register: 00100000 (32)
-     *
-     * After ASL applied:
-     *         Operand: 00000000 (0)
-     * Status Register: 00100011 (35)
      */
     MOS6502._PC = PCStart;
     MOS6502._A = 128;
-    MOS6502._P = 32;
     MOS6502._CYCLES = 0;
 
     MOS6502.emulateCycle();
 
-    equal(MOS6502._A,
-        0,
-        "Set carry & zero: Operand shifted correctly.");
+    equal(MOS6502._A, 0, "Set carry & zero: Operand shifted correctly.");
 
-    equal(MOS6502._P,
-        35,
-        "Set carry & zero: Status Register set correctly.");
+    equal(MOS6502._statusRegister.dumpStatus(), 0x33, "Set carry & zero: Status Register set correctly.");
 
-    equal(MOS6502._PC,
-            PCStart + BytesUsed,
-        "Set carry & zero: Program Counter set correctly.");
+    equal(MOS6502._PC, PCStart + BytesUsed, "Set carry & zero: Program Counter set correctly.");
 
     equal(MOS6502._CYCLES,
         CycleCost,
@@ -2475,131 +1553,67 @@ test("0x0A - ASL (Accumulator)", function() {
 
     /**
      * Test 3: Set sign & carry.
-     *
-     * Before ASL Applied:
-     *         Operand: 11001010 (202)
-     * Status Register: 00100000 (32)
-     *
-     * After ASL applied:
-     *         Operand: 10010100 (148)
-     * Status Register: 10100001 (161)
      */
     MOS6502._PC = PCStart;
     MOS6502._A = 202;
-    MOS6502._P = 32;
     MOS6502._CYCLES = 0;
 
     MOS6502.emulateCycle();
 
-    equal(MOS6502._A,
-        148,
-        "Set sign & carry: Operand shifted correctly.");
+    equal(MOS6502._A, 148, "Set sign & carry: Operand shifted correctly.");
 
-    equal(MOS6502._P,
-        161,
-        "Set sign & carry: Status Register set correctly.");
+    equal(MOS6502._statusRegister.dumpStatus(), 0xB1, "Set sign & carry: Status Register set correctly.");
 
-    equal(MOS6502._PC,
-            PCStart + BytesUsed,
-        "Set sign & carry: Program Counter set correctly.");
+    equal(MOS6502._PC, PCStart + BytesUsed, "Set sign & carry: Program Counter set correctly.");
 
-    equal(MOS6502._CYCLES,
-        CycleCost,
-        "Set sign & carry: Cycles set correctly.");
+    equal(MOS6502._CYCLES, CycleCost, "Set sign & carry: Cycles set correctly.");
 
     /**
      * Test 4: Set zero.
-     *
-     * Before ASL Applied:
-     *         Operand: 00000000 (0)
-     * Status Register: 00100000 (32)
-     *
-     * After ASL applied:
-     *         Operand: 00000000 (0)
-     * Status Register: 00100010 (34)
      */
     MOS6502._PC = PCStart;
     MOS6502._A = 0;
-    MOS6502._P = 32;
     MOS6502._CYCLES = 0;
 
     MOS6502.emulateCycle();
 
-    equal(MOS6502._A,
-        0,
-        "Set zero: Operand shifted correctly.");
+    equal(MOS6502._A, 0, "Set zero: Operand shifted correctly.");
 
-    equal(MOS6502._P,
-        34,
-        "Set zero: Status Register set correctly.");
+    equal(MOS6502._statusRegister.dumpStatus(), 0x33, "Set zero: Status Register set correctly.");
 
-    equal(MOS6502._PC,
-            PCStart + BytesUsed,
-        "Set zero: Program Counter set correctly.");
+    equal(MOS6502._PC, PCStart + BytesUsed, "Set zero: Program Counter set correctly.");
 
-    equal(MOS6502._CYCLES,
-        CycleCost,
-        "Set zero: Cycles set correctly.");
+    equal(MOS6502._CYCLES, CycleCost, "Set zero: Cycles set correctly.");
 
     /**
      * Test 5: Set sign.
-     *
-     * Before ASL Applied:
-     *         Operand: 01000000 (64)
-     * Status Register: 00100000 (32)
-     *
-     * After ASL applied:
-     *         Operand: 10000000 (128)
-     * Status Register: 10100000 (160)
      */
     MOS6502._PC = PCStart;
     MOS6502._A = 64;
-    MOS6502._P = 32;
     MOS6502._CYCLES = 0;
 
     MOS6502.emulateCycle();
 
-    equal(MOS6502._A,
-        128,
-        "Set sign: Operand shifted correctly.");
+    equal(MOS6502._A, 128, "Set sign: Operand shifted correctly.");
 
-    equal(MOS6502._P,
-        160,
-        "Set sign: Status Register set correctly.");
+    equal(MOS6502._statusRegister.dumpStatus(), 0xB0, "Set sign: Status Register set correctly.");
 
-    equal(MOS6502._PC,
-            PCStart + BytesUsed,
-        "Set sign: Program Counter set correctly.");
+    equal(MOS6502._PC, PCStart + BytesUsed, "Set sign: Program Counter set correctly.");
 
-    equal(MOS6502._CYCLES,
-        CycleCost,
-        "Set sign: Cycles set correctly.");
+    equal(MOS6502._CYCLES, CycleCost, "Set sign: Cycles set correctly.");
 
     /**
      * Test 6: Set none.
-     *
-     * Before ASL Applied:
-     *         Operand: 00100110 ()
-     * Status Register: 00100000 (32)
-     *
-     * After ASL applied:
-     *         Operand: 10000000 (128)
-     * Status Register: 10100000 (160)
      */
     MOS6502._PC = PCStart;
     MOS6502._A = 38;
-    MOS6502._P = 32;
     MOS6502._CYCLES = 0;
 
     MOS6502.emulateCycle();
 
-    equal(MOS6502._A,
-        76,
-        "Set none: Operand shifted correctly.");
+    equal(MOS6502._A, 76, "Set none: Operand shifted correctly.");
 
-    equal(MOS6502._P,
-        32,
-        "Set none: Status Register set correctly.");
+    equal(MOS6502._statusRegister.dumpStatus(), 0x30, "Set none: Status Register set correctly.");
 
     equal(MOS6502._PC,
             PCStart + BytesUsed,
@@ -2628,207 +1642,105 @@ test("0x06 - ASL (Zero Page)", function() {
 
     /**
      * Test 1: Set carry.
-     *
-     * Before ASL Applied:
-     *         Operand: 10101010 (170)
-     * Status Register: 00100000 (32)
-     *
-     * After ASL applied:
-     *         Operand: 01010100 (84)
-     * Status Register: 00100001 (33)
      */
     MOS6502._PC = PCStart;
     MOS6502._RAM[ZPAddress] = 170;
-    MOS6502._P = 32;
     MOS6502._CYCLES = 0;
 
     MOS6502.emulateCycle();
 
-    equal(MOS6502._RAM[ZPAddress],
-        84,
-        "Set carry: Operand shifted correctly.");
+    equal(MOS6502._RAM[ZPAddress], 84, "Set carry: Operand shifted correctly.");
 
-    equal(MOS6502._P,
-        33,
-        "Set carry: Status Register set correctly.");
+    equal(MOS6502._statusRegister.dumpStatus(), 0x31, "Set carry: Status Register set correctly.");
 
-    equal(MOS6502._PC,
-            PCStart + BytesUsed,
-        "Set carry: Program Counter set correctly.");
+    equal(MOS6502._PC, PCStart + BytesUsed, "Set carry: Program Counter set correctly.");
 
-    equal(MOS6502._CYCLES,
-        CycleCost,
-        "Set carry: Cycles set correctly.");
+    equal(MOS6502._CYCLES, CycleCost, "Set carry: Cycles set correctly.");
 
     /**
      * Test 2: Set carry & zero.
-     *
-     * Before ASL Applied:
-     *         Operand: 10000000 (128)
-     * Status Register: 00100000 (32)
-     *
-     * After ASL applied:
-     *         Operand: 00000000 (0)
-     * Status Register: 00100011 (35)
      */
     MOS6502._PC = PCStart;
     MOS6502._RAM[ZPAddress] = 128;
-    MOS6502._P = 32;
     MOS6502._CYCLES = 0;
 
     MOS6502.emulateCycle();
 
-    equal(MOS6502._RAM[ZPAddress],
-        0,
-        "Set carry & zero: Operand shifted correctly.");
+    equal(MOS6502._RAM[ZPAddress], 0, "Set carry & zero: Operand shifted correctly.");
 
-    equal(MOS6502._P,
-        35,
-        "Set carry & zero: Status Register set correctly.");
+    equal(MOS6502._statusRegister.dumpStatus(), 0x33, "Set carry & zero: Status Register set correctly.");
 
-    equal(MOS6502._PC,
-            PCStart + BytesUsed,
-        "Set carry & zero: Program Counter set correctly.");
+    equal(MOS6502._PC, PCStart + BytesUsed, "Set carry & zero: Program Counter set correctly.");
 
-    equal(MOS6502._CYCLES,
-        CycleCost,
-        "Set carry & zero: Cycles set correctly.");
+    equal(MOS6502._CYCLES, CycleCost, "Set carry & zero: Cycles set correctly.");
 
     /**
      * Test 3: Set sign & carry.
-     *
-     * Before ASL Applied:
-     *         Operand: 11001010 (202)
-     * Status Register: 00100000 (32)
-     *
-     * After ASL applied:
-     *         Operand: 10010100 (148)
-     * Status Register: 10100001 (161)
      */
     MOS6502._PC = PCStart;
     MOS6502._RAM[ZPAddress] = 202;
-    MOS6502._P = 32;
     MOS6502._CYCLES = 0;
 
     MOS6502.emulateCycle();
 
-    equal(MOS6502._RAM[ZPAddress],
-        148,
-        "Set sign & carry: Operand shifted correctly.");
+    equal(MOS6502._RAM[ZPAddress], 148, "Set sign & carry: Operand shifted correctly.");
 
-    equal(MOS6502._P,
-        161,
-        "Set sign & carry: Status Register set correctly.");
+    equal(MOS6502._statusRegister.dumpStatus(), 0xB1, "Set sign & carry: Status Register set correctly.");
 
-    equal(MOS6502._PC,
-            PCStart + BytesUsed,
-        "Set sign & carry: Program Counter set correctly.");
+    equal(MOS6502._PC, PCStart + BytesUsed, "Set sign & carry: Program Counter set correctly.");
 
-    equal(MOS6502._CYCLES,
-        CycleCost,
-        "Set sign & carry: Cycles set correctly.");
+    equal(MOS6502._CYCLES, CycleCost, "Set sign & carry: Cycles set correctly.");
 
     /**
      * Test 4: Set zero.
-     *
-     * Before ASL Applied:
-     *         Operand: 00000000 (0)
-     * Status Register: 00100000 (32)
-     *
-     * After ASL applied:
-     *         Operand: 00000000 (0)
-     * Status Register: 00100010 (34)
      */
     MOS6502._PC = PCStart;
     MOS6502._RAM[ZPAddress] = 0;
-    MOS6502._P = 32;
     MOS6502._CYCLES = 0;
 
     MOS6502.emulateCycle();
 
-    equal(MOS6502._RAM[ZPAddress],
-        0,
-        "Set zero: Operand shifted correctly.");
+    equal(MOS6502._RAM[ZPAddress], 0, "Set zero: Operand shifted correctly.");
 
-    equal(MOS6502._P,
-        34,
-        "Set zero: Status Register set correctly.");
+    equal(MOS6502._statusRegister.dumpStatus(), 0x33, "Set zero: Status Register set correctly.");
 
-    equal(MOS6502._PC,
-            PCStart + BytesUsed,
-        "Set zero: Program Counter set correctly.");
+    equal(MOS6502._PC, PCStart + BytesUsed, "Set zero: Program Counter set correctly.");
 
-    equal(MOS6502._CYCLES,
-        CycleCost,
-        "Set zero: Cycles set correctly.");
+    equal(MOS6502._CYCLES, CycleCost, "Set zero: Cycles set correctly.");
 
     /**
      * Test 5: Set sign.
-     *
-     * Before ASL Applied:
-     *         Operand: 01000000 (64)
-     * Status Register: 00100000 (32)
-     *
-     * After ASL applied:
-     *         Operand: 10000000 (128)
-     * Status Register: 10100000 (160)
      */
     MOS6502._PC = PCStart;
     MOS6502._RAM[ZPAddress] = 64;
-    MOS6502._P = 32;
     MOS6502._CYCLES = 0;
 
     MOS6502.emulateCycle();
 
-    equal(MOS6502._RAM[ZPAddress],
-        128,
-        "Set sign: Operand shifted correctly.");
+    equal(MOS6502._RAM[ZPAddress], 128, "Set sign: Operand shifted correctly.");
 
-    equal(MOS6502._P,
-        160,
-        "Set sign: Status Register set correctly.");
+    equal(MOS6502._statusRegister.dumpStatus(), 0xB0, "Set sign: Status Register set correctly.");
 
-    equal(MOS6502._PC,
-            PCStart + BytesUsed,
-        "Set sign: Program Counter set correctly.");
+    equal(MOS6502._PC, PCStart + BytesUsed, "Set sign: Program Counter set correctly.");
 
-    equal(MOS6502._CYCLES,
-        CycleCost,
-        "Set sign: Cycles set correctly.");
+    equal(MOS6502._CYCLES, CycleCost, "Set sign: Cycles set correctly.");
 
     /**
      * Test 6: Set none.
-     *
-     * Before ASL Applied:
-     *         Operand: 00100110 ()
-     * Status Register: 00100000 (32)
-     *
-     * After ASL applied:
-     *         Operand: 10000000 (128)
-     * Status Register: 10100000 (160)
      */
     MOS6502._PC = PCStart;
     MOS6502._RAM[ZPAddress] = 38;
-    MOS6502._P = 32;
     MOS6502._CYCLES = 0;
 
     MOS6502.emulateCycle();
 
-    equal(MOS6502._RAM[ZPAddress],
-        76,
-        "Set none: Operand shifted correctly.");
+    equal(MOS6502._RAM[ZPAddress], 76, "Set none: Operand shifted correctly.");
 
-    equal(MOS6502._P,
-        32,
-        "Set none: Status Register set correctly.");
+    equal(MOS6502._statusRegister.dumpStatus(), 0x30, "Set none: Status Register set correctly.");
 
-    equal(MOS6502._PC,
-            PCStart + BytesUsed,
-        "Set none: Program Counter set correctly.");
+    equal(MOS6502._PC, PCStart + BytesUsed, "Set none: Program Counter set correctly.");
 
-    equal(MOS6502._CYCLES,
-        CycleCost,
-        "Set none: Cycles set correctly.");
+    equal(MOS6502._CYCLES, CycleCost, "Set none: Cycles set correctly.");
 });
 
 test("0x16 - ASL (Zero Page, X)", function() {
@@ -2851,207 +1763,105 @@ test("0x16 - ASL (Zero Page, X)", function() {
 
     /**
      * Test 1: Set carry.
-     *
-     * Before ASL Applied:
-     *         Operand: 10101010 (170)
-     * Status Register: 00100000 (32)
-     *
-     * After ASL applied:
-     *         Operand: 01010100 (84)
-     * Status Register: 00100001 (33)
      */
     MOS6502._PC = PCStart;
     MOS6502._RAM[(ZPAddress + XRegister) & 0xFF] = 170;
-    MOS6502._P = 32;
     MOS6502._CYCLES = 0;
 
     MOS6502.emulateCycle();
 
-    equal(MOS6502._RAM[(ZPAddress + XRegister) & 0xFF],
-        84,
-        "Set carry: Operand shifted correctly.");
+    equal(MOS6502._RAM[(ZPAddress + XRegister) & 0xFF], 84, "Set carry: Operand shifted correctly.");
 
-    equal(MOS6502._P,
-        33,
-        "Set carry: Status Register set correctly.");
+    equal(MOS6502._statusRegister.dumpStatus(), 0x31, "Set carry: Status Register set correctly.");
 
-    equal(MOS6502._PC,
-            PCStart + BytesUsed,
-        "Set carry: Program Counter set correctly.");
+    equal(MOS6502._PC, PCStart + BytesUsed, "Set carry: Program Counter set correctly.");
 
-    equal(MOS6502._CYCLES,
-        CycleCost,
-        "Set carry: Cycles set correctly.");
+    equal(MOS6502._CYCLES, CycleCost, "Set carry: Cycles set correctly.");
 
     /**
      * Test 2: Set carry & zero.
-     *
-     * Before ASL Applied:
-     *         Operand: 10000000 (128)
-     * Status Register: 00100000 (32)
-     *
-     * After ASL applied:
-     *         Operand: 00000000 (0)
-     * Status Register: 00100011 (35)
      */
     MOS6502._PC = PCStart;
     MOS6502._RAM[(ZPAddress + XRegister) & 0xFF] = 128;
-    MOS6502._P = 32;
     MOS6502._CYCLES = 0;
 
     MOS6502.emulateCycle();
 
-    equal(MOS6502._RAM[(ZPAddress + XRegister) & 0xFF],
-        0,
-        "Set carry & zero: Operand shifted correctly.");
+    equal(MOS6502._RAM[(ZPAddress + XRegister) & 0xFF], 0, "Set carry & zero: Operand shifted correctly.");
 
-    equal(MOS6502._P,
-        35,
-        "Set carry & zero: Status Register set correctly.");
+    equal(MOS6502._statusRegister.dumpStatus(), 0X33, "Set carry & zero: Status Register set correctly.");
 
-    equal(MOS6502._PC,
-            PCStart + BytesUsed,
-        "Set carry & zero: Program Counter set correctly.");
+    equal(MOS6502._PC, PCStart + BytesUsed, "Set carry & zero: Program Counter set correctly.");
 
-    equal(MOS6502._CYCLES,
-        CycleCost,
-        "Set carry & zero: Cycles set correctly.");
+    equal(MOS6502._CYCLES, CycleCost, "Set carry & zero: Cycles set correctly.");
 
     /**
      * Test 3: Set sign & carry.
-     *
-     * Before ASL Applied:
-     *         Operand: 11001010 (202)
-     * Status Register: 00100000 (32)
-     *
-     * After ASL applied:
-     *         Operand: 10010100 (148)
-     * Status Register: 10100001 (161)
      */
     MOS6502._PC = PCStart;
     MOS6502._RAM[(ZPAddress + XRegister) & 0xFF] = 202;
-    MOS6502._P = 32;
     MOS6502._CYCLES = 0;
 
     MOS6502.emulateCycle();
 
-    equal(MOS6502._RAM[(ZPAddress + XRegister) & 0xFF],
-        148,
-        "Set sign & carry: Operand shifted correctly.");
+    equal(MOS6502._RAM[(ZPAddress + XRegister) & 0xFF], 148, "Set sign & carry: Operand shifted correctly.");
 
-    equal(MOS6502._P,
-        161,
-        "Set sign & carry: Status Register set correctly.");
+    equal(MOS6502._statusRegister.dumpStatus(), 0XB1, "Set sign & carry: Status Register set correctly.");
 
-    equal(MOS6502._PC,
-            PCStart + BytesUsed,
-        "Set sign & carry: Program Counter set correctly.");
+    equal(MOS6502._PC, PCStart + BytesUsed, "Set sign & carry: Program Counter set correctly.");
 
-    equal(MOS6502._CYCLES,
-        CycleCost,
-        "Set sign & carry: Cycles set correctly.");
+    equal(MOS6502._CYCLES, CycleCost, "Set sign & carry: Cycles set correctly.");
 
     /**
      * Test 4: Set zero.
-     *
-     * Before ASL Applied:
-     *         Operand: 00000000 (0)
-     * Status Register: 00100000 (32)
-     *
-     * After ASL applied:
-     *         Operand: 00000000 (0)
-     * Status Register: 00100010 (34)
      */
     MOS6502._PC = PCStart;
     MOS6502._RAM[(ZPAddress + XRegister) & 0xFF] = 0;
-    MOS6502._P = 32;
     MOS6502._CYCLES = 0;
 
     MOS6502.emulateCycle();
 
-    equal(MOS6502._RAM[(ZPAddress + XRegister) & 0xFF],
-        0,
-        "Set zero: Operand shifted correctly.");
+    equal(MOS6502._RAM[(ZPAddress + XRegister) & 0xFF], 0, "Set zero: Operand shifted correctly.");
 
-    equal(MOS6502._P,
-        34,
-        "Set zero: Status Register set correctly.");
+    equal(MOS6502._statusRegister.dumpStatus(), 0x33, "Set zero: Status Register set correctly.");
 
-    equal(MOS6502._PC,
-            PCStart + BytesUsed,
-        "Set zero: Program Counter set correctly.");
+    equal(MOS6502._PC, PCStart + BytesUsed, "Set zero: Program Counter set correctly.");
 
-    equal(MOS6502._CYCLES,
-        CycleCost,
-        "Set zero: Cycles set correctly.");
+    equal(MOS6502._CYCLES, CycleCost, "Set zero: Cycles set correctly.");
 
     /**
      * Test 5: Set sign.
-     *
-     * Before ASL Applied:
-     *         Operand: 01000000 (64)
-     * Status Register: 00100000 (32)
-     *
-     * After ASL applied:
-     *         Operand: 10000000 (128)
-     * Status Register: 10100000 (160)
      */
     MOS6502._PC = PCStart;
     MOS6502._RAM[(ZPAddress + XRegister) & 0xFF] = 64;
-    MOS6502._P = 32;
     MOS6502._CYCLES = 0;
 
     MOS6502.emulateCycle();
 
-    equal(MOS6502._RAM[(ZPAddress + XRegister) & 0xFF],
-        128,
-        "Set sign: Operand shifted correctly.");
+    equal(MOS6502._RAM[(ZPAddress + XRegister) & 0xFF], 128, "Set sign: Operand shifted correctly.");
 
-    equal(MOS6502._P,
-        160,
-        "Set sign: Status Register set correctly.");
+    equal(MOS6502._statusRegister.dumpStatus(), 0xB0, "Set sign: Status Register set correctly.");
 
-    equal(MOS6502._PC,
-            PCStart + BytesUsed,
-        "Set sign: Program Counter set correctly.");
+    equal(MOS6502._PC, PCStart + BytesUsed, "Set sign: Program Counter set correctly.");
 
-    equal(MOS6502._CYCLES,
-        CycleCost,
-        "Set sign: Cycles set correctly.");
+    equal(MOS6502._CYCLES, CycleCost, "Set sign: Cycles set correctly.");
 
     /**
      * Test 6: Set none.
-     *
-     * Before ASL Applied:
-     *         Operand: 00100110 ()
-     * Status Register: 00100000 (32)
-     *
-     * After ASL applied:
-     *         Operand: 10000000 (128)
-     * Status Register: 10100000 (160)
      */
     MOS6502._PC = PCStart;
     MOS6502._RAM[(ZPAddress + XRegister) & 0xFF] = 38;
-    MOS6502._P = 32;
     MOS6502._CYCLES = 0;
 
     MOS6502.emulateCycle();
 
-    equal(MOS6502._RAM[(ZPAddress + XRegister) & 0xFF],
-        76,
-        "Set none: Operand shifted correctly.");
+    equal(MOS6502._RAM[(ZPAddress + XRegister) & 0xFF], 76, "Set none: Operand shifted correctly.");
 
-    equal(MOS6502._P,
-        32,
-        "Set none: Status Register set correctly.");
+    equal(MOS6502._statusRegister.dumpStatus(), 0x30, "Set none: Status Register set correctly.");
 
-    equal(MOS6502._PC,
-            PCStart + BytesUsed,
-        "Set none: Program Counter set correctly.");
+    equal(MOS6502._PC, PCStart + BytesUsed, "Set none: Program Counter set correctly.");
 
-    equal(MOS6502._CYCLES,
-        CycleCost,
-        "Set none: Cycles set correctly.");
+    equal(MOS6502._CYCLES, CycleCost, "Set none: Cycles set correctly.");
 });
 
 test("0x0E - ASL (Absolute)", function() {
@@ -3074,207 +1884,105 @@ test("0x0E - ASL (Absolute)", function() {
 
     /**
      * Test 1: Set carry.
-     *
-     * Before ASL Applied:
-     *         Operand: 10101010 (170)
-     * Status Register: 00100000 (32)
-     *
-     * After ASL applied:
-     *         Operand: 01010100 (84)
-     * Status Register: 00100001 (33)
      */
     MOS6502._PC = PCStart;
     MOS6502._RAM[MOS6502._MAKE_ADDRESS(AddressByte1,AddressByte2)] = 170;
-    MOS6502._P = 32;
     MOS6502._CYCLES = 0;
 
     MOS6502.emulateCycle();
 
-    equal(MOS6502._RAM[MOS6502._MAKE_ADDRESS(AddressByte1,AddressByte2)],
-        84,
-        "Set carry: Operand shifted correctly.");
+    equal(MOS6502._RAM[MOS6502._MAKE_ADDRESS(AddressByte1,AddressByte2)], 84, "Set carry: Operand shifted correctly.");
 
-    equal(MOS6502._P,
-        33,
-        "Set carry: Status Register set correctly.");
+    equal(MOS6502._statusRegister.dumpStatus(), 0x31, "Set carry: Status Register set correctly.");
 
-    equal(MOS6502._PC,
-            PCStart + BytesUsed,
-        "Set carry: Program Counter set correctly.");
+    equal(MOS6502._PC, PCStart + BytesUsed, "Set carry: Program Counter set correctly.");
 
-    equal(MOS6502._CYCLES,
-        CycleCost,
-        "Set carry: Cycles set correctly.");
+    equal(MOS6502._CYCLES, CycleCost, "Set carry: Cycles set correctly.");
 
     /**
      * Test 2: Set carry & zero.
-     *
-     * Before ASL Applied:
-     *         Operand: 10000000 (128)
-     * Status Register: 00100000 (32)
-     *
-     * After ASL applied:
-     *         Operand: 00000000 (0)
-     * Status Register: 00100011 (35)
      */
     MOS6502._PC = PCStart;
     MOS6502._RAM[MOS6502._MAKE_ADDRESS(AddressByte1,AddressByte2)] = 128;
-    MOS6502._P = 32;
     MOS6502._CYCLES = 0;
 
     MOS6502.emulateCycle();
 
-    equal(MOS6502._RAM[MOS6502._MAKE_ADDRESS(AddressByte1,AddressByte2)],
-        0,
-        "Set carry & zero: Operand shifted correctly.");
+    equal(MOS6502._RAM[MOS6502._MAKE_ADDRESS(AddressByte1,AddressByte2)], 0, "Set carry & zero: Operand shifted correctly.");
 
-    equal(MOS6502._P,
-        35,
-        "Set carry & zero: Status Register set correctly.");
+    equal(MOS6502._statusRegister.dumpStatus(), 0x33, "Set carry & zero: Status Register set correctly.");
 
-    equal(MOS6502._PC,
-            PCStart + BytesUsed,
-        "Set carry & zero: Program Counter set correctly.");
+    equal(MOS6502._PC, PCStart + BytesUsed, "Set carry & zero: Program Counter set correctly.");
 
-    equal(MOS6502._CYCLES,
-        CycleCost,
-        "Set carry & zero: Cycles set correctly.");
+    equal(MOS6502._CYCLES, CycleCost, "Set carry & zero: Cycles set correctly.");
 
     /**
      * Test 3: Set sign & carry.
-     *
-     * Before ASL Applied:
-     *         Operand: 11001010 (202)
-     * Status Register: 00100000 (32)
-     *
-     * After ASL applied:
-     *         Operand: 10010100 (148)
-     * Status Register: 10100001 (161)
      */
     MOS6502._PC = PCStart;
     MOS6502._RAM[MOS6502._MAKE_ADDRESS(AddressByte1,AddressByte2)] = 202;
-    MOS6502._P = 32;
     MOS6502._CYCLES = 0;
 
     MOS6502.emulateCycle();
 
-    equal(MOS6502._RAM[MOS6502._MAKE_ADDRESS(AddressByte1,AddressByte2)],
-        148,
-        "Set sign & carry: Operand shifted correctly.");
+    equal(MOS6502._RAM[MOS6502._MAKE_ADDRESS(AddressByte1,AddressByte2)], 148, "Set sign & carry: Operand shifted correctly.");
 
-    equal(MOS6502._P,
-        161,
-        "Set sign & carry: Status Register set correctly.");
+    equal(MOS6502._statusRegister.dumpStatus(), 0xB1, "Set sign & carry: Status Register set correctly.");
 
-    equal(MOS6502._PC,
-            PCStart + BytesUsed,
-        "Set sign & carry: Program Counter set correctly.");
+    equal(MOS6502._PC, PCStart + BytesUsed, "Set sign & carry: Program Counter set correctly.");
 
-    equal(MOS6502._CYCLES,
-        CycleCost,
-        "Set sign & carry: Cycles set correctly.");
+    equal(MOS6502._CYCLES, CycleCost, "Set sign & carry: Cycles set correctly.");
 
     /**
      * Test 4: Set zero.
-     *
-     * Before ASL Applied:
-     *         Operand: 00000000 (0)
-     * Status Register: 00100000 (32)
-     *
-     * After ASL applied:
-     *         Operand: 00000000 (0)
-     * Status Register: 00100010 (34)
      */
     MOS6502._PC = PCStart;
     MOS6502._RAM[MOS6502._MAKE_ADDRESS(AddressByte1,AddressByte2)] = 0;
-    MOS6502._P = 32;
     MOS6502._CYCLES = 0;
 
     MOS6502.emulateCycle();
 
-    equal(MOS6502._RAM[MOS6502._MAKE_ADDRESS(AddressByte1,AddressByte2)],
-        0,
-        "Set zero: Operand shifted correctly.");
+    equal(MOS6502._RAM[MOS6502._MAKE_ADDRESS(AddressByte1,AddressByte2)], 0, "Set zero: Operand shifted correctly.");
 
-    equal(MOS6502._P,
-        34,
-        "Set zero: Status Register set correctly.");
+    equal(MOS6502._statusRegister.dumpStatus(), 0x33, "Set zero: Status Register set correctly.");
 
-    equal(MOS6502._PC,
-            PCStart + BytesUsed,
-        "Set zero: Program Counter set correctly.");
+    equal(MOS6502._PC, PCStart + BytesUsed, "Set zero: Program Counter set correctly.");
 
-    equal(MOS6502._CYCLES,
-        CycleCost,
-        "Set zero: Cycles set correctly.");
+    equal(MOS6502._CYCLES, CycleCost, "Set zero: Cycles set correctly.");
 
     /**
      * Test 5: Set sign.
-     *
-     * Before ASL Applied:
-     *         Operand: 01000000 (64)
-     * Status Register: 00100000 (32)
-     *
-     * After ASL applied:
-     *         Operand: 10000000 (128)
-     * Status Register: 10100000 (160)
      */
     MOS6502._PC = PCStart;
     MOS6502._RAM[MOS6502._MAKE_ADDRESS(AddressByte1,AddressByte2)] = 64;
-    MOS6502._P = 32;
     MOS6502._CYCLES = 0;
 
     MOS6502.emulateCycle();
 
-    equal(MOS6502._RAM[MOS6502._MAKE_ADDRESS(AddressByte1,AddressByte2)],
-        128,
-        "Set sign: Operand shifted correctly.");
+    equal(MOS6502._RAM[MOS6502._MAKE_ADDRESS(AddressByte1,AddressByte2)], 128, "Set sign: Operand shifted correctly.");
 
-    equal(MOS6502._P,
-        160,
-        "Set sign: Status Register set correctly.");
+    equal(MOS6502._statusRegister.dumpStatus(), 0xB0, "Set sign: Status Register set correctly.");
 
-    equal(MOS6502._PC,
-            PCStart + BytesUsed,
-        "Set sign: Program Counter set correctly.");
+    equal(MOS6502._PC, PCStart + BytesUsed, "Set sign: Program Counter set correctly.");
 
-    equal(MOS6502._CYCLES,
-        CycleCost,
-        "Set sign: Cycles set correctly.");
+    equal(MOS6502._CYCLES, CycleCost, "Set sign: Cycles set correctly.");
 
     /**
      * Test 6: Set none.
-     *
-     * Before ASL Applied:
-     *         Operand: 00100110 ()
-     * Status Register: 00100000 (32)
-     *
-     * After ASL applied:
-     *         Operand: 10000000 (128)
-     * Status Register: 10100000 (160)
      */
     MOS6502._PC = PCStart;
     MOS6502._RAM[MOS6502._MAKE_ADDRESS(AddressByte1,AddressByte2)] = 38;
-    MOS6502._P = 32;
     MOS6502._CYCLES = 0;
 
     MOS6502.emulateCycle();
 
-    equal(MOS6502._RAM[MOS6502._MAKE_ADDRESS(AddressByte1,AddressByte2)],
-        76,
-        "Set none: Operand shifted correctly.");
+    equal(MOS6502._RAM[MOS6502._MAKE_ADDRESS(AddressByte1,AddressByte2)], 76, "Set none: Operand shifted correctly.");
 
-    equal(MOS6502._P,
-        32,
-        "Set none: Status Register set correctly.");
+    equal(MOS6502._statusRegister.dumpStatus(), 0x30, "Set none: Status Register set correctly.");
 
-    equal(MOS6502._PC,
-            PCStart + BytesUsed,
-        "Set none: Program Counter set correctly.");
+    equal(MOS6502._PC, PCStart + BytesUsed, "Set none: Program Counter set correctly.");
 
-    equal(MOS6502._CYCLES,
-        CycleCost,
-        "Set none: Cycles set correctly.");
+    equal(MOS6502._CYCLES, CycleCost, "Set none: Cycles set correctly.");
 });
 
 test("0x1E - ASL (Absolute, X)", function() {
@@ -3299,207 +2007,105 @@ test("0x1E - ASL (Absolute, X)", function() {
 
     /**
      * Test 1: Set carry.
-     *
-     * Before ASL Applied:
-     *         Operand: 10101010 (170)
-     * Status Register: 00100000 (32)
-     *
-     * After ASL applied:
-     *         Operand: 01010100 (84)
-     * Status Register: 00100001 (33)
      */
     MOS6502._PC = PCStart;
     MOS6502._RAM[MOS6502._MAKE_ADDRESS(AddressByte1,AddressByte2) + XRegister] = 170;
-    MOS6502._P = 32;
     MOS6502._CYCLES = 0;
 
     MOS6502.emulateCycle();
 
-    equal(MOS6502._RAM[MOS6502._MAKE_ADDRESS(AddressByte1,AddressByte2) + XRegister],
-        84,
-        "Set carry: Operand shifted correctly.");
+    equal(MOS6502._RAM[MOS6502._MAKE_ADDRESS(AddressByte1,AddressByte2) + XRegister], 84, "Set carry: Operand shifted correctly.");
 
-    equal(MOS6502._P,
-        33,
-        "Set carry: Status Register set correctly.");
+    equal(MOS6502._statusRegister.dumpStatus(), 0x31, "Set carry: Status Register set correctly.");
 
-    equal(MOS6502._PC,
-            PCStart + BytesUsed,
-        "Set carry: Program Counter set correctly.");
+    equal(MOS6502._PC, PCStart + BytesUsed, "Set carry: Program Counter set correctly.");
 
-    equal(MOS6502._CYCLES,
-        CycleCost,
-        "Set carry: Cycles set correctly.");
+    equal(MOS6502._CYCLES, CycleCost, "Set carry: Cycles set correctly.");
 
     /**
      * Test 2: Set carry & zero.
-     *
-     * Before ASL Applied:
-     *         Operand: 10000000 (128)
-     * Status Register: 00100000 (32)
-     *
-     * After ASL applied:
-     *         Operand: 00000000 (0)
-     * Status Register: 00100011 (35)
      */
     MOS6502._PC = PCStart;
     MOS6502._RAM[MOS6502._MAKE_ADDRESS(AddressByte1,AddressByte2) + XRegister] = 128;
-    MOS6502._P = 32;
     MOS6502._CYCLES = 0;
 
     MOS6502.emulateCycle();
 
-    equal(MOS6502._RAM[MOS6502._MAKE_ADDRESS(AddressByte1,AddressByte2) + XRegister],
-        0,
-        "Set carry & zero: Operand shifted correctly.");
+    equal(MOS6502._RAM[MOS6502._MAKE_ADDRESS(AddressByte1,AddressByte2) + XRegister], 0, "Set carry & zero: Operand shifted correctly.");
 
-    equal(MOS6502._P,
-        35,
-        "Set carry & zero: Status Register set correctly.");
+    equal(MOS6502._statusRegister.dumpStatus(), 0x33, "Set carry & zero: Status Register set correctly.");
 
-    equal(MOS6502._PC,
-            PCStart + BytesUsed,
-        "Set carry & zero: Program Counter set correctly.");
+    equal(MOS6502._PC, PCStart + BytesUsed, "Set carry & zero: Program Counter set correctly.");
 
-    equal(MOS6502._CYCLES,
-        CycleCost,
-        "Set carry & zero: Cycles set correctly.");
+    equal(MOS6502._CYCLES, CycleCost, "Set carry & zero: Cycles set correctly.");
 
     /**
      * Test 3: Set sign & carry.
-     *
-     * Before ASL Applied:
-     *         Operand: 11001010 (202)
-     * Status Register: 00100000 (32)
-     *
-     * After ASL applied:
-     *         Operand: 10010100 (148)
-     * Status Register: 10100001 (161)
      */
     MOS6502._PC = PCStart;
     MOS6502._RAM[MOS6502._MAKE_ADDRESS(AddressByte1,AddressByte2) + XRegister] = 202;
-    MOS6502._P = 32;
     MOS6502._CYCLES = 0;
 
     MOS6502.emulateCycle();
 
-    equal(MOS6502._RAM[MOS6502._MAKE_ADDRESS(AddressByte1,AddressByte2) + XRegister],
-        148,
-        "Set sign & carry: Operand shifted correctly.");
+    equal(MOS6502._RAM[MOS6502._MAKE_ADDRESS(AddressByte1,AddressByte2) + XRegister], 148, "Set sign & carry: Operand shifted correctly.");
 
-    equal(MOS6502._P,
-        161,
-        "Set sign & carry: Status Register set correctly.");
+    equal(MOS6502._statusRegister.dumpStatus(), 0xB1, "Set sign & carry: Status Register set correctly.");
 
-    equal(MOS6502._PC,
-            PCStart + BytesUsed,
-        "Set sign & carry: Program Counter set correctly.");
+    equal(MOS6502._PC, PCStart + BytesUsed, "Set sign & carry: Program Counter set correctly.");
 
-    equal(MOS6502._CYCLES,
-        CycleCost,
-        "Set sign & carry: Cycles set correctly.");
+    equal(MOS6502._CYCLES, CycleCost, "Set sign & carry: Cycles set correctly.");
 
     /**
      * Test 4: Set zero.
-     *
-     * Before ASL Applied:
-     *         Operand: 00000000 (0)
-     * Status Register: 00100000 (32)
-     *
-     * After ASL applied:
-     *         Operand: 00000000 (0)
-     * Status Register: 00100010 (34)
      */
     MOS6502._PC = PCStart;
     MOS6502._RAM[MOS6502._MAKE_ADDRESS(AddressByte1,AddressByte2) + XRegister] = 0;
-    MOS6502._P = 32;
     MOS6502._CYCLES = 0;
 
     MOS6502.emulateCycle();
 
-    equal(MOS6502._RAM[MOS6502._MAKE_ADDRESS(AddressByte1,AddressByte2) + XRegister],
-        0,
-        "Set zero: Operand shifted correctly.");
+    equal(MOS6502._RAM[MOS6502._MAKE_ADDRESS(AddressByte1,AddressByte2) + XRegister], 0, "Set zero: Operand shifted correctly.");
 
-    equal(MOS6502._P,
-        34,
-        "Set zero: Status Register set correctly.");
+    equal(MOS6502._statusRegister.dumpStatus(), 0x33, "Set zero: Status Register set correctly.");
 
-    equal(MOS6502._PC,
-            PCStart + BytesUsed,
-        "Set zero: Program Counter set correctly.");
+    equal(MOS6502._PC, PCStart + BytesUsed, "Set zero: Program Counter set correctly.");
 
-    equal(MOS6502._CYCLES,
-        CycleCost,
-        "Set zero: Cycles set correctly.");
+    equal(MOS6502._CYCLES, CycleCost, "Set zero: Cycles set correctly.");
 
     /**
      * Test 5: Set sign.
-     *
-     * Before ASL Applied:
-     *         Operand: 01000000 (64)
-     * Status Register: 00100000 (32)
-     *
-     * After ASL applied:
-     *         Operand: 10000000 (128)
-     * Status Register: 10100000 (160)
      */
     MOS6502._PC = PCStart;
     MOS6502._RAM[MOS6502._MAKE_ADDRESS(AddressByte1,AddressByte2) + XRegister] = 64;
-    MOS6502._P = 32;
     MOS6502._CYCLES = 0;
 
     MOS6502.emulateCycle();
 
-    equal(MOS6502._RAM[MOS6502._MAKE_ADDRESS(AddressByte1,AddressByte2) + XRegister],
-        128,
-        "Set sign: Operand shifted correctly.");
+    equal(MOS6502._RAM[MOS6502._MAKE_ADDRESS(AddressByte1,AddressByte2) + XRegister], 128, "Set sign: Operand shifted correctly.");
 
-    equal(MOS6502._P,
-        160,
-        "Set sign: Status Register set correctly.");
+    equal(MOS6502._statusRegister.dumpStatus(), 0xB0, "Set sign: Status Register set correctly.");
 
-    equal(MOS6502._PC,
-            PCStart + BytesUsed,
-        "Set sign: Program Counter set correctly.");
+    equal(MOS6502._PC, PCStart + BytesUsed, "Set sign: Program Counter set correctly.");
 
-    equal(MOS6502._CYCLES,
-        CycleCost,
-        "Set sign: Cycles set correctly.");
+    equal(MOS6502._CYCLES, CycleCost, "Set sign: Cycles set correctly.");
 
     /**
      * Test 6: Set none.
-     *
-     * Before ASL Applied:
-     *         Operand: 00100110 ()
-     * Status Register: 00100000 (32)
-     *
-     * After ASL applied:
-     *         Operand: 10000000 (128)
-     * Status Register: 10100000 (160)
      */
     MOS6502._PC = PCStart;
     MOS6502._RAM[MOS6502._MAKE_ADDRESS(AddressByte1,AddressByte2) + XRegister] = 38;
-    MOS6502._P = 32;
     MOS6502._CYCLES = 0;
 
     MOS6502.emulateCycle();
 
-    equal(MOS6502._RAM[MOS6502._MAKE_ADDRESS(AddressByte1,AddressByte2) + XRegister],
-        76,
-        "Set none: Operand shifted correctly.");
+    equal(MOS6502._RAM[MOS6502._MAKE_ADDRESS(AddressByte1,AddressByte2) + XRegister], 76, "Set none: Operand shifted correctly.");
 
-    equal(MOS6502._P,
-        32,
-        "Set none: Status Register set correctly.");
+    equal(MOS6502._statusRegister.dumpStatus(), 0x30, "Set none: Status Register set correctly.");
 
-    equal(MOS6502._PC,
-            PCStart + BytesUsed,
-        "Set none: Program Counter set correctly.");
+    equal(MOS6502._PC, PCStart + BytesUsed, "Set none: Program Counter set correctly.");
 
-    equal(MOS6502._CYCLES,
-        CycleCost,
-        "Set none: Cycles set correctly.");
+    equal(MOS6502._CYCLES, CycleCost, "Set none: Cycles set correctly.");
 });
 
 //</editor-fold>
@@ -3528,40 +2134,24 @@ test("0x08 - PHP (Implied)", function() {
         StatusRegister = 32;
 
     MOS6502._PC = PCStart;
-    MOS6502._SP = 0x01FF;
     MOS6502._RAM[PCStart] = OPCODE;
-    MOS6502._P = StatusRegister;
     MOS6502._CYCLES = 0;
 
     /**
      * Test 1: Push status register onto the stack.
-     *
-     * Before PHP Applied:
-     *        0x01FF = 0x00
-     * Stack Pointer = 0x01FF
-     *
-     * After PHP Applied:
-     *        0x01FF = 0x32
-     * Stack Pointer = 0x01FE
      */
+
+    MOS6502._statusRegister.restoreStatus(StatusRegister);
 
     MOS6502.emulateCycle();
 
-    equal(MOS6502._RAM[0x01FF],
-        32,
-        "Status register pushed to stack.");
+    equal(MOS6502._RAM[0x01FF], 32, "Status register pushed to stack.");
 
-    equal(MOS6502._SP,
-        0x01FE,
-        "Stack Pointer set correctly.");
+    equal(MOS6502._SP, 0xFE, "Stack Pointer set correctly.");
 
-    equal(MOS6502._PC,
-        PCStart + BytesUsed,
-        "Program Counter set correctly.");
+    equal(MOS6502._PC, PCStart + BytesUsed, "Program Counter set correctly.");
 
-    equal(MOS6502._CYCLES,
-        CycleCost,
-        "Cycles set correctly.")
+    equal(MOS6502._CYCLES, CycleCost, "Cycles set correctly.")
 });
 
 //</editor-fold>
@@ -3606,7 +2196,7 @@ test("0x10 - BPL (Relative)", function() {
      */
 
     // Set the sign flag which indicates a negative.
-    MOS6502._P = 0xA0;
+    MOS6502._statusRegister.SIGN = true;
 
     MOS6502.emulateCycle();
 
@@ -3622,15 +2212,17 @@ test("0x10 - BPL (Relative)", function() {
      * Test 2: Result plus. Branch forward to same page. (3 cycles)
      */
 
-    MOS6502._P = 0x20;
+    
     MOS6502._PC = PCStart;
     MOS6502._RAM[PCStart + 1] = relativePlusSamePage;
     MOS6502._CYCLES = 0;
 
+    MOS6502._statusRegister.SIGN = false;
+
     MOS6502.emulateCycle();
 
     equal(MOS6502._PC,
-        PCStart + relativePlusSamePage,
+        PCStart + relativePlusSamePage + BytesUsed,
         "Result plus, branch forward, same page: Program Counter set correctly.");
 
     equal(MOS6502._CYCLES,
@@ -3641,7 +2233,7 @@ test("0x10 - BPL (Relative)", function() {
      * Test 3: Result plus. Branch backward to same page. (3 cycles)
      */
 
-    MOS6502._P = 0x20;
+    
     MOS6502._PC = PCStart;
     MOS6502._RAM[PCStart + 1] = relativeMinusSamePage;
     MOS6502._CYCLES = 0;
@@ -3662,7 +2254,7 @@ test("0x10 - BPL (Relative)", function() {
      * NOTE: It's not possible to branch to another page from 0x4080. Using 0x40E0 for forward branch.
      */
 
-    MOS6502._P = 0x20;
+    
     MOS6502._PC = PCStartHigh;
     MOS6502._RAM[PCStartHigh + 1] = relativePlusNextPage;
     MOS6502._CYCLES = 0;
@@ -3670,7 +2262,7 @@ test("0x10 - BPL (Relative)", function() {
     MOS6502.emulateCycle();
 
     equal(MOS6502._PC,
-        PCStartHigh + relativePlusNextPage,
+        PCStartHigh + relativePlusNextPage + BytesUsed,
         "Result plus, branch forward, different page: Program Counter set correctly.");
 
     equal(MOS6502._CYCLES,
@@ -3681,7 +2273,7 @@ test("0x10 - BPL (Relative)", function() {
      * Test 5: Result plus. Branch backward to different page. (4 cycles)
      */
 
-    MOS6502._P = 0x20;
+    
     MOS6502._PC = PCStartLow;
     MOS6502._RAM[PCStartLow + 1] = relativeMinusNextPage;
     MOS6502._CYCLES = 0;
@@ -3727,59 +2319,37 @@ test("0x18 - CLC (Implied)", function() {
      * Test 1: Carry flag not set. CLC should not alter Status Register.
      */
 
-    MOS6502._P = 0xA0;
+    MOS6502._statusRegister.CARRY = false;
     MOS6502._PC = PCStart;
     MOS6502.emulateCycle();
 
-    equal(MOS6502._P,
-        0xA0,
+    equal(MOS6502._statusRegister.dumpStatus(),
+        0x30,
         "Carry flag not set. CLC did not alter Status Register.");
 
     /**
      * Test 2: Carry flag not set. Other flags set. CLC should not alter Status Register.
      */
 
-    MOS6502._P = 0xC2;
+    MOS6502._statusRegister.CARRY = true;
     MOS6502._PC = PCStart;
     MOS6502.emulateCycle();
 
-    equal(MOS6502._P,
-        0xC2,
+    equal(MOS6502._statusRegister.dumpStatus(),
+        0x30,
         "Carry flag not set. Other flags set. CLC did not alter Status Register.");
 
     /**
      * Test 3: Carry flag set. CLC should alter Status Register.
      */
 
-    MOS6502._P = 0x21;
+    MOS6502._statusRegister.CARRY = true;
     MOS6502._PC = PCStart;
     MOS6502.emulateCycle();
 
-    equal(MOS6502._P,
-        0x20,
+    equal(MOS6502._statusRegister.dumpStatus(),
+        0x30,
         "Carry flag set. CLC altered Status Register correctly.");
-
-
-    /**
-     * Test 4: Carry flag set. Other flags set. CLC should alter Status Register to remove only the carry flag.
-     */
-
-    MOS6502._P = 0xC3;
-    MOS6502._PC = PCStart;
-    MOS6502._CYCLES = 0;
-    MOS6502.emulateCycle();
-
-    equal(MOS6502._P,
-        0xC2,
-        "Carry flag set. Other flags set. CLC altered Status Register correctly.");
-
-    equal(MOS6502._CYCLES,
-        CycleCost,
-        "Cycles calculated correctly.");
-
-    equal(MOS6502._PC,
-            PCStart + BytesUsed,
-        "Program Counter incremented correctly.");
 });
 
 //</editor-fold>
@@ -3809,7 +2379,7 @@ test("0x20 - JSR (Absolute)", function() {
     MOS6502._RAM[PCStart] = OPCODE;
     MOS6502._RAM[PCStart + 1] = 0x31;
     MOS6502._RAM[PCStart + 2] = 0x21;
-    MOS6502._SP = 0x01FF;
+    MOS6502._SP = 0xFF;
     MOS6502._CYCLES = 0;
 
     /**
@@ -3818,26 +2388,15 @@ test("0x20 - JSR (Absolute)", function() {
 
     MOS6502.emulateCycle();
 
-    equal(MOS6502._PC,
-        0x2131,
-        "Jump made successfully.");
+    equal(MOS6502._PC, 0x2131, "Jump made successfully.");
 
-    equal(MOS6502._SP,
-        0x01FD,
-        "Stack pointer updated correctly.");
+    equal(MOS6502._SP, 0xFD, "Stack pointer updated correctly.");
 
-    equal(MOS6502._RAM[0x01FF],
-        (PCStart + 3) >> 8,
-        "Return address high byte stored correctly.");
+    equal(MOS6502._RAM[0x01FF], (PCStart + 2) >> 8, "Return address high byte stored correctly.");
 
-    equal(MOS6502._RAM[0x01FE],
-            (PCStart + 3) & 0xFF,
-        "Return address low byte stored correctly.");
+    equal(MOS6502._RAM[0x01FE], (PCStart + 2) & 0xFF, "Return address low byte stored correctly.");
 
-
-    equal(MOS6502._CYCLES,
-        CycleCost,
-        "Cycles calculated correctly.");
+    equal(MOS6502._CYCLES, CycleCost, "Cycles calculated correctly.");
 
 });
 
@@ -3872,84 +2431,60 @@ test("0x29 - AND (Immediate)", function() {
      */
 
     MOS6502._A = 0x14;
-    MOS6502._P = 0x20;
+    
     MOS6502._PC = PCStart;
     MOS6502._CYCLES = 0;
     MOS6502._RAM[PCStart + 1] = 0x54;
 
     MOS6502.emulateCycle();
 
-    equal(MOS6502._PC,
-        PCStart + BytesUsed,
-        "No flag: Program Counter set correctly.");
+    equal(MOS6502._PC, PCStart + BytesUsed, "No flag: Program Counter set correctly.");
 
-    equal(MOS6502._A,
-        0x14,
-        "No flag: AND operation performed correctly and stored in accumulator.");
+    equal(MOS6502._A, 0x14, "No flag: AND operation performed correctly and stored in accumulator.");
 
-    equal(MOS6502._P,
-        0x20,
-        "No flag: Status register set correctly.");
+    equal(MOS6502._statusRegister.dumpStatus(), 0x30, "No flag: Status register set correctly.");
 
-    equal(MOS6502._CYCLES,
-        CycleCost,
-        "No flag: Cycles calculated correctly.");
+    equal(MOS6502._CYCLES, CycleCost, "No flag: Cycles calculated correctly.");
 
     /**
      * Test 2: AND performed setting the zero flag.
      */
 
     MOS6502._A = 0x54;
-    MOS6502._P = 0x20;
+    
     MOS6502._PC = PCStart;
     MOS6502._CYCLES = 0;
     MOS6502._RAM[PCStart + 1] = 0x20;
 
     MOS6502.emulateCycle();
 
-    equal(MOS6502._PC,
-            PCStart + BytesUsed,
-        "Zero flag: Program Counter set correctly.");
+    equal(MOS6502._PC, PCStart + BytesUsed, "Zero flag: Program Counter set correctly.");
 
-    equal(MOS6502._A,
-        0x00,
-        "Zero flag: AND operation performed correctly and stored in accumulator.");
+    equal(MOS6502._A, 0x00, "Zero flag: AND operation performed correctly and stored in accumulator.");
 
-    equal(MOS6502._P,
-        0x22,
-        "Zero flag: Status register set correctly.");
+    equal(MOS6502._statusRegister.dumpStatus(), 0x32, "Zero flag: Status register set correctly.");
 
-    equal(MOS6502._CYCLES,
-        CycleCost,
-        "Zero flag: Cycles calculated correctly.");
+    equal(MOS6502._CYCLES, CycleCost, "Zero flag: Cycles calculated correctly.");
 
     /**
      * Test 3: AND performed setting the sign flag.
      */
 
     MOS6502._A = 0x82;
-    MOS6502._P = 0x20;
+    
     MOS6502._PC = PCStart;
     MOS6502._CYCLES = 0;
     MOS6502._RAM[PCStart + 1] = 0x81;
 
     MOS6502.emulateCycle();
 
-    equal(MOS6502._PC,
-            PCStart + BytesUsed,
-        "Sign flag: Program Counter set correctly.");
+    equal(MOS6502._PC, PCStart + BytesUsed, "Sign flag: Program Counter set correctly.");
 
-    equal(MOS6502._A,
-        0x80,
-        "Sign flag: AND operation performed correctly and stored in accumulator.");
+    equal(MOS6502._A, 0x80, "Sign flag: AND operation performed correctly and stored in accumulator.");
 
-    equal(MOS6502._P,
-        0xA0,
-        "Sign flag: Status register set correctly.");
+    equal(MOS6502._statusRegister.dumpStatus(), 0xB0, "Sign flag: Status register set correctly.");
 
-    equal(MOS6502._CYCLES,
-        CycleCost,
-        "Sign flag: Cycles calculated correctly.");
+    equal(MOS6502._CYCLES, CycleCost, "Sign flag: Cycles calculated correctly.");
 
 });
 
@@ -3974,84 +2509,60 @@ test("0x25 - AND (Zero Page)", function(){
      */
 
     MOS6502._A = 0x14;
-    MOS6502._P = 0x20;
+    
     MOS6502._PC = PCStart;
     MOS6502._CYCLES = 0;
     MOS6502._RAM[ZPAddress] = 0x54;
 
     MOS6502.emulateCycle();
 
-    equal(MOS6502._PC,
-            PCStart + BytesUsed,
-        "No flag: Program Counter set correctly.");
+    equal(MOS6502._PC, PCStart + BytesUsed, "No flag: Program Counter set correctly.");
 
-    equal(MOS6502._A,
-        0x14,
-        "No flag: AND operation performed correctly and stored in accumulator.");
+    equal(MOS6502._A, 0x14, "No flag: AND operation performed correctly and stored in accumulator.");
 
-    equal(MOS6502._P,
-        0x20,
-        "No flag: Status register set correctly.");
+    equal(MOS6502._statusRegister.dumpStatus(), 0x30, "No flag: Status register set correctly.");
 
-    equal(MOS6502._CYCLES,
-        CycleCost,
-        "No flag: Cycles calculated correctly.");
+    equal(MOS6502._CYCLES, CycleCost, "No flag: Cycles calculated correctly.");
 
     /**
      * Test 2: AND performed setting the zero flag.
      */
 
     MOS6502._A = 0x54;
-    MOS6502._P = 0x20;
+    
     MOS6502._PC = PCStart;
     MOS6502._CYCLES = 0;
     MOS6502._RAM[ZPAddress] = 0x20;
 
     MOS6502.emulateCycle();
 
-    equal(MOS6502._PC,
-            PCStart + BytesUsed,
-        "Zero flag: Program Counter set correctly.");
+    equal(MOS6502._PC, PCStart + BytesUsed, "Zero flag: Program Counter set correctly.");
 
-    equal(MOS6502._A,
-        0x00,
-        "Zero flag: AND operation performed correctly and stored in accumulator.");
+    equal(MOS6502._A, 0x00, "Zero flag: AND operation performed correctly and stored in accumulator.");
 
-    equal(MOS6502._P,
-        0x22,
-        "Zero flag: Status register set correctly.");
+    equal(MOS6502._statusRegister.dumpStatus(), 0x32, "Zero flag: Status register set correctly.");
 
-    equal(MOS6502._CYCLES,
-        CycleCost,
-        "Zero flag: Cycles calculated correctly.");
+    equal(MOS6502._CYCLES, CycleCost, "Zero flag: Cycles calculated correctly.");
 
     /**
      * Test 3: AND performed setting the sign flag.
      */
 
     MOS6502._A = 0x82;
-    MOS6502._P = 0x20;
+    
     MOS6502._PC = PCStart;
     MOS6502._CYCLES = 0;
     MOS6502._RAM[ZPAddress] = 0x81;
 
     MOS6502.emulateCycle();
 
-    equal(MOS6502._PC,
-            PCStart + BytesUsed,
-        "Sign flag: Program Counter set correctly.");
+    equal(MOS6502._PC, PCStart + BytesUsed, "Sign flag: Program Counter set correctly.");
 
-    equal(MOS6502._A,
-        0x80,
-        "Sign flag: AND operation performed correctly and stored in accumulator.");
+    equal(MOS6502._A, 0x80, "Sign flag: AND operation performed correctly and stored in accumulator.");
 
-    equal(MOS6502._P,
-        0xA0,
-        "Sign flag: Status register set correctly.");
+    equal(MOS6502._statusRegister.dumpStatus(), 0xB0, "Sign flag: Status register set correctly.");
 
-    equal(MOS6502._CYCLES,
-        CycleCost,
-        "Sign flag: Cycles calculated correctly.");
+    equal(MOS6502._CYCLES, CycleCost, "Sign flag: Cycles calculated correctly.");
 
 });
 
@@ -4078,84 +2589,60 @@ test("0x35 - AND (Zero Page, X)", function(){
      */
 
     MOS6502._A = 0x14;
-    MOS6502._P = 0x20;
+    
     MOS6502._PC = PCStart;
     MOS6502._CYCLES = 0;
     MOS6502._RAM[(ZPAddress + XRegister) & 0xFF] = 0x54;
 
     MOS6502.emulateCycle();
 
-    equal(MOS6502._PC,
-            PCStart + BytesUsed,
-        "No flag: Program Counter set correctly.");
+    equal(MOS6502._PC, PCStart + BytesUsed, "No flag: Program Counter set correctly.");
 
-    equal(MOS6502._A,
-        0x14,
-        "No flag: AND operation performed correctly and stored in accumulator.");
+    equal(MOS6502._A, 0x14, "No flag: AND operation performed correctly and stored in accumulator.");
 
-    equal(MOS6502._P,
-        0x20,
-        "No flag: Status register set correctly.");
+    equal(MOS6502._statusRegister.dumpStatus(), 0x30, "No flag: Status register set correctly.");
 
-    equal(MOS6502._CYCLES,
-        CycleCost,
-        "No flag: Cycles calculated correctly.");
+    equal(MOS6502._CYCLES, CycleCost, "No flag: Cycles calculated correctly.");
 
     /**
      * Test 2: AND performed setting the zero flag.
      */
 
     MOS6502._A = 0x54;
-    MOS6502._P = 0x20;
+    
     MOS6502._PC = PCStart;
     MOS6502._CYCLES = 0;
     MOS6502._RAM[(ZPAddress + XRegister) & 0xFF] = 0x20;
 
     MOS6502.emulateCycle();
 
-    equal(MOS6502._PC,
-            PCStart + BytesUsed,
-        "Zero flag: Program Counter set correctly.");
+    equal(MOS6502._PC, PCStart + BytesUsed, "Zero flag: Program Counter set correctly.");
 
-    equal(MOS6502._A,
-        0x00,
-        "Zero flag: AND operation performed correctly and stored in accumulator.");
+    equal(MOS6502._A, 0x00, "Zero flag: AND operation performed correctly and stored in accumulator.");
 
-    equal(MOS6502._P,
-        0x22,
-        "Zero flag: Status register set correctly.");
+    equal(MOS6502._statusRegister.dumpStatus(), 0x32, "Zero flag: Status register set correctly.");
 
-    equal(MOS6502._CYCLES,
-        CycleCost,
-        "Zero flag: Cycles calculated correctly.");
+    equal(MOS6502._CYCLES, CycleCost, "Zero flag: Cycles calculated correctly.");
 
     /**
      * Test 3: AND performed setting the sign flag.
      */
 
     MOS6502._A = 0x82;
-    MOS6502._P = 0x20;
+    
     MOS6502._PC = PCStart;
     MOS6502._CYCLES = 0;
     MOS6502._RAM[(ZPAddress + XRegister) & 0xFF] = 0x81;
 
     MOS6502.emulateCycle();
 
-    equal(MOS6502._PC,
-            PCStart + BytesUsed,
-        "Sign flag: Program Counter set correctly.");
+    equal(MOS6502._PC, PCStart + BytesUsed, "Sign flag: Program Counter set correctly.");
 
-    equal(MOS6502._A,
-        0x80,
-        "Sign flag: AND operation performed correctly and stored in accumulator.");
+    equal(MOS6502._A, 0x80, "Sign flag: AND operation performed correctly and stored in accumulator.");
 
-    equal(MOS6502._P,
-        0xA0,
-        "Sign flag: Status register set correctly.");
+    equal(MOS6502._statusRegister.dumpStatus(), 0xB0, "Sign flag: Status register set correctly.");
 
-    equal(MOS6502._CYCLES,
-        CycleCost,
-        "Sign flag: Cycles calculated correctly.");
+    equal(MOS6502._CYCLES, CycleCost, "Sign flag: Cycles calculated correctly.");
 
 });
 
@@ -4183,84 +2670,60 @@ test("0x2D - AND (Absolute)", function() {
      */
 
     MOS6502._A = 0x14;
-    MOS6502._P = 0x20;
+    
     MOS6502._PC = PCStart;
     MOS6502._CYCLES = 0;
     MOS6502._RAM[FullAddress] = 0x54;
 
     MOS6502.emulateCycle();
 
-    equal(MOS6502._PC,
-            PCStart + BytesUsed,
-        "No flag: Program Counter set correctly.");
+    equal(MOS6502._PC, PCStart + BytesUsed, "No flag: Program Counter set correctly.");
 
-    equal(MOS6502._A,
-        0x14,
-        "No flag: AND operation performed correctly and stored in accumulator.");
+    equal(MOS6502._A, 0x14, "No flag: AND operation performed correctly and stored in accumulator.");
 
-    equal(MOS6502._P,
-        0x20,
-        "No flag: Status register set correctly.");
+    equal(MOS6502._statusRegister.dumpStatus(), 0x30, "No flag: Status register set correctly.");
 
-    equal(MOS6502._CYCLES,
-        CycleCost,
-        "No flag: Cycles calculated correctly.");
+    equal(MOS6502._CYCLES, CycleCost, "No flag: Cycles calculated correctly.");
 
     /**
      * Test 2: AND performed setting the zero flag.
      */
 
     MOS6502._A = 0x54;
-    MOS6502._P = 0x20;
+    
     MOS6502._PC = PCStart;
     MOS6502._CYCLES = 0;
     MOS6502._RAM[FullAddress] = 0x20;
 
     MOS6502.emulateCycle();
 
-    equal(MOS6502._PC,
-            PCStart + BytesUsed,
-        "Zero flag: Program Counter set correctly.");
+    equal(MOS6502._PC, PCStart + BytesUsed, "Zero flag: Program Counter set correctly.");
 
-    equal(MOS6502._A,
-        0x00,
-        "Zero flag: AND operation performed correctly and stored in accumulator.");
+    equal(MOS6502._A, 0x00, "Zero flag: AND operation performed correctly and stored in accumulator.");
 
-    equal(MOS6502._P,
-        0x22,
-        "Zero flag: Status register set correctly.");
+    equal(MOS6502._statusRegister.dumpStatus(), 0x32, "Zero flag: Status register set correctly.");
 
-    equal(MOS6502._CYCLES,
-        CycleCost,
-        "Zero flag: Cycles calculated correctly.");
+    equal(MOS6502._CYCLES, CycleCost, "Zero flag: Cycles calculated correctly.");
 
     /**
      * Test 3: AND performed setting the sign flag.
      */
 
     MOS6502._A = 0x82;
-    MOS6502._P = 0x20;
+    
     MOS6502._PC = PCStart;
     MOS6502._CYCLES = 0;
     MOS6502._RAM[FullAddress] = 0x81;
 
     MOS6502.emulateCycle();
 
-    equal(MOS6502._PC,
-            PCStart + BytesUsed,
-        "Sign flag: Program Counter set correctly.");
+    equal(MOS6502._PC, PCStart + BytesUsed, "Sign flag: Program Counter set correctly.");
 
-    equal(MOS6502._A,
-        0x80,
-        "Sign flag: AND operation performed correctly and stored in accumulator.");
+    equal(MOS6502._A, 0x80, "Sign flag: AND operation performed correctly and stored in accumulator.");
 
-    equal(MOS6502._P,
-        0xA0,
-        "Sign flag: Status register set correctly.");
+    equal(MOS6502._statusRegister.dumpStatus(), 0xB0, "Sign flag: Status register set correctly.");
 
-    equal(MOS6502._CYCLES,
-        CycleCost,
-        "Sign flag: Cycles calculated correctly.");
+    equal(MOS6502._CYCLES, CycleCost, "Sign flag: Cycles calculated correctly.");
 
 });
 
@@ -4290,84 +2753,60 @@ test("0x3D - AND (Absolute, X) (Same Page)", function() {
      */
 
     MOS6502._A = 0x14;
-    MOS6502._P = 0x20;
+    
     MOS6502._PC = PCStart;
     MOS6502._CYCLES = 0;
     MOS6502._RAM[FullAddress + XRegister] = 0x54;
 
     MOS6502.emulateCycle();
 
-    equal(MOS6502._PC,
-            PCStart + BytesUsed,
-        "No flag: Program Counter set correctly.");
+    equal(MOS6502._PC, PCStart + BytesUsed, "No flag: Program Counter set correctly.");
 
-    equal(MOS6502._A,
-        0x14,
-        "No flag: AND operation performed correctly and stored in accumulator.");
+    equal(MOS6502._A, 0x14, "No flag: AND operation performed correctly and stored in accumulator.");
 
-    equal(MOS6502._P,
-        0x20,
-        "No flag: Status register set correctly.");
+    equal(MOS6502._statusRegister.dumpStatus(), 0x30, "No flag: Status register set correctly.");
 
-    equal(MOS6502._CYCLES,
-        CycleCost,
-        "No flag: Cycles calculated correctly.");
+    equal(MOS6502._CYCLES, CycleCost, "No flag: Cycles calculated correctly.");
 
     /**
      * Test 2: AND performed setting the zero flag.
      */
 
     MOS6502._A = 0x54;
-    MOS6502._P = 0x20;
+    
     MOS6502._PC = PCStart;
     MOS6502._CYCLES = 0;
     MOS6502._RAM[FullAddress + XRegister] = 0x20;
 
     MOS6502.emulateCycle();
 
-    equal(MOS6502._PC,
-            PCStart + BytesUsed,
-        "Zero flag: Program Counter set correctly.");
+    equal(MOS6502._PC, PCStart + BytesUsed, "Zero flag: Program Counter set correctly.");
 
-    equal(MOS6502._A,
-        0x00,
-        "Zero flag: AND operation performed correctly and stored in accumulator.");
+    equal(MOS6502._A, 0x00, "Zero flag: AND operation performed correctly and stored in accumulator.");
 
-    equal(MOS6502._P,
-        0x22,
-        "Zero flag: Status register set correctly.");
+    equal(MOS6502._statusRegister.dumpStatus(), 0x32, "Zero flag: Status register set correctly.");
 
-    equal(MOS6502._CYCLES,
-        CycleCost,
-        "Zero flag: Cycles calculated correctly.");
+    equal(MOS6502._CYCLES, CycleCost, "Zero flag: Cycles calculated correctly.");
 
     /**
      * Test 3: AND performed setting the sign flag.
      */
 
     MOS6502._A = 0x82;
-    MOS6502._P = 0x20;
+    
     MOS6502._PC = PCStart;
     MOS6502._CYCLES = 0;
     MOS6502._RAM[FullAddress + XRegister] = 0x81;
 
     MOS6502.emulateCycle();
 
-    equal(MOS6502._PC,
-            PCStart + BytesUsed,
-        "Sign flag: Program Counter set correctly.");
+    equal(MOS6502._PC, PCStart + BytesUsed, "Sign flag: Program Counter set correctly.");
 
-    equal(MOS6502._A,
-        0x80,
-        "Sign flag: AND operation performed correctly and stored in accumulator.");
+    equal(MOS6502._A, 0x80, "Sign flag: AND operation performed correctly and stored in accumulator.");
 
-    equal(MOS6502._P,
-        0xA0,
-        "Sign flag: Status register set correctly.");
+    equal(MOS6502._statusRegister.dumpStatus(), 0xB0, "Sign flag: Status register set correctly.");
 
-    equal(MOS6502._CYCLES,
-        CycleCost,
-        "Sign flag: Cycles calculated correctly.");
+    equal(MOS6502._CYCLES, CycleCost, "Sign flag: Cycles calculated correctly.");
 
 });
 
@@ -4397,84 +2836,60 @@ test("0x3D - AND (Absolute, X) (Cross Page)", function() {
      */
 
     MOS6502._A = 0x14;
-    MOS6502._P = 0x20;
+    
     MOS6502._PC = PCStart;
     MOS6502._CYCLES = 0;
     MOS6502._RAM[FullAddress + XRegister] = 0x54;
 
     MOS6502.emulateCycle();
 
-    equal(MOS6502._PC,
-            PCStart + BytesUsed,
-        "No flag: Program Counter set correctly.");
+    equal(MOS6502._PC, PCStart + BytesUsed, "No flag: Program Counter set correctly.");
 
-    equal(MOS6502._A,
-        0x14,
-        "No flag: AND operation performed correctly and stored in accumulator.");
+    equal(MOS6502._A, 0x14, "No flag: AND operation performed correctly and stored in accumulator.");
 
-    equal(MOS6502._P,
-        0x20,
-        "No flag: Status register set correctly.");
+    equal(MOS6502._statusRegister.dumpStatus(), 0x30, "No flag: Status register set correctly.");
 
-    equal(MOS6502._CYCLES,
-        CycleCost,
-        "No flag: Cycles calculated correctly.");
+    equal(MOS6502._CYCLES, CycleCost, "No flag: Cycles calculated correctly.");
 
     /**
      * Test 2: AND performed setting the zero flag.
      */
 
     MOS6502._A = 0x54;
-    MOS6502._P = 0x20;
+    
     MOS6502._PC = PCStart;
     MOS6502._CYCLES = 0;
     MOS6502._RAM[FullAddress + XRegister] = 0x20;
 
     MOS6502.emulateCycle();
 
-    equal(MOS6502._PC,
-            PCStart + BytesUsed,
-        "Zero flag: Program Counter set correctly.");
+    equal(MOS6502._PC, PCStart + BytesUsed, "Zero flag: Program Counter set correctly.");
 
-    equal(MOS6502._A,
-        0x00,
-        "Zero flag: AND operation performed correctly and stored in accumulator.");
+    equal(MOS6502._A, 0x00, "Zero flag: AND operation performed correctly and stored in accumulator.");
 
-    equal(MOS6502._P,
-        0x22,
-        "Zero flag: Status register set correctly.");
+    equal(MOS6502._statusRegister.dumpStatus(), 0x32, "Zero flag: Status register set correctly.");
 
-    equal(MOS6502._CYCLES,
-        CycleCost,
-        "Zero flag: Cycles calculated correctly.");
+    equal(MOS6502._CYCLES, CycleCost, "Zero flag: Cycles calculated correctly.");
 
     /**
      * Test 3: AND performed setting the sign flag.
      */
 
     MOS6502._A = 0x82;
-    MOS6502._P = 0x20;
+    
     MOS6502._PC = PCStart;
     MOS6502._CYCLES = 0;
     MOS6502._RAM[FullAddress + XRegister] = 0x81;
 
     MOS6502.emulateCycle();
 
-    equal(MOS6502._PC,
-            PCStart + BytesUsed,
-        "Sign flag: Program Counter set correctly.");
+    equal(MOS6502._PC, PCStart + BytesUsed, "Sign flag: Program Counter set correctly.");
 
-    equal(MOS6502._A,
-        0x80,
-        "Sign flag: AND operation performed correctly and stored in accumulator.");
+    equal(MOS6502._A, 0x80, "Sign flag: AND operation performed correctly and stored in accumulator.");
 
-    equal(MOS6502._P,
-        0xA0,
-        "Sign flag: Status register set correctly.");
+    equal(MOS6502._statusRegister.dumpStatus(), 0xB0, "Sign flag: Status register set correctly.");
 
-    equal(MOS6502._CYCLES,
-        CycleCost,
-        "Sign flag: Cycles calculated correctly.");
+    equal(MOS6502._CYCLES, CycleCost, "Sign flag: Cycles calculated correctly.");
 
 });
 
@@ -4504,84 +2919,60 @@ test("0x39 - AND (Absolute, Y) (Same Page)", function() {
      */
 
     MOS6502._A = 0x14;
-    MOS6502._P = 0x20;
+    
     MOS6502._PC = PCStart;
     MOS6502._CYCLES = 0;
     MOS6502._RAM[FullAddress + YRegister] = 0x54;
 
     MOS6502.emulateCycle();
 
-    equal(MOS6502._PC,
-            PCStart + BytesUsed,
-        "No flag: Program Counter set correctly.");
+    equal(MOS6502._PC, PCStart + BytesUsed, "No flag: Program Counter set correctly.");
 
-    equal(MOS6502._A,
-        0x14,
-        "No flag: AND operation performed correctly and stored in accumulator.");
+    equal(MOS6502._A, 0x14, "No flag: AND operation performed correctly and stored in accumulator.");
 
-    equal(MOS6502._P,
-        0x20,
-        "No flag: Status register set correctly.");
+    equal(MOS6502._statusRegister.dumpStatus(), 0x30, "No flag: Status register set correctly.");
 
-    equal(MOS6502._CYCLES,
-        CycleCost,
-        "No flag: Cycles calculated correctly.");
+    equal(MOS6502._CYCLES, CycleCost, "No flag: Cycles calculated correctly.");
 
     /**
      * Test 2: AND performed setting the zero flag.
      */
 
     MOS6502._A = 0x54;
-    MOS6502._P = 0x20;
+    
     MOS6502._PC = PCStart;
     MOS6502._CYCLES = 0;
     MOS6502._RAM[FullAddress + YRegister] = 0x20;
 
     MOS6502.emulateCycle();
 
-    equal(MOS6502._PC,
-            PCStart + BytesUsed,
-        "Zero flag: Program Counter set correctly.");
+    equal(MOS6502._PC, PCStart + BytesUsed, "Zero flag: Program Counter set correctly.");
 
-    equal(MOS6502._A,
-        0x00,
-        "Zero flag: AND operation performed correctly and stored in accumulator.");
+    equal(MOS6502._A, 0x00, "Zero flag: AND operation performed correctly and stored in accumulator.");
 
-    equal(MOS6502._P,
-        0x22,
-        "Zero flag: Status register set correctly.");
+    equal(MOS6502._statusRegister.dumpStatus(), 0x32, "Zero flag: Status register set correctly.");
 
-    equal(MOS6502._CYCLES,
-        CycleCost,
-        "Zero flag: Cycles calculated correctly.");
+    equal(MOS6502._CYCLES, CycleCost, "Zero flag: Cycles calculated correctly.");
 
     /**
      * Test 3: AND performed setting the sign flag.
      */
 
     MOS6502._A = 0x82;
-    MOS6502._P = 0x20;
+    
     MOS6502._PC = PCStart;
     MOS6502._CYCLES = 0;
     MOS6502._RAM[FullAddress + YRegister] = 0x81;
 
     MOS6502.emulateCycle();
 
-    equal(MOS6502._PC,
-            PCStart + BytesUsed,
-        "Sign flag: Program Counter set correctly.");
+    equal(MOS6502._PC, PCStart + BytesUsed, "Sign flag: Program Counter set correctly.");
 
-    equal(MOS6502._A,
-        0x80,
-        "Sign flag: AND operation performed correctly and stored in accumulator.");
+    equal(MOS6502._A, 0x80, "Sign flag: AND operation performed correctly and stored in accumulator.");
 
-    equal(MOS6502._P,
-        0xA0,
-        "Sign flag: Status register set correctly.");
+    equal(MOS6502._statusRegister.dumpStatus(), 0xB0, "Sign flag: Status register set correctly.");
 
-    equal(MOS6502._CYCLES,
-        CycleCost,
-        "Sign flag: Cycles calculated correctly.");
+    equal(MOS6502._CYCLES, CycleCost, "Sign flag: Cycles calculated correctly.");
 
 });
 
@@ -4611,84 +3002,60 @@ test("0x39 - AND (Absolute, Y) (Cross Page)", function() {
      */
 
     MOS6502._A = 0x14;
-    MOS6502._P = 0x20;
+    
     MOS6502._PC = PCStart;
     MOS6502._CYCLES = 0;
     MOS6502._RAM[FullAddress + YRegister] = 0x54;
 
     MOS6502.emulateCycle();
 
-    equal(MOS6502._PC,
-            PCStart + BytesUsed,
-        "No flag: Program Counter set correctly.");
+    equal(MOS6502._PC, PCStart + BytesUsed, "No flag: Program Counter set correctly.");
 
-    equal(MOS6502._A,
-        0x14,
-        "No flag: AND operation performed correctly and stored in accumulator.");
+    equal(MOS6502._A, 0x14, "No flag: AND operation performed correctly and stored in accumulator.");
 
-    equal(MOS6502._P,
-        0x20,
-        "No flag: Status register set correctly.");
+    equal(MOS6502._statusRegister.dumpStatus(), 0x30, "No flag: Status register set correctly.");
 
-    equal(MOS6502._CYCLES,
-        CycleCost,
-        "No flag: Cycles calculated correctly.");
+    equal(MOS6502._CYCLES, CycleCost, "No flag: Cycles calculated correctly.");
 
     /**
      * Test 2: AND performed setting the zero flag.
      */
 
     MOS6502._A = 0x54;
-    MOS6502._P = 0x20;
+    
     MOS6502._PC = PCStart;
     MOS6502._CYCLES = 0;
     MOS6502._RAM[FullAddress + YRegister] = 0x20;
 
     MOS6502.emulateCycle();
 
-    equal(MOS6502._PC,
-            PCStart + BytesUsed,
-        "Zero flag: Program Counter set correctly.");
+    equal(MOS6502._PC, PCStart + BytesUsed, "Zero flag: Program Counter set correctly.");
 
-    equal(MOS6502._A,
-        0x00,
-        "Zero flag: AND operation performed correctly and stored in accumulator.");
+    equal(MOS6502._A, 0x00, "Zero flag: AND operation performed correctly and stored in accumulator.");
 
-    equal(MOS6502._P,
-        0x22,
-        "Zero flag: Status register set correctly.");
+    equal(MOS6502._statusRegister.dumpStatus(), 0x32, "Zero flag: Status register set correctly.");
 
-    equal(MOS6502._CYCLES,
-        CycleCost,
-        "Zero flag: Cycles calculated correctly.");
+    equal(MOS6502._CYCLES, CycleCost, "Zero flag: Cycles calculated correctly.");
 
     /**
      * Test 3: AND performed setting the sign flag.
      */
 
     MOS6502._A = 0x82;
-    MOS6502._P = 0x20;
+    
     MOS6502._PC = PCStart;
     MOS6502._CYCLES = 0;
     MOS6502._RAM[FullAddress + YRegister] = 0x81;
 
     MOS6502.emulateCycle();
 
-    equal(MOS6502._PC,
-            PCStart + BytesUsed,
-        "Sign flag: Program Counter set correctly.");
+    equal(MOS6502._PC, PCStart + BytesUsed, "Sign flag: Program Counter set correctly.");
 
-    equal(MOS6502._A,
-        0x80,
-        "Sign flag: AND operation performed correctly and stored in accumulator.");
+    equal(MOS6502._A, 0x80, "Sign flag: AND operation performed correctly and stored in accumulator.");
 
-    equal(MOS6502._P,
-        0xA0,
-        "Sign flag: Status register set correctly.");
+    equal(MOS6502._statusRegister.dumpStatus(), 0xB0, "Sign flag: Status register set correctly.");
 
-    equal(MOS6502._CYCLES,
-        CycleCost,
-        "Sign flag: Cycles calculated correctly.");
+    equal(MOS6502._CYCLES, CycleCost, "Sign flag: Cycles calculated correctly.");
 
 });
 
@@ -4720,84 +3087,60 @@ test("0x21 - AND (Indirect, X)", function() {
      */
 
     MOS6502._A = 0x14;
-    MOS6502._P = 0x20;
+    
     MOS6502._PC = PCStart;
     MOS6502._CYCLES = 0;
     MOS6502._RAM[FullAddress] = 0x54;
 
     MOS6502.emulateCycle();
 
-    equal(MOS6502._PC,
-            PCStart + BytesUsed,
-        "No flag: Program Counter set correctly.");
+    equal(MOS6502._PC, PCStart + BytesUsed, "No flag: Program Counter set correctly.");
 
-    equal(MOS6502._A,
-        0x14,
-        "No flag: AND operation performed correctly and stored in accumulator.");
+    equal(MOS6502._A, 0x14, "No flag: AND operation performed correctly and stored in accumulator.");
 
-    equal(MOS6502._P,
-        0x20,
-        "No flag: Status register set correctly.");
+    equal(MOS6502._statusRegister.dumpStatus(), 0x30, "No flag: Status register set correctly.");
 
-    equal(MOS6502._CYCLES,
-        CycleCost,
-        "No flag: Cycles calculated correctly.");
+    equal(MOS6502._CYCLES, CycleCost, "No flag: Cycles calculated correctly.");
 
     /**
      * Test 2: AND performed setting the zero flag.
      */
 
     MOS6502._A = 0x54;
-    MOS6502._P = 0x20;
+    
     MOS6502._PC = PCStart;
     MOS6502._CYCLES = 0;
     MOS6502._RAM[FullAddress] = 0x20;
 
     MOS6502.emulateCycle();
 
-    equal(MOS6502._PC,
-            PCStart + BytesUsed,
-        "Zero flag: Program Counter set correctly.");
+    equal(MOS6502._PC, PCStart + BytesUsed, "Zero flag: Program Counter set correctly.");
 
-    equal(MOS6502._A,
-        0x00,
-        "Zero flag: AND operation performed correctly and stored in accumulator.");
+    equal(MOS6502._A, 0x00, "Zero flag: AND operation performed correctly and stored in accumulator.");
 
-    equal(MOS6502._P,
-        0x22,
-        "Zero flag: Status register set correctly.");
+    equal(MOS6502._statusRegister.dumpStatus(), 0x32, "Zero flag: Status register set correctly.");
 
-    equal(MOS6502._CYCLES,
-        CycleCost,
-        "Zero flag: Cycles calculated correctly.");
+    equal(MOS6502._CYCLES, CycleCost, "Zero flag: Cycles calculated correctly.");
 
     /**
      * Test 3: AND performed setting the sign flag.
      */
 
     MOS6502._A = 0x82;
-    MOS6502._P = 0x20;
+    
     MOS6502._PC = PCStart;
     MOS6502._CYCLES = 0;
     MOS6502._RAM[FullAddress] = 0x81;
 
     MOS6502.emulateCycle();
 
-    equal(MOS6502._PC,
-            PCStart + BytesUsed,
-        "Sign flag: Program Counter set correctly.");
+    equal(MOS6502._PC, PCStart + BytesUsed, "Sign flag: Program Counter set correctly.");
 
-    equal(MOS6502._A,
-        0x80,
-        "Sign flag: AND operation performed correctly and stored in accumulator.");
+    equal(MOS6502._A, 0x80, "Sign flag: AND operation performed correctly and stored in accumulator.");
 
-    equal(MOS6502._P,
-        0xA0,
-        "Sign flag: Status register set correctly.");
+    equal(MOS6502._statusRegister.dumpStatus(), 0xB0, "Sign flag: Status register set correctly.");
 
-    equal(MOS6502._CYCLES,
-        CycleCost,
-        "Sign flag: Cycles calculated correctly.");
+    equal(MOS6502._CYCLES, CycleCost, "Sign flag: Cycles calculated correctly.");
 
 });
 
@@ -4829,27 +3172,20 @@ test("0x31 - AND (Indirect, Y)", function() {
      */
 
     MOS6502._A = 0x14;
-    MOS6502._P = 0x20;
+    
     MOS6502._PC = PCStart;
     MOS6502._CYCLES = 0;
     MOS6502._RAM[FullAddress + YRegister] = 0x54;
 
     MOS6502.emulateCycle();
 
-    equal(MOS6502._PC,
-            PCStart + BytesUsed,
-        "No flag: Program Counter set correctly.");
+    equal(MOS6502._PC, PCStart + BytesUsed, "No flag: Program Counter set correctly.");
 
-    equal(MOS6502._A,
-        0x14,
-        "No flag: AND operation performed correctly and stored in accumulator.");
+    equal(MOS6502._A, 0x14, "No flag: AND operation performed correctly and stored in accumulator.");
 
-    equal(MOS6502._P,
-        0x20,
-        "No flag: Status register set correctly.");
+    equal(MOS6502._statusRegister.dumpStatus(), 0x30, "No flag: Status register set correctly.");
 
-    equal(MOS6502._CYCLES,
-        CycleCost,
+    equal(MOS6502._CYCLES, CycleCost,
         "No flag: Cycles calculated correctly.");
 
     /**
@@ -4857,56 +3193,40 @@ test("0x31 - AND (Indirect, Y)", function() {
      */
 
     MOS6502._A = 0x54;
-    MOS6502._P = 0x20;
+    
     MOS6502._PC = PCStart;
     MOS6502._CYCLES = 0;
     MOS6502._RAM[FullAddress + YRegister] = 0x20;
 
     MOS6502.emulateCycle();
 
-    equal(MOS6502._PC,
-            PCStart + BytesUsed,
-        "Zero flag: Program Counter set correctly.");
+    equal(MOS6502._PC, PCStart + BytesUsed, "Zero flag: Program Counter set correctly.");
 
-    equal(MOS6502._A,
-        0x00,
-        "Zero flag: AND operation performed correctly and stored in accumulator.");
+    equal(MOS6502._A, 0x00, "Zero flag: AND operation performed correctly and stored in accumulator.");
 
-    equal(MOS6502._P,
-        0x22,
-        "Zero flag: Status register set correctly.");
+    equal(MOS6502._statusRegister.dumpStatus(), 0x32, "Zero flag: Status register set correctly.");
 
-    equal(MOS6502._CYCLES,
-        CycleCost,
-        "Zero flag: Cycles calculated correctly.");
+    equal(MOS6502._CYCLES, CycleCost, "Zero flag: Cycles calculated correctly.");
 
     /**
      * Test 3: AND performed setting the sign flag.
      */
 
     MOS6502._A = 0x82;
-    MOS6502._P = 0x20;
+    
     MOS6502._PC = PCStart;
     MOS6502._CYCLES = 0;
     MOS6502._RAM[FullAddress + YRegister] = 0x81;
 
     MOS6502.emulateCycle();
 
-    equal(MOS6502._PC,
-            PCStart + BytesUsed,
-        "Sign flag: Program Counter set correctly.");
+    equal(MOS6502._PC, PCStart + BytesUsed, "Sign flag: Program Counter set correctly.");
 
-    equal(MOS6502._A,
-        0x80,
-        "Sign flag: AND operation performed correctly and stored in accumulator.");
+    equal(MOS6502._A, 0x80, "Sign flag: AND operation performed correctly and stored in accumulator.");
 
-    equal(MOS6502._P,
-        0xA0,
-        "Sign flag: Status register set correctly.");
+    equal(MOS6502._statusRegister.dumpStatus(), 0xB0, "Sign flag: Status register set correctly.");
 
-    equal(MOS6502._CYCLES,
-        CycleCost,
-        "Sign flag: Cycles calculated correctly.");
+    equal(MOS6502._CYCLES, CycleCost, "Sign flag: Cycles calculated correctly.");
 
 });
 
@@ -4943,81 +3263,76 @@ test("0x24 - BIT (Zero Page)", function() {
      */
     MOS6502._A = 42;
     MOS6502._CYCLES = 0;
-    MOS6502._P = 0x20;
     MOS6502._PC = PCStart;
     MOS6502._RAM[ZPAddress] = 43;
 
     MOS6502.emulateCycle();
 
-    equal(MOS6502._P,0x20,"Set none: Status register correctly set.");
+    equal(MOS6502._statusRegister.dumpStatus(), 0x30, "Set none: Status register correctly set.");
 
-    equal(MOS6502._PC,PCStart+BytesUsed,"Set none: Program counter incremented correctly.");
+    equal(MOS6502._PC, PCStart + BytesUsed, "Set none: Program counter incremented correctly.");
 
-    equal(MOS6502._CYCLES,CycleCost,"Set none: Cycles incremented correctly.");
+    equal(MOS6502._CYCLES, CycleCost, "Set none: Cycles incremented correctly.");
 
     /**
      * Test 2: Set zero.
      */
     MOS6502._A = 21;
     MOS6502._CYCLES = 0;
-    MOS6502._P = 0x20;
     MOS6502._PC = PCStart;
     MOS6502._RAM[ZPAddress] = 42;
 
     MOS6502.emulateCycle();
 
-    equal(MOS6502._P,0x22,"Set zero: Status register correctly set.");
+    equal(MOS6502._statusRegister.dumpStatus(), 0x32, "Set zero: Status register correctly set.");
 
-    equal(MOS6502._PC,PCStart+BytesUsed,"Set zero: Program counter incremented correctly.");
+    equal(MOS6502._PC, PCStart+BytesUsed, "Set zero: Program counter incremented correctly.");
 
-    equal(MOS6502._CYCLES,CycleCost,"Set zero: Cycles incremented correctly.");
+    equal(MOS6502._CYCLES, CycleCost, "Set zero: Cycles incremented correctly.");
 
     /**
      * Test 3: Set sign.
      */
     MOS6502._A = 153;
     MOS6502._CYCLES = 0;
-    MOS6502._P = 0x20;
     MOS6502._PC = PCStart;
     MOS6502._RAM[ZPAddress] = 137;
 
     MOS6502.emulateCycle();
 
-    equal(MOS6502._P,0xA0,"Set sign: Status register correctly set.");
+    equal(MOS6502._statusRegister.dumpStatus(), 0xB0, "Set sign: Status register correctly set.");
 
-    equal(MOS6502._PC,PCStart+BytesUsed,"Set sign: Program counter incremented correctly.");
+    equal(MOS6502._PC, PCStart+BytesUsed, "Set sign: Program counter incremented correctly.");
 
-    equal(MOS6502._CYCLES,CycleCost,"Set sign: Cycles incremented correctly.");
+    equal(MOS6502._CYCLES, CycleCost, "Set sign: Cycles incremented correctly.");
 
     /**
      * Test 4: Set overflow.
      */
     MOS6502._A = 204;
     MOS6502._CYCLES = 0;
-    MOS6502._P = 0x20;
     MOS6502._PC = PCStart;
     MOS6502._RAM[ZPAddress] = 85;
 
     MOS6502.emulateCycle();
 
-    equal(MOS6502._P,0x60,"Set overflow: Status register correctly set.");
+    equal(MOS6502._statusRegister.dumpStatus(), 0x70, "Set overflow: Status register correctly set.");
 
-    equal(MOS6502._PC,PCStart+BytesUsed,"Set overflow: Program counter incremented correctly.");
+    equal(MOS6502._PC, PCStart+BytesUsed, "Set overflow: Program counter incremented correctly.");
 
-    equal(MOS6502._CYCLES,CycleCost,"Set overflow: Cycles incremented correctly.");
+    equal(MOS6502._CYCLES, CycleCost, "Set overflow: Cycles incremented correctly.");
 
     /**
      * Test 5: Set sign and overflow.
      */
     MOS6502._A = 204;
     MOS6502._CYCLES = 0;
-    MOS6502._P = 0x20;
     MOS6502._PC = PCStart;
     MOS6502._RAM[ZPAddress] = 213;
 
     MOS6502.emulateCycle();
 
-    equal(MOS6502._P,0xE0,"Set sign and overflow: Status register correctly set.");
+    equal(MOS6502._statusRegister.dumpStatus(), 0xF0, "Set sign and overflow: Status register correctly set.");
 
     equal(MOS6502._PC,PCStart+BytesUsed,"Set sign and overflow: Program counter incremented correctly.");
 
@@ -5028,13 +3343,12 @@ test("0x24 - BIT (Zero Page)", function() {
      */
     MOS6502._A = 42;
     MOS6502._CYCLES = 0;
-    MOS6502._P = 0x20;
     MOS6502._PC = PCStart;
     MOS6502._RAM[ZPAddress] = 213;
 
     MOS6502.emulateCycle();
 
-    equal(MOS6502._P,0xE2,"Set all: Status register correctly set.");
+    equal(MOS6502._statusRegister.dumpStatus(),0xF2,"Set all: Status register correctly set.");
 
     equal(MOS6502._PC,PCStart+BytesUsed,"Set all: Program counter incremented correctly.");
 
@@ -5065,13 +3379,13 @@ test("0x2C - BIT (Absolute)", function() {
      */
     MOS6502._A = 42;
     MOS6502._CYCLES = 0;
-    MOS6502._P = 0x20;
+    
     MOS6502._PC = PCStart;
     MOS6502._RAM[FullAddress] = 43;
 
     MOS6502.emulateCycle();
 
-    equal(MOS6502._P,0x20,"Set none: Status register correctly set.");
+    equal(MOS6502._statusRegister.dumpStatus(),0x30,"Set none: Status register correctly set.");
 
     equal(MOS6502._PC,PCStart+BytesUsed,"Set none: Program counter incremented correctly.");
 
@@ -5082,13 +3396,13 @@ test("0x2C - BIT (Absolute)", function() {
      */
     MOS6502._A = 21;
     MOS6502._CYCLES = 0;
-    MOS6502._P = 0x20;
+    
     MOS6502._PC = PCStart;
     MOS6502._RAM[FullAddress] = 42;
 
     MOS6502.emulateCycle();
 
-    equal(MOS6502._P,0x22,"Set zero: Status register correctly set.");
+    equal(MOS6502._statusRegister.dumpStatus(),0x32,"Set zero: Status register correctly set.");
 
     equal(MOS6502._PC,PCStart+BytesUsed,"Set zero: Program counter incremented correctly.");
 
@@ -5099,13 +3413,13 @@ test("0x2C - BIT (Absolute)", function() {
      */
     MOS6502._A = 153;
     MOS6502._CYCLES = 0;
-    MOS6502._P = 0x20;
+    
     MOS6502._PC = PCStart;
     MOS6502._RAM[FullAddress] = 137;
 
     MOS6502.emulateCycle();
 
-    equal(MOS6502._P,0xA0,"Set sign: Status register correctly set.");
+    equal(MOS6502._statusRegister.dumpStatus(),0xB0,"Set sign: Status register correctly set.");
 
     equal(MOS6502._PC,PCStart+BytesUsed,"Set sign: Program counter incremented correctly.");
 
@@ -5116,13 +3430,13 @@ test("0x2C - BIT (Absolute)", function() {
      */
     MOS6502._A = 204;
     MOS6502._CYCLES = 0;
-    MOS6502._P = 0x20;
+    
     MOS6502._PC = PCStart;
     MOS6502._RAM[FullAddress] = 85;
 
     MOS6502.emulateCycle();
 
-    equal(MOS6502._P,0x60,"Set overflow: Status register correctly set.");
+    equal(MOS6502._statusRegister.dumpStatus(),0x70,"Set overflow: Status register correctly set.");
 
     equal(MOS6502._PC,PCStart+BytesUsed,"Set overflow: Program counter incremented correctly.");
 
@@ -5133,13 +3447,13 @@ test("0x2C - BIT (Absolute)", function() {
      */
     MOS6502._A = 204;
     MOS6502._CYCLES = 0;
-    MOS6502._P = 0x20;
+    
     MOS6502._PC = PCStart;
     MOS6502._RAM[FullAddress] = 213;
 
     MOS6502.emulateCycle();
 
-    equal(MOS6502._P,0xE0,"Set sign and overflow: Status register correctly set.");
+    equal(MOS6502._statusRegister.dumpStatus(),0xF0,"Set sign and overflow: Status register correctly set.");
 
     equal(MOS6502._PC,PCStart+BytesUsed,"Set sign and overflow: Program counter incremented correctly.");
 
@@ -5150,13 +3464,13 @@ test("0x2C - BIT (Absolute)", function() {
      */
     MOS6502._A = 42;
     MOS6502._CYCLES = 0;
-    MOS6502._P = 0x20;
+    
     MOS6502._PC = PCStart;
     MOS6502._RAM[FullAddress] = 213;
 
     MOS6502.emulateCycle();
 
-    equal(MOS6502._P,0xE2,"Set all: Status register correctly set.");
+    equal(MOS6502._statusRegister.dumpStatus(),0xF2,"Set all: Status register correctly set.");
 
     equal(MOS6502._PC,PCStart+BytesUsed,"Set all: Program counter incremented correctly.");
 
@@ -5192,271 +3506,193 @@ test("0x2A - ROL (Accumulator)",function() {
      * Test 1: Set none.
      */
     MOS6502._A = 21;
-    MOS6502._P = 0x20;
+    MOS6502._statusRegister.CARRY = false;
+    
 
     MOS6502._PC = PCStart;
     MOS6502._CYCLES = 0;
 
     MOS6502.emulateCycle();
 
-    equal(MOS6502._A,
-        42,
-        "Test 1: Set none - ROL successfully applied.");
+    equal(MOS6502._A, 42, "Test 1: Set none - ROL successfully applied.");
 
-    equal(MOS6502._P,
-        0x20,
-        "Test 1: Set none - Status Register correctly set.");
+    equal(MOS6502._statusRegister.dumpStatus(), 0x30, "Test 1: Set none - Status Register correctly set.");
 
-    equal(MOS6502._PC,
-        PCStart + BytesUsed,
-        "Test 1: Set none - Program Counter incremented successfully.");
+    equal(MOS6502._PC, PCStart + BytesUsed, "Test 1: Set none - Program Counter incremented successfully.");
 
-    equal(MOS6502._CYCLES,
-        CycleCost,
-        "Test 1: Set none - Cycles incremented correctly.");
+    equal(MOS6502._CYCLES, CycleCost, "Test 1: Set none - Cycles incremented correctly.");
 
     /**
      * Test 2: Set none. Carry set before ROL.
      */
     MOS6502._A = 0;
-    MOS6502._P = 0x21;
+    MOS6502._statusRegister.CARRY = true;
 
     MOS6502._PC = PCStart;
     MOS6502._CYCLES = 0;
 
     MOS6502.emulateCycle();
 
-    equal(MOS6502._A,
-        1,
-        "Test 2: Set none. Carry set before ROL - ROL successfully applied.");
+    equal(MOS6502._A, 1, "Test 2: Set none. Carry set before ROL - ROL successfully applied.");
 
-    equal(MOS6502._P,
-        0x20,
-        "Test 2: Set none. Carry set before ROL - Status Register correctly set.");
+    equal(MOS6502._statusRegister.dumpStatus(), 0x30, "Test 2: Set none. Carry set before ROL - Status Register correctly set.");
 
-    equal(MOS6502._PC,
-            PCStart + BytesUsed,
-        "Test 2: Set none. Carry set before ROL - Program Counter incremented successfully.");
+    equal(MOS6502._PC, PCStart + BytesUsed, "Test 2: Set none. Carry set before ROL - Program Counter incremented successfully.");
 
-    equal(MOS6502._CYCLES,
-        CycleCost,
-        "Test 2: Set none. Carry set before ROL - Cycles incremented correctly.");
+    equal(MOS6502._CYCLES, CycleCost, "Test 2: Set none. Carry set before ROL - Cycles incremented correctly.");
 
     /**
      * Test 3: Carry set before ROL.
      */
     MOS6502._A = 39;
-    MOS6502._P = 0x21;
+    MOS6502._statusRegister.CARRY = true;
 
     MOS6502._PC = PCStart;
     MOS6502._CYCLES = 0;
 
     MOS6502.emulateCycle();
 
-    equal(MOS6502._A,
-        79,
-        "Test 3: Carry set before ROL - ROL successfully applied.");
+    equal(MOS6502._A, 79, "Test 3: Carry set before ROL - ROL successfully applied.");
 
-    equal(MOS6502._P,
-        0x20,
-        "Test 3: Carry set before ROL - Status Register correctly set.");
+    equal(MOS6502._statusRegister.dumpStatus(), 0x30, "Test 3: Carry set before ROL - Status Register correctly set.");
 
-    equal(MOS6502._PC,
-            PCStart + BytesUsed,
-        "Test 3: Carry set before ROL - Program Counter incremented successfully.");
+    equal(MOS6502._PC, PCStart + BytesUsed, "Test 3: Carry set before ROL - Program Counter incremented successfully.");
 
-    equal(MOS6502._CYCLES,
-        CycleCost,
-        "Test 3: Carry set before ROL - Cycles incremented correctly.");
+    equal(MOS6502._CYCLES, CycleCost, "Test 3: Carry set before ROL - Cycles incremented correctly.");
 
     /**
      * Test 4: ROL sets carry.
      */
     MOS6502._A = 136;
-    MOS6502._P = 0x20;
+    MOS6502._statusRegister.CARRY = false;
 
     MOS6502._PC = PCStart;
     MOS6502._CYCLES = 0;
 
     MOS6502.emulateCycle();
 
-    equal(MOS6502._A,
-        16,
-        "Test 4: ROL sets carry - ROL successfully applied.");
+    equal(MOS6502._A, 16, "Test 4: ROL sets carry - ROL successfully applied.");
 
-    equal(MOS6502._P,
-        0x21,
-        "Test 4: ROL sets carry - Status Register correctly set.");
+    equal(MOS6502._statusRegister.dumpStatus(), 0x31, "Test 4: ROL sets carry - Status Register correctly set.");
 
-    equal(MOS6502._PC,
-            PCStart + BytesUsed,
-        "Test 4: ROL sets carry - Program Counter incremented successfully.");
+    equal(MOS6502._PC, PCStart + BytesUsed, "Test 4: ROL sets carry - Program Counter incremented successfully.");
 
-    equal(MOS6502._CYCLES,
-        CycleCost,
-        "Test 4: ROL sets carry - Cycles incremented correctly.");
+    equal(MOS6502._CYCLES, CycleCost, "Test 4: ROL sets carry - Cycles incremented correctly.");
 
     /**
      * Test 5: Carry set before ROL. ROL sets carry.
      */
     MOS6502._A = 136;
-    MOS6502._P = 0x21;
+    MOS6502._statusRegister.CARRY = true;
 
     MOS6502._PC = PCStart;
     MOS6502._CYCLES = 0;
 
     MOS6502.emulateCycle();
 
-    equal(MOS6502._A,
-        17,
-        "Test 5: Carry set before ROL. ROL sets carry - ROL successfully applied.");
+    equal(MOS6502._A, 17, "Test 5: Carry set before ROL. ROL sets carry - ROL successfully applied.");
 
-    equal(MOS6502._P,
-        0x21,
-        "Test 5: Carry set before ROL. ROL sets carry - Status Register correctly set.");
+    equal(MOS6502._statusRegister.dumpStatus(), 0x31, "Test 5: Carry set before ROL. ROL sets carry - Status Register correctly set.");
 
-    equal(MOS6502._PC,
-            PCStart + BytesUsed,
-        "Test 5: Carry set before ROL. ROL sets carry - Program Counter incremented successfully.");
+    equal(MOS6502._PC, PCStart + BytesUsed, "Test 5: Carry set before ROL. ROL sets carry - Program Counter incremented successfully.");
 
-    equal(MOS6502._CYCLES,
-        CycleCost,
-        "Test 5: Carry set before ROL. ROL sets carry - Cycles incremented correctly.");
+    equal(MOS6502._CYCLES, CycleCost, "Test 5: Carry set before ROL. ROL sets carry - Cycles incremented correctly.");
 
     /**
      * Test 6: Set zero.
      */
     MOS6502._A = 0;
-    MOS6502._P = 0x20;
+    MOS6502._statusRegister.CARRY = false;
 
     MOS6502._PC = PCStart;
     MOS6502._CYCLES = 0;
 
     MOS6502.emulateCycle();
 
-    equal(MOS6502._A,
-        0,
-        "Test 6: Set zero - ROL successfully applied.");
+    equal(MOS6502._A, 0, "Test 6: Set zero - ROL successfully applied.");
 
-    equal(MOS6502._P,
-        0x22,
-        "Test 6: Set zero - Status Register correctly set.");
+    equal(MOS6502._statusRegister.dumpStatus(), 0x32, "Test 6: Set zero - Status Register correctly set.");
 
-    equal(MOS6502._PC,
-            PCStart + BytesUsed,
-        "Test 6: Set zero - Program Counter incremented successfully.");
+    equal(MOS6502._PC, PCStart + BytesUsed, "Test 6: Set zero - Program Counter incremented successfully.");
 
-    equal(MOS6502._CYCLES,
-        CycleCost,
-        "Test 6: Set zero - Cycles incremented correctly.");
+    equal(MOS6502._CYCLES, CycleCost, "Test 6: Set zero - Cycles incremented correctly.");
 
     /**
      * Test 7: Set zero and carry
      */
     MOS6502._A = 128;
-    MOS6502._P = 0x20;
+    MOS6502._statusRegister.CARRY = false;
 
     MOS6502._PC = PCStart;
     MOS6502._CYCLES = 0;
 
     MOS6502.emulateCycle();
 
-    equal(MOS6502._A,
-        0,
-        "Test 7: Set zero and carry - ROL successfully applied.");
+    equal(MOS6502._A, 0, "Test 7: Set zero and carry - ROL successfully applied.");
 
-    equal(MOS6502._P,
-        0x23,
+    equal(MOS6502._statusRegister.dumpStatus(), 0x33,
         "Test 7: Set zero and carry - Status Register correctly set.");
 
-    equal(MOS6502._PC,
-            PCStart + BytesUsed,
-        "Test 7: Set zero and carry - Program Counter incremented successfully.");
+    equal(MOS6502._PC, PCStart + BytesUsed, "Test 7: Set zero and carry - Program Counter incremented successfully.");
 
-    equal(MOS6502._CYCLES,
-        CycleCost,
-        "Test 7: Set zero and carry - Cycles incremented correctly.");
+    equal(MOS6502._CYCLES, CycleCost, "Test 7: Set zero and carry - Cycles incremented correctly.");
 
     /**
      * Test 8: Set sign.
      */
     MOS6502._A = 66;
-    MOS6502._P = 0x20;
+    MOS6502._statusRegister.CARRY = false;
 
     MOS6502._PC = PCStart;
     MOS6502._CYCLES = 0;
 
     MOS6502.emulateCycle();
 
-    equal(MOS6502._A,
-        132,
-        "Test 8: Set sign - ROL successfully applied.");
+    equal(MOS6502._A, 132, "Test 8: Set sign - ROL successfully applied.");
 
-    equal(MOS6502._P,
-        0xA0,
-        "Test 8: Set sign - Status Register correctly set.");
+    equal(MOS6502._statusRegister.dumpStatus(), 0xB0, "Test 8: Set sign - Status Register correctly set.");
 
-    equal(MOS6502._PC,
-            PCStart + BytesUsed,
-        "Test 8: Set sign - Program Counter incremented successfully.");
+    equal(MOS6502._PC, PCStart + BytesUsed, "Test 8: Set sign - Program Counter incremented successfully.");
 
-    equal(MOS6502._CYCLES,
-        CycleCost,
-        "Test 8: Set sign - Cycles incremented correctly.");
+    equal(MOS6502._CYCLES, CycleCost, "Test 8: Set sign - Cycles incremented correctly.");
 
     /**
      * Test 9: Set sign and carry.
      */
     MOS6502._A = 201;
-    MOS6502._P = 0x20;
+    MOS6502._statusRegister.CARRY = false;
 
     MOS6502._PC = PCStart;
     MOS6502._CYCLES = 0;
 
     MOS6502.emulateCycle();
 
-    equal(MOS6502._A,
-        146,
-        "Test 9: Set sign and carry - ROL successfully applied.");
+    equal(MOS6502._A, 146, "Test 9: Set sign and carry - ROL successfully applied.");
 
-    equal(MOS6502._P,
-        0xA1,
-        "Test 9: Set sign and carry - Status Register correctly set.");
+    equal(MOS6502._statusRegister.dumpStatus(), 0xB1, "Test 9: Set sign and carry - Status Register correctly set.");
 
-    equal(MOS6502._PC,
-            PCStart + BytesUsed,
-        "Test 9: Set sign and carry - Program Counter incremented successfully.");
+    equal(MOS6502._PC, PCStart + BytesUsed, "Test 9: Set sign and carry - Program Counter incremented successfully.");
 
-    equal(MOS6502._CYCLES,
-        CycleCost,
-        "Test 9: Set sign and carry - Cycles incremented correctly.");
+    equal(MOS6502._CYCLES, CycleCost, "Test 9: Set sign and carry - Cycles incremented correctly.");
 
     /**
      * Test 10: Carry set before ROL. Set sign and carry after ROL.
      */
     MOS6502._A = 201;
-    MOS6502._P = 0x21;
+    MOS6502._statusRegister.CARRY = true;
 
     MOS6502._PC = PCStart;
     MOS6502._CYCLES = 0;
 
     MOS6502.emulateCycle();
 
-    equal(MOS6502._A,
-        147,
-        "Test 10: Carry set before ROL. Set sign and carry after ROL - ROL successfully applied.");
+    equal(MOS6502._A, 147, "Test 10: Carry set before ROL. Set sign and carry after ROL - ROL successfully applied.");
 
-    equal(MOS6502._P,
-        0xA1,
-        "Test 10: Carry set before ROL. Set sign and carry after ROL - Status Register correctly set.");
+    equal(MOS6502._statusRegister.dumpStatus(), 0xB1, "Test 10: Carry set before ROL. Set sign and carry after ROL - Status Register correctly set.");
 
-    equal(MOS6502._PC,
-            PCStart + BytesUsed,
-        "Test 10: Carry set before ROL. Set sign and carry after ROL - Program Counter incremented successfully.");
+    equal(MOS6502._PC, PCStart + BytesUsed, "Test 10: Carry set before ROL. Set sign and carry after ROL - Program Counter incremented successfully.");
 
-    equal(MOS6502._CYCLES,
-        CycleCost,
-        "Test 10: Carry set before ROL. Set sign and carry after ROL - Cycles incremented correctly.");
+    equal(MOS6502._CYCLES, CycleCost, "Test 10: Carry set before ROL. Set sign and carry after ROL - Cycles incremented correctly.");
 });
 
 test("0x26 - ROL (Zero Page)",function() {
@@ -5478,46 +3714,36 @@ test("0x26 - ROL (Zero Page)",function() {
      * Test 1: Set none.
      */
     MOS6502._RAM[ZPAddress] = 21;
-    MOS6502._P = 0x20;
+    MOS6502._statusRegister.CARRY = false;
 
     MOS6502._PC = PCStart;
     MOS6502._CYCLES = 0;
 
     MOS6502.emulateCycle();
 
-    equal(MOS6502._RAM[ZPAddress],
-        42,
-        "Test 1: Set none - ROL successfully applied.");
+    equal(MOS6502._RAM[ZPAddress], 42, "Test 1: Set none - ROL successfully applied.");
 
-    equal(MOS6502._P,
-        0x20,
-        "Test 1: Set none - Status Register correctly set.");
+    equal(MOS6502._statusRegister.dumpStatus(), 0x30, "Test 1: Set none - Status Register correctly set.");
 
-    equal(MOS6502._PC,
-            PCStart + BytesUsed,
-        "Test 1: Set none - Program Counter incremented successfully.");
+    equal(MOS6502._PC, PCStart + BytesUsed, "Test 1: Set none - Program Counter incremented successfully.");
 
-    equal(MOS6502._CYCLES,
-        CycleCost,
-        "Test 1: Set none - Cycles incremented correctly.");
+    equal(MOS6502._CYCLES, CycleCost, "Test 1: Set none - Cycles incremented correctly.");
 
     /**
      * Test 2: Set none. Carry set before ROL.
      */
     MOS6502._RAM[ZPAddress] = 0;
-    MOS6502._P = 0x21;
+    MOS6502._statusRegister.CARRY = true;
 
     MOS6502._PC = PCStart;
     MOS6502._CYCLES = 0;
 
     MOS6502.emulateCycle();
 
-    equal(MOS6502._RAM[ZPAddress],
-        1,
-        "Test 2: Set none. Carry set before ROL - ROL successfully applied.");
+    equal(MOS6502._RAM[ZPAddress], 1, "Test 2: Set none. Carry set before ROL - ROL successfully applied.");
 
-    equal(MOS6502._P,
-        0x20,
+    equal(MOS6502._statusRegister.dumpStatus(),
+        0x30,
         "Test 2: Set none. Carry set before ROL - Status Register correctly set.");
 
     equal(MOS6502._PC,
@@ -5532,7 +3758,7 @@ test("0x26 - ROL (Zero Page)",function() {
      * Test 3: Carry set before ROL.
      */
     MOS6502._RAM[ZPAddress] = 39;
-    MOS6502._P = 0x21;
+    MOS6502._statusRegister.CARRY = true;
 
     MOS6502._PC = PCStart;
     MOS6502._CYCLES = 0;
@@ -5543,8 +3769,8 @@ test("0x26 - ROL (Zero Page)",function() {
         79,
         "Test 3: Carry set before ROL - ROL successfully applied.");
 
-    equal(MOS6502._P,
-        0x20,
+    equal(MOS6502._statusRegister.dumpStatus(),
+        0x30,
         "Test 3: Carry set before ROL - Status Register correctly set.");
 
     equal(MOS6502._PC,
@@ -5559,7 +3785,7 @@ test("0x26 - ROL (Zero Page)",function() {
      * Test 4: ROL sets carry.
      */
     MOS6502._RAM[ZPAddress] = 136;
-    MOS6502._P = 0x20;
+    MOS6502._statusRegister.CARRY = false;
 
     MOS6502._PC = PCStart;
     MOS6502._CYCLES = 0;
@@ -5570,8 +3796,8 @@ test("0x26 - ROL (Zero Page)",function() {
         16,
         "Test 4: ROL sets carry - ROL successfully applied.");
 
-    equal(MOS6502._P,
-        0x21,
+    equal(MOS6502._statusRegister.dumpStatus(),
+        0x31,
         "Test 4: ROL sets carry - Status Register correctly set.");
 
     equal(MOS6502._PC,
@@ -5586,7 +3812,7 @@ test("0x26 - ROL (Zero Page)",function() {
      * Test 5: Carry set before ROL. ROL sets carry.
      */
     MOS6502._RAM[ZPAddress] = 136;
-    MOS6502._P = 0x21;
+    MOS6502._statusRegister.CARRY = true;
 
     MOS6502._PC = PCStart;
     MOS6502._CYCLES = 0;
@@ -5597,8 +3823,8 @@ test("0x26 - ROL (Zero Page)",function() {
         17,
         "Test 5: Carry set before ROL. ROL sets carry - ROL successfully applied.");
 
-    equal(MOS6502._P,
-        0x21,
+    equal(MOS6502._statusRegister.dumpStatus(),
+        0x31,
         "Test 5: Carry set before ROL. ROL sets carry - Status Register correctly set.");
 
     equal(MOS6502._PC,
@@ -5613,7 +3839,7 @@ test("0x26 - ROL (Zero Page)",function() {
      * Test 6: Set zero.
      */
     MOS6502._RAM[ZPAddress] = 0;
-    MOS6502._P = 0x20;
+    MOS6502._statusRegister.CARRY = false;
 
     MOS6502._PC = PCStart;
     MOS6502._CYCLES = 0;
@@ -5624,8 +3850,8 @@ test("0x26 - ROL (Zero Page)",function() {
         0,
         "Test 6: Set zero - ROL successfully applied.");
 
-    equal(MOS6502._P,
-        0x22,
+    equal(MOS6502._statusRegister.dumpStatus(),
+        0x32,
         "Test 6: Set zero - Status Register correctly set.");
 
     equal(MOS6502._PC,
@@ -5640,7 +3866,7 @@ test("0x26 - ROL (Zero Page)",function() {
      * Test 7: Set zero and carry
      */
     MOS6502._RAM[ZPAddress] = 128;
-    MOS6502._P = 0x20;
+    MOS6502._statusRegister.CARRY = false;
 
     MOS6502._PC = PCStart;
     MOS6502._CYCLES = 0;
@@ -5651,8 +3877,8 @@ test("0x26 - ROL (Zero Page)",function() {
         0,
         "Test 7: Set zero and carry - ROL successfully applied.");
 
-    equal(MOS6502._P,
-        0x23,
+    equal(MOS6502._statusRegister.dumpStatus(),
+        0x33,
         "Test 7: Set zero and carry - Status Register correctly set.");
 
     equal(MOS6502._PC,
@@ -5667,7 +3893,7 @@ test("0x26 - ROL (Zero Page)",function() {
      * Test 8: Set sign.
      */
     MOS6502._RAM[ZPAddress] = 66;
-    MOS6502._P = 0x20;
+    MOS6502._statusRegister.CARRY = false;
 
     MOS6502._PC = PCStart;
     MOS6502._CYCLES = 0;
@@ -5678,8 +3904,8 @@ test("0x26 - ROL (Zero Page)",function() {
         132,
         "Test 8: Set sign - ROL successfully applied.");
 
-    equal(MOS6502._P,
-        0xA0,
+    equal(MOS6502._statusRegister.dumpStatus(),
+        0xB0,
         "Test 8: Set sign - Status Register correctly set.");
 
     equal(MOS6502._PC,
@@ -5694,7 +3920,7 @@ test("0x26 - ROL (Zero Page)",function() {
      * Test 9: Set sign and carry.
      */
     MOS6502._RAM[ZPAddress] = 201;
-    MOS6502._P = 0x20;
+    MOS6502._statusRegister.CARRY = false;
 
     MOS6502._PC = PCStart;
     MOS6502._CYCLES = 0;
@@ -5705,8 +3931,8 @@ test("0x26 - ROL (Zero Page)",function() {
         146,
         "Test 9: Set sign and carry - ROL successfully applied.");
 
-    equal(MOS6502._P,
-        0xA1,
+    equal(MOS6502._statusRegister.dumpStatus(),
+        0xB1,
         "Test 9: Set sign and carry - Status Register correctly set.");
 
     equal(MOS6502._PC,
@@ -5721,7 +3947,7 @@ test("0x26 - ROL (Zero Page)",function() {
      * Test 10: Carry set before ROL. Set sign and carry after ROL.
      */
     MOS6502._RAM[ZPAddress] = 201;
-    MOS6502._P = 0x21;
+    MOS6502._statusRegister.CARRY = true;
 
     MOS6502._PC = PCStart;
     MOS6502._CYCLES = 0;
@@ -5732,8 +3958,8 @@ test("0x26 - ROL (Zero Page)",function() {
         147,
         "Test 10: Carry set before ROL. Set sign and carry after ROL - ROL successfully applied.");
 
-    equal(MOS6502._P,
-        0xA1,
+    equal(MOS6502._statusRegister.dumpStatus(),
+        0xB1,
         "Test 10: Carry set before ROL. Set sign and carry after ROL - Status Register correctly set.");
 
     equal(MOS6502._PC,
@@ -5767,7 +3993,7 @@ test("0x36 - ROL (Zero Page, X)",function() {
      * Test 1: Set none.
      */
     MOS6502._RAM[OperandLocation] = 21;
-    MOS6502._P = 0x20;
+    MOS6502._statusRegister.CARRY = false;
 
     MOS6502._PC = PCStart;
     MOS6502._CYCLES = 0;
@@ -5778,8 +4004,8 @@ test("0x36 - ROL (Zero Page, X)",function() {
         42,
         "Test 1: Set none - ROL successfully applied.");
 
-    equal(MOS6502._P,
-        0x20,
+    equal(MOS6502._statusRegister.dumpStatus(),
+        0x30,
         "Test 1: Set none - Status Register correctly set.");
 
     equal(MOS6502._PC,
@@ -5794,7 +4020,7 @@ test("0x36 - ROL (Zero Page, X)",function() {
      * Test 2: Set none. Carry set before ROL.
      */
     MOS6502._RAM[OperandLocation] = 0;
-    MOS6502._P = 0x21;
+    MOS6502._statusRegister.CARRY = true;
 
     MOS6502._PC = PCStart;
     MOS6502._CYCLES = 0;
@@ -5805,8 +4031,8 @@ test("0x36 - ROL (Zero Page, X)",function() {
         1,
         "Test 2: Set none. Carry set before ROL - ROL successfully applied.");
 
-    equal(MOS6502._P,
-        0x20,
+    equal(MOS6502._statusRegister.dumpStatus(),
+        0x30,
         "Test 2: Set none. Carry set before ROL - Status Register correctly set.");
 
     equal(MOS6502._PC,
@@ -5821,7 +4047,7 @@ test("0x36 - ROL (Zero Page, X)",function() {
      * Test 3: Carry set before ROL.
      */
     MOS6502._RAM[OperandLocation] = 39;
-    MOS6502._P = 0x21;
+    MOS6502._statusRegister.CARRY = true;
 
     MOS6502._PC = PCStart;
     MOS6502._CYCLES = 0;
@@ -5832,8 +4058,8 @@ test("0x36 - ROL (Zero Page, X)",function() {
         79,
         "Test 3: Carry set before ROL - ROL successfully applied.");
 
-    equal(MOS6502._P,
-        0x20,
+    equal(MOS6502._statusRegister.dumpStatus(),
+        0x30,
         "Test 3: Carry set before ROL - Status Register correctly set.");
 
     equal(MOS6502._PC,
@@ -5848,7 +4074,7 @@ test("0x36 - ROL (Zero Page, X)",function() {
      * Test 4: ROL sets carry.
      */
     MOS6502._RAM[OperandLocation] = 136;
-    MOS6502._P = 0x20;
+    MOS6502._statusRegister.CARRY = false;
 
     MOS6502._PC = PCStart;
     MOS6502._CYCLES = 0;
@@ -5859,8 +4085,8 @@ test("0x36 - ROL (Zero Page, X)",function() {
         16,
         "Test 4: ROL sets carry - ROL successfully applied.");
 
-    equal(MOS6502._P,
-        0x21,
+    equal(MOS6502._statusRegister.dumpStatus(),
+        0x31,
         "Test 4: ROL sets carry - Status Register correctly set.");
 
     equal(MOS6502._PC,
@@ -5875,7 +4101,7 @@ test("0x36 - ROL (Zero Page, X)",function() {
      * Test 5: Carry set before ROL. ROL sets carry.
      */
     MOS6502._RAM[OperandLocation] = 136;
-    MOS6502._P = 0x21;
+    MOS6502._statusRegister.CARRY = true;
 
     MOS6502._PC = PCStart;
     MOS6502._CYCLES = 0;
@@ -5886,8 +4112,8 @@ test("0x36 - ROL (Zero Page, X)",function() {
         17,
         "Test 5: Carry set before ROL. ROL sets carry - ROL successfully applied.");
 
-    equal(MOS6502._P,
-        0x21,
+    equal(MOS6502._statusRegister.dumpStatus(),
+        0x31,
         "Test 5: Carry set before ROL. ROL sets carry - Status Register correctly set.");
 
     equal(MOS6502._PC,
@@ -5902,7 +4128,7 @@ test("0x36 - ROL (Zero Page, X)",function() {
      * Test 6: Set zero.
      */
     MOS6502._RAM[OperandLocation] = 0;
-    MOS6502._P = 0x20;
+    MOS6502._statusRegister.CARRY = false;
 
     MOS6502._PC = PCStart;
     MOS6502._CYCLES = 0;
@@ -5913,8 +4139,8 @@ test("0x36 - ROL (Zero Page, X)",function() {
         0,
         "Test 6: Set zero - ROL successfully applied.");
 
-    equal(MOS6502._P,
-        0x22,
+    equal(MOS6502._statusRegister.dumpStatus(),
+        0x32,
         "Test 6: Set zero - Status Register correctly set.");
 
     equal(MOS6502._PC,
@@ -5929,7 +4155,7 @@ test("0x36 - ROL (Zero Page, X)",function() {
      * Test 7: Set zero and carry
      */
     MOS6502._RAM[OperandLocation] = 128;
-    MOS6502._P = 0x20;
+    MOS6502._statusRegister.CARRY = false;
 
     MOS6502._PC = PCStart;
     MOS6502._CYCLES = 0;
@@ -5940,8 +4166,8 @@ test("0x36 - ROL (Zero Page, X)",function() {
         0,
         "Test 7: Set zero and carry - ROL successfully applied.");
 
-    equal(MOS6502._P,
-        0x23,
+    equal(MOS6502._statusRegister.dumpStatus(),
+        0x33,
         "Test 7: Set zero and carry - Status Register correctly set.");
 
     equal(MOS6502._PC,
@@ -5956,7 +4182,7 @@ test("0x36 - ROL (Zero Page, X)",function() {
      * Test 8: Set sign.
      */
     MOS6502._RAM[OperandLocation] = 66;
-    MOS6502._P = 0x20;
+    MOS6502._statusRegister.CARRY = false;
 
     MOS6502._PC = PCStart;
     MOS6502._CYCLES = 0;
@@ -5967,8 +4193,8 @@ test("0x36 - ROL (Zero Page, X)",function() {
         132,
         "Test 8: Set sign - ROL successfully applied.");
 
-    equal(MOS6502._P,
-        0xA0,
+    equal(MOS6502._statusRegister.dumpStatus(),
+        0xB0,
         "Test 8: Set sign - Status Register correctly set.");
 
     equal(MOS6502._PC,
@@ -5983,7 +4209,7 @@ test("0x36 - ROL (Zero Page, X)",function() {
      * Test 9: Set sign and carry.
      */
     MOS6502._RAM[OperandLocation] = 201;
-    MOS6502._P = 0x20;
+    MOS6502._statusRegister.CARRY = false;
 
     MOS6502._PC = PCStart;
     MOS6502._CYCLES = 0;
@@ -5994,8 +4220,8 @@ test("0x36 - ROL (Zero Page, X)",function() {
         146,
         "Test 9: Set sign and carry - ROL successfully applied.");
 
-    equal(MOS6502._P,
-        0xA1,
+    equal(MOS6502._statusRegister.dumpStatus(),
+        0xB1,
         "Test 9: Set sign and carry - Status Register correctly set.");
 
     equal(MOS6502._PC,
@@ -6010,7 +4236,7 @@ test("0x36 - ROL (Zero Page, X)",function() {
      * Test 10: Carry set before ROL. Set sign and carry after ROL.
      */
     MOS6502._RAM[OperandLocation] = 201;
-    MOS6502._P = 0x21;
+    MOS6502._statusRegister.CARRY = true;
 
     MOS6502._PC = PCStart;
     MOS6502._CYCLES = 0;
@@ -6021,8 +4247,8 @@ test("0x36 - ROL (Zero Page, X)",function() {
         147,
         "Test 10: Carry set before ROL. Set sign and carry after ROL - ROL successfully applied.");
 
-    equal(MOS6502._P,
-        0xA1,
+    equal(MOS6502._statusRegister.dumpStatus(),
+        0xB1,
         "Test 10: Carry set before ROL. Set sign and carry after ROL - Status Register correctly set.");
 
     equal(MOS6502._PC,
@@ -6056,7 +4282,7 @@ test("0x2E - ROL (Absolute)",function() {
      * Test 1: Set none.
      */
     MOS6502._RAM[OperandLocation] = 21;
-    MOS6502._P = 0x20;
+    MOS6502._statusRegister.CARRY = false;
 
     MOS6502._PC = PCStart;
     MOS6502._CYCLES = 0;
@@ -6067,8 +4293,8 @@ test("0x2E - ROL (Absolute)",function() {
         42,
         "Test 1: Set none - ROL successfully applied.");
 
-    equal(MOS6502._P,
-        0x20,
+    equal(MOS6502._statusRegister.dumpStatus(),
+        0x30,
         "Test 1: Set none - Status Register correctly set.");
 
     equal(MOS6502._PC,
@@ -6083,7 +4309,7 @@ test("0x2E - ROL (Absolute)",function() {
      * Test 2: Set none. Carry set before ROL.
      */
     MOS6502._RAM[OperandLocation] = 0;
-    MOS6502._P = 0x21;
+    MOS6502._statusRegister.CARRY = true;
 
     MOS6502._PC = PCStart;
     MOS6502._CYCLES = 0;
@@ -6094,8 +4320,8 @@ test("0x2E - ROL (Absolute)",function() {
         1,
         "Test 2: Set none. Carry set before ROL - ROL successfully applied.");
 
-    equal(MOS6502._P,
-        0x20,
+    equal(MOS6502._statusRegister.dumpStatus(),
+        0x30,
         "Test 2: Set none. Carry set before ROL - Status Register correctly set.");
 
     equal(MOS6502._PC,
@@ -6110,7 +4336,7 @@ test("0x2E - ROL (Absolute)",function() {
      * Test 3: Carry set before ROL.
      */
     MOS6502._RAM[OperandLocation] = 39;
-    MOS6502._P = 0x21;
+    MOS6502._statusRegister.CARRY = true;
 
     MOS6502._PC = PCStart;
     MOS6502._CYCLES = 0;
@@ -6121,8 +4347,8 @@ test("0x2E - ROL (Absolute)",function() {
         79,
         "Test 3: Carry set before ROL - ROL successfully applied.");
 
-    equal(MOS6502._P,
-        0x20,
+    equal(MOS6502._statusRegister.dumpStatus(),
+        0x30,
         "Test 3: Carry set before ROL - Status Register correctly set.");
 
     equal(MOS6502._PC,
@@ -6137,7 +4363,7 @@ test("0x2E - ROL (Absolute)",function() {
      * Test 4: ROL sets carry.
      */
     MOS6502._RAM[OperandLocation] = 136;
-    MOS6502._P = 0x20;
+    MOS6502._statusRegister.CARRY = false;
 
     MOS6502._PC = PCStart;
     MOS6502._CYCLES = 0;
@@ -6148,8 +4374,8 @@ test("0x2E - ROL (Absolute)",function() {
         16,
         "Test 4: ROL sets carry - ROL successfully applied.");
 
-    equal(MOS6502._P,
-        0x21,
+    equal(MOS6502._statusRegister.dumpStatus(),
+        0x31,
         "Test 4: ROL sets carry - Status Register correctly set.");
 
     equal(MOS6502._PC,
@@ -6164,7 +4390,7 @@ test("0x2E - ROL (Absolute)",function() {
      * Test 5: Carry set before ROL. ROL sets carry.
      */
     MOS6502._RAM[OperandLocation] = 136;
-    MOS6502._P = 0x21;
+    MOS6502._statusRegister.CARRY = true;
 
     MOS6502._PC = PCStart;
     MOS6502._CYCLES = 0;
@@ -6175,8 +4401,8 @@ test("0x2E - ROL (Absolute)",function() {
         17,
         "Test 5: Carry set before ROL. ROL sets carry - ROL successfully applied.");
 
-    equal(MOS6502._P,
-        0x21,
+    equal(MOS6502._statusRegister.dumpStatus(),
+        0x31,
         "Test 5: Carry set before ROL. ROL sets carry - Status Register correctly set.");
 
     equal(MOS6502._PC,
@@ -6191,7 +4417,7 @@ test("0x2E - ROL (Absolute)",function() {
      * Test 6: Set zero.
      */
     MOS6502._RAM[OperandLocation] = 0;
-    MOS6502._P = 0x20;
+    MOS6502._statusRegister.CARRY = false;
 
     MOS6502._PC = PCStart;
     MOS6502._CYCLES = 0;
@@ -6202,8 +4428,8 @@ test("0x2E - ROL (Absolute)",function() {
         0,
         "Test 6: Set zero - ROL successfully applied.");
 
-    equal(MOS6502._P,
-        0x22,
+    equal(MOS6502._statusRegister.dumpStatus(),
+        0x32,
         "Test 6: Set zero - Status Register correctly set.");
 
     equal(MOS6502._PC,
@@ -6218,7 +4444,7 @@ test("0x2E - ROL (Absolute)",function() {
      * Test 7: Set zero and carry
      */
     MOS6502._RAM[OperandLocation] = 128;
-    MOS6502._P = 0x20;
+    MOS6502._statusRegister.CARRY = false;
 
     MOS6502._PC = PCStart;
     MOS6502._CYCLES = 0;
@@ -6229,8 +4455,8 @@ test("0x2E - ROL (Absolute)",function() {
         0,
         "Test 7: Set zero and carry - ROL successfully applied.");
 
-    equal(MOS6502._P,
-        0x23,
+    equal(MOS6502._statusRegister.dumpStatus(),
+        0x33,
         "Test 7: Set zero and carry - Status Register correctly set.");
 
     equal(MOS6502._PC,
@@ -6245,7 +4471,7 @@ test("0x2E - ROL (Absolute)",function() {
      * Test 8: Set sign.
      */
     MOS6502._RAM[OperandLocation] = 66;
-    MOS6502._P = 0x20;
+    MOS6502._statusRegister.CARRY = false;
 
     MOS6502._PC = PCStart;
     MOS6502._CYCLES = 0;
@@ -6256,8 +4482,8 @@ test("0x2E - ROL (Absolute)",function() {
         132,
         "Test 8: Set sign - ROL successfully applied.");
 
-    equal(MOS6502._P,
-        0xA0,
+    equal(MOS6502._statusRegister.dumpStatus(),
+        0xB0,
         "Test 8: Set sign - Status Register correctly set.");
 
     equal(MOS6502._PC,
@@ -6272,7 +4498,7 @@ test("0x2E - ROL (Absolute)",function() {
      * Test 9: Set sign and carry.
      */
     MOS6502._RAM[OperandLocation] = 201;
-    MOS6502._P = 0x20;
+    MOS6502._statusRegister.CARRY = false;
 
     MOS6502._PC = PCStart;
     MOS6502._CYCLES = 0;
@@ -6283,8 +4509,8 @@ test("0x2E - ROL (Absolute)",function() {
         146,
         "Test 9: Set sign and carry - ROL successfully applied.");
 
-    equal(MOS6502._P,
-        0xA1,
+    equal(MOS6502._statusRegister.dumpStatus(),
+        0xB1,
         "Test 9: Set sign and carry - Status Register correctly set.");
 
     equal(MOS6502._PC,
@@ -6299,7 +4525,7 @@ test("0x2E - ROL (Absolute)",function() {
      * Test 10: Carry set before ROL. Set sign and carry after ROL.
      */
     MOS6502._RAM[OperandLocation] = 201;
-    MOS6502._P = 0x21;
+    MOS6502._statusRegister.CARRY = true;
 
     MOS6502._PC = PCStart;
     MOS6502._CYCLES = 0;
@@ -6310,8 +4536,8 @@ test("0x2E - ROL (Absolute)",function() {
         147,
         "Test 10: Carry set before ROL. Set sign and carry after ROL - ROL successfully applied.");
 
-    equal(MOS6502._P,
-        0xA1,
+    equal(MOS6502._statusRegister.dumpStatus(),
+        0xB1,
         "Test 10: Carry set before ROL. Set sign and carry after ROL - Status Register correctly set.");
 
     equal(MOS6502._PC,
@@ -6347,7 +4573,7 @@ test("0x3E - ROL (Absolute, X)",function() {
      * Test 1: Set none.
      */
     MOS6502._RAM[OperandLocation] = 21;
-    MOS6502._P = 0x20;
+    MOS6502._statusRegister.CARRY = false;
 
     MOS6502._PC = PCStart;
     MOS6502._CYCLES = 0;
@@ -6358,8 +4584,8 @@ test("0x3E - ROL (Absolute, X)",function() {
         42,
         "Test 1: Set none - ROL successfully applied.");
 
-    equal(MOS6502._P,
-        0x20,
+    equal(MOS6502._statusRegister.dumpStatus(),
+        0x30,
         "Test 1: Set none - Status Register correctly set.");
 
     equal(MOS6502._PC,
@@ -6374,7 +4600,7 @@ test("0x3E - ROL (Absolute, X)",function() {
      * Test 2: Set none. Carry set before ROL.
      */
     MOS6502._RAM[OperandLocation] = 0;
-    MOS6502._P = 0x21;
+    MOS6502._statusRegister.CARRY = true;
 
     MOS6502._PC = PCStart;
     MOS6502._CYCLES = 0;
@@ -6385,8 +4611,8 @@ test("0x3E - ROL (Absolute, X)",function() {
         1,
         "Test 2: Set none. Carry set before ROL - ROL successfully applied.");
 
-    equal(MOS6502._P,
-        0x20,
+    equal(MOS6502._statusRegister.dumpStatus(),
+        0x30,
         "Test 2: Set none. Carry set before ROL - Status Register correctly set.");
 
     equal(MOS6502._PC,
@@ -6401,7 +4627,7 @@ test("0x3E - ROL (Absolute, X)",function() {
      * Test 3: Carry set before ROL.
      */
     MOS6502._RAM[OperandLocation] = 39;
-    MOS6502._P = 0x21;
+    MOS6502._statusRegister.CARRY = true;
 
     MOS6502._PC = PCStart;
     MOS6502._CYCLES = 0;
@@ -6412,8 +4638,8 @@ test("0x3E - ROL (Absolute, X)",function() {
         79,
         "Test 3: Carry set before ROL - ROL successfully applied.");
 
-    equal(MOS6502._P,
-        0x20,
+    equal(MOS6502._statusRegister.dumpStatus(),
+        0x30,
         "Test 3: Carry set before ROL - Status Register correctly set.");
 
     equal(MOS6502._PC,
@@ -6428,7 +4654,7 @@ test("0x3E - ROL (Absolute, X)",function() {
      * Test 4: ROL sets carry.
      */
     MOS6502._RAM[OperandLocation] = 136;
-    MOS6502._P = 0x20;
+    MOS6502._statusRegister.CARRY = false;
 
     MOS6502._PC = PCStart;
     MOS6502._CYCLES = 0;
@@ -6439,8 +4665,8 @@ test("0x3E - ROL (Absolute, X)",function() {
         16,
         "Test 4: ROL sets carry - ROL successfully applied.");
 
-    equal(MOS6502._P,
-        0x21,
+    equal(MOS6502._statusRegister.dumpStatus(),
+        0x31,
         "Test 4: ROL sets carry - Status Register correctly set.");
 
     equal(MOS6502._PC,
@@ -6455,7 +4681,7 @@ test("0x3E - ROL (Absolute, X)",function() {
      * Test 5: Carry set before ROL. ROL sets carry.
      */
     MOS6502._RAM[OperandLocation] = 136;
-    MOS6502._P = 0x21;
+    MOS6502._statusRegister.CARRY = true;
 
     MOS6502._PC = PCStart;
     MOS6502._CYCLES = 0;
@@ -6466,8 +4692,8 @@ test("0x3E - ROL (Absolute, X)",function() {
         17,
         "Test 5: Carry set before ROL. ROL sets carry - ROL successfully applied.");
 
-    equal(MOS6502._P,
-        0x21,
+    equal(MOS6502._statusRegister.dumpStatus(),
+        0x31,
         "Test 5: Carry set before ROL. ROL sets carry - Status Register correctly set.");
 
     equal(MOS6502._PC,
@@ -6482,7 +4708,7 @@ test("0x3E - ROL (Absolute, X)",function() {
      * Test 6: Set zero.
      */
     MOS6502._RAM[OperandLocation] = 0;
-    MOS6502._P = 0x20;
+    MOS6502._statusRegister.CARRY = false;
 
     MOS6502._PC = PCStart;
     MOS6502._CYCLES = 0;
@@ -6493,8 +4719,8 @@ test("0x3E - ROL (Absolute, X)",function() {
         0,
         "Test 6: Set zero - ROL successfully applied.");
 
-    equal(MOS6502._P,
-        0x22,
+    equal(MOS6502._statusRegister.dumpStatus(),
+        0x32,
         "Test 6: Set zero - Status Register correctly set.");
 
     equal(MOS6502._PC,
@@ -6509,7 +4735,7 @@ test("0x3E - ROL (Absolute, X)",function() {
      * Test 7: Set zero and carry
      */
     MOS6502._RAM[OperandLocation] = 128;
-    MOS6502._P = 0x20;
+    MOS6502._statusRegister.CARRY = false;
 
     MOS6502._PC = PCStart;
     MOS6502._CYCLES = 0;
@@ -6520,8 +4746,8 @@ test("0x3E - ROL (Absolute, X)",function() {
         0,
         "Test 7: Set zero and carry - ROL successfully applied.");
 
-    equal(MOS6502._P,
-        0x23,
+    equal(MOS6502._statusRegister.dumpStatus(),
+        0x33,
         "Test 7: Set zero and carry - Status Register correctly set.");
 
     equal(MOS6502._PC,
@@ -6536,7 +4762,7 @@ test("0x3E - ROL (Absolute, X)",function() {
      * Test 8: Set sign.
      */
     MOS6502._RAM[OperandLocation] = 66;
-    MOS6502._P = 0x20;
+    MOS6502._statusRegister.CARRY = false;
 
     MOS6502._PC = PCStart;
     MOS6502._CYCLES = 0;
@@ -6547,8 +4773,8 @@ test("0x3E - ROL (Absolute, X)",function() {
         132,
         "Test 8: Set sign - ROL successfully applied.");
 
-    equal(MOS6502._P,
-        0xA0,
+    equal(MOS6502._statusRegister.dumpStatus(),
+        0xB0,
         "Test 8: Set sign - Status Register correctly set.");
 
     equal(MOS6502._PC,
@@ -6563,7 +4789,7 @@ test("0x3E - ROL (Absolute, X)",function() {
      * Test 9: Set sign and carry.
      */
     MOS6502._RAM[OperandLocation] = 201;
-    MOS6502._P = 0x20;
+    MOS6502._statusRegister.CARRY = false;
 
     MOS6502._PC = PCStart;
     MOS6502._CYCLES = 0;
@@ -6574,8 +4800,8 @@ test("0x3E - ROL (Absolute, X)",function() {
         146,
         "Test 9: Set sign and carry - ROL successfully applied.");
 
-    equal(MOS6502._P,
-        0xA1,
+    equal(MOS6502._statusRegister.dumpStatus(),
+        0xB1,
         "Test 9: Set sign and carry - Status Register correctly set.");
 
     equal(MOS6502._PC,
@@ -6590,7 +4816,7 @@ test("0x3E - ROL (Absolute, X)",function() {
      * Test 10: Carry set before ROL. Set sign and carry after ROL.
      */
     MOS6502._RAM[OperandLocation] = 201;
-    MOS6502._P = 0x21;
+    MOS6502._statusRegister.CARRY = true;
 
     MOS6502._PC = PCStart;
     MOS6502._CYCLES = 0;
@@ -6601,8 +4827,8 @@ test("0x3E - ROL (Absolute, X)",function() {
         147,
         "Test 10: Carry set before ROL. Set sign and carry after ROL - ROL successfully applied.");
 
-    equal(MOS6502._P,
-        0xA1,
+    equal(MOS6502._statusRegister.dumpStatus(),
+        0xB1,
         "Test 10: Carry set before ROL. Set sign and carry after ROL - Status Register correctly set.");
 
     equal(MOS6502._PC,
@@ -6641,8 +4867,8 @@ test("0x28 - PLP (Implied)", function() {
 
     MOS6502._RAM[PCStart] = OPCODE;
     MOS6502._CYCLES = 0;
-    MOS6502._P = 0x20;
-    MOS6502._SP = 0x01FE;
+    
+    MOS6502._SP = 0xFE;
     MOS6502._RAM[0x01FF] = StatusRegister;
     MOS6502._PC = PCStart;
 
@@ -6652,9 +4878,9 @@ test("0x28 - PLP (Implied)", function() {
 
     MOS6502.emulateCycle();
 
-    equal(MOS6502._P,StatusRegister,"Status register updated correctly.");
+    equal(MOS6502._statusRegister.dumpStatus(),StatusRegister,"Status register updated correctly.");
 
-    equal(MOS6502._SP,0x01FF,"Stack pointer updated correctly.");
+    equal(MOS6502._SP,0xFF,"Stack pointer updated correctly.");
 
     equal(MOS6502._PC,PCStart + BytesUsed,"Program counter updated successfully.");
 
@@ -6703,7 +4929,7 @@ test("0x30 - BMI (Relative)", function() {
      */
 
     // Disable the sign flag which indicates a positive.
-    MOS6502._P = 0x20;
+    MOS6502._statusRegister.SIGN = false;
 
     MOS6502.emulateCycle();
 
@@ -6719,7 +4945,7 @@ test("0x30 - BMI (Relative)", function() {
      * Test 2: Result minus. Branch forward to same page. (3 cycles)
      */
 
-    MOS6502._P = 0xA0;
+    MOS6502._statusRegister.SIGN = true;
     MOS6502._PC = PCStart;
     MOS6502._RAM[PCStart + 1] = relativePlusSamePage;
     MOS6502._CYCLES = 0;
@@ -6727,7 +4953,7 @@ test("0x30 - BMI (Relative)", function() {
     MOS6502.emulateCycle();
 
     equal(MOS6502._PC,
-            PCStart + relativePlusSamePage,
+            PCStart + relativePlusSamePage + BytesUsed,
         "Result minus, branch forward, same page: Program Counter set correctly.");
 
     equal(MOS6502._CYCLES,
@@ -6738,7 +4964,7 @@ test("0x30 - BMI (Relative)", function() {
      * Test 3: Result minus. Branch backward to same page. (3 cycles)
      */
 
-    MOS6502._P = 0xA0;
+    //MOS6502._statusRegister.dumpStatus() = 0xA0;
     MOS6502._PC = PCStart;
     MOS6502._RAM[PCStart + 1] = relativeMinusSamePage;
     MOS6502._CYCLES = 0;
@@ -6759,7 +4985,7 @@ test("0x30 - BMI (Relative)", function() {
      * NOTE: It's not possible to branch to another page from 0x4080. Using 0x40E0 for forward branch.
      */
 
-    MOS6502._P = 0xA0;
+    //MOS6502._statusRegister.dumpStatus() = 0xA0;
     MOS6502._PC = PCStartHigh;
     MOS6502._RAM[PCStartHigh + 1] = relativePlusNextPage;
     MOS6502._CYCLES = 0;
@@ -6767,7 +4993,7 @@ test("0x30 - BMI (Relative)", function() {
     MOS6502.emulateCycle();
 
     equal(MOS6502._PC,
-            PCStartHigh + relativePlusNextPage,
+            PCStartHigh + relativePlusNextPage + BytesUsed,
         "Result minus, branch forward, different page: Program Counter set correctly.");
 
     equal(MOS6502._CYCLES,
@@ -6778,7 +5004,7 @@ test("0x30 - BMI (Relative)", function() {
      * Test 5: Result minus. Branch backward to different page. (4 cycles)
      */
 
-    MOS6502._P = 0xA0;
+    //MOS6502._statusRegister.dumpStatus() = 0xA0;
     MOS6502._PC = PCStartLow;
     MOS6502._RAM[PCStartLow + 1] = relativeMinusNextPage;
     MOS6502._CYCLES = 0;
@@ -6818,7 +5044,7 @@ test("0x38 - SEC (Implied)", function() {
         BytesUsed = 1,
         CycleCost = 2;
 
-    MOS6502._P = 0x20;
+    
     MOS6502._CYCLES = 0;
     MOS6502._RAM[PCStart] = OPCODE;
     MOS6502._PC = PCStart;
@@ -6833,8 +5059,8 @@ test("0x38 - SEC (Implied)", function() {
         CycleCost,
         "Cycles set correctly.");
 
-    equal(MOS6502._P,
-        0x21,
+    equal(MOS6502._statusRegister.dumpStatus(),
+        0x31,
         "Sign set successfully.");
 
 
@@ -6869,8 +5095,8 @@ test("0x40 - RTI (Implied)", function() {
         CycleCost = 6;
 
     MOS6502._RAM[PCStart] = OPCODE;
-    MOS6502._SP = 0x01FC;
-    MOS6502._P = 0x20;
+    MOS6502._SP = 0xFC;
+    
     MOS6502._RAM[0x01FD] = StatusRegister;
     MOS6502._RAM[0x01FE] = AddressByte1;
     MOS6502._RAM[0x01FF] = AddressByte2;
@@ -6887,7 +5113,7 @@ test("0x40 - RTI (Implied)", function() {
         CycleCost,
         "Cycles incremented correctly.");
 
-    equal(MOS6502._P,
+    equal(MOS6502._statusRegister.dumpStatus(),
         StatusRegister,
         "Status Register set correctly.");
 
@@ -6931,7 +5157,7 @@ test("0x49 - EOR (Immediate)", function() {
     MOS6502._CYCLES = 0;
     MOS6502._RAM[PCStart + 1] = Memory;
     MOS6502._A = Accumulator;
-    MOS6502._P = 0x20;
+    
 
     MOS6502.emulateCycle();
 
@@ -6941,7 +5167,7 @@ test("0x49 - EOR (Immediate)", function() {
 
     equal(MOS6502._A, ExpectedResult, "Set none: EOR successful.");
 
-    equal(MOS6502._P, 0x20, "Set none: Status register set correctly.");
+    equal(MOS6502._statusRegister.dumpStatus(), 0x30, "Set none: Status register set correctly.");
 
     /**
      * Test 2: Set sign.
@@ -6954,7 +5180,7 @@ test("0x49 - EOR (Immediate)", function() {
     MOS6502._CYCLES = 0;
     MOS6502._RAM[PCStart + 1] = Memory;
     MOS6502._A = Accumulator;
-    MOS6502._P = 0x20;
+    
 
     MOS6502.emulateCycle();
 
@@ -6964,7 +5190,7 @@ test("0x49 - EOR (Immediate)", function() {
 
     equal(MOS6502._A, ExpectedResult, "Set sign: EOR successful.");
 
-    equal(MOS6502._P, 0xA0, "Set sign: Status register set correctly.");
+    equal(MOS6502._statusRegister.dumpStatus(), 0xB0, "Set sign: Status register set correctly.");
 
     /**
      * Test 3: Set zero.
@@ -6977,7 +5203,7 @@ test("0x49 - EOR (Immediate)", function() {
     MOS6502._CYCLES = 0;
     MOS6502._RAM[PCStart + 1] = Memory;
     MOS6502._A = Accumulator;
-    MOS6502._P = 0x20;
+    
 
     MOS6502.emulateCycle();
 
@@ -6987,7 +5213,7 @@ test("0x49 - EOR (Immediate)", function() {
 
     equal(MOS6502._A, ExpectedResult, "Set zero: EOR successful.");
 
-    equal(MOS6502._P, 0x22, "Set zero: Status register set correctly.");
+    equal(MOS6502._statusRegister.dumpStatus(), 0x32, "Set zero: Status register set correctly.");
 
 });
 
@@ -7019,7 +5245,7 @@ test("0x45 - EOR (Zero Page)", function() {
     MOS6502._CYCLES = 0;
     MOS6502._RAM[ZPAddress] = Memory;
     MOS6502._A = Accumulator;
-    MOS6502._P = 0x20;
+    
 
     MOS6502.emulateCycle();
 
@@ -7029,7 +5255,7 @@ test("0x45 - EOR (Zero Page)", function() {
 
     equal(MOS6502._A, ExpectedResult, "Set none: EOR successful.");
 
-    equal(MOS6502._P, 0x20, "Set none: Status register set correctly.");
+    equal(MOS6502._statusRegister.dumpStatus(), 0x30, "Set none: Status register set correctly.");
 
     /**
      * Test 2: Set sign.
@@ -7042,7 +5268,7 @@ test("0x45 - EOR (Zero Page)", function() {
     MOS6502._CYCLES = 0;
     MOS6502._RAM[ZPAddress] = Memory;
     MOS6502._A = Accumulator;
-    MOS6502._P = 0x20;
+    
 
     MOS6502.emulateCycle();
 
@@ -7052,7 +5278,7 @@ test("0x45 - EOR (Zero Page)", function() {
 
     equal(MOS6502._A, ExpectedResult, "Set sign: EOR successful.");
 
-    equal(MOS6502._P, 0xA0, "Set sign: Status register set correctly.");
+    equal(MOS6502._statusRegister.dumpStatus(), 0xB0, "Set sign: Status register set correctly.");
 
     /**
      * Test 3: Set zero.
@@ -7065,7 +5291,7 @@ test("0x45 - EOR (Zero Page)", function() {
     MOS6502._CYCLES = 0;
     MOS6502._RAM[ZPAddress] = Memory;
     MOS6502._A = Accumulator;
-    MOS6502._P = 0x20;
+    
 
     MOS6502.emulateCycle();
 
@@ -7075,7 +5301,7 @@ test("0x45 - EOR (Zero Page)", function() {
 
     equal(MOS6502._A, ExpectedResult, "Set zero: EOR successful.");
 
-    equal(MOS6502._P, 0x22, "Set zero: Status register set correctly.");
+    equal(MOS6502._statusRegister.dumpStatus(), 0x32, "Set zero: Status register set correctly.");
 
 });
 
@@ -7109,7 +5335,7 @@ test("0x55 - EOR (Zero Page, X)", function() {
     MOS6502._CYCLES = 0;
     MOS6502._RAM[(ZPAddress + XRegister) & 0xFF] = Memory;
     MOS6502._A = Accumulator;
-    MOS6502._P = 0x20;
+    
 
     MOS6502.emulateCycle();
 
@@ -7119,7 +5345,7 @@ test("0x55 - EOR (Zero Page, X)", function() {
 
     equal(MOS6502._A, ExpectedResult, "Set none: EOR successful.");
 
-    equal(MOS6502._P, 0x20, "Set none: Status register set correctly.");
+    equal(MOS6502._statusRegister.dumpStatus(), 0x30, "Set none: Status register set correctly.");
 
     /**
      * Test 2: Set sign.
@@ -7132,7 +5358,7 @@ test("0x55 - EOR (Zero Page, X)", function() {
     MOS6502._CYCLES = 0;
     MOS6502._RAM[(ZPAddress + XRegister) & 0xFF] = Memory;
     MOS6502._A = Accumulator;
-    MOS6502._P = 0x20;
+    
 
     MOS6502.emulateCycle();
 
@@ -7142,7 +5368,7 @@ test("0x55 - EOR (Zero Page, X)", function() {
 
     equal(MOS6502._A, ExpectedResult, "Set sign: EOR successful.");
 
-    equal(MOS6502._P, 0xA0, "Set sign: Status register set correctly.");
+    equal(MOS6502._statusRegister.dumpStatus(), 0xB0, "Set sign: Status register set correctly.");
 
     /**
      * Test 3: Set zero.
@@ -7155,7 +5381,7 @@ test("0x55 - EOR (Zero Page, X)", function() {
     MOS6502._CYCLES = 0;
     MOS6502._RAM[(ZPAddress + XRegister) & 0xFF] = Memory;
     MOS6502._A = Accumulator;
-    MOS6502._P = 0x20;
+    
 
     MOS6502.emulateCycle();
 
@@ -7165,7 +5391,7 @@ test("0x55 - EOR (Zero Page, X)", function() {
 
     equal(MOS6502._A, ExpectedResult, "Set zero: EOR successful.");
 
-    equal(MOS6502._P, 0x22, "Set zero: Status register set correctly.");
+    equal(MOS6502._statusRegister.dumpStatus(), 0x32, "Set zero: Status register set correctly.");
 
 });
 
@@ -7202,7 +5428,7 @@ test("0x4D - EOR (Absolute)", function() {
     MOS6502._CYCLES = 0;
     MOS6502._RAM[0x2131] = Memory;
     MOS6502._A = Accumulator;
-    MOS6502._P = 0x20;
+    
 
     MOS6502.emulateCycle();
 
@@ -7212,7 +5438,7 @@ test("0x4D - EOR (Absolute)", function() {
 
     equal(MOS6502._A, ExpectedResult, "Set none: EOR successful.");
 
-    equal(MOS6502._P, 0x20, "Set none: Status register set correctly.");
+    equal(MOS6502._statusRegister.dumpStatus(), 0x30, "Set none: Status register set correctly.");
 
     /**
      * Test 2: Set sign.
@@ -7225,7 +5451,7 @@ test("0x4D - EOR (Absolute)", function() {
     MOS6502._CYCLES = 0;
     MOS6502._RAM[0x2131] = Memory;
     MOS6502._A = Accumulator;
-    MOS6502._P = 0x20;
+    
 
     MOS6502.emulateCycle();
 
@@ -7235,7 +5461,7 @@ test("0x4D - EOR (Absolute)", function() {
 
     equal(MOS6502._A, ExpectedResult, "Set sign: EOR successful.");
 
-    equal(MOS6502._P, 0xA0, "Set sign: Status register set correctly.");
+    equal(MOS6502._statusRegister.dumpStatus(), 0xB0, "Set sign: Status register set correctly.");
 
     /**
      * Test 3: Set zero.
@@ -7248,7 +5474,7 @@ test("0x4D - EOR (Absolute)", function() {
     MOS6502._CYCLES = 0;
     MOS6502._RAM[0x2131] = Memory;
     MOS6502._A = Accumulator;
-    MOS6502._P = 0x20;
+    
 
     MOS6502.emulateCycle();
 
@@ -7258,7 +5484,7 @@ test("0x4D - EOR (Absolute)", function() {
 
     equal(MOS6502._A, ExpectedResult, "Set zero: EOR successful.");
 
-    equal(MOS6502._P, 0x22, "Set zero: Status register set correctly.");
+    equal(MOS6502._statusRegister.dumpStatus(), 0x32, "Set zero: Status register set correctly.");
 
 });
 
@@ -7295,7 +5521,7 @@ test("0x5D - EOR (Absolute, X) (Same Page)", function() {
     MOS6502._CYCLES = 0;
     MOS6502._RAM[MOS6502._MAKE_ADDRESS(AddressByte1,AddressByte2) + XRegister] = Memory;
     MOS6502._A = Accumulator;
-    MOS6502._P = 0x20;
+    
 
     MOS6502.emulateCycle();
 
@@ -7305,7 +5531,7 @@ test("0x5D - EOR (Absolute, X) (Same Page)", function() {
 
     equal(MOS6502._A, ExpectedResult, "Set none: EOR successful.");
 
-    equal(MOS6502._P, 0x20, "Set none: Status register set correctly.");
+    equal(MOS6502._statusRegister.dumpStatus(), 0x30, "Set none: Status register set correctly.");
 
     /**
      * Test 2: Set sign.
@@ -7318,7 +5544,7 @@ test("0x5D - EOR (Absolute, X) (Same Page)", function() {
     MOS6502._CYCLES = 0;
     MOS6502._RAM[MOS6502._MAKE_ADDRESS(AddressByte1,AddressByte2) + XRegister] = Memory;
     MOS6502._A = Accumulator;
-    MOS6502._P = 0x20;
+    
 
     MOS6502.emulateCycle();
 
@@ -7328,7 +5554,7 @@ test("0x5D - EOR (Absolute, X) (Same Page)", function() {
 
     equal(MOS6502._A, ExpectedResult, "Set sign: EOR successful.");
 
-    equal(MOS6502._P, 0xA0, "Set sign: Status register set correctly.");
+    equal(MOS6502._statusRegister.dumpStatus(), 0xB0, "Set sign: Status register set correctly.");
 
     /**
      * Test 3: Set zero.
@@ -7341,7 +5567,7 @@ test("0x5D - EOR (Absolute, X) (Same Page)", function() {
     MOS6502._CYCLES = 0;
     MOS6502._RAM[MOS6502._MAKE_ADDRESS(AddressByte1,AddressByte2) + XRegister] = Memory;
     MOS6502._A = Accumulator;
-    MOS6502._P = 0x20;
+    
 
     MOS6502.emulateCycle();
 
@@ -7351,7 +5577,7 @@ test("0x5D - EOR (Absolute, X) (Same Page)", function() {
 
     equal(MOS6502._A, ExpectedResult, "Set zero: EOR successful.");
 
-    equal(MOS6502._P, 0x22, "Set zero: Status register set correctly.");
+    equal(MOS6502._statusRegister.dumpStatus(), 0x32, "Set zero: Status register set correctly.");
 
 });
 
@@ -7388,7 +5614,7 @@ test("0x5D - EOR (Absolute, X) (Cross Page)", function() {
     MOS6502._CYCLES = 0;
     MOS6502._RAM[MOS6502._MAKE_ADDRESS(AddressByte1,AddressByte2) + XRegister] = Memory;
     MOS6502._A = Accumulator;
-    MOS6502._P = 0x20;
+    
 
     MOS6502.emulateCycle();
 
@@ -7398,7 +5624,7 @@ test("0x5D - EOR (Absolute, X) (Cross Page)", function() {
 
     equal(MOS6502._A, ExpectedResult, "Set none: EOR successful.");
 
-    equal(MOS6502._P, 0x20, "Set none: Status register set correctly.");
+    equal(MOS6502._statusRegister.dumpStatus(), 0x30, "Set none: Status register set correctly.");
 
     /**
      * Test 2: Set sign.
@@ -7411,7 +5637,7 @@ test("0x5D - EOR (Absolute, X) (Cross Page)", function() {
     MOS6502._CYCLES = 0;
     MOS6502._RAM[MOS6502._MAKE_ADDRESS(AddressByte1,AddressByte2) + XRegister] = Memory;
     MOS6502._A = Accumulator;
-    MOS6502._P = 0x20;
+    
 
     MOS6502.emulateCycle();
 
@@ -7421,7 +5647,7 @@ test("0x5D - EOR (Absolute, X) (Cross Page)", function() {
 
     equal(MOS6502._A, ExpectedResult, "Set sign: EOR successful.");
 
-    equal(MOS6502._P, 0xA0, "Set sign: Status register set correctly.");
+    equal(MOS6502._statusRegister.dumpStatus(), 0xB0, "Set sign: Status register set correctly.");
 
     /**
      * Test 3: Set zero.
@@ -7434,7 +5660,7 @@ test("0x5D - EOR (Absolute, X) (Cross Page)", function() {
     MOS6502._CYCLES = 0;
     MOS6502._RAM[MOS6502._MAKE_ADDRESS(AddressByte1,AddressByte2) + XRegister] = Memory;
     MOS6502._A = Accumulator;
-    MOS6502._P = 0x20;
+    
 
     MOS6502.emulateCycle();
 
@@ -7444,7 +5670,7 @@ test("0x5D - EOR (Absolute, X) (Cross Page)", function() {
 
     equal(MOS6502._A, ExpectedResult, "Set zero: EOR successful.");
 
-    equal(MOS6502._P, 0x22, "Set zero: Status register set correctly.");
+    equal(MOS6502._statusRegister.dumpStatus(), 0x32, "Set zero: Status register set correctly.");
 
 });
 
@@ -7481,7 +5707,7 @@ test("0x59 - EOR (Absolute, Y) (Same Page)", function() {
     MOS6502._CYCLES = 0;
     MOS6502._RAM[MOS6502._MAKE_ADDRESS(AddressByte1,AddressByte2) + YRegister] = Memory;
     MOS6502._A = Accumulator;
-    MOS6502._P = 0x20;
+    
 
     MOS6502.emulateCycle();
 
@@ -7491,7 +5717,7 @@ test("0x59 - EOR (Absolute, Y) (Same Page)", function() {
 
     equal(MOS6502._A, ExpectedResult, "Set none: EOR successful.");
 
-    equal(MOS6502._P, 0x20, "Set none: Status register set correctly.");
+    equal(MOS6502._statusRegister.dumpStatus(), 0x30, "Set none: Status register set correctly.");
 
     /**
      * Test 2: Set sign.
@@ -7504,7 +5730,7 @@ test("0x59 - EOR (Absolute, Y) (Same Page)", function() {
     MOS6502._CYCLES = 0;
     MOS6502._RAM[MOS6502._MAKE_ADDRESS(AddressByte1,AddressByte2) + YRegister] = Memory;
     MOS6502._A = Accumulator;
-    MOS6502._P = 0x20;
+    
 
     MOS6502.emulateCycle();
 
@@ -7514,7 +5740,7 @@ test("0x59 - EOR (Absolute, Y) (Same Page)", function() {
 
     equal(MOS6502._A, ExpectedResult, "Set sign: EOR successful.");
 
-    equal(MOS6502._P, 0xA0, "Set sign: Status register set correctly.");
+    equal(MOS6502._statusRegister.dumpStatus(), 0xB0, "Set sign: Status register set correctly.");
 
     /**
      * Test 3: Set zero.
@@ -7527,7 +5753,7 @@ test("0x59 - EOR (Absolute, Y) (Same Page)", function() {
     MOS6502._CYCLES = 0;
     MOS6502._RAM[MOS6502._MAKE_ADDRESS(AddressByte1,AddressByte2) + YRegister] = Memory;
     MOS6502._A = Accumulator;
-    MOS6502._P = 0x20;
+    
 
     MOS6502.emulateCycle();
 
@@ -7537,7 +5763,7 @@ test("0x59 - EOR (Absolute, Y) (Same Page)", function() {
 
     equal(MOS6502._A, ExpectedResult, "Set zero: EOR successful.");
 
-    equal(MOS6502._P, 0x22, "Set zero: Status register set correctly.");
+    equal(MOS6502._statusRegister.dumpStatus(), 0x32, "Set zero: Status register set correctly.");
 
 });
 
@@ -7574,7 +5800,7 @@ test("0x59 - EOR (Absolute, Y) (Cross Page)", function() {
     MOS6502._CYCLES = 0;
     MOS6502._RAM[MOS6502._MAKE_ADDRESS(AddressByte1,AddressByte2) + YRegister] = Memory;
     MOS6502._A = Accumulator;
-    MOS6502._P = 0x20;
+    
 
     MOS6502.emulateCycle();
 
@@ -7584,7 +5810,7 @@ test("0x59 - EOR (Absolute, Y) (Cross Page)", function() {
 
     equal(MOS6502._A, ExpectedResult, "Set none: EOR successful.");
 
-    equal(MOS6502._P, 0x20, "Set none: Status register set correctly.");
+    equal(MOS6502._statusRegister.dumpStatus(), 0x30, "Set none: Status register set correctly.");
 
     /**
      * Test 2: Set sign.
@@ -7597,7 +5823,7 @@ test("0x59 - EOR (Absolute, Y) (Cross Page)", function() {
     MOS6502._CYCLES = 0;
     MOS6502._RAM[MOS6502._MAKE_ADDRESS(AddressByte1,AddressByte2) + YRegister] = Memory;
     MOS6502._A = Accumulator;
-    MOS6502._P = 0x20;
+    
 
     MOS6502.emulateCycle();
 
@@ -7607,7 +5833,7 @@ test("0x59 - EOR (Absolute, Y) (Cross Page)", function() {
 
     equal(MOS6502._A, ExpectedResult, "Set sign: EOR successful.");
 
-    equal(MOS6502._P, 0xA0, "Set sign: Status register set correctly.");
+    equal(MOS6502._statusRegister.dumpStatus(), 0xB0, "Set sign: Status register set correctly.");
 
     /**
      * Test 3: Set zero.
@@ -7620,7 +5846,7 @@ test("0x59 - EOR (Absolute, Y) (Cross Page)", function() {
     MOS6502._CYCLES = 0;
     MOS6502._RAM[MOS6502._MAKE_ADDRESS(AddressByte1,AddressByte2) + YRegister] = Memory;
     MOS6502._A = Accumulator;
-    MOS6502._P = 0x20;
+    
 
     MOS6502.emulateCycle();
 
@@ -7630,7 +5856,7 @@ test("0x59 - EOR (Absolute, Y) (Cross Page)", function() {
 
     equal(MOS6502._A, ExpectedResult, "Set zero: EOR successful.");
 
-    equal(MOS6502._P, 0x22, "Set zero: Status register set correctly.");
+    equal(MOS6502._statusRegister.dumpStatus(), 0x32, "Set zero: Status register set correctly.");
 
 });
 
@@ -7668,7 +5894,7 @@ test("0x41 - EOR (Indirect, X)", function() {
     MOS6502._CYCLES = 0;
     MOS6502._RAM[MOS6502._MAKE_ADDRESS(AddressByte1,AddressByte2)] = Memory;
     MOS6502._A = Accumulator;
-    MOS6502._P = 0x20;
+    
 
     MOS6502.emulateCycle();
 
@@ -7678,7 +5904,7 @@ test("0x41 - EOR (Indirect, X)", function() {
 
     equal(MOS6502._A, ExpectedResult, "Set none: EOR successful.");
 
-    equal(MOS6502._P, 0x20, "Set none: Status register set correctly.");
+    equal(MOS6502._statusRegister.dumpStatus(), 0x30, "Set none: Status register set correctly.");
 
     /**
      * Test 2: Set sign.
@@ -7691,7 +5917,7 @@ test("0x41 - EOR (Indirect, X)", function() {
     MOS6502._CYCLES = 0;
     MOS6502._RAM[MOS6502._MAKE_ADDRESS(AddressByte1,AddressByte2)] = Memory;
     MOS6502._A = Accumulator;
-    MOS6502._P = 0x20;
+    
 
     MOS6502.emulateCycle();
 
@@ -7701,7 +5927,7 @@ test("0x41 - EOR (Indirect, X)", function() {
 
     equal(MOS6502._A, ExpectedResult, "Set sign: EOR successful.");
 
-    equal(MOS6502._P, 0xA0, "Set sign: Status register set correctly.");
+    equal(MOS6502._statusRegister.dumpStatus(), 0xB0, "Set sign: Status register set correctly.");
 
     /**
      * Test 3: Set zero.
@@ -7714,7 +5940,7 @@ test("0x41 - EOR (Indirect, X)", function() {
     MOS6502._CYCLES = 0;
     MOS6502._RAM[MOS6502._MAKE_ADDRESS(AddressByte1,AddressByte2)] = Memory;
     MOS6502._A = Accumulator;
-    MOS6502._P = 0x20;
+    
 
     MOS6502.emulateCycle();
 
@@ -7724,7 +5950,7 @@ test("0x41 - EOR (Indirect, X)", function() {
 
     equal(MOS6502._A, ExpectedResult, "Set zero: EOR successful.");
 
-    equal(MOS6502._P, 0x22, "Set zero: Status register set correctly.");
+    equal(MOS6502._statusRegister.dumpStatus(), 0x32, "Set zero: Status register set correctly.");
 
 });
 
@@ -7762,7 +5988,7 @@ test("0x51 - EOR (Indirect, Y) (Same Page)", function() {
     MOS6502._CYCLES = 0;
     MOS6502._RAM[MOS6502._MAKE_ADDRESS(AddressByte1,AddressByte2) + YRegister] = Memory;
     MOS6502._A = Accumulator;
-    MOS6502._P = 0x20;
+    
 
     MOS6502.emulateCycle();
 
@@ -7772,7 +5998,7 @@ test("0x51 - EOR (Indirect, Y) (Same Page)", function() {
 
     equal(MOS6502._A, ExpectedResult, "Set none: EOR successful.");
 
-    equal(MOS6502._P, 0x20, "Set none: Status register set correctly.");
+    equal(MOS6502._statusRegister.dumpStatus(), 0x30, "Set none: Status register set correctly.");
 
     /**
      * Test 2: Set sign.
@@ -7785,7 +6011,7 @@ test("0x51 - EOR (Indirect, Y) (Same Page)", function() {
     MOS6502._CYCLES = 0;
     MOS6502._RAM[MOS6502._MAKE_ADDRESS(AddressByte1,AddressByte2) + YRegister] = Memory;
     MOS6502._A = Accumulator;
-    MOS6502._P = 0x20;
+    
 
     MOS6502.emulateCycle();
 
@@ -7795,7 +6021,7 @@ test("0x51 - EOR (Indirect, Y) (Same Page)", function() {
 
     equal(MOS6502._A, ExpectedResult, "Set sign: EOR successful.");
 
-    equal(MOS6502._P, 0xA0, "Set sign: Status register set correctly.");
+    equal(MOS6502._statusRegister.dumpStatus(), 0xB0, "Set sign: Status register set correctly.");
 
     /**
      * Test 3: Set zero.
@@ -7808,7 +6034,7 @@ test("0x51 - EOR (Indirect, Y) (Same Page)", function() {
     MOS6502._CYCLES = 0;
     MOS6502._RAM[MOS6502._MAKE_ADDRESS(AddressByte1,AddressByte2) + YRegister] = Memory;
     MOS6502._A = Accumulator;
-    MOS6502._P = 0x20;
+    
 
     MOS6502.emulateCycle();
 
@@ -7818,7 +6044,7 @@ test("0x51 - EOR (Indirect, Y) (Same Page)", function() {
 
     equal(MOS6502._A, ExpectedResult, "Set zero: EOR successful.");
 
-    equal(MOS6502._P, 0x22, "Set zero: Status register set correctly.");
+    equal(MOS6502._statusRegister.dumpStatus(), 0x32, "Set zero: Status register set correctly.");
 
 });
 
@@ -7856,7 +6082,7 @@ test("0x51 - EOR (Indirect, Y) (Cross Page)", function() {
     MOS6502._CYCLES = 0;
     MOS6502._RAM[MOS6502._MAKE_ADDRESS(AddressByte1,AddressByte2) + YRegister] = Memory;
     MOS6502._A = Accumulator;
-    MOS6502._P = 0x20;
+    
 
     MOS6502.emulateCycle();
 
@@ -7866,7 +6092,7 @@ test("0x51 - EOR (Indirect, Y) (Cross Page)", function() {
 
     equal(MOS6502._A, ExpectedResult, "Set none: EOR successful.");
 
-    equal(MOS6502._P, 0x20, "Set none: Status register set correctly.");
+    equal(MOS6502._statusRegister.dumpStatus(), 0x30, "Set none: Status register set correctly.");
 
     /**
      * Test 2: Set sign.
@@ -7879,7 +6105,7 @@ test("0x51 - EOR (Indirect, Y) (Cross Page)", function() {
     MOS6502._CYCLES = 0;
     MOS6502._RAM[MOS6502._MAKE_ADDRESS(AddressByte1,AddressByte2) + YRegister] = Memory;
     MOS6502._A = Accumulator;
-    MOS6502._P = 0x20;
+    
 
     MOS6502.emulateCycle();
 
@@ -7889,7 +6115,7 @@ test("0x51 - EOR (Indirect, Y) (Cross Page)", function() {
 
     equal(MOS6502._A, ExpectedResult, "Set sign: EOR successful.");
 
-    equal(MOS6502._P, 0xA0, "Set sign: Status register set correctly.");
+    equal(MOS6502._statusRegister.dumpStatus(), 0xB0, "Set sign: Status register set correctly.");
 
     /**
      * Test 3: Set zero.
@@ -7902,7 +6128,7 @@ test("0x51 - EOR (Indirect, Y) (Cross Page)", function() {
     MOS6502._CYCLES = 0;
     MOS6502._RAM[MOS6502._MAKE_ADDRESS(AddressByte1,AddressByte2) + YRegister] = Memory;
     MOS6502._A = Accumulator;
-    MOS6502._P = 0x20;
+    
 
     MOS6502.emulateCycle();
 
@@ -7912,7 +6138,7 @@ test("0x51 - EOR (Indirect, Y) (Cross Page)", function() {
 
     equal(MOS6502._A, ExpectedResult, "Set zero: EOR successful.");
 
-    equal(MOS6502._P, 0x22, "Set zero: Status register set correctly.");
+    equal(MOS6502._statusRegister.dumpStatus(), 0x32, "Set zero: Status register set correctly.");
 
 });
 
@@ -7946,7 +6172,7 @@ test("0x4A - LSR (Accumulator)", function() {
     /**
      * Test 1: Set none.
      */
-    MOS6502._P = 0x20;
+    
     MOS6502._PC = PCStart;
     MOS6502._CYCLES = 0;
     MOS6502._A = 170;
@@ -7958,14 +6184,14 @@ test("0x4A - LSR (Accumulator)", function() {
 
     equal(MOS6502._CYCLES, CycleCost, "Set none: Cycles increased correctly.");
 
-    equal(MOS6502._P, 0x20, "Set none: Status register set correctly");
+    equal(MOS6502._statusRegister.dumpStatus(), 0x30, "Set none: Status register set correctly");
 
     equal(MOS6502._A,ExpectedResult,"Set none: LSR performed correctly.");
 
     /**
      * Test 2: Carry set, shift clears.
      */
-    MOS6502._P = 0x21;
+    MOS6502._statusRegister.CARRY = true;
     MOS6502._PC = PCStart;
     MOS6502._CYCLES = 0;
     MOS6502._A = 170;
@@ -7975,16 +6201,16 @@ test("0x4A - LSR (Accumulator)", function() {
 
     equal(MOS6502._PC, PCStart + BytesUsed, "Carry set, shift clears: Program counter increased correctly.");
 
-    equal(MOS6502._CYCLES, CycleCost, "Carry set, shift clears: Cycles increased correctly.")
+    equal(MOS6502._CYCLES, CycleCost, "Carry set, shift clears: Cycles increased correctly.");
 
-    equal(MOS6502._P, 0x20, "Carry set, shift clears: Status register set correctly");
+    equal(MOS6502._statusRegister.dumpStatus(), 0x30, "Carry set, shift clears: Status register set correctly");
 
     equal(MOS6502._A,ExpectedResult,"Carry set, shift clears: LSR performed correctly.");
 
     /**
      * Test 3: Carry set, shift sets.
      */
-    MOS6502._P = 0x21;
+    MOS6502._statusRegister.CARRY = true;
     MOS6502._PC = PCStart;
     MOS6502._CYCLES = 0;
     MOS6502._A = 85;
@@ -7994,16 +6220,17 @@ test("0x4A - LSR (Accumulator)", function() {
 
     equal(MOS6502._PC, PCStart + BytesUsed, "Carry set, shift sets: Program counter increased correctly.");
 
-    equal(MOS6502._CYCLES, CycleCost, "Carry set, shift sets: Cycles increased correctly.")
+    equal(MOS6502._CYCLES, CycleCost, "Carry set, shift sets: Cycles increased correctly.");
 
-    equal(MOS6502._P, 0x21, "Carry set, shift sets: Status register set correctly");
+    equal(MOS6502._statusRegister.dumpStatus(), 0x31, "Carry set, shift sets: Status register set correctly");
 
     equal(MOS6502._A,ExpectedResult,"Carry sets, shift sets: LSR performed correctly.");
 
     /**
      * Test 4: Sign set, shift clears.
      */
-    MOS6502._P = 0xA0;
+    MOS6502._statusRegister.CARRY = true;
+    MOS6502._statusRegister.SIGN = true;
     MOS6502._PC = PCStart;
     MOS6502._CYCLES = 0;
     MOS6502._A = 170;
@@ -8013,16 +6240,16 @@ test("0x4A - LSR (Accumulator)", function() {
 
     equal(MOS6502._PC, PCStart + BytesUsed, "Sign set, shift clears: Program counter increased correctly.");
 
-    equal(MOS6502._CYCLES, CycleCost, "Sign set, shift clears: Cycles increased correctly.")
+    equal(MOS6502._CYCLES, CycleCost, "Sign set, shift clears: Cycles increased correctly.");
 
-    equal(MOS6502._P, 0x20, "Sign set, shift clears: Status register set correctly");
+    equal(MOS6502._statusRegister.dumpStatus(), 0x30, "Sign set, shift clears: Status register set correctly");
 
     equal(MOS6502._A,ExpectedResult,"Sign set, shift clears: LSR performed correctly.");
 
     /**
      * Test 5: Set zero.
      */
-    MOS6502._P = 0x20;
+    
     MOS6502._PC = PCStart;
     MOS6502._CYCLES = 0;
     MOS6502._A = 0;
@@ -8032,16 +6259,16 @@ test("0x4A - LSR (Accumulator)", function() {
 
     equal(MOS6502._PC, PCStart + BytesUsed, "Set zero: Program counter increased correctly.");
 
-    equal(MOS6502._CYCLES, CycleCost, "Set zero: Cycles increased correctly.")
+    equal(MOS6502._CYCLES, CycleCost, "Set zero: Cycles increased correctly.");
 
-    equal(MOS6502._P, 0x22, "Set zero: Status register set correctly");
+    equal(MOS6502._statusRegister.dumpStatus(), 0x32, "Set zero: Status register set correctly");
 
     equal(MOS6502._A,ExpectedResult,"Set zero: LSR performed correctly.");
 
     /**
      * Test 6: Set zero, set carry.
      */
-    MOS6502._P = 0x20;
+    
     MOS6502._PC = PCStart;
     MOS6502._CYCLES = 0;
     MOS6502._A = 1;
@@ -8051,16 +6278,16 @@ test("0x4A - LSR (Accumulator)", function() {
 
     equal(MOS6502._PC, PCStart + BytesUsed, "Set zero, set carry: Program counter increased correctly.");
 
-    equal(MOS6502._CYCLES, CycleCost, "Set zero, set carry: Cycles increased correctly.")
+    equal(MOS6502._CYCLES, CycleCost, "Set zero, set carry: Cycles increased correctly.");
 
-    equal(MOS6502._P, 0x23, "Set zero, set carry: Status register set correctly");
+    equal(MOS6502._statusRegister.dumpStatus(), 0x33, "Set zero, set carry: Status register set correctly");
 
     equal(MOS6502._A,ExpectedResult,"Set zero, set carry: LSR performed correctly.");
 
     /**
      * Test 7: Sign set, shift clears, sets zero and sets carry.
      */
-    MOS6502._P = 0xA0;
+    MOS6502._statusRegister.SIGN = true;
     MOS6502._PC = PCStart;
     MOS6502._CYCLES = 0;
     MOS6502._A = 1;
@@ -8072,7 +6299,7 @@ test("0x4A - LSR (Accumulator)", function() {
 
     equal(MOS6502._CYCLES, CycleCost, "Sign set, shift clears, sets zero and sets carry: Cycles increased correctly.")
 
-    equal(MOS6502._P, 0x23, "Sign set, shift clears, sets zero and sets carry: Status register set correctly");
+    equal(MOS6502._statusRegister.dumpStatus(), 0x33, "Sign set, shift clears, sets zero and sets carry: Status register set correctly");
 
     equal(MOS6502._A,ExpectedResult,"Sign set, shift clears, sets zero and sets carry: LSR performed correctly.");
 
@@ -8098,7 +6325,7 @@ test("0x46 - LSR (Zero Page)", function() {
     /**
      * Test 1: Set none.
      */
-    MOS6502._P = 0x20;
+    
     MOS6502._PC = PCStart;
     MOS6502._CYCLES = 0;
     MOS6502._RAM[ZPAddress] = 170;
@@ -8110,14 +6337,14 @@ test("0x46 - LSR (Zero Page)", function() {
 
     equal(MOS6502._CYCLES, CycleCost, "Set none: Cycles increased correctly.");
 
-    equal(MOS6502._P, 0x20, "Set none: Status register set correctly");
+    equal(MOS6502._statusRegister.dumpStatus(), 0x30, "Set none: Status register set correctly");
 
     equal(MOS6502._RAM[ZPAddress],ExpectedResult,"Set none: LSR performed correctly.");
 
     /**
      * Test 2: Carry set, shift clears.
      */
-    MOS6502._P = 0x21;
+    MOS6502._statusRegister.CARRY = true;
     MOS6502._PC = PCStart;
     MOS6502._CYCLES = 0;
     MOS6502._RAM[ZPAddress] = 170;
@@ -8127,16 +6354,16 @@ test("0x46 - LSR (Zero Page)", function() {
 
     equal(MOS6502._PC, PCStart + BytesUsed, "Carry set, shift clears: Program counter increased correctly.");
 
-    equal(MOS6502._CYCLES, CycleCost, "Carry set, shift clears: Cycles increased correctly.")
+    equal(MOS6502._CYCLES, CycleCost, "Carry set, shift clears: Cycles increased correctly.");
 
-    equal(MOS6502._P, 0x20, "Carry set, shift clears: Status register set correctly");
+    equal(MOS6502._statusRegister.dumpStatus(), 0x30, "Carry set, shift clears: Status register set correctly");
 
     equal(MOS6502._RAM[ZPAddress],ExpectedResult,"Carry set, shift clears: LSR performed correctly.");
 
     /**
      * Test 3: Carry set, shift sets.
      */
-    MOS6502._P = 0x21;
+    MOS6502._statusRegister.CARRY = true;
     MOS6502._PC = PCStart;
     MOS6502._CYCLES = 0;
     MOS6502._RAM[ZPAddress] = 85;
@@ -8146,16 +6373,16 @@ test("0x46 - LSR (Zero Page)", function() {
 
     equal(MOS6502._PC, PCStart + BytesUsed, "Carry set, shift sets: Program counter increased correctly.");
 
-    equal(MOS6502._CYCLES, CycleCost, "Carry set, shift sets: Cycles increased correctly.")
+    equal(MOS6502._CYCLES, CycleCost, "Carry set, shift sets: Cycles increased correctly.");
 
-    equal(MOS6502._P, 0x21, "Carry set, shift sets: Status register set correctly");
+    equal(MOS6502._statusRegister.dumpStatus(), 0x31, "Carry set, shift sets: Status register set correctly");
 
     equal(MOS6502._RAM[ZPAddress],ExpectedResult,"Carry sets, shift sets: LSR performed correctly.");
 
     /**
      * Test 4: Sign set, shift clears.
      */
-    MOS6502._P = 0xA0;
+    MOS6502._statusRegister.SIGN = true;
     MOS6502._PC = PCStart;
     MOS6502._CYCLES = 0;
     MOS6502._RAM[ZPAddress] = 170;
@@ -8167,14 +6394,14 @@ test("0x46 - LSR (Zero Page)", function() {
 
     equal(MOS6502._CYCLES, CycleCost, "Sign set, shift clears: Cycles increased correctly.")
 
-    equal(MOS6502._P, 0x20, "Sign set, shift clears: Status register set correctly");
+    equal(MOS6502._statusRegister.dumpStatus(), 0x30, "Sign set, shift clears: Status register set correctly");
 
     equal(MOS6502._RAM[ZPAddress],ExpectedResult,"Sign set, shift clears: LSR performed correctly.");
 
     /**
      * Test 5: Set zero.
      */
-    MOS6502._P = 0x20;
+    
     MOS6502._PC = PCStart;
     MOS6502._CYCLES = 0;
     MOS6502._RAM[ZPAddress] = 0;
@@ -8184,16 +6411,16 @@ test("0x46 - LSR (Zero Page)", function() {
 
     equal(MOS6502._PC, PCStart + BytesUsed, "Set zero: Program counter increased correctly.");
 
-    equal(MOS6502._CYCLES, CycleCost, "Set zero: Cycles increased correctly.")
+    equal(MOS6502._CYCLES, CycleCost, "Set zero: Cycles increased correctly.");
 
-    equal(MOS6502._P, 0x22, "Set zero: Status register set correctly");
+    equal(MOS6502._statusRegister.dumpStatus(), 0x32, "Set zero: Status register set correctly");
 
     equal(MOS6502._RAM[ZPAddress],ExpectedResult,"Set zero: LSR performed correctly.");
 
     /**
      * Test 6: Set zero, set carry.
      */
-    MOS6502._P = 0x20;
+    
     MOS6502._PC = PCStart;
     MOS6502._CYCLES = 0;
     MOS6502._RAM[ZPAddress] = 1;
@@ -8203,16 +6430,16 @@ test("0x46 - LSR (Zero Page)", function() {
 
     equal(MOS6502._PC, PCStart + BytesUsed, "Set zero, set carry: Program counter increased correctly.");
 
-    equal(MOS6502._CYCLES, CycleCost, "Set zero, set carry: Cycles increased correctly.")
+    equal(MOS6502._CYCLES, CycleCost, "Set zero, set carry: Cycles increased correctly.");
 
-    equal(MOS6502._P, 0x23, "Set zero, set carry: Status register set correctly");
+    equal(MOS6502._statusRegister.dumpStatus(), 0x33, "Set zero, set carry: Status register set correctly");
 
     equal(MOS6502._RAM[ZPAddress],ExpectedResult,"Set zero, set carry: LSR performed correctly.");
 
     /**
      * Test 7: Sign set, shift clears, sets zero and sets carry.
      */
-    MOS6502._P = 0xA0;
+    MOS6502._statusRegister.SIGN = true;
     MOS6502._PC = PCStart;
     MOS6502._CYCLES = 0;
     MOS6502._RAM[ZPAddress] = 1;
@@ -8222,9 +6449,9 @@ test("0x46 - LSR (Zero Page)", function() {
 
     equal(MOS6502._PC, PCStart + BytesUsed, "Sign set, shift clears, sets zero and sets carry: Program counter increased correctly.");
 
-    equal(MOS6502._CYCLES, CycleCost, "Sign set, shift clears, sets zero and sets carry: Cycles increased correctly.")
+    equal(MOS6502._CYCLES, CycleCost, "Sign set, shift clears, sets zero and sets carry: Cycles increased correctly.");
 
-    equal(MOS6502._P, 0x23, "Sign set, shift clears, sets zero and sets carry: Status register set correctly");
+    equal(MOS6502._statusRegister.dumpStatus(), 0x33, "Sign set, shift clears, sets zero and sets carry: Status register set correctly");
 
     equal(MOS6502._RAM[ZPAddress],ExpectedResult,"Sign set, shift clears, sets zero and sets carry: LSR performed correctly.");
 
@@ -8252,7 +6479,7 @@ test("0x56 - LSR (Zero Page, X)", function() {
     /**
      * Test 1: Set none.
      */
-    MOS6502._P = 0x20;
+    
     MOS6502._PC = PCStart;
     MOS6502._CYCLES = 0;
     MOS6502._RAM[(ZPAddress + XRegister) & 0xFF] = 170;
@@ -8264,14 +6491,14 @@ test("0x56 - LSR (Zero Page, X)", function() {
 
     equal(MOS6502._CYCLES, CycleCost, "Set none: Cycles increased correctly.");
 
-    equal(MOS6502._P, 0x20, "Set none: Status register set correctly");
+    equal(MOS6502._statusRegister.dumpStatus(), 0x30, "Set none: Status register set correctly");
 
     equal(MOS6502._RAM[(ZPAddress + XRegister) & 0xFF],ExpectedResult,"Set none: LSR performed correctly.");
 
     /**
      * Test 2: Carry set, shift clears.
      */
-    MOS6502._P = 0x21;
+    MOS6502._statusRegister.CARRY = true;
     MOS6502._PC = PCStart;
     MOS6502._CYCLES = 0;
     MOS6502._RAM[(ZPAddress + XRegister) & 0xFF] = 170;
@@ -8281,16 +6508,16 @@ test("0x56 - LSR (Zero Page, X)", function() {
 
     equal(MOS6502._PC, PCStart + BytesUsed, "Carry set, shift clears: Program counter increased correctly.");
 
-    equal(MOS6502._CYCLES, CycleCost, "Carry set, shift clears: Cycles increased correctly.")
+    equal(MOS6502._CYCLES, CycleCost, "Carry set, shift clears: Cycles increased correctly.");
 
-    equal(MOS6502._P, 0x20, "Carry set, shift clears: Status register set correctly");
+    equal(MOS6502._statusRegister.dumpStatus(), 0x30, "Carry set, shift clears: Status register set correctly");
 
     equal(MOS6502._RAM[(ZPAddress + XRegister) & 0xFF],ExpectedResult,"Carry set, shift clears: LSR performed correctly.");
 
     /**
      * Test 3: Carry set, shift sets.
      */
-    MOS6502._P = 0x21;
+    MOS6502._statusRegister.CARRY = true;
     MOS6502._PC = PCStart;
     MOS6502._CYCLES = 0;
     MOS6502._RAM[(ZPAddress + XRegister) & 0xFF] = 85;
@@ -8300,16 +6527,16 @@ test("0x56 - LSR (Zero Page, X)", function() {
 
     equal(MOS6502._PC, PCStart + BytesUsed, "Carry set, shift sets: Program counter increased correctly.");
 
-    equal(MOS6502._CYCLES, CycleCost, "Carry set, shift sets: Cycles increased correctly.")
+    equal(MOS6502._CYCLES, CycleCost, "Carry set, shift sets: Cycles increased correctly.");
 
-    equal(MOS6502._P, 0x21, "Carry set, shift sets: Status register set correctly");
+    equal(MOS6502._statusRegister.dumpStatus(), 0x31, "Carry set, shift sets: Status register set correctly");
 
     equal(MOS6502._RAM[(ZPAddress + XRegister) & 0xFF],ExpectedResult,"Carry sets, shift sets: LSR performed correctly.");
 
     /**
      * Test 4: Sign set, shift clears.
      */
-    MOS6502._P = 0xA0;
+    MOS6502._statusRegister.SIGN = true;
     MOS6502._PC = PCStart;
     MOS6502._CYCLES = 0;
     MOS6502._RAM[(ZPAddress + XRegister) & 0xFF] = 170;
@@ -8319,16 +6546,16 @@ test("0x56 - LSR (Zero Page, X)", function() {
 
     equal(MOS6502._PC, PCStart + BytesUsed, "Sign set, shift clears: Program counter increased correctly.");
 
-    equal(MOS6502._CYCLES, CycleCost, "Sign set, shift clears: Cycles increased correctly.")
+    equal(MOS6502._CYCLES, CycleCost, "Sign set, shift clears: Cycles increased correctly.");
 
-    equal(MOS6502._P, 0x20, "Sign set, shift clears: Status register set correctly");
+    equal(MOS6502._statusRegister.dumpStatus(), 0x30, "Sign set, shift clears: Status register set correctly");
 
     equal(MOS6502._RAM[(ZPAddress + XRegister) & 0xFF],ExpectedResult,"Sign set, shift clears: LSR performed correctly.");
 
     /**
      * Test 5: Set zero.
      */
-    MOS6502._P = 0x20;
+    
     MOS6502._PC = PCStart;
     MOS6502._CYCLES = 0;
     MOS6502._RAM[(ZPAddress + XRegister) & 0xFF] = 0;
@@ -8338,16 +6565,16 @@ test("0x56 - LSR (Zero Page, X)", function() {
 
     equal(MOS6502._PC, PCStart + BytesUsed, "Set zero: Program counter increased correctly.");
 
-    equal(MOS6502._CYCLES, CycleCost, "Set zero: Cycles increased correctly.")
+    equal(MOS6502._CYCLES, CycleCost, "Set zero: Cycles increased correctly.");
 
-    equal(MOS6502._P, 0x22, "Set zero: Status register set correctly");
+    equal(MOS6502._statusRegister.dumpStatus(), 0x32, "Set zero: Status register set correctly");
 
     equal(MOS6502._RAM[(ZPAddress + XRegister) & 0xFF],ExpectedResult,"Set zero: LSR performed correctly.");
 
     /**
      * Test 6: Set zero, set carry.
      */
-    MOS6502._P = 0x20;
+    
     MOS6502._PC = PCStart;
     MOS6502._CYCLES = 0;
     MOS6502._RAM[(ZPAddress + XRegister) & 0xFF] = 1;
@@ -8357,16 +6584,16 @@ test("0x56 - LSR (Zero Page, X)", function() {
 
     equal(MOS6502._PC, PCStart + BytesUsed, "Set zero, set carry: Program counter increased correctly.");
 
-    equal(MOS6502._CYCLES, CycleCost, "Set zero, set carry: Cycles increased correctly.")
+    equal(MOS6502._CYCLES, CycleCost, "Set zero, set carry: Cycles increased correctly.");
 
-    equal(MOS6502._P, 0x23, "Set zero, set carry: Status register set correctly");
+    equal(MOS6502._statusRegister.dumpStatus(), 0x33, "Set zero, set carry: Status register set correctly");
 
     equal(MOS6502._RAM[(ZPAddress + XRegister) & 0xFF],ExpectedResult,"Set zero, set carry: LSR performed correctly.");
 
     /**
      * Test 7: Sign set, shift clears, sets zero and sets carry.
      */
-    MOS6502._P = 0xA0;
+    MOS6502._statusRegister.SIGN = true;
     MOS6502._PC = PCStart;
     MOS6502._CYCLES = 0;
     MOS6502._RAM[(ZPAddress + XRegister) & 0xFF] = 1;
@@ -8376,9 +6603,9 @@ test("0x56 - LSR (Zero Page, X)", function() {
 
     equal(MOS6502._PC, PCStart + BytesUsed, "Sign set, shift clears, sets zero and sets carry: Program counter increased correctly.");
 
-    equal(MOS6502._CYCLES, CycleCost, "Sign set, shift clears, sets zero and sets carry: Cycles increased correctly.")
+    equal(MOS6502._CYCLES, CycleCost, "Sign set, shift clears, sets zero and sets carry: Cycles increased correctly.");
 
-    equal(MOS6502._P, 0x23, "Sign set, shift clears, sets zero and sets carry: Status register set correctly");
+    equal(MOS6502._statusRegister.dumpStatus(), 0x33, "Sign set, shift clears, sets zero and sets carry: Status register set correctly");
 
     equal(MOS6502._RAM[(ZPAddress + XRegister) & 0xFF],ExpectedResult,"Sign set, shift clears, sets zero and sets carry: LSR performed correctly.");
 
@@ -8406,7 +6633,7 @@ test("0x4E - LSR (Absolute)", function() {
     /**
      * Test 1: Set none.
      */
-    MOS6502._P = 0x20;
+    
     MOS6502._PC = PCStart;
     MOS6502._CYCLES = 0;
     MOS6502._RAM[MOS6502._MAKE_ADDRESS(AddressByte1,AddressByte2)] = 170;
@@ -8418,14 +6645,14 @@ test("0x4E - LSR (Absolute)", function() {
 
     equal(MOS6502._CYCLES, CycleCost, "Set none: Cycles increased correctly.");
 
-    equal(MOS6502._P, 0x20, "Set none: Status register set correctly");
+    equal(MOS6502._statusRegister.dumpStatus(), 0x30, "Set none: Status register set correctly");
 
     equal(MOS6502._RAM[MOS6502._MAKE_ADDRESS(AddressByte1,AddressByte2)],ExpectedResult,"Set none: LSR performed correctly.");
 
     /**
      * Test 2: Carry set, shift clears.
      */
-    MOS6502._P = 0x21;
+    MOS6502._statusRegister.CARRY = true;
     MOS6502._PC = PCStart;
     MOS6502._CYCLES = 0;
     MOS6502._RAM[MOS6502._MAKE_ADDRESS(AddressByte1,AddressByte2)] = 170;
@@ -8435,16 +6662,16 @@ test("0x4E - LSR (Absolute)", function() {
 
     equal(MOS6502._PC, PCStart + BytesUsed, "Carry set, shift clears: Program counter increased correctly.");
 
-    equal(MOS6502._CYCLES, CycleCost, "Carry set, shift clears: Cycles increased correctly.")
+    equal(MOS6502._CYCLES, CycleCost, "Carry set, shift clears: Cycles increased correctly.");
 
-    equal(MOS6502._P, 0x20, "Carry set, shift clears: Status register set correctly");
+    equal(MOS6502._statusRegister.dumpStatus(), 0x30, "Carry set, shift clears: Status register set correctly");
 
     equal(MOS6502._RAM[MOS6502._MAKE_ADDRESS(AddressByte1,AddressByte2)],ExpectedResult,"Carry set, shift clears: LSR performed correctly.");
 
     /**
      * Test 3: Carry set, shift sets.
      */
-    MOS6502._P = 0x21;
+    MOS6502._statusRegister.CARRY = true;
     MOS6502._PC = PCStart;
     MOS6502._CYCLES = 0;
     MOS6502._RAM[MOS6502._MAKE_ADDRESS(AddressByte1,AddressByte2)] = 85;
@@ -8454,16 +6681,16 @@ test("0x4E - LSR (Absolute)", function() {
 
     equal(MOS6502._PC, PCStart + BytesUsed, "Carry set, shift sets: Program counter increased correctly.");
 
-    equal(MOS6502._CYCLES, CycleCost, "Carry set, shift sets: Cycles increased correctly.")
+    equal(MOS6502._CYCLES, CycleCost, "Carry set, shift sets: Cycles increased correctly.");
 
-    equal(MOS6502._P, 0x21, "Carry set, shift sets: Status register set correctly");
+    equal(MOS6502._statusRegister.dumpStatus(), 0x31, "Carry set, shift sets: Status register set correctly");
 
     equal(MOS6502._RAM[MOS6502._MAKE_ADDRESS(AddressByte1,AddressByte2)],ExpectedResult,"Carry sets, shift sets: LSR performed correctly.");
 
     /**
      * Test 4: Sign set, shift clears.
      */
-    MOS6502._P = 0xA0;
+    MOS6502._statusRegister.SIGN = true;
     MOS6502._PC = PCStart;
     MOS6502._CYCLES = 0;
     MOS6502._RAM[MOS6502._MAKE_ADDRESS(AddressByte1,AddressByte2)] = 170;
@@ -8473,16 +6700,16 @@ test("0x4E - LSR (Absolute)", function() {
 
     equal(MOS6502._PC, PCStart + BytesUsed, "Sign set, shift clears: Program counter increased correctly.");
 
-    equal(MOS6502._CYCLES, CycleCost, "Sign set, shift clears: Cycles increased correctly.")
+    equal(MOS6502._CYCLES, CycleCost, "Sign set, shift clears: Cycles increased correctly.");
 
-    equal(MOS6502._P, 0x20, "Sign set, shift clears: Status register set correctly");
+    equal(MOS6502._statusRegister.dumpStatus(), 0x30, "Sign set, shift clears: Status register set correctly");
 
     equal(MOS6502._RAM[MOS6502._MAKE_ADDRESS(AddressByte1,AddressByte2)],ExpectedResult,"Sign set, shift clears: LSR performed correctly.");
 
     /**
      * Test 5: Set zero.
      */
-    MOS6502._P = 0x20;
+    
     MOS6502._PC = PCStart;
     MOS6502._CYCLES = 0;
     MOS6502._RAM[MOS6502._MAKE_ADDRESS(AddressByte1,AddressByte2)] = 0;
@@ -8492,16 +6719,16 @@ test("0x4E - LSR (Absolute)", function() {
 
     equal(MOS6502._PC, PCStart + BytesUsed, "Set zero: Program counter increased correctly.");
 
-    equal(MOS6502._CYCLES, CycleCost, "Set zero: Cycles increased correctly.")
+    equal(MOS6502._CYCLES, CycleCost, "Set zero: Cycles increased correctly.");
 
-    equal(MOS6502._P, 0x22, "Set zero: Status register set correctly");
+    equal(MOS6502._statusRegister.dumpStatus(), 0x32, "Set zero: Status register set correctly");
 
     equal(MOS6502._RAM[MOS6502._MAKE_ADDRESS(AddressByte1,AddressByte2)],ExpectedResult,"Set zero: LSR performed correctly.");
 
     /**
      * Test 6: Set zero, set carry.
      */
-    MOS6502._P = 0x20;
+    
     MOS6502._PC = PCStart;
     MOS6502._CYCLES = 0;
     MOS6502._RAM[MOS6502._MAKE_ADDRESS(AddressByte1,AddressByte2)] = 1;
@@ -8511,16 +6738,16 @@ test("0x4E - LSR (Absolute)", function() {
 
     equal(MOS6502._PC, PCStart + BytesUsed, "Set zero, set carry: Program counter increased correctly.");
 
-    equal(MOS6502._CYCLES, CycleCost, "Set zero, set carry: Cycles increased correctly.")
+    equal(MOS6502._CYCLES, CycleCost, "Set zero, set carry: Cycles increased correctly.");
 
-    equal(MOS6502._P, 0x23, "Set zero, set carry: Status register set correctly");
+    equal(MOS6502._statusRegister.dumpStatus(), 0x33, "Set zero, set carry: Status register set correctly");
 
     equal(MOS6502._RAM[MOS6502._MAKE_ADDRESS(AddressByte1,AddressByte2)],ExpectedResult,"Set zero, set carry: LSR performed correctly.");
 
     /**
      * Test 7: Sign set, shift clears, sets zero and sets carry.
      */
-    MOS6502._P = 0xA0;
+    MOS6502._statusRegister.SIGN = true;
     MOS6502._PC = PCStart;
     MOS6502._CYCLES = 0;
     MOS6502._RAM[MOS6502._MAKE_ADDRESS(AddressByte1,AddressByte2)] = 1;
@@ -8530,9 +6757,9 @@ test("0x4E - LSR (Absolute)", function() {
 
     equal(MOS6502._PC, PCStart + BytesUsed, "Sign set, shift clears, sets zero and sets carry: Program counter increased correctly.");
 
-    equal(MOS6502._CYCLES, CycleCost, "Sign set, shift clears, sets zero and sets carry: Cycles increased correctly.")
+    equal(MOS6502._CYCLES, CycleCost, "Sign set, shift clears, sets zero and sets carry: Cycles increased correctly.");
 
-    equal(MOS6502._P, 0x23, "Sign set, shift clears, sets zero and sets carry: Status register set correctly");
+    equal(MOS6502._statusRegister.dumpStatus(), 0x33, "Sign set, shift clears, sets zero and sets carry: Status register set correctly");
 
     equal(MOS6502._RAM[MOS6502._MAKE_ADDRESS(AddressByte1,AddressByte2)],ExpectedResult,"Sign set, shift clears, sets zero and sets carry: LSR performed correctly.");
 
@@ -8562,7 +6789,7 @@ test("0x5E - LSR (Absolute, X)", function() {
     /**
      * Test 1: Set none.
      */
-    MOS6502._P = 0x20;
+    
     MOS6502._PC = PCStart;
     MOS6502._CYCLES = 0;
     MOS6502._RAM[MOS6502._MAKE_ADDRESS(AddressByte1,AddressByte2) + XRegister] = 170;
@@ -8574,14 +6801,14 @@ test("0x5E - LSR (Absolute, X)", function() {
 
     equal(MOS6502._CYCLES, CycleCost, "Set none: Cycles increased correctly.");
 
-    equal(MOS6502._P, 0x20, "Set none: Status register set correctly");
+    equal(MOS6502._statusRegister.dumpStatus(), 0x30, "Set none: Status register set correctly");
 
     equal(MOS6502._RAM[MOS6502._MAKE_ADDRESS(AddressByte1,AddressByte2) + XRegister],ExpectedResult,"Set none: LSR performed correctly.");
 
     /**
      * Test 2: Carry set, shift clears.
      */
-    MOS6502._P = 0x21;
+    MOS6502._statusRegister.CARRY = true;
     MOS6502._PC = PCStart;
     MOS6502._CYCLES = 0;
     MOS6502._RAM[MOS6502._MAKE_ADDRESS(AddressByte1,AddressByte2) + XRegister] = 170;
@@ -8591,16 +6818,16 @@ test("0x5E - LSR (Absolute, X)", function() {
 
     equal(MOS6502._PC, PCStart + BytesUsed, "Carry set, shift clears: Program counter increased correctly.");
 
-    equal(MOS6502._CYCLES, CycleCost, "Carry set, shift clears: Cycles increased correctly.")
+    equal(MOS6502._CYCLES, CycleCost, "Carry set, shift clears: Cycles increased correctly.");
 
-    equal(MOS6502._P, 0x20, "Carry set, shift clears: Status register set correctly");
+    equal(MOS6502._statusRegister.dumpStatus(), 0x30, "Carry set, shift clears: Status register set correctly");
 
     equal(MOS6502._RAM[MOS6502._MAKE_ADDRESS(AddressByte1,AddressByte2) + XRegister],ExpectedResult,"Carry set, shift clears: LSR performed correctly.");
 
     /**
      * Test 3: Carry set, shift sets.
      */
-    MOS6502._P = 0x21;
+    MOS6502._statusRegister.CARRY = true;
     MOS6502._PC = PCStart;
     MOS6502._CYCLES = 0;
     MOS6502._RAM[MOS6502._MAKE_ADDRESS(AddressByte1,AddressByte2) + XRegister] = 85;
@@ -8610,16 +6837,16 @@ test("0x5E - LSR (Absolute, X)", function() {
 
     equal(MOS6502._PC, PCStart + BytesUsed, "Carry set, shift sets: Program counter increased correctly.");
 
-    equal(MOS6502._CYCLES, CycleCost, "Carry set, shift sets: Cycles increased correctly.")
+    equal(MOS6502._CYCLES, CycleCost, "Carry set, shift sets: Cycles increased correctly.");
 
-    equal(MOS6502._P, 0x21, "Carry set, shift sets: Status register set correctly");
+    equal(MOS6502._statusRegister.dumpStatus(), 0x31, "Carry set, shift sets: Status register set correctly");
 
     equal(MOS6502._RAM[MOS6502._MAKE_ADDRESS(AddressByte1,AddressByte2) + XRegister],ExpectedResult,"Carry sets, shift sets: LSR performed correctly.");
 
     /**
      * Test 4: Sign set, shift clears.
      */
-    MOS6502._P = 0xA0;
+    MOS6502._statusRegister.SIGN = true;
     MOS6502._PC = PCStart;
     MOS6502._CYCLES = 0;
     MOS6502._RAM[MOS6502._MAKE_ADDRESS(AddressByte1,AddressByte2) + XRegister] = 170;
@@ -8629,16 +6856,16 @@ test("0x5E - LSR (Absolute, X)", function() {
 
     equal(MOS6502._PC, PCStart + BytesUsed, "Sign set, shift clears: Program counter increased correctly.");
 
-    equal(MOS6502._CYCLES, CycleCost, "Sign set, shift clears: Cycles increased correctly.")
+    equal(MOS6502._CYCLES, CycleCost, "Sign set, shift clears: Cycles increased correctly.");
 
-    equal(MOS6502._P, 0x20, "Sign set, shift clears: Status register set correctly");
+    equal(MOS6502._statusRegister.dumpStatus(), 0x30, "Sign set, shift clears: Status register set correctly");
 
     equal(MOS6502._RAM[MOS6502._MAKE_ADDRESS(AddressByte1,AddressByte2) + XRegister],ExpectedResult,"Sign set, shift clears: LSR performed correctly.");
 
     /**
      * Test 5: Set zero.
      */
-    MOS6502._P = 0x20;
+    
     MOS6502._PC = PCStart;
     MOS6502._CYCLES = 0;
     MOS6502._RAM[MOS6502._MAKE_ADDRESS(AddressByte1,AddressByte2) + XRegister] = 0;
@@ -8648,16 +6875,16 @@ test("0x5E - LSR (Absolute, X)", function() {
 
     equal(MOS6502._PC, PCStart + BytesUsed, "Set zero: Program counter increased correctly.");
 
-    equal(MOS6502._CYCLES, CycleCost, "Set zero: Cycles increased correctly.")
+    equal(MOS6502._CYCLES, CycleCost, "Set zero: Cycles increased correctly.");
 
-    equal(MOS6502._P, 0x22, "Set zero: Status register set correctly");
+    equal(MOS6502._statusRegister.dumpStatus(), 0x32, "Set zero: Status register set correctly");
 
     equal(MOS6502._RAM[MOS6502._MAKE_ADDRESS(AddressByte1,AddressByte2) + XRegister],ExpectedResult,"Set zero: LSR performed correctly.");
 
     /**
      * Test 6: Set zero, set carry.
      */
-    MOS6502._P = 0x20;
+    
     MOS6502._PC = PCStart;
     MOS6502._CYCLES = 0;
     MOS6502._RAM[MOS6502._MAKE_ADDRESS(AddressByte1,AddressByte2) + XRegister] = 1;
@@ -8667,16 +6894,16 @@ test("0x5E - LSR (Absolute, X)", function() {
 
     equal(MOS6502._PC, PCStart + BytesUsed, "Set zero, set carry: Program counter increased correctly.");
 
-    equal(MOS6502._CYCLES, CycleCost, "Set zero, set carry: Cycles increased correctly.")
+    equal(MOS6502._CYCLES, CycleCost, "Set zero, set carry: Cycles increased correctly.");
 
-    equal(MOS6502._P, 0x23, "Set zero, set carry: Status register set correctly");
+    equal(MOS6502._statusRegister.dumpStatus(), 0x33, "Set zero, set carry: Status register set correctly");
 
     equal(MOS6502._RAM[MOS6502._MAKE_ADDRESS(AddressByte1,AddressByte2) + XRegister],ExpectedResult,"Set zero, set carry: LSR performed correctly.");
 
     /**
      * Test 7: Sign set, shift clears, sets zero and sets carry.
      */
-    MOS6502._P = 0xA0;
+    MOS6502._statusRegister.SIGN = true;
     MOS6502._PC = PCStart;
     MOS6502._CYCLES = 0;
     MOS6502._RAM[MOS6502._MAKE_ADDRESS(AddressByte1,AddressByte2) + XRegister] = 1;
@@ -8686,9 +6913,9 @@ test("0x5E - LSR (Absolute, X)", function() {
 
     equal(MOS6502._PC, PCStart + BytesUsed, "Sign set, shift clears, sets zero and sets carry: Program counter increased correctly.");
 
-    equal(MOS6502._CYCLES, CycleCost, "Sign set, shift clears, sets zero and sets carry: Cycles increased correctly.")
+    equal(MOS6502._CYCLES, CycleCost, "Sign set, shift clears, sets zero and sets carry: Cycles increased correctly.");
 
-    equal(MOS6502._P, 0x23, "Sign set, shift clears, sets zero and sets carry: Status register set correctly");
+    equal(MOS6502._statusRegister.dumpStatus(), 0x33, "Sign set, shift clears, sets zero and sets carry: Status register set correctly");
 
     equal(MOS6502._RAM[MOS6502._MAKE_ADDRESS(AddressByte1,AddressByte2) + XRegister],ExpectedResult,"Sign set, shift clears, sets zero and sets carry: LSR performed correctly.");
 
@@ -8721,7 +6948,7 @@ test("0x48 - PHA (Implied)", function() {
 
     MOS6502._RAM[PCStart] = OPCODE;
 
-    MOS6502._SP = 0x01FF;
+    MOS6502._SP = 0xFF;
     MOS6502._A = Accumulator;
     MOS6502._CYCLES = 0;
     MOS6502._PC = PCStart;
@@ -8732,7 +6959,7 @@ test("0x48 - PHA (Implied)", function() {
 
     equal(MOS6502._CYCLES, CycleCost, "Cycles increased correctly.");
 
-    equal(MOS6502._SP, 0x01FE, "Stack pointer updated correctly.");
+    equal(MOS6502._SP, 0xFE, "Stack pointer updated correctly.");
 
     equal(MOS6502._RAM[0x01FF], Accumulator, "Accumulator pushed onto stack.");
 
@@ -8797,8 +7024,9 @@ test("0x6C - JMP (Indirect)", function() {
     MOS6502._RAM[PCStart] = OPCODE;
     MOS6502._RAM[PCStart + 1] = AddressByte1;
     MOS6502._RAM[PCStart + 2] = AddressByte2;
-    MOS6502._RAM[AddressByte1] = AddressByte3;
-    MOS6502._RAM[AddressByte2] = AddressByte4;
+    var AddressLocation = MOS6502._MAKE_ADDRESS(AddressByte1,AddressByte2);
+    MOS6502._RAM[AddressLocation] = AddressByte3;
+    MOS6502._RAM[AddressLocation + 1] = AddressByte4;
 
     MOS6502._PC = PCStart;
 
@@ -8851,7 +7079,7 @@ var OPCODE = 0x50,
      */
 
     // Enable overflow.
-    MOS6502._P = 0x60;
+    MOS6502._statusRegister.OVERFLOW = true;
 
     MOS6502.emulateCycle();
 
@@ -8866,8 +7094,8 @@ var OPCODE = 0x50,
     /**
      * Test 2: Overflow clear. Branch forward to same page. (3 cycles)
      */
-
-    MOS6502._P = 0x20;
+    MOS6502._statusRegister.OVERFLOW = false;
+    
     MOS6502._PC = PCStart;
     MOS6502._RAM[PCStart + 1] = relativePlusSamePage;
     MOS6502._CYCLES = 0;
@@ -8875,7 +7103,7 @@ var OPCODE = 0x50,
     MOS6502.emulateCycle();
 
     equal(MOS6502._PC,
-            PCStart + relativePlusSamePage,
+            PCStart + relativePlusSamePage + BytesUsed,
         "Overflow clear, branch forward, same page: Program Counter set correctly.");
 
     equal(MOS6502._CYCLES,
@@ -8885,8 +7113,8 @@ var OPCODE = 0x50,
     /**
      * Test 3: Overflow clear. Branch backward to same page. (3 cycles)
      */
-
-    MOS6502._P = 0x20;
+    MOS6502._statusRegister.OVERFLOW = false;
+    
     MOS6502._PC = PCStart;
     MOS6502._RAM[PCStart + 1] = relativeMinusSamePage;
     MOS6502._CYCLES = 0;
@@ -8906,8 +7134,8 @@ var OPCODE = 0x50,
      *
      * NOTE: It's not possible to branch to another page from 0x4080. Using 0x40E0 for forward branch.
      */
-
-    MOS6502._P = 0x20;
+    MOS6502._statusRegister.OVERFLOW = false;
+    
     MOS6502._PC = PCStartHigh;
     MOS6502._RAM[PCStartHigh + 1] = relativePlusNextPage;
     MOS6502._CYCLES = 0;
@@ -8915,7 +7143,7 @@ var OPCODE = 0x50,
     MOS6502.emulateCycle();
 
     equal(MOS6502._PC,
-            PCStartHigh + relativePlusNextPage,
+            PCStartHigh + relativePlusNextPage + BytesUsed,
         "Overflow clear, branch forward, different page: Program Counter set correctly.");
 
     equal(MOS6502._CYCLES,
@@ -8926,7 +7154,7 @@ var OPCODE = 0x50,
      * Test 5: Overflow clear. Branch backward to different page. (4 cycles)
      */
 
-    MOS6502._P = 0x20;
+    
     MOS6502._PC = PCStartLow;
     MOS6502._RAM[PCStartLow + 1] = relativeMinusNextPage;
     MOS6502._CYCLES = 0;
@@ -8974,7 +7202,7 @@ test("0x58 - CLI (Implied)", function() {
      */
     MOS6502._PC = PCStart;
     MOS6502._CYCLES = 0;
-    MOS6502._P = 0x20;
+    
 
     MOS6502.emulateCycle();
 
@@ -8982,14 +7210,14 @@ test("0x58 - CLI (Implied)", function() {
 
     equal(MOS6502._CYCLES,CycleCost,"Interrupt not set pre-CLI: Cycles set correctly.");
 
-    equal(MOS6502._P,0x20,"Interrupt not set pre-CLI: Status register set correctly.");
+    equal(MOS6502._statusRegister.dumpStatus(),0x30,"Interrupt not set pre-CLI: Status register set correctly.");
 
     /**
      * Test 2: Interrupt set pre-CLI.
      */
     MOS6502._PC = PCStart;
     MOS6502._CYCLES = 0;
-    MOS6502._P = 0x24;
+    MOS6502._statusRegister.INTERRUPT = true;
 
     MOS6502.emulateCycle();
 
@@ -8997,7 +7225,7 @@ test("0x58 - CLI (Implied)", function() {
 
     equal(MOS6502._CYCLES,CycleCost,"Interrupt set pre-CLI: Cycles set correctly.");
 
-    equal(MOS6502._P,0x20,"Interrupt set pre-CLI: Status register set correctly.");
+    equal(MOS6502._statusRegister.dumpStatus(),0x30,"Interrupt set pre-CLI: Status register set correctly.");
 
 });
 
@@ -9029,17 +7257,17 @@ test("0x60 - RTS (Implied)", function() {
 
     MOS6502._RAM[0x01FF] = 0x31;
     MOS6502._RAM[0x01FE] = 0x21;
-    MOS6502._SP = 0x01FD;
+    MOS6502._SP = 0xFD;
     MOS6502._PC = PCStart;
     MOS6502._CYCLES = 0;
 
     MOS6502.emulateCycle();
 
-    equal(MOS6502._PC,0x3121,"RTS successfully set program counter.");
+    equal(MOS6502._PC,0x3121 + 1,"RTS successfully set program counter.");
 
     equal(MOS6502._CYCLES,CycleCost,"Cycles increased correctly.");
 
-    equal(MOS6502._SP,0x01FF,"Stack Pointer set correctly.");
+    equal(MOS6502._SP,0xFF,"Stack Pointer set correctly.");
 });
 
 //</editor-fold>
@@ -9075,70 +7303,71 @@ test("0x69 - ADC (Immediate)", function() {
      * 00 + 00 and C=0 gives 00 and N=0 V=0 Z=1 C=0
      */
 
-    MOS6502._P = 0x20 + 0x08;
+    MOS6502._statusRegister.ZERO = false;
     MOS6502._RAM[PCStart + 1] = 0x00;
     MOS6502._A = 0x00;
     MOS6502._PC = PCStart;
 
     MOS6502.emulateCycle();
 
-    equal(MOS6502._P,0x20 + 0x08 + 0x02,"Test 1: Zero set correctly.");
+    equal(MOS6502._statusRegister.ZERO,true,"Test 1: Zero set correctly.");
     equal(MOS6502._A, 0x00, "Test 1: ADC performed in decimal mode correctly.");
 
     /**
      * Test 2:
      * 79 + 00 and C=1 gives 80 and N=1 V=1 Z=0 C=0
      */
-    MOS6502._P = 0x20 + 0x08 + 0x01;
+    MOS6502._statusRegister.CARRY = true;
     MOS6502._RAM[PCStart + 1] = 0x79;
     MOS6502._A = 0x00;
     MOS6502._PC = PCStart;
 
     MOS6502.emulateCycle();
 
-    equal(MOS6502._P,0x20 + 0x80 + 0x40 + 0x08,"Test 2: Sign & Overflow set correctly.");
+    equal(MOS6502._statusRegister.SIGN,true,"Test 2: Sign set correctly.");
+    equal(MOS6502._statusRegister.OVERFLOW,true,"Test 2: Overflow set correctly.");
     equal(MOS6502._A, 0x80, "Test 2: ADC performed in decimal mode correctly.");
 
     /**
      * Test 3:
      * 24 + 56 and C=0 gives 80 and N=1 V=1 Z=0 C=0 (simulate)
      */
-    MOS6502._P = 0x20 + 0x08;
+    //MOS6502._statusRegister.dumpStatus() = 0x20 + 0x08;
     MOS6502._RAM[PCStart + 1] = 0x24;
     MOS6502._A = 0x56;
     MOS6502._PC = PCStart;
 
     MOS6502.emulateCycle();
 
-    equal(MOS6502._P,0x20 + 0x80 + 0x40 + 0x08,"Test 3: Sign & Overflow set correctly.");
+    equal(MOS6502._statusRegister.dumpStatus(),0x20 + 0x80 + 0x40 + 0x08,"Test 3: Sign & Overflow set correctly.");
     equal(MOS6502._A, 0x80, "Test 3: ADC performed in decimal mode correctly.");
 
     /**
      * Test 4:
      * 93 + 82 and C=0 gives 75 and N=0 V=1 Z=0 C=1 (simulate)
      */
-    MOS6502._P = 0x20 + 0x08;
+    //MOS6502._statusRegister.dumpStatus() = 0x20 + 0x08;
     MOS6502._RAM[PCStart + 1] = 0x93;
     MOS6502._A = 0x82;
     MOS6502._PC = PCStart;
 
     MOS6502.emulateCycle();
 
-    equal(MOS6502._P,0x20 + 0x40 + 0x08 + 0x01,"Test 4: Overflow & Carry set correctly.");
+    equal(MOS6502._statusRegister.dumpStatus(),0x20 + 0x40 + 0x08 + 0x01,"Test 4: Overflow & Carry set correctly.");
     equal(MOS6502._A, 0x75, "Test 4: ADC performed in decimal mode correctly.");
 
     /**
      * Test 5:
      * 89 + 76 and C=0 gives 65 and N=0 V=0 Z=0 C=1 (simulate)
      */
-    MOS6502._P = 0x20 + 0x08;
+    //MOS6502._statusRegister.dumpStatus() = 0x20 + 0x08;
     MOS6502._RAM[PCStart + 1] = 0x89;
     MOS6502._A = 0x76;
     MOS6502._PC = PCStart;
 
     MOS6502.emulateCycle();
 
-    equal(MOS6502._P,0x20 + 0x08 + 0x01,"Test 5: Carry set correctly.");
+    equal(MOS6502._statusRegister.dumpStatus(),0x20 + 0x08 + 0x01,"Test 5: Carry set correctly.");
     equal(MOS6502._A, 0x65, "Test 5: ADC performed in decimal mode correctly.");
 
     /**
@@ -9147,70 +7376,70 @@ test("0x69 - ADC (Immediate)", function() {
      *
      * Fails: Carry is not set.
      */
-    MOS6502._P = 0x20 + 0x08 + 0x01;
+    //MOS6502._statusRegister.dumpStatus() = 0x20 + 0x08 + 0x01;
     MOS6502._RAM[PCStart + 1] = 0x89;
     MOS6502._A = 0x76;
     MOS6502._PC = PCStart;
 
     MOS6502.emulateCycle();
 
-    equal(MOS6502._P,0x20 + 0x08 + 0x01,"Test 6: Carry set correctly.");
+    equal(MOS6502._statusRegister.dumpStatus(),0x20 + 0x08 + 0x01,"Test 6: Carry set correctly.");
     equal(MOS6502._A, 0x66, "Test 6: ADC performed in decimal mode correctly.");
 
     /**
      * Test 7:
      * 80 + f0 and C=0 gives d0 and N=1 V=1 Z=0 C=1
      */
-    MOS6502._P = 0x20 + 0x80 + 0x08;
+    //MOS6502._statusRegister.dumpStatus() = 0x20 + 0x80 + 0x08;
     MOS6502._RAM[PCStart + 1] = 0x80;
     MOS6502._A = 0xF0;
     MOS6502._PC = PCStart;
 
     MOS6502.emulateCycle();
 
-    equal(MOS6502._P,0x20 + 0x80 + 0x40 + 0x08 + 0x01,"Test 7: Overflow & Carry set correctly.");
+    equal(MOS6502._statusRegister.dumpStatus(),0x20 + 0x80 + 0x40 + 0x08 + 0x01,"Test 7: Overflow & Carry set correctly.");
     equal(MOS6502._A, 0xD0, "Test 7: ADC performed in decimal mode correctly.");
 
     /**
      * Test 8:
      * 80 + fa and C=0 gives e0 and N=1 V=0 Z=0 C=1
      */
-    MOS6502._P = 0x20 + 0x08;
+    //MOS6502._statusRegister.dumpStatus() = 0x20 + 0x08;
     MOS6502._RAM[PCStart + 1] = 0x80;
     MOS6502._A = 0xFA;
     MOS6502._PC = PCStart;
 
     MOS6502.emulateCycle();
 
-    equal(MOS6502._P,0x20 + 0x80 + 0x08 + 0x01,"Test 8: Sign & Carry set correctly.");
+    equal(MOS6502._statusRegister.dumpStatus(),0x20 + 0x80 + 0x08 + 0x01,"Test 8: Sign & Carry set correctly.");
     equal(MOS6502._A, 0xE0, "Test 8: ADC performed in decimal mode correctly.");
 
     /**
      * Test 9:
      * 2f + 4f and C=0 gives 74 and N=0 V=0 Z=0 C=0
      */
-    MOS6502._P = 0x20 + 0x08;
+    //MOS6502._statusRegister.dumpStatus() = 0x20 + 0x08;
     MOS6502._RAM[PCStart + 1] = 0x4F;
     MOS6502._A = 0x2F;
     MOS6502._PC = PCStart;
 
     MOS6502.emulateCycle();
 
-    equal(MOS6502._P,0x20 + 0x08,"Test 9: Status register set correctly.");
+    equal(MOS6502._statusRegister.dumpStatus(),0x20 + 0x08,"Test 9: Status register set correctly.");
     equal(MOS6502._A, 0x74, "Test 9: ADC performed in decimal mode correctly.");
 
     /**
      * Test 10:
      * 6f + 00 and C=1 gives 76 and N=0 V=0 Z=0 C=0 (simulate)
      */
-    MOS6502._P = 0x20 + 0x08 + 0x01;
+    //MOS6502._statusRegister.dumpStatus() = 0x20 + 0x08 + 0x01;
     MOS6502._RAM[PCStart + 1] = 0x6F;
     MOS6502._A = 0x00;
     MOS6502._PC = PCStart;
 
     MOS6502.emulateCycle();
 
-    equal(MOS6502._P,0x20 + 0x08,"Test 10: Status register set correctly.");
+    equal(MOS6502._statusRegister.dumpStatus(),0x20 + 0x08,"Test 10: Status register set correctly.");
     equal(MOS6502._A, 0x76, "Test 10: ADC performed in decimal mode correctly.");
 
     /**
@@ -9218,14 +7447,14 @@ test("0x69 - ADC (Immediate)", function() {
      * DECIMAL MODE OFF
      * 00 + 00 and C=0 gives 00 and N=0 V=0 Z=1 C=0
      */
-    MOS6502._P = 0x20;
+    
     MOS6502._RAM[PCStart + 1] = 0x00;
     MOS6502._A = 0x00;
     MOS6502._PC = PCStart;
 
     MOS6502.emulateCycle();
 
-    equal(MOS6502._P,0x20 + 0x02,"Test 11: Zero set correctly.");
+    equal(MOS6502._statusRegister.dumpStatus(),0x20 + 0x02,"Test 11: Zero set correctly.");
     equal(MOS6502._A, 0x00, "Test 11: ADC performed in decimal mode correctly.");
 
     /**
@@ -9233,7 +7462,7 @@ test("0x69 - ADC (Immediate)", function() {
      * DECIMAL MODE OFF
      * FF + FF and C=1 gives FF and N=1 V=0 Z=0 C=1
      */
-    MOS6502._P = 0x20 + 0x01;
+    //MOS6502._statusRegister.dumpStatus() = 0x20 + 0x01;
     MOS6502._RAM[PCStart + 1] = 0xFF;
     MOS6502._A = 0xFF;
     MOS6502._PC = PCStart;
@@ -9241,7 +7470,7 @@ test("0x69 - ADC (Immediate)", function() {
 
     MOS6502.emulateCycle();
 
-    equal(MOS6502._P,0x20 + 0x80 + 0x01,"Test 12: Flags set correctly.");
+    equal(MOS6502._statusRegister.dumpStatus(),0x20 + 0x80 + 0x01,"Test 12: Flags set correctly.");
     equal(MOS6502._A, 0xFF, "Test 12: ADC performed in decimal mode correctly.");
     equal(MOS6502._PC, PCStart + BytesUsed,"Program counter increased correctly.");
     equal(MOS6502._CYCLES, CycleCost,"Cycles increased correctly.");
@@ -9271,70 +7500,70 @@ test("0x65 - ADC (Zero Page)", function() {
      * 00 + 00 and C=0 gives 00 and N=0 V=0 Z=1 C=0
      */
 
-    MOS6502._P = 0x20 + 0x08;
+    //MOS6502._statusRegister.dumpStatus() = 0x20 + 0x08;
     MOS6502._RAM[ZPAddress] = 0x00;
     MOS6502._A = 0x00;
     MOS6502._PC = PCStart;
 
     MOS6502.emulateCycle();
 
-    equal(MOS6502._P,0x20 + 0x08 + 0x02,"Test 1: Zero set correctly.");
+    equal(MOS6502._statusRegister.dumpStatus(),0x20 + 0x08 + 0x02,"Test 1: Zero set correctly.");
     equal(MOS6502._A, 0x00, "Test 1: ADC performed in decimal mode correctly.");
 
     /**
      * Test 2:
      * 79 + 00 and C=1 gives 80 and N=1 V=1 Z=0 C=0
      */
-    MOS6502._P = 0x20 + 0x08 + 0x01;
+    //MOS6502._statusRegister.dumpStatus() = 0x20 + 0x08 + 0x01;
     MOS6502._RAM[ZPAddress] = 0x79;
     MOS6502._A = 0x00;
     MOS6502._PC = PCStart;
 
     MOS6502.emulateCycle();
 
-    equal(MOS6502._P,0x20 + 0x80 + 0x40 + 0x08,"Test 2: Sign & Overflow set correctly.");
+    equal(MOS6502._statusRegister.dumpStatus(),0x20 + 0x80 + 0x40 + 0x08,"Test 2: Sign & Overflow set correctly.");
     equal(MOS6502._A, 0x80, "Test 2: ADC performed in decimal mode correctly.");
 
     /**
      * Test 3:
      * 24 + 56 and C=0 gives 80 and N=1 V=1 Z=0 C=0 (simulate)
      */
-    MOS6502._P = 0x20 + 0x08;
+    //MOS6502._statusRegister.dumpStatus() = 0x20 + 0x08;
     MOS6502._RAM[ZPAddress] = 0x24;
     MOS6502._A = 0x56;
     MOS6502._PC = PCStart;
 
     MOS6502.emulateCycle();
 
-    equal(MOS6502._P,0x20 + 0x80 + 0x40 + 0x08,"Test 3: Sign & Overflow set correctly.");
+    equal(MOS6502._statusRegister.dumpStatus(),0x20 + 0x80 + 0x40 + 0x08,"Test 3: Sign & Overflow set correctly.");
     equal(MOS6502._A, 0x80, "Test 3: ADC performed in decimal mode correctly.");
 
     /**
      * Test 4:
      * 93 + 82 and C=0 gives 75 and N=0 V=1 Z=0 C=1 (simulate)
      */
-    MOS6502._P = 0x20 + 0x08;
+    //MOS6502._statusRegister.dumpStatus() = 0x20 + 0x08;
     MOS6502._RAM[ZPAddress] = 0x93;
     MOS6502._A = 0x82;
     MOS6502._PC = PCStart;
 
     MOS6502.emulateCycle();
 
-    equal(MOS6502._P,0x20 + 0x40 + 0x08 + 0x01,"Test 4: Overflow & Carry set correctly.");
+    equal(MOS6502._statusRegister.dumpStatus(),0x20 + 0x40 + 0x08 + 0x01,"Test 4: Overflow & Carry set correctly.");
     equal(MOS6502._A, 0x75, "Test 4: ADC performed in decimal mode correctly.");
 
     /**
      * Test 5:
      * 89 + 76 and C=0 gives 65 and N=0 V=0 Z=0 C=1 (simulate)
      */
-    MOS6502._P = 0x20 + 0x08;
+    //MOS6502._statusRegister.dumpStatus() = 0x20 + 0x08;
     MOS6502._RAM[ZPAddress] = 0x89;
     MOS6502._A = 0x76;
     MOS6502._PC = PCStart;
 
     MOS6502.emulateCycle();
 
-    equal(MOS6502._P,0x20 + 0x08 + 0x01,"Test 5: Carry set correctly.");
+    equal(MOS6502._statusRegister.dumpStatus(),0x20 + 0x08 + 0x01,"Test 5: Carry set correctly.");
     equal(MOS6502._A, 0x65, "Test 5: ADC performed in decimal mode correctly.");
 
     /**
@@ -9343,70 +7572,70 @@ test("0x65 - ADC (Zero Page)", function() {
      *
      * Fails: Carry is not set.
      */
-    MOS6502._P = 0x20 + 0x08 + 0x01;
+    //MOS6502._statusRegister.dumpStatus() = 0x20 + 0x08 + 0x01;
     MOS6502._RAM[ZPAddress] = 0x89;
     MOS6502._A = 0x76;
     MOS6502._PC = PCStart;
 
     MOS6502.emulateCycle();
 
-    equal(MOS6502._P,0x20 + 0x08 + 0x01,"Test 6: Carry set correctly.");
+    equal(MOS6502._statusRegister.dumpStatus(),0x20 + 0x08 + 0x01,"Test 6: Carry set correctly.");
     equal(MOS6502._A, 0x66, "Test 6: ADC performed in decimal mode correctly.");
 
     /**
      * Test 7:
      * 80 + f0 and C=0 gives d0 and N=1 V=1 Z=0 C=1
      */
-    MOS6502._P = 0x20 + 0x80 + 0x08;
+    //MOS6502._statusRegister.dumpStatus() = 0x20 + 0x80 + 0x08;
     MOS6502._RAM[ZPAddress] = 0x80;
     MOS6502._A = 0xF0;
     MOS6502._PC = PCStart;
 
     MOS6502.emulateCycle();
 
-    equal(MOS6502._P,0x20 + 0x80 + 0x40 + 0x08 + 0x01,"Test 7: Overflow & Carry set correctly.");
+    equal(MOS6502._statusRegister.dumpStatus(),0x20 + 0x80 + 0x40 + 0x08 + 0x01,"Test 7: Overflow & Carry set correctly.");
     equal(MOS6502._A, 0xD0, "Test 7: ADC performed in decimal mode correctly.");
 
     /**
      * Test 8:
      * 80 + fa and C=0 gives e0 and N=1 V=0 Z=0 C=1
      */
-    MOS6502._P = 0x20 + 0x08;
+    //MOS6502._statusRegister.dumpStatus() = 0x20 + 0x08;
     MOS6502._RAM[ZPAddress] = 0x80;
     MOS6502._A = 0xFA;
     MOS6502._PC = PCStart;
 
     MOS6502.emulateCycle();
 
-    equal(MOS6502._P,0x20 + 0x80 + 0x08 + 0x01,"Test 8: Sign & Carry set correctly.");
+    equal(MOS6502._statusRegister.dumpStatus(),0x20 + 0x80 + 0x08 + 0x01,"Test 8: Sign & Carry set correctly.");
     equal(MOS6502._A, 0xE0, "Test 8: ADC performed in decimal mode correctly.");
 
     /**
      * Test 9:
      * 2f + 4f and C=0 gives 74 and N=0 V=0 Z=0 C=0
      */
-    MOS6502._P = 0x20 + 0x08;
+    //MOS6502._statusRegister.dumpStatus() = 0x20 + 0x08;
     MOS6502._RAM[ZPAddress] = 0x4F;
     MOS6502._A = 0x2F;
     MOS6502._PC = PCStart;
 
     MOS6502.emulateCycle();
 
-    equal(MOS6502._P,0x20 + 0x08,"Test 9: Status register set correctly.");
+    equal(MOS6502._statusRegister.dumpStatus(),0x20 + 0x08,"Test 9: Status register set correctly.");
     equal(MOS6502._A, 0x74, "Test 9: ADC performed in decimal mode correctly.");
 
     /**
      * Test 10:
      * 6f + 00 and C=1 gives 76 and N=0 V=0 Z=0 C=0 (simulate)
      */
-    MOS6502._P = 0x20 + 0x08 + 0x01;
+    //MOS6502._statusRegister.dumpStatus() = 0x20 + 0x08 + 0x01;
     MOS6502._RAM[ZPAddress] = 0x6F;
     MOS6502._A = 0x00;
     MOS6502._PC = PCStart;
 
     MOS6502.emulateCycle();
 
-    equal(MOS6502._P,0x20 + 0x08,"Test 10: Status register set correctly.");
+    equal(MOS6502._statusRegister.dumpStatus(),0x20 + 0x08,"Test 10: Status register set correctly.");
     equal(MOS6502._A, 0x76, "Test 10: ADC performed in decimal mode correctly.");
 
     /**
@@ -9414,14 +7643,14 @@ test("0x65 - ADC (Zero Page)", function() {
      * DECIMAL MODE OFF
      * 00 + 00 and C=0 gives 00 and N=0 V=0 Z=1 C=0
      */
-    MOS6502._P = 0x20;
+    
     MOS6502._RAM[ZPAddress] = 0x00;
     MOS6502._A = 0x00;
     MOS6502._PC = PCStart;
 
     MOS6502.emulateCycle();
 
-    equal(MOS6502._P,0x20 + 0x02,"Test 11: Zero set correctly.");
+    equal(MOS6502._statusRegister.dumpStatus(),0x20 + 0x02,"Test 11: Zero set correctly.");
     equal(MOS6502._A, 0x00, "Test 11: ADC performed in decimal mode correctly.");
 
     /**
@@ -9429,7 +7658,7 @@ test("0x65 - ADC (Zero Page)", function() {
      * DECIMAL MODE OFF
      * FF + FF and C=1 gives FF and N=1 V=0 Z=0 C=1
      */
-    MOS6502._P = 0x20 + 0x01;
+    //MOS6502._statusRegister.dumpStatus() = 0x20 + 0x01;
     MOS6502._RAM[ZPAddress] = 0xFF;
     MOS6502._A = 0xFF;
     MOS6502._PC = PCStart;
@@ -9437,7 +7666,7 @@ test("0x65 - ADC (Zero Page)", function() {
 
     MOS6502.emulateCycle();
 
-    equal(MOS6502._P,0x20 + 0x80 + 0x01,"Test 12: Flags set correctly.");
+    equal(MOS6502._statusRegister.dumpStatus(),0x20 + 0x80 + 0x01,"Test 12: Flags set correctly.");
     equal(MOS6502._A, 0xFF, "Test 12: ADC performed in decimal mode correctly.");
     equal(MOS6502._PC, PCStart + BytesUsed,"Program counter increased correctly.");
     equal(MOS6502._CYCLES, CycleCost,"Cycles increased correctly.");
@@ -9470,70 +7699,70 @@ test("0x75 - ADC (Zero Page, X)", function() {
      * 00 + 00 and C=0 gives 00 and N=0 V=0 Z=1 C=0
      */
 
-    MOS6502._P = 0x20 + 0x08;
+    //MOS6502._statusRegister.dumpStatus() = 0x20 + 0x08;
     MOS6502._RAM[OperandAddress] = 0x00;
     MOS6502._A = 0x00;
     MOS6502._PC = PCStart;
 
     MOS6502.emulateCycle();
 
-    equal(MOS6502._P,0x20 + 0x08 + 0x02,"Test 1: Zero set correctly.");
+    equal(MOS6502._statusRegister.dumpStatus(),0x20 + 0x08 + 0x02,"Test 1: Zero set correctly.");
     equal(MOS6502._A, 0x00, "Test 1: ADC performed in decimal mode correctly.");
 
     /**
      * Test 2:
      * 79 + 00 and C=1 gives 80 and N=1 V=1 Z=0 C=0
      */
-    MOS6502._P = 0x20 + 0x08 + 0x01;
+    //MOS6502._statusRegister.dumpStatus() = 0x20 + 0x08 + 0x01;
     MOS6502._RAM[OperandAddress] = 0x79;
     MOS6502._A = 0x00;
     MOS6502._PC = PCStart;
 
     MOS6502.emulateCycle();
 
-    equal(MOS6502._P,0x20 + 0x80 + 0x40 + 0x08,"Test 2: Sign & Overflow set correctly.");
+    equal(MOS6502._statusRegister.dumpStatus(),0x20 + 0x80 + 0x40 + 0x08,"Test 2: Sign & Overflow set correctly.");
     equal(MOS6502._A, 0x80, "Test 2: ADC performed in decimal mode correctly.");
 
     /**
      * Test 3:
      * 24 + 56 and C=0 gives 80 and N=1 V=1 Z=0 C=0 (simulate)
      */
-    MOS6502._P = 0x20 + 0x08;
+    //MOS6502._statusRegister.dumpStatus() = 0x20 + 0x08;
     MOS6502._RAM[OperandAddress] = 0x24;
     MOS6502._A = 0x56;
     MOS6502._PC = PCStart;
 
     MOS6502.emulateCycle();
 
-    equal(MOS6502._P,0x20 + 0x80 + 0x40 + 0x08,"Test 3: Sign & Overflow set correctly.");
+    equal(MOS6502._statusRegister.dumpStatus(),0x20 + 0x80 + 0x40 + 0x08,"Test 3: Sign & Overflow set correctly.");
     equal(MOS6502._A, 0x80, "Test 3: ADC performed in decimal mode correctly.");
 
     /**
      * Test 4:
      * 93 + 82 and C=0 gives 75 and N=0 V=1 Z=0 C=1 (simulate)
      */
-    MOS6502._P = 0x20 + 0x08;
+    //MOS6502._statusRegister.dumpStatus() = 0x20 + 0x08;
     MOS6502._RAM[OperandAddress] = 0x93;
     MOS6502._A = 0x82;
     MOS6502._PC = PCStart;
 
     MOS6502.emulateCycle();
 
-    equal(MOS6502._P,0x20 + 0x40 + 0x08 + 0x01,"Test 4: Overflow & Carry set correctly.");
+    equal(MOS6502._statusRegister.dumpStatus(),0x20 + 0x40 + 0x08 + 0x01,"Test 4: Overflow & Carry set correctly.");
     equal(MOS6502._A, 0x75, "Test 4: ADC performed in decimal mode correctly.");
 
     /**
      * Test 5:
      * 89 + 76 and C=0 gives 65 and N=0 V=0 Z=0 C=1 (simulate)
      */
-    MOS6502._P = 0x20 + 0x08;
+    //MOS6502._statusRegister.dumpStatus() = 0x20 + 0x08;
     MOS6502._RAM[OperandAddress] = 0x89;
     MOS6502._A = 0x76;
     MOS6502._PC = PCStart;
 
     MOS6502.emulateCycle();
 
-    equal(MOS6502._P,0x20 + 0x08 + 0x01,"Test 5: Carry set correctly.");
+    equal(MOS6502._statusRegister.dumpStatus(),0x20 + 0x08 + 0x01,"Test 5: Carry set correctly.");
     equal(MOS6502._A, 0x65, "Test 5: ADC performed in decimal mode correctly.");
 
     /**
@@ -9542,70 +7771,70 @@ test("0x75 - ADC (Zero Page, X)", function() {
      *
      * Fails: Carry is not set.
      */
-    MOS6502._P = 0x20 + 0x08 + 0x01;
+    //MOS6502._statusRegister.dumpStatus() = 0x20 + 0x08 + 0x01;
     MOS6502._RAM[OperandAddress] = 0x89;
     MOS6502._A = 0x76;
     MOS6502._PC = PCStart;
 
     MOS6502.emulateCycle();
 
-    equal(MOS6502._P,0x20 + 0x08 + 0x01,"Test 6: Carry set correctly.");
+    equal(MOS6502._statusRegister.dumpStatus(),0x20 + 0x08 + 0x01,"Test 6: Carry set correctly.");
     equal(MOS6502._A, 0x66, "Test 6: ADC performed in decimal mode correctly.");
 
     /**
      * Test 7:
      * 80 + f0 and C=0 gives d0 and N=1 V=1 Z=0 C=1
      */
-    MOS6502._P = 0x20 + 0x80 + 0x08;
+    //MOS6502._statusRegister.dumpStatus() = 0x20 + 0x80 + 0x08;
     MOS6502._RAM[OperandAddress] = 0x80;
     MOS6502._A = 0xF0;
     MOS6502._PC = PCStart;
 
     MOS6502.emulateCycle();
 
-    equal(MOS6502._P,0x20 + 0x80 + 0x40 + 0x08 + 0x01,"Test 7: Overflow & Carry set correctly.");
+    equal(MOS6502._statusRegister.dumpStatus(),0x20 + 0x80 + 0x40 + 0x08 + 0x01,"Test 7: Overflow & Carry set correctly.");
     equal(MOS6502._A, 0xD0, "Test 7: ADC performed in decimal mode correctly.");
 
     /**
      * Test 8:
      * 80 + fa and C=0 gives e0 and N=1 V=0 Z=0 C=1
      */
-    MOS6502._P = 0x20 + 0x08;
+    //MOS6502._statusRegister.dumpStatus() = 0x20 + 0x08;
     MOS6502._RAM[OperandAddress] = 0x80;
     MOS6502._A = 0xFA;
     MOS6502._PC = PCStart;
 
     MOS6502.emulateCycle();
 
-    equal(MOS6502._P,0x20 + 0x80 + 0x08 + 0x01,"Test 8: Sign & Carry set correctly.");
+    equal(MOS6502._statusRegister.dumpStatus(),0x20 + 0x80 + 0x08 + 0x01,"Test 8: Sign & Carry set correctly.");
     equal(MOS6502._A, 0xE0, "Test 8: ADC performed in decimal mode correctly.");
 
     /**
      * Test 9:
      * 2f + 4f and C=0 gives 74 and N=0 V=0 Z=0 C=0
      */
-    MOS6502._P = 0x20 + 0x08;
+    //MOS6502._statusRegister.dumpStatus() = 0x20 + 0x08;
     MOS6502._RAM[OperandAddress] = 0x4F;
     MOS6502._A = 0x2F;
     MOS6502._PC = PCStart;
 
     MOS6502.emulateCycle();
 
-    equal(MOS6502._P,0x20 + 0x08,"Test 9: Status register set correctly.");
+    equal(MOS6502._statusRegister.dumpStatus(),0x20 + 0x08,"Test 9: Status register set correctly.");
     equal(MOS6502._A, 0x74, "Test 9: ADC performed in decimal mode correctly.");
 
     /**
      * Test 10:
      * 6f + 00 and C=1 gives 76 and N=0 V=0 Z=0 C=0 (simulate)
      */
-    MOS6502._P = 0x20 + 0x08 + 0x01;
+    //MOS6502._statusRegister.dumpStatus() = 0x20 + 0x08 + 0x01;
     MOS6502._RAM[OperandAddress] = 0x6F;
     MOS6502._A = 0x00;
     MOS6502._PC = PCStart;
 
     MOS6502.emulateCycle();
 
-    equal(MOS6502._P,0x20 + 0x08,"Test 10: Status register set correctly.");
+    equal(MOS6502._statusRegister.dumpStatus(),0x20 + 0x08,"Test 10: Status register set correctly.");
     equal(MOS6502._A, 0x76, "Test 10: ADC performed in decimal mode correctly.");
 
     /**
@@ -9613,14 +7842,14 @@ test("0x75 - ADC (Zero Page, X)", function() {
      * DECIMAL MODE OFF
      * 00 + 00 and C=0 gives 00 and N=0 V=0 Z=1 C=0
      */
-    MOS6502._P = 0x20;
+    
     MOS6502._RAM[OperandAddress] = 0x00;
     MOS6502._A = 0x00;
     MOS6502._PC = PCStart;
 
     MOS6502.emulateCycle();
 
-    equal(MOS6502._P,0x20 + 0x02,"Test 11: Zero set correctly.");
+    equal(MOS6502._statusRegister.dumpStatus(),0x20 + 0x02,"Test 11: Zero set correctly.");
     equal(MOS6502._A, 0x00, "Test 11: ADC performed in decimal mode correctly.");
 
     /**
@@ -9628,7 +7857,7 @@ test("0x75 - ADC (Zero Page, X)", function() {
      * DECIMAL MODE OFF
      * FF + FF and C=1 gives FF and N=1 V=0 Z=0 C=1
      */
-    MOS6502._P = 0x20 + 0x01;
+    //MOS6502._statusRegister.dumpStatus() = 0x20 + 0x01;
     MOS6502._RAM[OperandAddress] = 0xFF;
     MOS6502._A = 0xFF;
     MOS6502._PC = PCStart;
@@ -9636,7 +7865,7 @@ test("0x75 - ADC (Zero Page, X)", function() {
 
     MOS6502.emulateCycle();
 
-    equal(MOS6502._P,0x20 + 0x80 + 0x01,"Test 12: Flags set correctly.");
+    equal(MOS6502._statusRegister.dumpStatus(),0x20 + 0x80 + 0x01,"Test 12: Flags set correctly.");
     equal(MOS6502._A, 0xFF, "Test 12: ADC performed in decimal mode correctly.");
     equal(MOS6502._PC, PCStart + BytesUsed,"Program counter increased correctly.");
     equal(MOS6502._CYCLES, CycleCost,"Cycles increased correctly.");
@@ -9669,70 +7898,70 @@ test("0x6D - ADC (Absolute)", function() {
      * 00 + 00 and C=0 gives 00 and N=0 V=0 Z=1 C=0
      */
 
-    MOS6502._P = 0x20 + 0x08;
+    //MOS6502._statusRegister.dumpStatus() = 0x20 + 0x08;
     MOS6502._RAM[OperandAddress] = 0x00;
     MOS6502._A = 0x00;
     MOS6502._PC = PCStart;
 
     MOS6502.emulateCycle();
 
-    equal(MOS6502._P,0x20 + 0x08 + 0x02,"Test 1: Zero set correctly.");
+    equal(MOS6502._statusRegister.dumpStatus(),0x20 + 0x08 + 0x02,"Test 1: Zero set correctly.");
     equal(MOS6502._A, 0x00, "Test 1: ADC performed in decimal mode correctly.");
 
     /**
      * Test 2:
      * 79 + 00 and C=1 gives 80 and N=1 V=1 Z=0 C=0
      */
-    MOS6502._P = 0x20 + 0x08 + 0x01;
+    //MOS6502._statusRegister.dumpStatus() = 0x20 + 0x08 + 0x01;
     MOS6502._RAM[OperandAddress] = 0x79;
     MOS6502._A = 0x00;
     MOS6502._PC = PCStart;
 
     MOS6502.emulateCycle();
 
-    equal(MOS6502._P,0x20 + 0x80 + 0x40 + 0x08,"Test 2: Sign & Overflow set correctly.");
+    equal(MOS6502._statusRegister.dumpStatus(),0x20 + 0x80 + 0x40 + 0x08,"Test 2: Sign & Overflow set correctly.");
     equal(MOS6502._A, 0x80, "Test 2: ADC performed in decimal mode correctly.");
 
     /**
      * Test 3:
      * 24 + 56 and C=0 gives 80 and N=1 V=1 Z=0 C=0 (simulate)
      */
-    MOS6502._P = 0x20 + 0x08;
+    //MOS6502._statusRegister.dumpStatus() = 0x20 + 0x08;
     MOS6502._RAM[OperandAddress] = 0x24;
     MOS6502._A = 0x56;
     MOS6502._PC = PCStart;
 
     MOS6502.emulateCycle();
 
-    equal(MOS6502._P,0x20 + 0x80 + 0x40 + 0x08,"Test 3: Sign & Overflow set correctly.");
+    equal(MOS6502._statusRegister.dumpStatus(),0x20 + 0x80 + 0x40 + 0x08,"Test 3: Sign & Overflow set correctly.");
     equal(MOS6502._A, 0x80, "Test 3: ADC performed in decimal mode correctly.");
 
     /**
      * Test 4:
      * 93 + 82 and C=0 gives 75 and N=0 V=1 Z=0 C=1 (simulate)
      */
-    MOS6502._P = 0x20 + 0x08;
+    //MOS6502._statusRegister.dumpStatus() = 0x20 + 0x08;
     MOS6502._RAM[OperandAddress] = 0x93;
     MOS6502._A = 0x82;
     MOS6502._PC = PCStart;
 
     MOS6502.emulateCycle();
 
-    equal(MOS6502._P,0x20 + 0x40 + 0x08 + 0x01,"Test 4: Overflow & Carry set correctly.");
+    equal(MOS6502._statusRegister.dumpStatus(),0x20 + 0x40 + 0x08 + 0x01,"Test 4: Overflow & Carry set correctly.");
     equal(MOS6502._A, 0x75, "Test 4: ADC performed in decimal mode correctly.");
 
     /**
      * Test 5:
      * 89 + 76 and C=0 gives 65 and N=0 V=0 Z=0 C=1 (simulate)
      */
-    MOS6502._P = 0x20 + 0x08;
+    //MOS6502._statusRegister.dumpStatus() = 0x20 + 0x08;
     MOS6502._RAM[OperandAddress] = 0x89;
     MOS6502._A = 0x76;
     MOS6502._PC = PCStart;
 
     MOS6502.emulateCycle();
 
-    equal(MOS6502._P,0x20 + 0x08 + 0x01,"Test 5: Carry set correctly.");
+    equal(MOS6502._statusRegister.dumpStatus(),0x20 + 0x08 + 0x01,"Test 5: Carry set correctly.");
     equal(MOS6502._A, 0x65, "Test 5: ADC performed in decimal mode correctly.");
 
     /**
@@ -9741,70 +7970,70 @@ test("0x6D - ADC (Absolute)", function() {
      *
      * Fails: Carry is not set.
      */
-    MOS6502._P = 0x20 + 0x08 + 0x01;
+    //MOS6502._statusRegister.dumpStatus() = 0x20 + 0x08 + 0x01;
     MOS6502._RAM[OperandAddress] = 0x89;
     MOS6502._A = 0x76;
     MOS6502._PC = PCStart;
 
     MOS6502.emulateCycle();
 
-    equal(MOS6502._P,0x20 + 0x08 + 0x01,"Test 6: Carry set correctly.");
+    equal(MOS6502._statusRegister.dumpStatus(),0x20 + 0x08 + 0x01,"Test 6: Carry set correctly.");
     equal(MOS6502._A, 0x66, "Test 6: ADC performed in decimal mode correctly.");
 
     /**
      * Test 7:
      * 80 + f0 and C=0 gives d0 and N=1 V=1 Z=0 C=1
      */
-    MOS6502._P = 0x20 + 0x80 + 0x08;
+    //MOS6502._statusRegister.dumpStatus() = 0x20 + 0x80 + 0x08;
     MOS6502._RAM[OperandAddress] = 0x80;
     MOS6502._A = 0xF0;
     MOS6502._PC = PCStart;
 
     MOS6502.emulateCycle();
 
-    equal(MOS6502._P,0x20 + 0x80 + 0x40 + 0x08 + 0x01,"Test 7: Overflow & Carry set correctly.");
+    equal(MOS6502._statusRegister.dumpStatus(),0x20 + 0x80 + 0x40 + 0x08 + 0x01,"Test 7: Overflow & Carry set correctly.");
     equal(MOS6502._A, 0xD0, "Test 7: ADC performed in decimal mode correctly.");
 
     /**
      * Test 8:
      * 80 + fa and C=0 gives e0 and N=1 V=0 Z=0 C=1
      */
-    MOS6502._P = 0x20 + 0x08;
+    //MOS6502._statusRegister.dumpStatus() = 0x20 + 0x08;
     MOS6502._RAM[OperandAddress] = 0x80;
     MOS6502._A = 0xFA;
     MOS6502._PC = PCStart;
 
     MOS6502.emulateCycle();
 
-    equal(MOS6502._P,0x20 + 0x80 + 0x08 + 0x01,"Test 8: Sign & Carry set correctly.");
+    equal(MOS6502._statusRegister.dumpStatus(),0x20 + 0x80 + 0x08 + 0x01,"Test 8: Sign & Carry set correctly.");
     equal(MOS6502._A, 0xE0, "Test 8: ADC performed in decimal mode correctly.");
 
     /**
      * Test 9:
      * 2f + 4f and C=0 gives 74 and N=0 V=0 Z=0 C=0
      */
-    MOS6502._P = 0x20 + 0x08;
+    //MOS6502._statusRegister.dumpStatus() = 0x20 + 0x08;
     MOS6502._RAM[OperandAddress] = 0x4F;
     MOS6502._A = 0x2F;
     MOS6502._PC = PCStart;
 
     MOS6502.emulateCycle();
 
-    equal(MOS6502._P,0x20 + 0x08,"Test 9: Status register set correctly.");
+    equal(MOS6502._statusRegister.dumpStatus(),0x20 + 0x08,"Test 9: Status register set correctly.");
     equal(MOS6502._A, 0x74, "Test 9: ADC performed in decimal mode correctly.");
 
     /**
      * Test 10:
      * 6f + 00 and C=1 gives 76 and N=0 V=0 Z=0 C=0 (simulate)
      */
-    MOS6502._P = 0x20 + 0x08 + 0x01;
+    //MOS6502._statusRegister.dumpStatus() = 0x20 + 0x08 + 0x01;
     MOS6502._RAM[OperandAddress] = 0x6F;
     MOS6502._A = 0x00;
     MOS6502._PC = PCStart;
 
     MOS6502.emulateCycle();
 
-    equal(MOS6502._P,0x20 + 0x08,"Test 10: Status register set correctly.");
+    equal(MOS6502._statusRegister.dumpStatus(),0x20 + 0x08,"Test 10: Status register set correctly.");
     equal(MOS6502._A, 0x76, "Test 10: ADC performed in decimal mode correctly.");
 
     /**
@@ -9812,14 +8041,14 @@ test("0x6D - ADC (Absolute)", function() {
      * DECIMAL MODE OFF
      * 00 + 00 and C=0 gives 00 and N=0 V=0 Z=1 C=0
      */
-    MOS6502._P = 0x20;
+    
     MOS6502._RAM[OperandAddress] = 0x00;
     MOS6502._A = 0x00;
     MOS6502._PC = PCStart;
 
     MOS6502.emulateCycle();
 
-    equal(MOS6502._P,0x20 + 0x02,"Test 11: Zero set correctly.");
+    equal(MOS6502._statusRegister.dumpStatus(),0x20 + 0x02,"Test 11: Zero set correctly.");
     equal(MOS6502._A, 0x00, "Test 11: ADC performed in decimal mode correctly.");
 
     /**
@@ -9827,7 +8056,7 @@ test("0x6D - ADC (Absolute)", function() {
      * DECIMAL MODE OFF
      * FF + FF and C=1 gives FF and N=1 V=0 Z=0 C=1
      */
-    MOS6502._P = 0x20 + 0x01;
+    //MOS6502._statusRegister.dumpStatus() = 0x20 + 0x01;
     MOS6502._RAM[OperandAddress] = 0xFF;
     MOS6502._A = 0xFF;
     MOS6502._PC = PCStart;
@@ -9835,7 +8064,7 @@ test("0x6D - ADC (Absolute)", function() {
 
     MOS6502.emulateCycle();
 
-    equal(MOS6502._P,0x20 + 0x80 + 0x01,"Test 12: Flags set correctly.");
+    equal(MOS6502._statusRegister.dumpStatus(),0x20 + 0x80 + 0x01,"Test 12: Flags set correctly.");
     equal(MOS6502._A, 0xFF, "Test 12: ADC performed in decimal mode correctly.");
     equal(MOS6502._PC, PCStart + BytesUsed,"Program counter increased correctly.");
     equal(MOS6502._CYCLES, CycleCost,"Cycles increased correctly.");
@@ -9870,70 +8099,70 @@ test("0x7D - ADC (Absolute, X) (Same Page)", function() {
      * 00 + 00 and C=0 gives 00 and N=0 V=0 Z=1 C=0
      */
 
-    MOS6502._P = 0x20 + 0x08;
+    //MOS6502._statusRegister.dumpStatus() = 0x20 + 0x08;
     MOS6502._RAM[OperandAddress] = 0x00;
     MOS6502._A = 0x00;
     MOS6502._PC = PCStart;
 
     MOS6502.emulateCycle();
 
-    equal(MOS6502._P,0x20 + 0x08 + 0x02,"Test 1: Zero set correctly.");
+    equal(MOS6502._statusRegister.dumpStatus(),0x20 + 0x08 + 0x02,"Test 1: Zero set correctly.");
     equal(MOS6502._A, 0x00, "Test 1: ADC performed in decimal mode correctly.");
 
     /**
      * Test 2:
      * 79 + 00 and C=1 gives 80 and N=1 V=1 Z=0 C=0
      */
-    MOS6502._P = 0x20 + 0x08 + 0x01;
+    //MOS6502._statusRegister.dumpStatus() = 0x20 + 0x08 + 0x01;
     MOS6502._RAM[OperandAddress] = 0x79;
     MOS6502._A = 0x00;
     MOS6502._PC = PCStart;
 
     MOS6502.emulateCycle();
 
-    equal(MOS6502._P,0x20 + 0x80 + 0x40 + 0x08,"Test 2: Sign & Overflow set correctly.");
+    equal(MOS6502._statusRegister.dumpStatus(),0x20 + 0x80 + 0x40 + 0x08,"Test 2: Sign & Overflow set correctly.");
     equal(MOS6502._A, 0x80, "Test 2: ADC performed in decimal mode correctly.");
 
     /**
      * Test 3:
      * 24 + 56 and C=0 gives 80 and N=1 V=1 Z=0 C=0 (simulate)
      */
-    MOS6502._P = 0x20 + 0x08;
+    //MOS6502._statusRegister.dumpStatus() = 0x20 + 0x08;
     MOS6502._RAM[OperandAddress] = 0x24;
     MOS6502._A = 0x56;
     MOS6502._PC = PCStart;
 
     MOS6502.emulateCycle();
 
-    equal(MOS6502._P,0x20 + 0x80 + 0x40 + 0x08,"Test 3: Sign & Overflow set correctly.");
+    equal(MOS6502._statusRegister.dumpStatus(),0x20 + 0x80 + 0x40 + 0x08,"Test 3: Sign & Overflow set correctly.");
     equal(MOS6502._A, 0x80, "Test 3: ADC performed in decimal mode correctly.");
 
     /**
      * Test 4:
      * 93 + 82 and C=0 gives 75 and N=0 V=1 Z=0 C=1 (simulate)
      */
-    MOS6502._P = 0x20 + 0x08;
+    //MOS6502._statusRegister.dumpStatus() = 0x20 + 0x08;
     MOS6502._RAM[OperandAddress] = 0x93;
     MOS6502._A = 0x82;
     MOS6502._PC = PCStart;
 
     MOS6502.emulateCycle();
 
-    equal(MOS6502._P,0x20 + 0x40 + 0x08 + 0x01,"Test 4: Overflow & Carry set correctly.");
+    equal(MOS6502._statusRegister.dumpStatus(),0x20 + 0x40 + 0x08 + 0x01,"Test 4: Overflow & Carry set correctly.");
     equal(MOS6502._A, 0x75, "Test 4: ADC performed in decimal mode correctly.");
 
     /**
      * Test 5:
      * 89 + 76 and C=0 gives 65 and N=0 V=0 Z=0 C=1 (simulate)
      */
-    MOS6502._P = 0x20 + 0x08;
+    //MOS6502._statusRegister.dumpStatus() = 0x20 + 0x08;
     MOS6502._RAM[OperandAddress] = 0x89;
     MOS6502._A = 0x76;
     MOS6502._PC = PCStart;
 
     MOS6502.emulateCycle();
 
-    equal(MOS6502._P,0x20 + 0x08 + 0x01,"Test 5: Carry set correctly.");
+    equal(MOS6502._statusRegister.dumpStatus(),0x20 + 0x08 + 0x01,"Test 5: Carry set correctly.");
     equal(MOS6502._A, 0x65, "Test 5: ADC performed in decimal mode correctly.");
 
     /**
@@ -9942,70 +8171,70 @@ test("0x7D - ADC (Absolute, X) (Same Page)", function() {
      *
      * Fails: Carry is not set.
      */
-    MOS6502._P = 0x20 + 0x08 + 0x01;
+    //MOS6502._statusRegister.dumpStatus() = 0x20 + 0x08 + 0x01;
     MOS6502._RAM[OperandAddress] = 0x89;
     MOS6502._A = 0x76;
     MOS6502._PC = PCStart;
 
     MOS6502.emulateCycle();
 
-    equal(MOS6502._P,0x20 + 0x08 + 0x01,"Test 6: Carry set correctly.");
+    equal(MOS6502._statusRegister.dumpStatus(),0x20 + 0x08 + 0x01,"Test 6: Carry set correctly.");
     equal(MOS6502._A, 0x66, "Test 6: ADC performed in decimal mode correctly.");
 
     /**
      * Test 7:
      * 80 + f0 and C=0 gives d0 and N=1 V=1 Z=0 C=1
      */
-    MOS6502._P = 0x20 + 0x80 + 0x08;
+    //MOS6502._statusRegister.dumpStatus() = 0x20 + 0x80 + 0x08;
     MOS6502._RAM[OperandAddress] = 0x80;
     MOS6502._A = 0xF0;
     MOS6502._PC = PCStart;
 
     MOS6502.emulateCycle();
 
-    equal(MOS6502._P,0x20 + 0x80 + 0x40 + 0x08 + 0x01,"Test 7: Overflow & Carry set correctly.");
+    equal(MOS6502._statusRegister.dumpStatus(),0x20 + 0x80 + 0x40 + 0x08 + 0x01,"Test 7: Overflow & Carry set correctly.");
     equal(MOS6502._A, 0xD0, "Test 7: ADC performed in decimal mode correctly.");
 
     /**
      * Test 8:
      * 80 + fa and C=0 gives e0 and N=1 V=0 Z=0 C=1
      */
-    MOS6502._P = 0x20 + 0x08;
+    //MOS6502._statusRegister.dumpStatus() = 0x20 + 0x08;
     MOS6502._RAM[OperandAddress] = 0x80;
     MOS6502._A = 0xFA;
     MOS6502._PC = PCStart;
 
     MOS6502.emulateCycle();
 
-    equal(MOS6502._P,0x20 + 0x80 + 0x08 + 0x01,"Test 8: Sign & Carry set correctly.");
+    equal(MOS6502._statusRegister.dumpStatus(),0x20 + 0x80 + 0x08 + 0x01,"Test 8: Sign & Carry set correctly.");
     equal(MOS6502._A, 0xE0, "Test 8: ADC performed in decimal mode correctly.");
 
     /**
      * Test 9:
      * 2f + 4f and C=0 gives 74 and N=0 V=0 Z=0 C=0
      */
-    MOS6502._P = 0x20 + 0x08;
+    //MOS6502._statusRegister.dumpStatus() = 0x20 + 0x08;
     MOS6502._RAM[OperandAddress] = 0x4F;
     MOS6502._A = 0x2F;
     MOS6502._PC = PCStart;
 
     MOS6502.emulateCycle();
 
-    equal(MOS6502._P,0x20 + 0x08,"Test 9: Status register set correctly.");
+    equal(MOS6502._statusRegister.dumpStatus(),0x20 + 0x08,"Test 9: Status register set correctly.");
     equal(MOS6502._A, 0x74, "Test 9: ADC performed in decimal mode correctly.");
 
     /**
      * Test 10:
      * 6f + 00 and C=1 gives 76 and N=0 V=0 Z=0 C=0 (simulate)
      */
-    MOS6502._P = 0x20 + 0x08 + 0x01;
+    //MOS6502._statusRegister.dumpStatus() = 0x20 + 0x08 + 0x01;
     MOS6502._RAM[OperandAddress] = 0x6F;
     MOS6502._A = 0x00;
     MOS6502._PC = PCStart;
 
     MOS6502.emulateCycle();
 
-    equal(MOS6502._P,0x20 + 0x08,"Test 10: Status register set correctly.");
+    equal(MOS6502._statusRegister.dumpStatus(),0x20 + 0x08,"Test 10: Status register set correctly.");
     equal(MOS6502._A, 0x76, "Test 10: ADC performed in decimal mode correctly.");
 
     /**
@@ -10013,14 +8242,14 @@ test("0x7D - ADC (Absolute, X) (Same Page)", function() {
      * DECIMAL MODE OFF
      * 00 + 00 and C=0 gives 00 and N=0 V=0 Z=1 C=0
      */
-    MOS6502._P = 0x20;
+    
     MOS6502._RAM[OperandAddress] = 0x00;
     MOS6502._A = 0x00;
     MOS6502._PC = PCStart;
 
     MOS6502.emulateCycle();
 
-    equal(MOS6502._P,0x20 + 0x02,"Test 11: Zero set correctly.");
+    equal(MOS6502._statusRegister.dumpStatus(),0x20 + 0x02,"Test 11: Zero set correctly.");
     equal(MOS6502._A, 0x00, "Test 11: ADC performed in decimal mode correctly.");
 
     /**
@@ -10028,7 +8257,7 @@ test("0x7D - ADC (Absolute, X) (Same Page)", function() {
      * DECIMAL MODE OFF
      * FF + FF and C=1 gives FF and N=1 V=0 Z=0 C=1
      */
-    MOS6502._P = 0x20 + 0x01;
+    //MOS6502._statusRegister.dumpStatus() = 0x20 + 0x01;
     MOS6502._RAM[OperandAddress] = 0xFF;
     MOS6502._A = 0xFF;
     MOS6502._PC = PCStart;
@@ -10036,7 +8265,7 @@ test("0x7D - ADC (Absolute, X) (Same Page)", function() {
 
     MOS6502.emulateCycle();
 
-    equal(MOS6502._P,0x20 + 0x80 + 0x01,"Test 12: Flags set correctly.");
+    equal(MOS6502._statusRegister.dumpStatus(),0x20 + 0x80 + 0x01,"Test 12: Flags set correctly.");
     equal(MOS6502._A, 0xFF, "Test 12: ADC performed in decimal mode correctly.");
     equal(MOS6502._PC, PCStart + BytesUsed,"Program counter increased correctly.");
     equal(MOS6502._CYCLES, CycleCost,"Cycles increased correctly.");
@@ -10071,70 +8300,70 @@ test("0x7D - ADC (Absolute, X) (Cross Page)", function() {
      * 00 + 00 and C=0 gives 00 and N=0 V=0 Z=1 C=0
      */
 
-    MOS6502._P = 0x20 + 0x08;
+    //MOS6502._statusRegister.dumpStatus() = 0x20 + 0x08;
     MOS6502._RAM[OperandAddress] = 0x00;
     MOS6502._A = 0x00;
     MOS6502._PC = PCStart;
 
     MOS6502.emulateCycle();
 
-    equal(MOS6502._P,0x20 + 0x08 + 0x02,"Test 1: Zero set correctly.");
+    equal(MOS6502._statusRegister.dumpStatus(),0x20 + 0x08 + 0x02,"Test 1: Zero set correctly.");
     equal(MOS6502._A, 0x00, "Test 1: ADC performed in decimal mode correctly.");
 
     /**
      * Test 2:
      * 79 + 00 and C=1 gives 80 and N=1 V=1 Z=0 C=0
      */
-    MOS6502._P = 0x20 + 0x08 + 0x01;
+    //MOS6502._statusRegister.dumpStatus() = 0x20 + 0x08 + 0x01;
     MOS6502._RAM[OperandAddress] = 0x79;
     MOS6502._A = 0x00;
     MOS6502._PC = PCStart;
 
     MOS6502.emulateCycle();
 
-    equal(MOS6502._P,0x20 + 0x80 + 0x40 + 0x08,"Test 2: Sign & Overflow set correctly.");
+    equal(MOS6502._statusRegister.dumpStatus(),0x20 + 0x80 + 0x40 + 0x08,"Test 2: Sign & Overflow set correctly.");
     equal(MOS6502._A, 0x80, "Test 2: ADC performed in decimal mode correctly.");
 
     /**
      * Test 3:
      * 24 + 56 and C=0 gives 80 and N=1 V=1 Z=0 C=0 (simulate)
      */
-    MOS6502._P = 0x20 + 0x08;
+    //MOS6502._statusRegister.dumpStatus() = 0x20 + 0x08;
     MOS6502._RAM[OperandAddress] = 0x24;
     MOS6502._A = 0x56;
     MOS6502._PC = PCStart;
 
     MOS6502.emulateCycle();
 
-    equal(MOS6502._P,0x20 + 0x80 + 0x40 + 0x08,"Test 3: Sign & Overflow set correctly.");
+    equal(MOS6502._statusRegister.dumpStatus(),0x20 + 0x80 + 0x40 + 0x08,"Test 3: Sign & Overflow set correctly.");
     equal(MOS6502._A, 0x80, "Test 3: ADC performed in decimal mode correctly.");
 
     /**
      * Test 4:
      * 93 + 82 and C=0 gives 75 and N=0 V=1 Z=0 C=1 (simulate)
      */
-    MOS6502._P = 0x20 + 0x08;
+    //MOS6502._statusRegister.dumpStatus() = 0x20 + 0x08;
     MOS6502._RAM[OperandAddress] = 0x93;
     MOS6502._A = 0x82;
     MOS6502._PC = PCStart;
 
     MOS6502.emulateCycle();
 
-    equal(MOS6502._P,0x20 + 0x40 + 0x08 + 0x01,"Test 4: Overflow & Carry set correctly.");
+    equal(MOS6502._statusRegister.dumpStatus(),0x20 + 0x40 + 0x08 + 0x01,"Test 4: Overflow & Carry set correctly.");
     equal(MOS6502._A, 0x75, "Test 4: ADC performed in decimal mode correctly.");
 
     /**
      * Test 5:
      * 89 + 76 and C=0 gives 65 and N=0 V=0 Z=0 C=1 (simulate)
      */
-    MOS6502._P = 0x20 + 0x08;
+    //MOS6502._statusRegister.dumpStatus() = 0x20 + 0x08;
     MOS6502._RAM[OperandAddress] = 0x89;
     MOS6502._A = 0x76;
     MOS6502._PC = PCStart;
 
     MOS6502.emulateCycle();
 
-    equal(MOS6502._P,0x20 + 0x08 + 0x01,"Test 5: Carry set correctly.");
+    equal(MOS6502._statusRegister.dumpStatus(),0x20 + 0x08 + 0x01,"Test 5: Carry set correctly.");
     equal(MOS6502._A, 0x65, "Test 5: ADC performed in decimal mode correctly.");
 
     /**
@@ -10143,70 +8372,70 @@ test("0x7D - ADC (Absolute, X) (Cross Page)", function() {
      *
      * Fails: Carry is not set.
      */
-    MOS6502._P = 0x20 + 0x08 + 0x01;
+    //MOS6502._statusRegister.dumpStatus() = 0x20 + 0x08 + 0x01;
     MOS6502._RAM[OperandAddress] = 0x89;
     MOS6502._A = 0x76;
     MOS6502._PC = PCStart;
 
     MOS6502.emulateCycle();
 
-    equal(MOS6502._P,0x20 + 0x08 + 0x01,"Test 6: Carry set correctly.");
+    equal(MOS6502._statusRegister.dumpStatus(),0x20 + 0x08 + 0x01,"Test 6: Carry set correctly.");
     equal(MOS6502._A, 0x66, "Test 6: ADC performed in decimal mode correctly.");
 
     /**
      * Test 7:
      * 80 + f0 and C=0 gives d0 and N=1 V=1 Z=0 C=1
      */
-    MOS6502._P = 0x20 + 0x80 + 0x08;
+    //MOS6502._statusRegister.dumpStatus() = 0x20 + 0x80 + 0x08;
     MOS6502._RAM[OperandAddress] = 0x80;
     MOS6502._A = 0xF0;
     MOS6502._PC = PCStart;
 
     MOS6502.emulateCycle();
 
-    equal(MOS6502._P,0x20 + 0x80 + 0x40 + 0x08 + 0x01,"Test 7: Overflow & Carry set correctly.");
+    equal(MOS6502._statusRegister.dumpStatus(),0x20 + 0x80 + 0x40 + 0x08 + 0x01,"Test 7: Overflow & Carry set correctly.");
     equal(MOS6502._A, 0xD0, "Test 7: ADC performed in decimal mode correctly.");
 
     /**
      * Test 8:
      * 80 + fa and C=0 gives e0 and N=1 V=0 Z=0 C=1
      */
-    MOS6502._P = 0x20 + 0x08;
+    //MOS6502._statusRegister.dumpStatus() = 0x20 + 0x08;
     MOS6502._RAM[OperandAddress] = 0x80;
     MOS6502._A = 0xFA;
     MOS6502._PC = PCStart;
 
     MOS6502.emulateCycle();
 
-    equal(MOS6502._P,0x20 + 0x80 + 0x08 + 0x01,"Test 8: Sign & Carry set correctly.");
+    equal(MOS6502._statusRegister.dumpStatus(),0x20 + 0x80 + 0x08 + 0x01,"Test 8: Sign & Carry set correctly.");
     equal(MOS6502._A, 0xE0, "Test 8: ADC performed in decimal mode correctly.");
 
     /**
      * Test 9:
      * 2f + 4f and C=0 gives 74 and N=0 V=0 Z=0 C=0
      */
-    MOS6502._P = 0x20 + 0x08;
+    //MOS6502._statusRegister.dumpStatus() = 0x20 + 0x08;
     MOS6502._RAM[OperandAddress] = 0x4F;
     MOS6502._A = 0x2F;
     MOS6502._PC = PCStart;
 
     MOS6502.emulateCycle();
 
-    equal(MOS6502._P,0x20 + 0x08,"Test 9: Status register set correctly.");
+    equal(MOS6502._statusRegister.dumpStatus(),0x20 + 0x08,"Test 9: Status register set correctly.");
     equal(MOS6502._A, 0x74, "Test 9: ADC performed in decimal mode correctly.");
 
     /**
      * Test 10:
      * 6f + 00 and C=1 gives 76 and N=0 V=0 Z=0 C=0 (simulate)
      */
-    MOS6502._P = 0x20 + 0x08 + 0x01;
+    //MOS6502._statusRegister.dumpStatus() = 0x20 + 0x08 + 0x01;
     MOS6502._RAM[OperandAddress] = 0x6F;
     MOS6502._A = 0x00;
     MOS6502._PC = PCStart;
 
     MOS6502.emulateCycle();
 
-    equal(MOS6502._P,0x20 + 0x08,"Test 10: Status register set correctly.");
+    equal(MOS6502._statusRegister.dumpStatus(),0x20 + 0x08,"Test 10: Status register set correctly.");
     equal(MOS6502._A, 0x76, "Test 10: ADC performed in decimal mode correctly.");
 
     /**
@@ -10214,14 +8443,14 @@ test("0x7D - ADC (Absolute, X) (Cross Page)", function() {
      * DECIMAL MODE OFF
      * 00 + 00 and C=0 gives 00 and N=0 V=0 Z=1 C=0
      */
-    MOS6502._P = 0x20;
+    
     MOS6502._RAM[OperandAddress] = 0x00;
     MOS6502._A = 0x00;
     MOS6502._PC = PCStart;
 
     MOS6502.emulateCycle();
 
-    equal(MOS6502._P,0x20 + 0x02,"Test 11: Zero set correctly.");
+    equal(MOS6502._statusRegister.dumpStatus(),0x20 + 0x02,"Test 11: Zero set correctly.");
     equal(MOS6502._A, 0x00, "Test 11: ADC performed in decimal mode correctly.");
 
     /**
@@ -10229,7 +8458,7 @@ test("0x7D - ADC (Absolute, X) (Cross Page)", function() {
      * DECIMAL MODE OFF
      * FF + FF and C=1 gives FF and N=1 V=0 Z=0 C=1
      */
-    MOS6502._P = 0x20 + 0x01;
+    //MOS6502._statusRegister.dumpStatus() = 0x20 + 0x01;
     MOS6502._RAM[OperandAddress] = 0xFF;
     MOS6502._A = 0xFF;
     MOS6502._PC = PCStart;
@@ -10237,7 +8466,7 @@ test("0x7D - ADC (Absolute, X) (Cross Page)", function() {
 
     MOS6502.emulateCycle();
 
-    equal(MOS6502._P,0x20 + 0x80 + 0x01,"Test 12: Flags set correctly.");
+    equal(MOS6502._statusRegister.dumpStatus(),0x20 + 0x80 + 0x01,"Test 12: Flags set correctly.");
     equal(MOS6502._A, 0xFF, "Test 12: ADC performed in decimal mode correctly.");
     equal(MOS6502._PC, PCStart + BytesUsed,"Program counter increased correctly.");
     equal(MOS6502._CYCLES, CycleCost,"Cycles increased correctly.");
@@ -10272,70 +8501,70 @@ test("0x79 - ADC (Absolute, Y) (Same Page)", function() {
      * 00 + 00 and C=0 gives 00 and N=0 V=0 Z=1 C=0
      */
 
-    MOS6502._P = 0x20 + 0x08;
+    //MOS6502._statusRegister.dumpStatus() = 0x20 + 0x08;
     MOS6502._RAM[OperandAddress] = 0x00;
     MOS6502._A = 0x00;
     MOS6502._PC = PCStart;
 
     MOS6502.emulateCycle();
 
-    equal(MOS6502._P,0x20 + 0x08 + 0x02,"Test 1: Zero set correctly.");
+    equal(MOS6502._statusRegister.dumpStatus(),0x20 + 0x08 + 0x02,"Test 1: Zero set correctly.");
     equal(MOS6502._A, 0x00, "Test 1: ADC performed in decimal mode correctly.");
 
     /**
      * Test 2:
      * 79 + 00 and C=1 gives 80 and N=1 V=1 Z=0 C=0
      */
-    MOS6502._P = 0x20 + 0x08 + 0x01;
+    //MOS6502._statusRegister.dumpStatus() = 0x20 + 0x08 + 0x01;
     MOS6502._RAM[OperandAddress] = 0x79;
     MOS6502._A = 0x00;
     MOS6502._PC = PCStart;
 
     MOS6502.emulateCycle();
 
-    equal(MOS6502._P,0x20 + 0x80 + 0x40 + 0x08,"Test 2: Sign & Overflow set correctly.");
+    equal(MOS6502._statusRegister.dumpStatus(),0x20 + 0x80 + 0x40 + 0x08,"Test 2: Sign & Overflow set correctly.");
     equal(MOS6502._A, 0x80, "Test 2: ADC performed in decimal mode correctly.");
 
     /**
      * Test 3:
      * 24 + 56 and C=0 gives 80 and N=1 V=1 Z=0 C=0 (simulate)
      */
-    MOS6502._P = 0x20 + 0x08;
+    //MOS6502._statusRegister.dumpStatus() = 0x20 + 0x08;
     MOS6502._RAM[OperandAddress] = 0x24;
     MOS6502._A = 0x56;
     MOS6502._PC = PCStart;
 
     MOS6502.emulateCycle();
 
-    equal(MOS6502._P,0x20 + 0x80 + 0x40 + 0x08,"Test 3: Sign & Overflow set correctly.");
+    equal(MOS6502._statusRegister.dumpStatus(),0x20 + 0x80 + 0x40 + 0x08,"Test 3: Sign & Overflow set correctly.");
     equal(MOS6502._A, 0x80, "Test 3: ADC performed in decimal mode correctly.");
 
     /**
      * Test 4:
      * 93 + 82 and C=0 gives 75 and N=0 V=1 Z=0 C=1 (simulate)
      */
-    MOS6502._P = 0x20 + 0x08;
+    //MOS6502._statusRegister.dumpStatus() = 0x20 + 0x08;
     MOS6502._RAM[OperandAddress] = 0x93;
     MOS6502._A = 0x82;
     MOS6502._PC = PCStart;
 
     MOS6502.emulateCycle();
 
-    equal(MOS6502._P,0x20 + 0x40 + 0x08 + 0x01,"Test 4: Overflow & Carry set correctly.");
+    equal(MOS6502._statusRegister.dumpStatus(),0x20 + 0x40 + 0x08 + 0x01,"Test 4: Overflow & Carry set correctly.");
     equal(MOS6502._A, 0x75, "Test 4: ADC performed in decimal mode correctly.");
 
     /**
      * Test 5:
      * 89 + 76 and C=0 gives 65 and N=0 V=0 Z=0 C=1 (simulate)
      */
-    MOS6502._P = 0x20 + 0x08;
+    //MOS6502._statusRegister.dumpStatus() = 0x20 + 0x08;
     MOS6502._RAM[OperandAddress] = 0x89;
     MOS6502._A = 0x76;
     MOS6502._PC = PCStart;
 
     MOS6502.emulateCycle();
 
-    equal(MOS6502._P,0x20 + 0x08 + 0x01,"Test 5: Carry set correctly.");
+    equal(MOS6502._statusRegister.dumpStatus(),0x20 + 0x08 + 0x01,"Test 5: Carry set correctly.");
     equal(MOS6502._A, 0x65, "Test 5: ADC performed in decimal mode correctly.");
 
     /**
@@ -10344,70 +8573,70 @@ test("0x79 - ADC (Absolute, Y) (Same Page)", function() {
      *
      * Fails: Carry is not set.
      */
-    MOS6502._P = 0x20 + 0x08 + 0x01;
+    //MOS6502._statusRegister.dumpStatus() = 0x20 + 0x08 + 0x01;
     MOS6502._RAM[OperandAddress] = 0x89;
     MOS6502._A = 0x76;
     MOS6502._PC = PCStart;
 
     MOS6502.emulateCycle();
 
-    equal(MOS6502._P,0x20 + 0x08 + 0x01,"Test 6: Carry set correctly.");
+    equal(MOS6502._statusRegister.dumpStatus(),0x20 + 0x08 + 0x01,"Test 6: Carry set correctly.");
     equal(MOS6502._A, 0x66, "Test 6: ADC performed in decimal mode correctly.");
 
     /**
      * Test 7:
      * 80 + f0 and C=0 gives d0 and N=1 V=1 Z=0 C=1
      */
-    MOS6502._P = 0x20 + 0x80 + 0x08;
+    //MOS6502._statusRegister.dumpStatus() = 0x20 + 0x80 + 0x08;
     MOS6502._RAM[OperandAddress] = 0x80;
     MOS6502._A = 0xF0;
     MOS6502._PC = PCStart;
 
     MOS6502.emulateCycle();
 
-    equal(MOS6502._P,0x20 + 0x80 + 0x40 + 0x08 + 0x01,"Test 7: Overflow & Carry set correctly.");
+    equal(MOS6502._statusRegister.dumpStatus(),0x20 + 0x80 + 0x40 + 0x08 + 0x01,"Test 7: Overflow & Carry set correctly.");
     equal(MOS6502._A, 0xD0, "Test 7: ADC performed in decimal mode correctly.");
 
     /**
      * Test 8:
      * 80 + fa and C=0 gives e0 and N=1 V=0 Z=0 C=1
      */
-    MOS6502._P = 0x20 + 0x08;
+    //MOS6502._statusRegister.dumpStatus() = 0x20 + 0x08;
     MOS6502._RAM[OperandAddress] = 0x80;
     MOS6502._A = 0xFA;
     MOS6502._PC = PCStart;
 
     MOS6502.emulateCycle();
 
-    equal(MOS6502._P,0x20 + 0x80 + 0x08 + 0x01,"Test 8: Sign & Carry set correctly.");
+    equal(MOS6502._statusRegister.dumpStatus(),0x20 + 0x80 + 0x08 + 0x01,"Test 8: Sign & Carry set correctly.");
     equal(MOS6502._A, 0xE0, "Test 8: ADC performed in decimal mode correctly.");
 
     /**
      * Test 9:
      * 2f + 4f and C=0 gives 74 and N=0 V=0 Z=0 C=0
      */
-    MOS6502._P = 0x20 + 0x08;
+    //MOS6502._statusRegister.dumpStatus() = 0x20 + 0x08;
     MOS6502._RAM[OperandAddress] = 0x4F;
     MOS6502._A = 0x2F;
     MOS6502._PC = PCStart;
 
     MOS6502.emulateCycle();
 
-    equal(MOS6502._P,0x20 + 0x08,"Test 9: Status register set correctly.");
+    equal(MOS6502._statusRegister.dumpStatus(),0x20 + 0x08,"Test 9: Status register set correctly.");
     equal(MOS6502._A, 0x74, "Test 9: ADC performed in decimal mode correctly.");
 
     /**
      * Test 10:
      * 6f + 00 and C=1 gives 76 and N=0 V=0 Z=0 C=0 (simulate)
      */
-    MOS6502._P = 0x20 + 0x08 + 0x01;
+    //MOS6502._statusRegister.dumpStatus() = 0x20 + 0x08 + 0x01;
     MOS6502._RAM[OperandAddress] = 0x6F;
     MOS6502._A = 0x00;
     MOS6502._PC = PCStart;
 
     MOS6502.emulateCycle();
 
-    equal(MOS6502._P,0x20 + 0x08,"Test 10: Status register set correctly.");
+    equal(MOS6502._statusRegister.dumpStatus(),0x20 + 0x08,"Test 10: Status register set correctly.");
     equal(MOS6502._A, 0x76, "Test 10: ADC performed in decimal mode correctly.");
 
     /**
@@ -10415,14 +8644,14 @@ test("0x79 - ADC (Absolute, Y) (Same Page)", function() {
      * DECIMAL MODE OFF
      * 00 + 00 and C=0 gives 00 and N=0 V=0 Z=1 C=0
      */
-    MOS6502._P = 0x20;
+    
     MOS6502._RAM[OperandAddress] = 0x00;
     MOS6502._A = 0x00;
     MOS6502._PC = PCStart;
 
     MOS6502.emulateCycle();
 
-    equal(MOS6502._P,0x20 + 0x02,"Test 11: Zero set correctly.");
+    equal(MOS6502._statusRegister.dumpStatus(),0x20 + 0x02,"Test 11: Zero set correctly.");
     equal(MOS6502._A, 0x00, "Test 11: ADC performed in decimal mode correctly.");
 
     /**
@@ -10430,7 +8659,7 @@ test("0x79 - ADC (Absolute, Y) (Same Page)", function() {
      * DECIMAL MODE OFF
      * FF + FF and C=1 gives FF and N=1 V=0 Z=0 C=1
      */
-    MOS6502._P = 0x20 + 0x01;
+    //MOS6502._statusRegister.dumpStatus() = 0x20 + 0x01;
     MOS6502._RAM[OperandAddress] = 0xFF;
     MOS6502._A = 0xFF;
     MOS6502._PC = PCStart;
@@ -10438,7 +8667,7 @@ test("0x79 - ADC (Absolute, Y) (Same Page)", function() {
 
     MOS6502.emulateCycle();
 
-    equal(MOS6502._P,0x20 + 0x80 + 0x01,"Test 12: Flags set correctly.");
+    equal(MOS6502._statusRegister.dumpStatus(),0x20 + 0x80 + 0x01,"Test 12: Flags set correctly.");
     equal(MOS6502._A, 0xFF, "Test 12: ADC performed in decimal mode correctly.");
     equal(MOS6502._PC, PCStart + BytesUsed,"Program counter increased correctly.");
     equal(MOS6502._CYCLES, CycleCost,"Cycles increased correctly.");
@@ -10473,70 +8702,70 @@ test("0x79 - ADC (Absolute, Y) (Cross Page)", function() {
      * 00 + 00 and C=0 gives 00 and N=0 V=0 Z=1 C=0
      */
 
-    MOS6502._P = 0x20 + 0x08;
+    //MOS6502._statusRegister.dumpStatus() = 0x20 + 0x08;
     MOS6502._RAM[OperandAddress] = 0x00;
     MOS6502._A = 0x00;
     MOS6502._PC = PCStart;
 
     MOS6502.emulateCycle();
 
-    equal(MOS6502._P,0x20 + 0x08 + 0x02,"Test 1: Zero set correctly.");
+    equal(MOS6502._statusRegister.dumpStatus(),0x20 + 0x08 + 0x02,"Test 1: Zero set correctly.");
     equal(MOS6502._A, 0x00, "Test 1: ADC performed in decimal mode correctly.");
 
     /**
      * Test 2:
      * 79 + 00 and C=1 gives 80 and N=1 V=1 Z=0 C=0
      */
-    MOS6502._P = 0x20 + 0x08 + 0x01;
+    //MOS6502._statusRegister.dumpStatus() = 0x20 + 0x08 + 0x01;
     MOS6502._RAM[OperandAddress] = 0x79;
     MOS6502._A = 0x00;
     MOS6502._PC = PCStart;
 
     MOS6502.emulateCycle();
 
-    equal(MOS6502._P,0x20 + 0x80 + 0x40 + 0x08,"Test 2: Sign & Overflow set correctly.");
+    equal(MOS6502._statusRegister.dumpStatus(),0x20 + 0x80 + 0x40 + 0x08,"Test 2: Sign & Overflow set correctly.");
     equal(MOS6502._A, 0x80, "Test 2: ADC performed in decimal mode correctly.");
 
     /**
      * Test 3:
      * 24 + 56 and C=0 gives 80 and N=1 V=1 Z=0 C=0 (simulate)
      */
-    MOS6502._P = 0x20 + 0x08;
+    //MOS6502._statusRegister.dumpStatus() = 0x20 + 0x08;
     MOS6502._RAM[OperandAddress] = 0x24;
     MOS6502._A = 0x56;
     MOS6502._PC = PCStart;
 
     MOS6502.emulateCycle();
 
-    equal(MOS6502._P,0x20 + 0x80 + 0x40 + 0x08,"Test 3: Sign & Overflow set correctly.");
+    equal(MOS6502._statusRegister.dumpStatus(),0x20 + 0x80 + 0x40 + 0x08,"Test 3: Sign & Overflow set correctly.");
     equal(MOS6502._A, 0x80, "Test 3: ADC performed in decimal mode correctly.");
 
     /**
      * Test 4:
      * 93 + 82 and C=0 gives 75 and N=0 V=1 Z=0 C=1 (simulate)
      */
-    MOS6502._P = 0x20 + 0x08;
+    //MOS6502._statusRegister.dumpStatus() = 0x20 + 0x08;
     MOS6502._RAM[OperandAddress] = 0x93;
     MOS6502._A = 0x82;
     MOS6502._PC = PCStart;
 
     MOS6502.emulateCycle();
 
-    equal(MOS6502._P,0x20 + 0x40 + 0x08 + 0x01,"Test 4: Overflow & Carry set correctly.");
+    equal(MOS6502._statusRegister.dumpStatus(),0x20 + 0x40 + 0x08 + 0x01,"Test 4: Overflow & Carry set correctly.");
     equal(MOS6502._A, 0x75, "Test 4: ADC performed in decimal mode correctly.");
 
     /**
      * Test 5:
      * 89 + 76 and C=0 gives 65 and N=0 V=0 Z=0 C=1 (simulate)
      */
-    MOS6502._P = 0x20 + 0x08;
+    //MOS6502._statusRegister.dumpStatus() = 0x20 + 0x08;
     MOS6502._RAM[OperandAddress] = 0x89;
     MOS6502._A = 0x76;
     MOS6502._PC = PCStart;
 
     MOS6502.emulateCycle();
 
-    equal(MOS6502._P,0x20 + 0x08 + 0x01,"Test 5: Carry set correctly.");
+    equal(MOS6502._statusRegister.dumpStatus(),0x20 + 0x08 + 0x01,"Test 5: Carry set correctly.");
     equal(MOS6502._A, 0x65, "Test 5: ADC performed in decimal mode correctly.");
 
     /**
@@ -10545,70 +8774,70 @@ test("0x79 - ADC (Absolute, Y) (Cross Page)", function() {
      *
      * Fails: Carry is not set.
      */
-    MOS6502._P = 0x20 + 0x08 + 0x01;
+    //MOS6502._statusRegister.dumpStatus() = 0x20 + 0x08 + 0x01;
     MOS6502._RAM[OperandAddress] = 0x89;
     MOS6502._A = 0x76;
     MOS6502._PC = PCStart;
 
     MOS6502.emulateCycle();
 
-    equal(MOS6502._P,0x20 + 0x08 + 0x01,"Test 6: Carry set correctly.");
+    equal(MOS6502._statusRegister.dumpStatus(),0x20 + 0x08 + 0x01,"Test 6: Carry set correctly.");
     equal(MOS6502._A, 0x66, "Test 6: ADC performed in decimal mode correctly.");
 
     /**
      * Test 7:
      * 80 + f0 and C=0 gives d0 and N=1 V=1 Z=0 C=1
      */
-    MOS6502._P = 0x20 + 0x80 + 0x08;
+    //MOS6502._statusRegister.dumpStatus() = 0x20 + 0x80 + 0x08;
     MOS6502._RAM[OperandAddress] = 0x80;
     MOS6502._A = 0xF0;
     MOS6502._PC = PCStart;
 
     MOS6502.emulateCycle();
 
-    equal(MOS6502._P,0x20 + 0x80 + 0x40 + 0x08 + 0x01,"Test 7: Overflow & Carry set correctly.");
+    equal(MOS6502._statusRegister.dumpStatus(),0x20 + 0x80 + 0x40 + 0x08 + 0x01,"Test 7: Overflow & Carry set correctly.");
     equal(MOS6502._A, 0xD0, "Test 7: ADC performed in decimal mode correctly.");
 
     /**
      * Test 8:
      * 80 + fa and C=0 gives e0 and N=1 V=0 Z=0 C=1
      */
-    MOS6502._P = 0x20 + 0x08;
+    //MOS6502._statusRegister.dumpStatus() = 0x20 + 0x08;
     MOS6502._RAM[OperandAddress] = 0x80;
     MOS6502._A = 0xFA;
     MOS6502._PC = PCStart;
 
     MOS6502.emulateCycle();
 
-    equal(MOS6502._P,0x20 + 0x80 + 0x08 + 0x01,"Test 8: Sign & Carry set correctly.");
+    equal(MOS6502._statusRegister.dumpStatus(),0x20 + 0x80 + 0x08 + 0x01,"Test 8: Sign & Carry set correctly.");
     equal(MOS6502._A, 0xE0, "Test 8: ADC performed in decimal mode correctly.");
 
     /**
      * Test 9:
      * 2f + 4f and C=0 gives 74 and N=0 V=0 Z=0 C=0
      */
-    MOS6502._P = 0x20 + 0x08;
+    //MOS6502._statusRegister.dumpStatus() = 0x20 + 0x08;
     MOS6502._RAM[OperandAddress] = 0x4F;
     MOS6502._A = 0x2F;
     MOS6502._PC = PCStart;
 
     MOS6502.emulateCycle();
 
-    equal(MOS6502._P,0x20 + 0x08,"Test 9: Status register set correctly.");
+    equal(MOS6502._statusRegister.dumpStatus(),0x20 + 0x08,"Test 9: Status register set correctly.");
     equal(MOS6502._A, 0x74, "Test 9: ADC performed in decimal mode correctly.");
 
     /**
      * Test 10:
      * 6f + 00 and C=1 gives 76 and N=0 V=0 Z=0 C=0 (simulate)
      */
-    MOS6502._P = 0x20 + 0x08 + 0x01;
+    //MOS6502._statusRegister.dumpStatus() = 0x20 + 0x08 + 0x01;
     MOS6502._RAM[OperandAddress] = 0x6F;
     MOS6502._A = 0x00;
     MOS6502._PC = PCStart;
 
     MOS6502.emulateCycle();
 
-    equal(MOS6502._P,0x20 + 0x08,"Test 10: Status register set correctly.");
+    equal(MOS6502._statusRegister.dumpStatus(),0x20 + 0x08,"Test 10: Status register set correctly.");
     equal(MOS6502._A, 0x76, "Test 10: ADC performed in decimal mode correctly.");
 
     /**
@@ -10616,14 +8845,14 @@ test("0x79 - ADC (Absolute, Y) (Cross Page)", function() {
      * DECIMAL MODE OFF
      * 00 + 00 and C=0 gives 00 and N=0 V=0 Z=1 C=0
      */
-    MOS6502._P = 0x20;
+    
     MOS6502._RAM[OperandAddress] = 0x00;
     MOS6502._A = 0x00;
     MOS6502._PC = PCStart;
 
     MOS6502.emulateCycle();
 
-    equal(MOS6502._P,0x20 + 0x02,"Test 11: Zero set correctly.");
+    equal(MOS6502._statusRegister.dumpStatus(),0x20 + 0x02,"Test 11: Zero set correctly.");
     equal(MOS6502._A, 0x00, "Test 11: ADC performed in decimal mode correctly.");
 
     /**
@@ -10631,7 +8860,7 @@ test("0x79 - ADC (Absolute, Y) (Cross Page)", function() {
      * DECIMAL MODE OFF
      * FF + FF and C=1 gives FF and N=1 V=0 Z=0 C=1
      */
-    MOS6502._P = 0x20 + 0x01;
+    //MOS6502._statusRegister.dumpStatus() = 0x20 + 0x01;
     MOS6502._RAM[OperandAddress] = 0xFF;
     MOS6502._A = 0xFF;
     MOS6502._PC = PCStart;
@@ -10639,7 +8868,7 @@ test("0x79 - ADC (Absolute, Y) (Cross Page)", function() {
 
     MOS6502.emulateCycle();
 
-    equal(MOS6502._P,0x20 + 0x80 + 0x01,"Test 12: Flags set correctly.");
+    equal(MOS6502._statusRegister.dumpStatus(),0x20 + 0x80 + 0x01,"Test 12: Flags set correctly.");
     equal(MOS6502._A, 0xFF, "Test 12: ADC performed in decimal mode correctly.");
     equal(MOS6502._PC, PCStart + BytesUsed,"Program counter increased correctly.");
     equal(MOS6502._CYCLES, CycleCost,"Cycles increased correctly.");
@@ -10677,70 +8906,70 @@ test("0x61 - ADC (Indirect, X)", function() {
      * 00 + 00 and C=0 gives 00 and N=0 V=0 Z=1 C=0
      */
 
-    MOS6502._P = 0x20 + 0x08;
+    //MOS6502._statusRegister.dumpStatus() = 0x20 + 0x08;
     MOS6502._RAM[OperandAddress] = 0x00;
     MOS6502._A = 0x00;
     MOS6502._PC = PCStart;
 
     MOS6502.emulateCycle();
 
-    equal(MOS6502._P,0x20 + 0x08 + 0x02,"Test 1: Zero set correctly.");
+    equal(MOS6502._statusRegister.dumpStatus(),0x20 + 0x08 + 0x02,"Test 1: Zero set correctly.");
     equal(MOS6502._A, 0x00, "Test 1: ADC performed in decimal mode correctly.");
 
     /**
      * Test 2:
      * 79 + 00 and C=1 gives 80 and N=1 V=1 Z=0 C=0
      */
-    MOS6502._P = 0x20 + 0x08 + 0x01;
+    //MOS6502._statusRegister.dumpStatus() = 0x20 + 0x08 + 0x01;
     MOS6502._RAM[OperandAddress] = 0x79;
     MOS6502._A = 0x00;
     MOS6502._PC = PCStart;
 
     MOS6502.emulateCycle();
 
-    equal(MOS6502._P,0x20 + 0x80 + 0x40 + 0x08,"Test 2: Sign & Overflow set correctly.");
+    equal(MOS6502._statusRegister.dumpStatus(),0x20 + 0x80 + 0x40 + 0x08,"Test 2: Sign & Overflow set correctly.");
     equal(MOS6502._A, 0x80, "Test 2: ADC performed in decimal mode correctly.");
 
     /**
      * Test 3:
      * 24 + 56 and C=0 gives 80 and N=1 V=1 Z=0 C=0 (simulate)
      */
-    MOS6502._P = 0x20 + 0x08;
+    //MOS6502._statusRegister.dumpStatus() = 0x20 + 0x08;
     MOS6502._RAM[OperandAddress] = 0x24;
     MOS6502._A = 0x56;
     MOS6502._PC = PCStart;
 
     MOS6502.emulateCycle();
 
-    equal(MOS6502._P,0x20 + 0x80 + 0x40 + 0x08,"Test 3: Sign & Overflow set correctly.");
+    equal(MOS6502._statusRegister.dumpStatus(),0x20 + 0x80 + 0x40 + 0x08,"Test 3: Sign & Overflow set correctly.");
     equal(MOS6502._A, 0x80, "Test 3: ADC performed in decimal mode correctly.");
 
     /**
      * Test 4:
      * 93 + 82 and C=0 gives 75 and N=0 V=1 Z=0 C=1 (simulate)
      */
-    MOS6502._P = 0x20 + 0x08;
+    //MOS6502._statusRegister.dumpStatus() = 0x20 + 0x08;
     MOS6502._RAM[OperandAddress] = 0x93;
     MOS6502._A = 0x82;
     MOS6502._PC = PCStart;
 
     MOS6502.emulateCycle();
 
-    equal(MOS6502._P,0x20 + 0x40 + 0x08 + 0x01,"Test 4: Overflow & Carry set correctly.");
+    equal(MOS6502._statusRegister.dumpStatus(),0x20 + 0x40 + 0x08 + 0x01,"Test 4: Overflow & Carry set correctly.");
     equal(MOS6502._A, 0x75, "Test 4: ADC performed in decimal mode correctly.");
 
     /**
      * Test 5:
      * 89 + 76 and C=0 gives 65 and N=0 V=0 Z=0 C=1 (simulate)
      */
-    MOS6502._P = 0x20 + 0x08;
+    //MOS6502._statusRegister.dumpStatus() = 0x20 + 0x08;
     MOS6502._RAM[OperandAddress] = 0x89;
     MOS6502._A = 0x76;
     MOS6502._PC = PCStart;
 
     MOS6502.emulateCycle();
 
-    equal(MOS6502._P,0x20 + 0x08 + 0x01,"Test 5: Carry set correctly.");
+    equal(MOS6502._statusRegister.dumpStatus(),0x20 + 0x08 + 0x01,"Test 5: Carry set correctly.");
     equal(MOS6502._A, 0x65, "Test 5: ADC performed in decimal mode correctly.");
 
     /**
@@ -10749,70 +8978,70 @@ test("0x61 - ADC (Indirect, X)", function() {
      *
      * Fails: Carry is not set.
      */
-    MOS6502._P = 0x20 + 0x08 + 0x01;
+    //MOS6502._statusRegister.dumpStatus() = 0x20 + 0x08 + 0x01;
     MOS6502._RAM[OperandAddress] = 0x89;
     MOS6502._A = 0x76;
     MOS6502._PC = PCStart;
 
     MOS6502.emulateCycle();
 
-    equal(MOS6502._P,0x20 + 0x08 + 0x01,"Test 6: Carry set correctly.");
+    equal(MOS6502._statusRegister.dumpStatus(),0x20 + 0x08 + 0x01,"Test 6: Carry set correctly.");
     equal(MOS6502._A, 0x66, "Test 6: ADC performed in decimal mode correctly.");
 
     /**
      * Test 7:
      * 80 + f0 and C=0 gives d0 and N=1 V=1 Z=0 C=1
      */
-    MOS6502._P = 0x20 + 0x80 + 0x08;
+    //MOS6502._statusRegister.dumpStatus() = 0x20 + 0x80 + 0x08;
     MOS6502._RAM[OperandAddress] = 0x80;
     MOS6502._A = 0xF0;
     MOS6502._PC = PCStart;
 
     MOS6502.emulateCycle();
 
-    equal(MOS6502._P,0x20 + 0x80 + 0x40 + 0x08 + 0x01,"Test 7: Overflow & Carry set correctly.");
+    equal(MOS6502._statusRegister.dumpStatus(),0x20 + 0x80 + 0x40 + 0x08 + 0x01,"Test 7: Overflow & Carry set correctly.");
     equal(MOS6502._A, 0xD0, "Test 7: ADC performed in decimal mode correctly.");
 
     /**
      * Test 8:
      * 80 + fa and C=0 gives e0 and N=1 V=0 Z=0 C=1
      */
-    MOS6502._P = 0x20 + 0x08;
+    //MOS6502._statusRegister.dumpStatus() = 0x20 + 0x08;
     MOS6502._RAM[OperandAddress] = 0x80;
     MOS6502._A = 0xFA;
     MOS6502._PC = PCStart;
 
     MOS6502.emulateCycle();
 
-    equal(MOS6502._P,0x20 + 0x80 + 0x08 + 0x01,"Test 8: Sign & Carry set correctly.");
+    equal(MOS6502._statusRegister.dumpStatus(),0x20 + 0x80 + 0x08 + 0x01,"Test 8: Sign & Carry set correctly.");
     equal(MOS6502._A, 0xE0, "Test 8: ADC performed in decimal mode correctly.");
 
     /**
      * Test 9:
      * 2f + 4f and C=0 gives 74 and N=0 V=0 Z=0 C=0
      */
-    MOS6502._P = 0x20 + 0x08;
+    //MOS6502._statusRegister.dumpStatus() = 0x20 + 0x08;
     MOS6502._RAM[OperandAddress] = 0x4F;
     MOS6502._A = 0x2F;
     MOS6502._PC = PCStart;
 
     MOS6502.emulateCycle();
 
-    equal(MOS6502._P,0x20 + 0x08,"Test 9: Status register set correctly.");
+    equal(MOS6502._statusRegister.dumpStatus(),0x20 + 0x08,"Test 9: Status register set correctly.");
     equal(MOS6502._A, 0x74, "Test 9: ADC performed in decimal mode correctly.");
 
     /**
      * Test 10:
      * 6f + 00 and C=1 gives 76 and N=0 V=0 Z=0 C=0 (simulate)
      */
-    MOS6502._P = 0x20 + 0x08 + 0x01;
+    //MOS6502._statusRegister.dumpStatus() = 0x20 + 0x08 + 0x01;
     MOS6502._RAM[OperandAddress] = 0x6F;
     MOS6502._A = 0x00;
     MOS6502._PC = PCStart;
 
     MOS6502.emulateCycle();
 
-    equal(MOS6502._P,0x20 + 0x08,"Test 10: Status register set correctly.");
+    equal(MOS6502._statusRegister.dumpStatus(),0x20 + 0x08,"Test 10: Status register set correctly.");
     equal(MOS6502._A, 0x76, "Test 10: ADC performed in decimal mode correctly.");
 
     /**
@@ -10820,14 +9049,14 @@ test("0x61 - ADC (Indirect, X)", function() {
      * DECIMAL MODE OFF
      * 00 + 00 and C=0 gives 00 and N=0 V=0 Z=1 C=0
      */
-    MOS6502._P = 0x20;
+    
     MOS6502._RAM[OperandAddress] = 0x00;
     MOS6502._A = 0x00;
     MOS6502._PC = PCStart;
 
     MOS6502.emulateCycle();
 
-    equal(MOS6502._P,0x20 + 0x02,"Test 11: Zero set correctly.");
+    equal(MOS6502._statusRegister.dumpStatus(),0x20 + 0x02,"Test 11: Zero set correctly.");
     equal(MOS6502._A, 0x00, "Test 11: ADC performed in decimal mode correctly.");
 
     /**
@@ -10835,7 +9064,7 @@ test("0x61 - ADC (Indirect, X)", function() {
      * DECIMAL MODE OFF
      * FF + FF and C=1 gives FF and N=1 V=0 Z=0 C=1
      */
-    MOS6502._P = 0x20 + 0x01;
+    //MOS6502._statusRegister.dumpStatus() = 0x20 + 0x01;
     MOS6502._RAM[OperandAddress] = 0xFF;
     MOS6502._A = 0xFF;
     MOS6502._PC = PCStart;
@@ -10843,7 +9072,7 @@ test("0x61 - ADC (Indirect, X)", function() {
 
     MOS6502.emulateCycle();
 
-    equal(MOS6502._P,0x20 + 0x80 + 0x01,"Test 12: Flags set correctly.");
+    equal(MOS6502._statusRegister.dumpStatus(),0x20 + 0x80 + 0x01,"Test 12: Flags set correctly.");
     equal(MOS6502._A, 0xFF, "Test 12: ADC performed in decimal mode correctly.");
     equal(MOS6502._PC, PCStart + BytesUsed,"Program counter increased correctly.");
     equal(MOS6502._CYCLES, CycleCost,"Cycles increased correctly.");
@@ -10881,70 +9110,70 @@ test("0x71 - ADC (Indirect, Y) (Same Page)", function() {
      * 00 + 00 and C=0 gives 00 and N=0 V=0 Z=1 C=0
      */
 
-    MOS6502._P = 0x20 + 0x08;
+    //MOS6502._statusRegister.dumpStatus() = 0x20 + 0x08;
     MOS6502._RAM[OperandAddress] = 0x00;
     MOS6502._A = 0x00;
     MOS6502._PC = PCStart;
 
     MOS6502.emulateCycle();
 
-    equal(MOS6502._P,0x20 + 0x08 + 0x02,"Test 1: Zero set correctly.");
+    equal(MOS6502._statusRegister.dumpStatus(),0x20 + 0x08 + 0x02,"Test 1: Zero set correctly.");
     equal(MOS6502._A, 0x00, "Test 1: ADC performed in decimal mode correctly.");
 
     /**
      * Test 2:
      * 79 + 00 and C=1 gives 80 and N=1 V=1 Z=0 C=0
      */
-    MOS6502._P = 0x20 + 0x08 + 0x01;
+    //MOS6502._statusRegister.dumpStatus() = 0x20 + 0x08 + 0x01;
     MOS6502._RAM[OperandAddress] = 0x79;
     MOS6502._A = 0x00;
     MOS6502._PC = PCStart;
 
     MOS6502.emulateCycle();
 
-    equal(MOS6502._P,0x20 + 0x80 + 0x40 + 0x08,"Test 2: Sign & Overflow set correctly.");
+    equal(MOS6502._statusRegister.dumpStatus(),0x20 + 0x80 + 0x40 + 0x08,"Test 2: Sign & Overflow set correctly.");
     equal(MOS6502._A, 0x80, "Test 2: ADC performed in decimal mode correctly.");
 
     /**
      * Test 3:
      * 24 + 56 and C=0 gives 80 and N=1 V=1 Z=0 C=0 (simulate)
      */
-    MOS6502._P = 0x20 + 0x08;
+    //MOS6502._statusRegister.dumpStatus() = 0x20 + 0x08;
     MOS6502._RAM[OperandAddress] = 0x24;
     MOS6502._A = 0x56;
     MOS6502._PC = PCStart;
 
     MOS6502.emulateCycle();
 
-    equal(MOS6502._P,0x20 + 0x80 + 0x40 + 0x08,"Test 3: Sign & Overflow set correctly.");
+    equal(MOS6502._statusRegister.dumpStatus(),0x20 + 0x80 + 0x40 + 0x08,"Test 3: Sign & Overflow set correctly.");
     equal(MOS6502._A, 0x80, "Test 3: ADC performed in decimal mode correctly.");
 
     /**
      * Test 4:
      * 93 + 82 and C=0 gives 75 and N=0 V=1 Z=0 C=1 (simulate)
      */
-    MOS6502._P = 0x20 + 0x08;
+    //MOS6502._statusRegister.dumpStatus() = 0x20 + 0x08;
     MOS6502._RAM[OperandAddress] = 0x93;
     MOS6502._A = 0x82;
     MOS6502._PC = PCStart;
 
     MOS6502.emulateCycle();
 
-    equal(MOS6502._P,0x20 + 0x40 + 0x08 + 0x01,"Test 4: Overflow & Carry set correctly.");
+    equal(MOS6502._statusRegister.dumpStatus(),0x20 + 0x40 + 0x08 + 0x01,"Test 4: Overflow & Carry set correctly.");
     equal(MOS6502._A, 0x75, "Test 4: ADC performed in decimal mode correctly.");
 
     /**
      * Test 5:
      * 89 + 76 and C=0 gives 65 and N=0 V=0 Z=0 C=1 (simulate)
      */
-    MOS6502._P = 0x20 + 0x08;
+    //MOS6502._statusRegister.dumpStatus() = 0x20 + 0x08;
     MOS6502._RAM[OperandAddress] = 0x89;
     MOS6502._A = 0x76;
     MOS6502._PC = PCStart;
 
     MOS6502.emulateCycle();
 
-    equal(MOS6502._P,0x20 + 0x08 + 0x01,"Test 5: Carry set correctly.");
+    equal(MOS6502._statusRegister.dumpStatus(),0x20 + 0x08 + 0x01,"Test 5: Carry set correctly.");
     equal(MOS6502._A, 0x65, "Test 5: ADC performed in decimal mode correctly.");
 
     /**
@@ -10953,70 +9182,70 @@ test("0x71 - ADC (Indirect, Y) (Same Page)", function() {
      *
      * Fails: Carry is not set.
      */
-    MOS6502._P = 0x20 + 0x08 + 0x01;
+    //MOS6502._statusRegister.dumpStatus() = 0x20 + 0x08 + 0x01;
     MOS6502._RAM[OperandAddress] = 0x89;
     MOS6502._A = 0x76;
     MOS6502._PC = PCStart;
 
     MOS6502.emulateCycle();
 
-    equal(MOS6502._P,0x20 + 0x08 + 0x01,"Test 6: Carry set correctly.");
+    equal(MOS6502._statusRegister.dumpStatus(),0x20 + 0x08 + 0x01,"Test 6: Carry set correctly.");
     equal(MOS6502._A, 0x66, "Test 6: ADC performed in decimal mode correctly.");
 
     /**
      * Test 7:
      * 80 + f0 and C=0 gives d0 and N=1 V=1 Z=0 C=1
      */
-    MOS6502._P = 0x20 + 0x80 + 0x08;
+    //MOS6502._statusRegister.dumpStatus() = 0x20 + 0x80 + 0x08;
     MOS6502._RAM[OperandAddress] = 0x80;
     MOS6502._A = 0xF0;
     MOS6502._PC = PCStart;
 
     MOS6502.emulateCycle();
 
-    equal(MOS6502._P,0x20 + 0x80 + 0x40 + 0x08 + 0x01,"Test 7: Overflow & Carry set correctly.");
+    equal(MOS6502._statusRegister.dumpStatus(),0x20 + 0x80 + 0x40 + 0x08 + 0x01,"Test 7: Overflow & Carry set correctly.");
     equal(MOS6502._A, 0xD0, "Test 7: ADC performed in decimal mode correctly.");
 
     /**
      * Test 8:
      * 80 + fa and C=0 gives e0 and N=1 V=0 Z=0 C=1
      */
-    MOS6502._P = 0x20 + 0x08;
+    //MOS6502._statusRegister.dumpStatus() = 0x20 + 0x08;
     MOS6502._RAM[OperandAddress] = 0x80;
     MOS6502._A = 0xFA;
     MOS6502._PC = PCStart;
 
     MOS6502.emulateCycle();
 
-    equal(MOS6502._P,0x20 + 0x80 + 0x08 + 0x01,"Test 8: Sign & Carry set correctly.");
+    equal(MOS6502._statusRegister.dumpStatus(),0x20 + 0x80 + 0x08 + 0x01,"Test 8: Sign & Carry set correctly.");
     equal(MOS6502._A, 0xE0, "Test 8: ADC performed in decimal mode correctly.");
 
     /**
      * Test 9:
      * 2f + 4f and C=0 gives 74 and N=0 V=0 Z=0 C=0
      */
-    MOS6502._P = 0x20 + 0x08;
+    //MOS6502._statusRegister.dumpStatus() = 0x20 + 0x08;
     MOS6502._RAM[OperandAddress] = 0x4F;
     MOS6502._A = 0x2F;
     MOS6502._PC = PCStart;
 
     MOS6502.emulateCycle();
 
-    equal(MOS6502._P,0x20 + 0x08,"Test 9: Status register set correctly.");
+    equal(MOS6502._statusRegister.dumpStatus(),0x20 + 0x08,"Test 9: Status register set correctly.");
     equal(MOS6502._A, 0x74, "Test 9: ADC performed in decimal mode correctly.");
 
     /**
      * Test 10:
      * 6f + 00 and C=1 gives 76 and N=0 V=0 Z=0 C=0 (simulate)
      */
-    MOS6502._P = 0x20 + 0x08 + 0x01;
+    //MOS6502._statusRegister.dumpStatus() = 0x20 + 0x08 + 0x01;
     MOS6502._RAM[OperandAddress] = 0x6F;
     MOS6502._A = 0x00;
     MOS6502._PC = PCStart;
 
     MOS6502.emulateCycle();
 
-    equal(MOS6502._P,0x20 + 0x08,"Test 10: Status register set correctly.");
+    equal(MOS6502._statusRegister.dumpStatus(),0x20 + 0x08,"Test 10: Status register set correctly.");
     equal(MOS6502._A, 0x76, "Test 10: ADC performed in decimal mode correctly.");
 
     /**
@@ -11024,14 +9253,14 @@ test("0x71 - ADC (Indirect, Y) (Same Page)", function() {
      * DECIMAL MODE OFF
      * 00 + 00 and C=0 gives 00 and N=0 V=0 Z=1 C=0
      */
-    MOS6502._P = 0x20;
+    
     MOS6502._RAM[OperandAddress] = 0x00;
     MOS6502._A = 0x00;
     MOS6502._PC = PCStart;
 
     MOS6502.emulateCycle();
 
-    equal(MOS6502._P,0x20 + 0x02,"Test 11: Zero set correctly.");
+    equal(MOS6502._statusRegister.dumpStatus(),0x20 + 0x02,"Test 11: Zero set correctly.");
     equal(MOS6502._A, 0x00, "Test 11: ADC performed in decimal mode correctly.");
 
     /**
@@ -11039,7 +9268,7 @@ test("0x71 - ADC (Indirect, Y) (Same Page)", function() {
      * DECIMAL MODE OFF
      * FF + FF and C=1 gives FF and N=1 V=0 Z=0 C=1
      */
-    MOS6502._P = 0x20 + 0x01;
+    //MOS6502._statusRegister.dumpStatus() = 0x20 + 0x01;
     MOS6502._RAM[OperandAddress] = 0xFF;
     MOS6502._A = 0xFF;
     MOS6502._PC = PCStart;
@@ -11047,7 +9276,7 @@ test("0x71 - ADC (Indirect, Y) (Same Page)", function() {
 
     MOS6502.emulateCycle();
 
-    equal(MOS6502._P,0x20 + 0x80 + 0x01,"Test 12: Flags set correctly.");
+    equal(MOS6502._statusRegister.dumpStatus(),0x20 + 0x80 + 0x01,"Test 12: Flags set correctly.");
     equal(MOS6502._A, 0xFF, "Test 12: ADC performed in decimal mode correctly.");
     equal(MOS6502._PC, PCStart + BytesUsed,"Program counter increased correctly.");
     equal(MOS6502._CYCLES, CycleCost,"Cycles increased correctly.");
@@ -11085,70 +9314,70 @@ test("0x71 - ADC (Indirect, Y) (Cross Page)", function() {
      * 00 + 00 and C=0 gives 00 and N=0 V=0 Z=1 C=0
      */
 
-    MOS6502._P = 0x20 + 0x08;
+    //MOS6502._statusRegister.dumpStatus() = 0x20 + 0x08;
     MOS6502._RAM[OperandAddress] = 0x00;
     MOS6502._A = 0x00;
     MOS6502._PC = PCStart;
 
     MOS6502.emulateCycle();
 
-    equal(MOS6502._P,0x20 + 0x08 + 0x02,"Test 1: Zero set correctly.");
+    equal(MOS6502._statusRegister.dumpStatus(),0x20 + 0x08 + 0x02,"Test 1: Zero set correctly.");
     equal(MOS6502._A, 0x00, "Test 1: ADC performed in decimal mode correctly.");
 
     /**
      * Test 2:
      * 79 + 00 and C=1 gives 80 and N=1 V=1 Z=0 C=0
      */
-    MOS6502._P = 0x20 + 0x08 + 0x01;
+    //MOS6502._statusRegister.dumpStatus() = 0x20 + 0x08 + 0x01;
     MOS6502._RAM[OperandAddress] = 0x79;
     MOS6502._A = 0x00;
     MOS6502._PC = PCStart;
 
     MOS6502.emulateCycle();
 
-    equal(MOS6502._P,0x20 + 0x80 + 0x40 + 0x08,"Test 2: Sign & Overflow set correctly.");
+    equal(MOS6502._statusRegister.dumpStatus(),0x20 + 0x80 + 0x40 + 0x08,"Test 2: Sign & Overflow set correctly.");
     equal(MOS6502._A, 0x80, "Test 2: ADC performed in decimal mode correctly.");
 
     /**
      * Test 3:
      * 24 + 56 and C=0 gives 80 and N=1 V=1 Z=0 C=0 (simulate)
      */
-    MOS6502._P = 0x20 + 0x08;
+    //MOS6502._statusRegister.dumpStatus() = 0x20 + 0x08;
     MOS6502._RAM[OperandAddress] = 0x24;
     MOS6502._A = 0x56;
     MOS6502._PC = PCStart;
 
     MOS6502.emulateCycle();
 
-    equal(MOS6502._P,0x20 + 0x80 + 0x40 + 0x08,"Test 3: Sign & Overflow set correctly.");
+    equal(MOS6502._statusRegister.dumpStatus(),0x20 + 0x80 + 0x40 + 0x08,"Test 3: Sign & Overflow set correctly.");
     equal(MOS6502._A, 0x80, "Test 3: ADC performed in decimal mode correctly.");
 
     /**
      * Test 4:
      * 93 + 82 and C=0 gives 75 and N=0 V=1 Z=0 C=1 (simulate)
      */
-    MOS6502._P = 0x20 + 0x08;
+    //MOS6502._statusRegister.dumpStatus() = 0x20 + 0x08;
     MOS6502._RAM[OperandAddress] = 0x93;
     MOS6502._A = 0x82;
     MOS6502._PC = PCStart;
 
     MOS6502.emulateCycle();
 
-    equal(MOS6502._P,0x20 + 0x40 + 0x08 + 0x01,"Test 4: Overflow & Carry set correctly.");
+    equal(MOS6502._statusRegister.dumpStatus(),0x20 + 0x40 + 0x08 + 0x01,"Test 4: Overflow & Carry set correctly.");
     equal(MOS6502._A, 0x75, "Test 4: ADC performed in decimal mode correctly.");
 
     /**
      * Test 5:
      * 89 + 76 and C=0 gives 65 and N=0 V=0 Z=0 C=1 (simulate)
      */
-    MOS6502._P = 0x20 + 0x08;
+    //MOS6502._statusRegister.dumpStatus() = 0x20 + 0x08;
     MOS6502._RAM[OperandAddress] = 0x89;
     MOS6502._A = 0x76;
     MOS6502._PC = PCStart;
 
     MOS6502.emulateCycle();
 
-    equal(MOS6502._P,0x20 + 0x08 + 0x01,"Test 5: Carry set correctly.");
+    equal(MOS6502._statusRegister.dumpStatus(),0x20 + 0x08 + 0x01,"Test 5: Carry set correctly.");
     equal(MOS6502._A, 0x65, "Test 5: ADC performed in decimal mode correctly.");
 
     /**
@@ -11157,70 +9386,70 @@ test("0x71 - ADC (Indirect, Y) (Cross Page)", function() {
      *
      * Fails: Carry is not set.
      */
-    MOS6502._P = 0x20 + 0x08 + 0x01;
+    //MOS6502._statusRegister.dumpStatus() = 0x20 + 0x08 + 0x01;
     MOS6502._RAM[OperandAddress] = 0x89;
     MOS6502._A = 0x76;
     MOS6502._PC = PCStart;
 
     MOS6502.emulateCycle();
 
-    equal(MOS6502._P,0x20 + 0x08 + 0x01,"Test 6: Carry set correctly.");
+    equal(MOS6502._statusRegister.dumpStatus(),0x20 + 0x08 + 0x01,"Test 6: Carry set correctly.");
     equal(MOS6502._A, 0x66, "Test 6: ADC performed in decimal mode correctly.");
 
     /**
      * Test 7:
      * 80 + f0 and C=0 gives d0 and N=1 V=1 Z=0 C=1
      */
-    MOS6502._P = 0x20 + 0x80 + 0x08;
+    //MOS6502._statusRegister.dumpStatus() = 0x20 + 0x80 + 0x08;
     MOS6502._RAM[OperandAddress] = 0x80;
     MOS6502._A = 0xF0;
     MOS6502._PC = PCStart;
 
     MOS6502.emulateCycle();
 
-    equal(MOS6502._P,0x20 + 0x80 + 0x40 + 0x08 + 0x01,"Test 7: Overflow & Carry set correctly.");
+    equal(MOS6502._statusRegister.dumpStatus(),0x20 + 0x80 + 0x40 + 0x08 + 0x01,"Test 7: Overflow & Carry set correctly.");
     equal(MOS6502._A, 0xD0, "Test 7: ADC performed in decimal mode correctly.");
 
     /**
      * Test 8:
      * 80 + fa and C=0 gives e0 and N=1 V=0 Z=0 C=1
      */
-    MOS6502._P = 0x20 + 0x08;
+    //MOS6502._statusRegister.dumpStatus() = 0x20 + 0x08;
     MOS6502._RAM[OperandAddress] = 0x80;
     MOS6502._A = 0xFA;
     MOS6502._PC = PCStart;
 
     MOS6502.emulateCycle();
 
-    equal(MOS6502._P,0x20 + 0x80 + 0x08 + 0x01,"Test 8: Sign & Carry set correctly.");
+    equal(MOS6502._statusRegister.dumpStatus(),0x20 + 0x80 + 0x08 + 0x01,"Test 8: Sign & Carry set correctly.");
     equal(MOS6502._A, 0xE0, "Test 8: ADC performed in decimal mode correctly.");
 
     /**
      * Test 9:
      * 2f + 4f and C=0 gives 74 and N=0 V=0 Z=0 C=0
      */
-    MOS6502._P = 0x20 + 0x08;
+    //MOS6502._statusRegister.dumpStatus() = 0x20 + 0x08;
     MOS6502._RAM[OperandAddress] = 0x4F;
     MOS6502._A = 0x2F;
     MOS6502._PC = PCStart;
 
     MOS6502.emulateCycle();
 
-    equal(MOS6502._P,0x20 + 0x08,"Test 9: Status register set correctly.");
+    equal(MOS6502._statusRegister.dumpStatus(),0x20 + 0x08,"Test 9: Status register set correctly.");
     equal(MOS6502._A, 0x74, "Test 9: ADC performed in decimal mode correctly.");
 
     /**
      * Test 10:
      * 6f + 00 and C=1 gives 76 and N=0 V=0 Z=0 C=0 (simulate)
      */
-    MOS6502._P = 0x20 + 0x08 + 0x01;
+    //MOS6502._statusRegister.dumpStatus() = 0x20 + 0x08 + 0x01;
     MOS6502._RAM[OperandAddress] = 0x6F;
     MOS6502._A = 0x00;
     MOS6502._PC = PCStart;
 
     MOS6502.emulateCycle();
 
-    equal(MOS6502._P,0x20 + 0x08,"Test 10: Status register set correctly.");
+    equal(MOS6502._statusRegister.dumpStatus(),0x20 + 0x08,"Test 10: Status register set correctly.");
     equal(MOS6502._A, 0x76, "Test 10: ADC performed in decimal mode correctly.");
 
     /**
@@ -11228,14 +9457,14 @@ test("0x71 - ADC (Indirect, Y) (Cross Page)", function() {
      * DECIMAL MODE OFF
      * 00 + 00 and C=0 gives 00 and N=0 V=0 Z=1 C=0
      */
-    MOS6502._P = 0x20;
+    
     MOS6502._RAM[OperandAddress] = 0x00;
     MOS6502._A = 0x00;
     MOS6502._PC = PCStart;
 
     MOS6502.emulateCycle();
 
-    equal(MOS6502._P,0x20 + 0x02,"Test 11: Zero set correctly.");
+    equal(MOS6502._statusRegister.dumpStatus(),0x20 + 0x02,"Test 11: Zero set correctly.");
     equal(MOS6502._A, 0x00, "Test 11: ADC performed in decimal mode correctly.");
 
     /**
@@ -11243,7 +9472,7 @@ test("0x71 - ADC (Indirect, Y) (Cross Page)", function() {
      * DECIMAL MODE OFF
      * FF + FF and C=1 gives FF and N=1 V=0 Z=0 C=1
      */
-    MOS6502._P = 0x20 + 0x01;
+    //MOS6502._statusRegister.dumpStatus() = 0x20 + 0x01;
     MOS6502._RAM[OperandAddress] = 0xFF;
     MOS6502._A = 0xFF;
     MOS6502._PC = PCStart;
@@ -11251,7 +9480,7 @@ test("0x71 - ADC (Indirect, Y) (Cross Page)", function() {
 
     MOS6502.emulateCycle();
 
-    equal(MOS6502._P,0x20 + 0x80 + 0x01,"Test 12: Flags set correctly.");
+    equal(MOS6502._statusRegister.dumpStatus(),0x20 + 0x80 + 0x01,"Test 12: Flags set correctly.");
     equal(MOS6502._A, 0xFF, "Test 12: ADC performed in decimal mode correctly.");
     equal(MOS6502._PC, PCStart + BytesUsed,"Program counter increased correctly.");
     equal(MOS6502._CYCLES, CycleCost,"Cycles increased correctly.");
@@ -11287,7 +9516,7 @@ test("0x6A - ROR (Accumulator)",function() {
      * Test 1: Set none.
      */
     MOS6502._A = 102;
-    MOS6502._P = 0x20;
+    
 
     MOS6502._PC = PCStart;
 
@@ -11297,7 +9526,7 @@ test("0x6A - ROR (Accumulator)",function() {
         51,
         "Test 1: Set none - ROR successfully applied.");
 
-    equal(MOS6502._P,
+    equal(MOS6502._statusRegister.dumpStatus(),
         0x20,
         "Test 1: Set none - Status Register correctly set.");
 
@@ -11305,7 +9534,7 @@ test("0x6A - ROR (Accumulator)",function() {
      * Test 2: Carry set. Sets sign.
      */
     MOS6502._A = 102;
-    MOS6502._P = 0x21;
+    //MOS6502._statusRegister.dumpStatus() = 0x21;
 
     MOS6502._PC = PCStart;
 
@@ -11315,7 +9544,7 @@ test("0x6A - ROR (Accumulator)",function() {
         179,
         "Test 2: Carry set. ROR sets sign. - ROR successfully applied.");
 
-    equal(MOS6502._P,
+    equal(MOS6502._statusRegister.dumpStatus(),
         0xA0,
         "Test 2: Carry set. ROR sets sign. - Status Register correctly set.");
 
@@ -11323,7 +9552,7 @@ test("0x6A - ROR (Accumulator)",function() {
      * Test 3: Carry set. ROR Sets sign and carry.
      */
     MOS6502._A = 89;
-    MOS6502._P = 0x21;
+    //MOS6502._statusRegister.dumpStatus() = 0x21;
 
     MOS6502._PC = PCStart;
     MOS6502._CYCLES = 0;
@@ -11334,7 +9563,7 @@ test("0x6A - ROR (Accumulator)",function() {
         172,
         "Test 3: Carry set. ROR Sets sign and carry - ROR successfully applied.");
 
-    equal(MOS6502._P,
+    equal(MOS6502._statusRegister.dumpStatus(),
         0xA1,
         "Test 3: Carry set. ROR Sets sign and carry - Status Register correctly set.");
 
@@ -11342,7 +9571,7 @@ test("0x6A - ROR (Accumulator)",function() {
      * Test 4: Carry not set. ROR Sets zero.
      */
     MOS6502._A = 0;
-    MOS6502._P = 0x20;
+    
 
     MOS6502._PC = PCStart;
 
@@ -11352,7 +9581,7 @@ test("0x6A - ROR (Accumulator)",function() {
         0,
         "Test 4: Carry not set. ROR Sets zero - ROR successfully applied.");
 
-    equal(MOS6502._P,
+    equal(MOS6502._statusRegister.dumpStatus(),
         0x22,
         "Test 4: Carry not set. ROR Sets zero - Status Register correctly set.");
 
@@ -11360,7 +9589,7 @@ test("0x6A - ROR (Accumulator)",function() {
      * Test 5: Carry not set. ROR Sets zero and carry.
      */
     MOS6502._A = 1;
-    MOS6502._P = 0x20;
+    
 
     MOS6502._PC = PCStart;
     MOS6502._CYCLES = 0;
@@ -11371,7 +9600,7 @@ test("0x6A - ROR (Accumulator)",function() {
         0,
         "Test 5: Carry not set. ROR Sets zero and carry - ROR successfully applied.");
 
-    equal(MOS6502._P,
+    equal(MOS6502._statusRegister.dumpStatus(),
         0x23,
         "Test 5: Carry not set. ROR Sets zero and carry - Status Register correctly set.");
 
@@ -11406,7 +9635,7 @@ test("0x66 - ROR (Zero Page)",function() {
      * Test 1: Set none.
      */
     MOS6502._RAM[OperandLocation] = 102;
-    MOS6502._P = 0x20;
+    
 
     MOS6502._PC = PCStart;
 
@@ -11416,7 +9645,7 @@ test("0x66 - ROR (Zero Page)",function() {
         51,
         "Test 1: Set none - ROR successfully applied.");
 
-    equal(MOS6502._P,
+    equal(MOS6502._statusRegister.dumpStatus(),
         0x20,
         "Test 1: Set none - Status Register correctly set.");
 
@@ -11424,7 +9653,7 @@ test("0x66 - ROR (Zero Page)",function() {
      * Test 2: Carry set. Sets sign.
      */
     MOS6502._RAM[OperandLocation] = 102;
-    MOS6502._P = 0x21;
+    //MOS6502._statusRegister.dumpStatus() = 0x21;
 
     MOS6502._PC = PCStart;
 
@@ -11434,7 +9663,7 @@ test("0x66 - ROR (Zero Page)",function() {
         179,
         "Test 2: Carry set. ROR sets sign. - ROR successfully applied.");
 
-    equal(MOS6502._P,
+    equal(MOS6502._statusRegister.dumpStatus(),
         0xA0,
         "Test 2: Carry set. ROR sets sign. - Status Register correctly set.");
 
@@ -11442,7 +9671,7 @@ test("0x66 - ROR (Zero Page)",function() {
      * Test 3: Carry set. ROR Sets sign and carry.
      */
     MOS6502._RAM[OperandLocation] = 89;
-    MOS6502._P = 0x21;
+    //MOS6502._statusRegister.dumpStatus() = 0x21;
 
     MOS6502._PC = PCStart;
     MOS6502._CYCLES = 0;
@@ -11453,7 +9682,7 @@ test("0x66 - ROR (Zero Page)",function() {
         172,
         "Test 3: Carry set. ROR Sets sign and carry - ROR successfully applied.");
 
-    equal(MOS6502._P,
+    equal(MOS6502._statusRegister.dumpStatus(),
         0xA1,
         "Test 3: Carry set. ROR Sets sign and carry - Status Register correctly set.");
 
@@ -11461,7 +9690,7 @@ test("0x66 - ROR (Zero Page)",function() {
      * Test 4: Carry not set. ROR Sets zero.
      */
     MOS6502._RAM[OperandLocation] = 0;
-    MOS6502._P = 0x20;
+    
 
     MOS6502._PC = PCStart;
 
@@ -11471,7 +9700,7 @@ test("0x66 - ROR (Zero Page)",function() {
         0,
         "Test 4: Carry not set. ROR Sets zero - ROR successfully applied.");
 
-    equal(MOS6502._P,
+    equal(MOS6502._statusRegister.dumpStatus(),
         0x22,
         "Test 4: Carry not set. ROR Sets zero - Status Register correctly set.");
 
@@ -11479,7 +9708,7 @@ test("0x66 - ROR (Zero Page)",function() {
      * Test 5: Carry not set. ROR Sets zero and carry.
      */
     MOS6502._RAM[OperandLocation] = 1;
-    MOS6502._P = 0x20;
+    
 
     MOS6502._PC = PCStart;
     MOS6502._CYCLES = 0;
@@ -11490,7 +9719,7 @@ test("0x66 - ROR (Zero Page)",function() {
         0,
         "Test 5: Carry not set. ROR Sets zero and carry - ROR successfully applied.");
 
-    equal(MOS6502._P,
+    equal(MOS6502._statusRegister.dumpStatus(),
         0x23,
         "Test 5: Carry not set. ROR Sets zero and carry - Status Register correctly set.");
 
@@ -11526,7 +9755,7 @@ test("0x76 - ROR (Zero Page, X)",function() {
      * Test 1: Set none.
      */
     MOS6502._RAM[OperandLocation] = 102;
-    MOS6502._P = 0x20;
+    
 
     MOS6502._PC = PCStart;
 
@@ -11536,7 +9765,7 @@ test("0x76 - ROR (Zero Page, X)",function() {
         51,
         "Test 1: Set none - ROR successfully applied.");
 
-    equal(MOS6502._P,
+    equal(MOS6502._statusRegister.dumpStatus(),
         0x20,
         "Test 1: Set none - Status Register correctly set.");
 
@@ -11544,7 +9773,7 @@ test("0x76 - ROR (Zero Page, X)",function() {
      * Test 2: Carry set. Sets sign.
      */
     MOS6502._RAM[OperandLocation] = 102;
-    MOS6502._P = 0x21;
+    //MOS6502._statusRegister.dumpStatus() = 0x21;
 
     MOS6502._PC = PCStart;
 
@@ -11554,7 +9783,7 @@ test("0x76 - ROR (Zero Page, X)",function() {
         179,
         "Test 2: Carry set. ROR sets sign. - ROR successfully applied.");
 
-    equal(MOS6502._P,
+    equal(MOS6502._statusRegister.dumpStatus(),
         0xA0,
         "Test 2: Carry set. ROR sets sign. - Status Register correctly set.");
 
@@ -11562,7 +9791,7 @@ test("0x76 - ROR (Zero Page, X)",function() {
      * Test 3: Carry set. ROR Sets sign and carry.
      */
     MOS6502._RAM[OperandLocation] = 89;
-    MOS6502._P = 0x21;
+    //MOS6502._statusRegister.dumpStatus() = 0x21;
 
     MOS6502._PC = PCStart;
     MOS6502._CYCLES = 0;
@@ -11573,7 +9802,7 @@ test("0x76 - ROR (Zero Page, X)",function() {
         172,
         "Test 3: Carry set. ROR Sets sign and carry - ROR successfully applied.");
 
-    equal(MOS6502._P,
+    equal(MOS6502._statusRegister.dumpStatus(),
         0xA1,
         "Test 3: Carry set. ROR Sets sign and carry - Status Register correctly set.");
 
@@ -11581,7 +9810,7 @@ test("0x76 - ROR (Zero Page, X)",function() {
      * Test 4: Carry not set. ROR Sets zero.
      */
     MOS6502._RAM[OperandLocation] = 0;
-    MOS6502._P = 0x20;
+    
 
     MOS6502._PC = PCStart;
 
@@ -11591,7 +9820,7 @@ test("0x76 - ROR (Zero Page, X)",function() {
         0,
         "Test 4: Carry not set. ROR Sets zero - ROR successfully applied.");
 
-    equal(MOS6502._P,
+    equal(MOS6502._statusRegister.dumpStatus(),
         0x22,
         "Test 4: Carry not set. ROR Sets zero - Status Register correctly set.");
 
@@ -11599,7 +9828,7 @@ test("0x76 - ROR (Zero Page, X)",function() {
      * Test 5: Carry not set. ROR Sets zero and carry.
      */
     MOS6502._RAM[OperandLocation] = 1;
-    MOS6502._P = 0x20;
+    
 
     MOS6502._PC = PCStart;
     MOS6502._CYCLES = 0;
@@ -11610,7 +9839,7 @@ test("0x76 - ROR (Zero Page, X)",function() {
         0,
         "Test 5: Carry not set. ROR Sets zero and carry - ROR successfully applied.");
 
-    equal(MOS6502._P,
+    equal(MOS6502._statusRegister.dumpStatus(),
         0x23,
         "Test 5: Carry not set. ROR Sets zero and carry - Status Register correctly set.");
 
@@ -11647,7 +9876,7 @@ test("0x6E - ROR (Absolute)",function() {
      * Test 1: Set none.
      */
     MOS6502._RAM[OperandLocation] = 102;
-    MOS6502._P = 0x20;
+    
 
     MOS6502._PC = PCStart;
 
@@ -11657,7 +9886,7 @@ test("0x6E - ROR (Absolute)",function() {
         51,
         "Test 1: Set none - ROR successfully applied.");
 
-    equal(MOS6502._P,
+    equal(MOS6502._statusRegister.dumpStatus(),
         0x20,
         "Test 1: Set none - Status Register correctly set.");
 
@@ -11665,7 +9894,7 @@ test("0x6E - ROR (Absolute)",function() {
      * Test 2: Carry set. Sets sign.
      */
     MOS6502._RAM[OperandLocation] = 102;
-    MOS6502._P = 0x21;
+    //MOS6502._statusRegister.dumpStatus() = 0x21;
 
     MOS6502._PC = PCStart;
 
@@ -11675,7 +9904,7 @@ test("0x6E - ROR (Absolute)",function() {
         179,
         "Test 2: Carry set. ROR sets sign. - ROR successfully applied.");
 
-    equal(MOS6502._P,
+    equal(MOS6502._statusRegister.dumpStatus(),
         0xA0,
         "Test 2: Carry set. ROR sets sign. - Status Register correctly set.");
 
@@ -11683,7 +9912,7 @@ test("0x6E - ROR (Absolute)",function() {
      * Test 3: Carry set. ROR Sets sign and carry.
      */
     MOS6502._RAM[OperandLocation] = 89;
-    MOS6502._P = 0x21;
+    //MOS6502._statusRegister.dumpStatus() = 0x21;
 
     MOS6502._PC = PCStart;
     MOS6502._CYCLES = 0;
@@ -11694,7 +9923,7 @@ test("0x6E - ROR (Absolute)",function() {
         172,
         "Test 3: Carry set. ROR Sets sign and carry - ROR successfully applied.");
 
-    equal(MOS6502._P,
+    equal(MOS6502._statusRegister.dumpStatus(),
         0xA1,
         "Test 3: Carry set. ROR Sets sign and carry - Status Register correctly set.");
 
@@ -11702,7 +9931,7 @@ test("0x6E - ROR (Absolute)",function() {
      * Test 4: Carry not set. ROR Sets zero.
      */
     MOS6502._RAM[OperandLocation] = 0;
-    MOS6502._P = 0x20;
+    
 
     MOS6502._PC = PCStart;
 
@@ -11712,7 +9941,7 @@ test("0x6E - ROR (Absolute)",function() {
         0,
         "Test 4: Carry not set. ROR Sets zero - ROR successfully applied.");
 
-    equal(MOS6502._P,
+    equal(MOS6502._statusRegister.dumpStatus(),
         0x22,
         "Test 4: Carry not set. ROR Sets zero - Status Register correctly set.");
 
@@ -11720,7 +9949,7 @@ test("0x6E - ROR (Absolute)",function() {
      * Test 5: Carry not set. ROR Sets zero and carry.
      */
     MOS6502._RAM[OperandLocation] = 1;
-    MOS6502._P = 0x20;
+    
 
     MOS6502._PC = PCStart;
     MOS6502._CYCLES = 0;
@@ -11731,7 +9960,7 @@ test("0x6E - ROR (Absolute)",function() {
         0,
         "Test 5: Carry not set. ROR Sets zero and carry - ROR successfully applied.");
 
-    equal(MOS6502._P,
+    equal(MOS6502._statusRegister.dumpStatus(),
         0x23,
         "Test 5: Carry not set. ROR Sets zero and carry - Status Register correctly set.");
 
@@ -11770,7 +9999,7 @@ test("0x7E - ROR (Absolute, X)",function() {
      * Test 1: Set none.
      */
     MOS6502._RAM[OperandLocation] = 102;
-    MOS6502._P = 0x20;
+    
 
     MOS6502._PC = PCStart;
 
@@ -11780,7 +10009,7 @@ test("0x7E - ROR (Absolute, X)",function() {
         51,
         "Test 1: Set none - ROR successfully applied.");
 
-    equal(MOS6502._P,
+    equal(MOS6502._statusRegister.dumpStatus(),
         0x20,
         "Test 1: Set none - Status Register correctly set.");
 
@@ -11788,7 +10017,7 @@ test("0x7E - ROR (Absolute, X)",function() {
      * Test 2: Carry set. Sets sign.
      */
     MOS6502._RAM[OperandLocation] = 102;
-    MOS6502._P = 0x21;
+    //MOS6502._statusRegister.dumpStatus() = 0x21;
 
     MOS6502._PC = PCStart;
 
@@ -11798,7 +10027,7 @@ test("0x7E - ROR (Absolute, X)",function() {
         179,
         "Test 2: Carry set. ROR sets sign. - ROR successfully applied.");
 
-    equal(MOS6502._P,
+    equal(MOS6502._statusRegister.dumpStatus(),
         0xA0,
         "Test 2: Carry set. ROR sets sign. - Status Register correctly set.");
 
@@ -11806,7 +10035,7 @@ test("0x7E - ROR (Absolute, X)",function() {
      * Test 3: Carry set. ROR Sets sign and carry.
      */
     MOS6502._RAM[OperandLocation] = 89;
-    MOS6502._P = 0x21;
+    //MOS6502._statusRegister.dumpStatus() = 0x21;
 
     MOS6502._PC = PCStart;
     MOS6502._CYCLES = 0;
@@ -11817,7 +10046,7 @@ test("0x7E - ROR (Absolute, X)",function() {
         172,
         "Test 3: Carry set. ROR Sets sign and carry - ROR successfully applied.");
 
-    equal(MOS6502._P,
+    equal(MOS6502._statusRegister.dumpStatus(),
         0xA1,
         "Test 3: Carry set. ROR Sets sign and carry - Status Register correctly set.");
 
@@ -11825,7 +10054,7 @@ test("0x7E - ROR (Absolute, X)",function() {
      * Test 4: Carry not set. ROR Sets zero.
      */
     MOS6502._RAM[OperandLocation] = 0;
-    MOS6502._P = 0x20;
+    
 
     MOS6502._PC = PCStart;
 
@@ -11835,7 +10064,7 @@ test("0x7E - ROR (Absolute, X)",function() {
         0,
         "Test 4: Carry not set. ROR Sets zero - ROR successfully applied.");
 
-    equal(MOS6502._P,
+    equal(MOS6502._statusRegister.dumpStatus(),
         0x22,
         "Test 4: Carry not set. ROR Sets zero - Status Register correctly set.");
 
@@ -11843,7 +10072,7 @@ test("0x7E - ROR (Absolute, X)",function() {
      * Test 5: Carry not set. ROR Sets zero and carry.
      */
     MOS6502._RAM[OperandLocation] = 1;
-    MOS6502._P = 0x20;
+    
 
     MOS6502._PC = PCStart;
     MOS6502._CYCLES = 0;
@@ -11854,7 +10083,7 @@ test("0x7E - ROR (Absolute, X)",function() {
         0,
         "Test 5: Carry not set. ROR Sets zero and carry - ROR successfully applied.");
 
-    equal(MOS6502._P,
+    equal(MOS6502._statusRegister.dumpStatus(),
         0x23,
         "Test 5: Carry not set. ROR Sets zero and carry - Status Register correctly set.");
 
@@ -11953,7 +10182,7 @@ test("0x70 - BVS (Relative)", function() {
      */
 
         // Enable overflow.
-    MOS6502._P = 0x20;
+    
 
     MOS6502.emulateCycle();
 
@@ -11969,7 +10198,7 @@ test("0x70 - BVS (Relative)", function() {
      * Test 2: Overflow set. Branch forward to same page. (3 cycles)
      */
 
-    MOS6502._P = 0x60;
+    //MOS6502._statusRegister.dumpStatus() = 0x60;
     MOS6502._PC = PCStart;
     MOS6502._RAM[PCStart + 1] = relativePlusSamePage;
     MOS6502._CYCLES = 0;
@@ -11988,7 +10217,7 @@ test("0x70 - BVS (Relative)", function() {
      * Test 3: Overflow set. Branch backward to same page. (3 cycles)
      */
 
-    MOS6502._P = 0x60;
+    //MOS6502._statusRegister.dumpStatus() = 0x60;
     MOS6502._PC = PCStart;
     MOS6502._RAM[PCStart + 1] = relativeMinusSamePage;
     MOS6502._CYCLES = 0;
@@ -11996,7 +10225,7 @@ test("0x70 - BVS (Relative)", function() {
     MOS6502.emulateCycle();
 
     equal(MOS6502._PC,
-            (PCStart + relativeMinusSamePage) - 256,
+            (PCStart + relativeMinusSamePage) - 255,
         "Overflow set, branch backwards, same page: Program Counter set correctly.");
 
     equal(MOS6502._CYCLES,
@@ -12009,7 +10238,7 @@ test("0x70 - BVS (Relative)", function() {
      * NOTE: It's not possible to branch to another page from 0x4080. Using 0x40E0 for forward branch.
      */
 
-    MOS6502._P = 0x60;
+    //MOS6502._statusRegister.dumpStatus() = 0x60;
     MOS6502._PC = PCStartHigh;
     MOS6502._RAM[PCStartHigh + 1] = relativePlusNextPage;
     MOS6502._CYCLES = 0;
@@ -12028,7 +10257,7 @@ test("0x70 - BVS (Relative)", function() {
      * Test 5: Overflow set. Branch backward to different page. (4 cycles)
      */
 
-    MOS6502._P = 0x60;
+    //MOS6502._statusRegister.dumpStatus() = 0x60;
     MOS6502._PC = PCStartLow;
     MOS6502._RAM[PCStartLow + 1] = relativeMinusNextPage;
     MOS6502._CYCLES = 0;
@@ -12036,7 +10265,7 @@ test("0x70 - BVS (Relative)", function() {
     MOS6502.emulateCycle();
 
     equal(MOS6502._PC,
-            (PCStartLow + relativeMinusNextPage) - 256,
+            (PCStartLow + relativeMinusNextPage) - 255,
         "Overflow set, branch backwards, different page: Program Counter set correctly.");
 
     equal(MOS6502._CYCLES,
@@ -12072,11 +10301,11 @@ test("0x78 - SEI (Implied)",function() {
 
     MOS6502._PC = PCStart;
     MOS6502._CYCLES = 0;
-    MOS6502._P = 0x20;
+    
 
     MOS6502.emulateCycle();
 
-    equal(MOS6502._P, 0x24, "Interrupt set successfully.");
+    equal(MOS6502._statusRegister.dumpStatus(), 0x24, "Interrupt set successfully.");
 
     equal(MOS6502._PC, PCStart + BytesUsed, "Program counter incremented successfully.");
 
@@ -12570,20 +10799,20 @@ test("0x88 - DEY (Implied)",function() {
      * Test 1: Set none.
      */
     MOS6502._PC = PCStart;
-    MOS6502._P = 0x20;
+    
     MOS6502._Y = 0x31;
 
     MOS6502.emulateCycle();
 
     equal(MOS6502._Y, 0x30, "Test 1: Y Index decremented successfully.");
 
-    equal(MOS6502._P, 0x20, "Test 1: Status register set correctly.");
+    equal(MOS6502._statusRegister.dumpStatus(), 0x20, "Test 1: Status register set correctly.");
 
     /**
      * Test 2: Set zero.
      */
     MOS6502._PC = PCStart;
-    MOS6502._P = 0x20;
+    
     MOS6502._CYCLES = 0;
     MOS6502._Y = 0x01;
 
@@ -12591,7 +10820,7 @@ test("0x88 - DEY (Implied)",function() {
 
     equal(MOS6502._Y, 0x00, "Test 2: Y Index decremented successfully.");
 
-    equal(MOS6502._P, 0x22, "Test 2: Status register set correctly.");
+    equal(MOS6502._statusRegister.dumpStatus(), 0x22, "Test 2: Status register set correctly.");
 
     equal(MOS6502._PC, PCStart + BytesUsed, "Program counter incremented successfully.");
 
@@ -12601,7 +10830,7 @@ test("0x88 - DEY (Implied)",function() {
      * Test 3: Set sign.
      */
     MOS6502._PC = PCStart;
-    MOS6502._P = 0x20;
+    
     MOS6502._CYCLES = 0;
     MOS6502._Y = 0x00;
 
@@ -12609,7 +10838,7 @@ test("0x88 - DEY (Implied)",function() {
 
     equal(MOS6502._Y, 0xFF, "Test 3: Y Index decremented successfully.");
 
-    equal(MOS6502._P, 0xA0, "Test 3: Status register set correctly.");
+    equal(MOS6502._statusRegister.dumpStatus(), 0xA0, "Test 3: Status register set correctly.");
 
     equal(MOS6502._PC, PCStart + BytesUsed, "Program counter incremented successfully.");
 
@@ -12646,35 +10875,35 @@ test("0x8A - TXA (Implied)",function() {
      */
 
     MOS6502._PC = PCStart;
-    MOS6502._P = 0x20;
+    
     MOS6502._X = 0x60;
 
     MOS6502.emulateCycle();
 
     equal(MOS6502._A, 0x60, "Test 1: Accumulator set successfully.");
 
-    equal(MOS6502._P, 0x20, "Test 1: Status register set correctly.");
+    equal(MOS6502._statusRegister.dumpStatus(), 0x20, "Test 1: Status register set correctly.");
 
     /**
      * Test 2: Set zero.
      */
 
     MOS6502._PC = PCStart;
-    MOS6502._P = 0x20;
+    
     MOS6502._X = 0x00;
 
     MOS6502.emulateCycle();
 
     equal(MOS6502._A, 0x00, "Test 2: Accumulator set successfully.");
 
-    equal(MOS6502._P, 0x22, "Test 2: Status register set correctly.");
+    equal(MOS6502._statusRegister.dumpStatus(), 0x22, "Test 2: Status register set correctly.");
 
     /**
      * Test 3: Set sign.
      */
 
     MOS6502._PC = PCStart;
-    MOS6502._P = 0x20;
+    
     MOS6502._CYCLES = 0;
     MOS6502._X = 0x82;
 
@@ -12682,7 +10911,7 @@ test("0x8A - TXA (Implied)",function() {
 
     equal(MOS6502._A, 0x82, "Test 3: Accumulator set successfully.");
 
-    equal(MOS6502._P, 0xA0, "Test 3: Status register set correctly.");
+    equal(MOS6502._statusRegister.dumpStatus(), 0xA0, "Test 3: Status register set correctly.");
 
     equal(MOS6502._PC, PCStart + BytesUsed, "Program counter incremented successfully.");
 
@@ -12730,7 +10959,7 @@ test("0x90 - BCC (Relative)", function() {
      */
 
         // Enable overflow.
-    MOS6502._P = 0x21;
+    //MOS6502._statusRegister.dumpStatus() = 0x21;
 
     MOS6502.emulateCycle();
 
@@ -12746,7 +10975,7 @@ test("0x90 - BCC (Relative)", function() {
      * Test 2: Carry clear. Branch forward to same page. (3 cycles)
      */
 
-    MOS6502._P = 0x20;
+    
     MOS6502._PC = PCStart;
     MOS6502._RAM[PCStart + 1] = relativePlusSamePage;
     MOS6502._CYCLES = 0;
@@ -12765,7 +10994,7 @@ test("0x90 - BCC (Relative)", function() {
      * Test 3: Carry clear. Branch backward to same page. (3 cycles)
      */
 
-    MOS6502._P = 0x20;
+    
     MOS6502._PC = PCStart;
     MOS6502._RAM[PCStart + 1] = relativeMinusSamePage;
     MOS6502._CYCLES = 0;
@@ -12773,7 +11002,7 @@ test("0x90 - BCC (Relative)", function() {
     MOS6502.emulateCycle();
 
     equal(MOS6502._PC,
-            (PCStart + relativeMinusSamePage) - 256,
+            (PCStart + relativeMinusSamePage) - 255,
         "Carry clear, branch backwards, same page: Program Counter set correctly.");
 
     equal(MOS6502._CYCLES,
@@ -12786,7 +11015,7 @@ test("0x90 - BCC (Relative)", function() {
      * NOTE: It's not possible to branch to another page from 0x4080. Using 0x40E0 for forward branch.
      */
 
-    MOS6502._P = 0x20;
+    
     MOS6502._PC = PCStartHigh;
     MOS6502._RAM[PCStartHigh + 1] = relativePlusNextPage;
     MOS6502._CYCLES = 0;
@@ -12805,7 +11034,7 @@ test("0x90 - BCC (Relative)", function() {
      * Test 5: Carry clear. Branch backward to different page. (4 cycles)
      */
 
-    MOS6502._P = 0x20;
+    
     MOS6502._PC = PCStartLow;
     MOS6502._RAM[PCStartLow + 1] = relativeMinusNextPage;
     MOS6502._CYCLES = 0;
@@ -12813,7 +11042,7 @@ test("0x90 - BCC (Relative)", function() {
     MOS6502.emulateCycle();
 
     equal(MOS6502._PC,
-            (PCStartLow + relativeMinusNextPage) - 256,
+            (PCStartLow + relativeMinusNextPage) - 255,
         "Carry clear, branch backwards, different page: Program Counter set correctly.");
 
     equal(MOS6502._CYCLES,
@@ -12852,35 +11081,35 @@ test("0x98 - TYA (Implied)",function() {
      */
 
     MOS6502._PC = PCStart;
-    MOS6502._P = 0x20;
+    
     MOS6502._Y = 0x60;
 
     MOS6502.emulateCycle();
 
     equal(MOS6502._A, 0x60, "Test 1: Accumulator set successfully.");
 
-    equal(MOS6502._P, 0x20, "Test 1: Status register set correctly.");
+    equal(MOS6502._statusRegister.dumpStatus(), 0x20, "Test 1: Status register set correctly.");
 
     /**
      * Test 2: Set zero.
      */
 
     MOS6502._PC = PCStart;
-    MOS6502._P = 0x20;
+    
     MOS6502._Y = 0x00;
 
     MOS6502.emulateCycle();
 
     equal(MOS6502._A, 0x00, "Test 2: Accumulator set successfully.");
 
-    equal(MOS6502._P, 0x22, "Test 2: Status register set correctly.");
+    equal(MOS6502._statusRegister.dumpStatus(), 0x22, "Test 2: Status register set correctly.");
 
     /**
      * Test 3: Set sign.
      */
 
     MOS6502._PC = PCStart;
-    MOS6502._P = 0x20;
+    
     MOS6502._CYCLES = 0;
     MOS6502._Y = 0x82;
 
@@ -12888,7 +11117,7 @@ test("0x98 - TYA (Implied)",function() {
 
     equal(MOS6502._A, 0x82, "Test 3: Accumulator set successfully.");
 
-    equal(MOS6502._P, 0xA0, "Test 3: Status register set correctly.");
+    equal(MOS6502._statusRegister.dumpStatus(), 0xA0, "Test 3: Status register set correctly.");
 
     equal(MOS6502._PC, PCStart + BytesUsed, "Program counter incremented successfully.");
 
@@ -12970,20 +11199,20 @@ test("0xA0 - LDY (Immediate)",function() {
 
     equal(MOS6502._Y, 0x53, "Test 1: Memory loaded into index Y correctly.");
 
-    equal(MOS6502._P, 0x20, "Test 1: Status register set correctly.");
+    equal(MOS6502._statusRegister.dumpStatus(), 0x20, "Test 1: Status register set correctly.");
 
     /**
      * Test 2: Set sign.
      */
     MOS6502._PC = PCStart;
     MOS6502._RAM[PCStart + 1] = 0x83;
-    MOS6502._P = 0x20;
+    
 
     MOS6502.emulateCycle();
 
     equal(MOS6502._Y, 0x83, "Test 2: Memory loaded into index Y correctly.");
 
-    equal(MOS6502._P, 0xA0, "Test 2: Status register set correctly.");
+    equal(MOS6502._statusRegister.dumpStatus(), 0xA0, "Test 2: Status register set correctly.");
 
     /**
      * Test 3: Set zero.
@@ -12991,13 +11220,13 @@ test("0xA0 - LDY (Immediate)",function() {
     MOS6502._PC = PCStart;
     MOS6502._RAM[PCStart + 1] = 0;
     MOS6502._CYCLES = 0;
-    MOS6502._P = 0x20;
+    
 
     MOS6502.emulateCycle();
 
     equal(MOS6502._Y, 0, "Test 3: Memory loaded into index Y correctly.");
 
-    equal(MOS6502._P, 0x22, "Test 3: Status register set correctly.");
+    equal(MOS6502._statusRegister.dumpStatus(), 0x22, "Test 3: Status register set correctly.");
 
     equal(MOS6502._PC, PCStart + BytesUsed, "Program counter incremented successfully.");
 
@@ -13030,20 +11259,20 @@ test("0xA4 - LDY (Zero Page)",function() {
 
     equal(MOS6502._Y, 0x53, "Test 1: Memory loaded into index Y correctly.");
 
-    equal(MOS6502._P, 0x20, "Test 1: Status register set correctly.");
+    equal(MOS6502._statusRegister.dumpStatus(), 0x20, "Test 1: Status register set correctly.");
 
     /**
      * Test 2: Set sign.
      */
     MOS6502._PC = PCStart;
     MOS6502._RAM[ZPAddress] = 0x83;
-    MOS6502._P = 0x20;
+    
 
     MOS6502.emulateCycle();
 
     equal(MOS6502._Y, 0x83, "Test 2: Memory loaded into index Y correctly.");
 
-    equal(MOS6502._P, 0xA0, "Test 2: Status register set correctly.");
+    equal(MOS6502._statusRegister.dumpStatus(), 0xA0, "Test 2: Status register set correctly.");
 
     /**
      * Test 3: Set zero.
@@ -13051,13 +11280,13 @@ test("0xA4 - LDY (Zero Page)",function() {
     MOS6502._PC = PCStart;
     MOS6502._RAM[ZPAddress] = 0;
     MOS6502._CYCLES = 0;
-    MOS6502._P = 0x20;
+    
 
     MOS6502.emulateCycle();
 
     equal(MOS6502._Y, 0, "Test 3: Memory loaded into index Y correctly.");
 
-    equal(MOS6502._P, 0x22, "Test 3: Status register set correctly.");
+    equal(MOS6502._statusRegister.dumpStatus(), 0x22, "Test 3: Status register set correctly.");
 
     equal(MOS6502._PC, PCStart + BytesUsed, "Program counter incremented successfully.");
 
@@ -13092,20 +11321,20 @@ test("0xB4 - LDY (Zero Page, X)",function() {
 
     equal(MOS6502._Y, 0x53, "Test 1: Memory loaded into index Y correctly.");
 
-    equal(MOS6502._P, 0x20, "Test 1: Status register set correctly.");
+    equal(MOS6502._statusRegister.dumpStatus(), 0x20, "Test 1: Status register set correctly.");
 
     /**
      * Test 2: Set sign.
      */
     MOS6502._PC = PCStart;
     MOS6502._RAM[(ZPAddress + XRegister) & 0xFF] = 0x83;
-    MOS6502._P = 0x20;
+    
 
     MOS6502.emulateCycle();
 
     equal(MOS6502._Y, 0x83, "Test 2: Memory loaded into index Y correctly.");
 
-    equal(MOS6502._P, 0xA0, "Test 2: Status register set correctly.");
+    equal(MOS6502._statusRegister.dumpStatus(), 0xA0, "Test 2: Status register set correctly.");
 
     /**
      * Test 3: Set zero.
@@ -13113,13 +11342,13 @@ test("0xB4 - LDY (Zero Page, X)",function() {
     MOS6502._PC = PCStart;
     MOS6502._RAM[(ZPAddress + XRegister) & 0xFF] = 0;
     MOS6502._CYCLES = 0;
-    MOS6502._P = 0x20;
+    
 
     MOS6502.emulateCycle();
 
     equal(MOS6502._Y, 0, "Test 3: Memory loaded into index Y correctly.");
 
-    equal(MOS6502._P, 0x22, "Test 3: Status register set correctly.");
+    equal(MOS6502._statusRegister.dumpStatus(), 0x22, "Test 3: Status register set correctly.");
 
     equal(MOS6502._PC, PCStart + BytesUsed, "Program counter incremented successfully.");
 
@@ -13155,20 +11384,20 @@ test("0xAC - LDY (Absolute)",function() {
 
     equal(MOS6502._Y, 0x53, "Test 1: Memory loaded into index Y correctly.");
 
-    equal(MOS6502._P, 0x20, "Test 1: Status register set correctly.");
+    equal(MOS6502._statusRegister.dumpStatus(), 0x20, "Test 1: Status register set correctly.");
 
     /**
      * Test 2: Set sign.
      */
     MOS6502._PC = PCStart;
     MOS6502._RAM[FullAddress] = 0x83;
-    MOS6502._P = 0x20;
+    
 
     MOS6502.emulateCycle();
 
     equal(MOS6502._Y, 0x83, "Test 2: Memory loaded into index Y correctly.");
 
-    equal(MOS6502._P, 0xA0, "Test 2: Status register set correctly.");
+    equal(MOS6502._statusRegister.dumpStatus(), 0xA0, "Test 2: Status register set correctly.");
 
     /**
      * Test 3: Set zero.
@@ -13176,13 +11405,13 @@ test("0xAC - LDY (Absolute)",function() {
     MOS6502._PC = PCStart;
     MOS6502._RAM[FullAddress] = 0;
     MOS6502._CYCLES = 0;
-    MOS6502._P = 0x20;
+    
 
     MOS6502.emulateCycle();
 
     equal(MOS6502._Y, 0, "Test 3: Memory loaded into index Y correctly.");
 
-    equal(MOS6502._P, 0x22, "Test 3: Status register set correctly.");
+    equal(MOS6502._statusRegister.dumpStatus(), 0x22, "Test 3: Status register set correctly.");
 
     equal(MOS6502._PC, PCStart + BytesUsed, "Program counter incremented successfully.");
 
@@ -13220,20 +11449,20 @@ test("0xBC - LDY (Absolute, X) (Same Page)",function() {
 
     equal(MOS6502._Y, 0x53, "Test 1: Memory loaded into index Y correctly.");
 
-    equal(MOS6502._P, 0x20, "Test 1: Status register set correctly.");
+    equal(MOS6502._statusRegister.dumpStatus(), 0x20, "Test 1: Status register set correctly.");
 
     /**
      * Test 2: Set sign.
      */
     MOS6502._PC = PCStart;
     MOS6502._RAM[FullAddress] = 0x83;
-    MOS6502._P = 0x20;
+    
 
     MOS6502.emulateCycle();
 
     equal(MOS6502._Y, 0x83, "Test 2: Memory loaded into index Y correctly.");
 
-    equal(MOS6502._P, 0xA0, "Test 2: Status register set correctly.");
+    equal(MOS6502._statusRegister.dumpStatus(), 0xA0, "Test 2: Status register set correctly.");
 
     /**
      * Test 3: Set zero.
@@ -13241,13 +11470,13 @@ test("0xBC - LDY (Absolute, X) (Same Page)",function() {
     MOS6502._PC = PCStart;
     MOS6502._RAM[FullAddress] = 0;
     MOS6502._CYCLES = 0;
-    MOS6502._P = 0x20;
+    
 
     MOS6502.emulateCycle();
 
     equal(MOS6502._Y, 0, "Test 3: Memory loaded into index Y correctly.");
 
-    equal(MOS6502._P, 0x22, "Test 3: Status register set correctly.");
+    equal(MOS6502._statusRegister.dumpStatus(), 0x22, "Test 3: Status register set correctly.");
 
     equal(MOS6502._PC, PCStart + BytesUsed, "Program counter incremented successfully.");
 
@@ -13285,20 +11514,20 @@ test("0xBC - LDY (Absolute, X) (Cross Page)",function() {
 
     equal(MOS6502._Y, 0x53, "Test 1: Memory loaded into index Y correctly.");
 
-    equal(MOS6502._P, 0x20, "Test 1: Status register set correctly.");
+    equal(MOS6502._statusRegister.dumpStatus(), 0x20, "Test 1: Status register set correctly.");
 
     /**
      * Test 2: Set sign.
      */
     MOS6502._PC = PCStart;
     MOS6502._RAM[FullAddress] = 0x83;
-    MOS6502._P = 0x20;
+    
 
     MOS6502.emulateCycle();
 
     equal(MOS6502._Y, 0x83, "Test 2: Memory loaded into index Y correctly.");
 
-    equal(MOS6502._P, 0xA0, "Test 2: Status register set correctly.");
+    equal(MOS6502._statusRegister.dumpStatus(), 0xA0, "Test 2: Status register set correctly.");
 
     /**
      * Test 3: Set zero.
@@ -13306,13 +11535,13 @@ test("0xBC - LDY (Absolute, X) (Cross Page)",function() {
     MOS6502._PC = PCStart;
     MOS6502._RAM[FullAddress] = 0;
     MOS6502._CYCLES = 0;
-    MOS6502._P = 0x20;
+    
 
     MOS6502.emulateCycle();
 
     equal(MOS6502._Y, 0, "Test 3: Memory loaded into index Y correctly.");
 
-    equal(MOS6502._P, 0x22, "Test 3: Status register set correctly.");
+    equal(MOS6502._statusRegister.dumpStatus(), 0x22, "Test 3: Status register set correctly.");
 
     equal(MOS6502._PC, PCStart + BytesUsed, "Program counter incremented successfully.");
 
@@ -13355,20 +11584,20 @@ test("0xA9 - LDA (Immediate)",function() {
 
     equal(MOS6502._A, 0x53, "Test 1: Memory loaded into accumulator correctly.");
 
-    equal(MOS6502._P, 0x20, "Test 1: Status register set correctly.");
+    equal(MOS6502._statusRegister.dumpStatus(), 0x20, "Test 1: Status register set correctly.");
 
     /**
      * Test 2: Set sign.
      */
     MOS6502._PC = PCStart;
     MOS6502._RAM[PCStart + 1] = 0x83;
-    MOS6502._P = 0x20;
+    
 
     MOS6502.emulateCycle();
 
     equal(MOS6502._A, 0x83, "Test 2: Memory loaded into accumulator correctly.");
 
-    equal(MOS6502._P, 0xA0, "Test 2: Status register set correctly.");
+    equal(MOS6502._statusRegister.dumpStatus(), 0xA0, "Test 2: Status register set correctly.");
 
     /**
      * Test 3: Set zero.
@@ -13376,13 +11605,13 @@ test("0xA9 - LDA (Immediate)",function() {
     MOS6502._PC = PCStart;
     MOS6502._RAM[PCStart + 1] = 0;
     MOS6502._CYCLES = 0;
-    MOS6502._P = 0x20;
+    
 
     MOS6502.emulateCycle();
 
     equal(MOS6502._A, 0, "Test 3: Memory loaded into accumulator correctly.");
 
-    equal(MOS6502._P, 0x22, "Test 3: Status register set correctly.");
+    equal(MOS6502._statusRegister.dumpStatus(), 0x22, "Test 3: Status register set correctly.");
 
     equal(MOS6502._PC, PCStart + BytesUsed, "Program counter incremented successfully.");
 
@@ -13415,20 +11644,20 @@ test("0xA5 - LDA (Zero Page)",function() {
 
     equal(MOS6502._A, 0x53, "Test 1: Memory loaded into accumulator correctly.");
 
-    equal(MOS6502._P, 0x20, "Test 1: Status register set correctly.");
+    equal(MOS6502._statusRegister.dumpStatus(), 0x20, "Test 1: Status register set correctly.");
 
     /**
      * Test 2: Set sign.
      */
     MOS6502._PC = PCStart;
     MOS6502._RAM[ZPAddress] = 0x83;
-    MOS6502._P = 0x20;
+    
 
     MOS6502.emulateCycle();
 
     equal(MOS6502._A, 0x83, "Test 2: Memory loaded into accumulator correctly.");
 
-    equal(MOS6502._P, 0xA0, "Test 2: Status register set correctly.");
+    equal(MOS6502._statusRegister.dumpStatus(), 0xA0, "Test 2: Status register set correctly.");
 
     /**
      * Test 3: Set zero.
@@ -13436,13 +11665,13 @@ test("0xA5 - LDA (Zero Page)",function() {
     MOS6502._PC = PCStart;
     MOS6502._RAM[ZPAddress] = 0;
     MOS6502._CYCLES = 0;
-    MOS6502._P = 0x20;
+    
 
     MOS6502.emulateCycle();
 
     equal(MOS6502._A, 0, "Test 3: Memory loaded into accumulator correctly.");
 
-    equal(MOS6502._P, 0x22, "Test 3: Status register set correctly.");
+    equal(MOS6502._statusRegister.dumpStatus(), 0x22, "Test 3: Status register set correctly.");
 
     equal(MOS6502._PC, PCStart + BytesUsed, "Program counter incremented successfully.");
 
@@ -13477,20 +11706,20 @@ test("0xB5 - LDA (Zero Page, X)",function() {
 
     equal(MOS6502._A, 0x53, "Test 1: Memory loaded into accumulator correctly.");
 
-    equal(MOS6502._P, 0x20, "Test 1: Status register set correctly.");
+    equal(MOS6502._statusRegister.dumpStatus(), 0x20, "Test 1: Status register set correctly.");
 
     /**
      * Test 2: Set sign.
      */
     MOS6502._PC = PCStart;
     MOS6502._RAM[(ZPAddress + XRegister) & 0xFF] = 0x83;
-    MOS6502._P = 0x20;
+    
 
     MOS6502.emulateCycle();
 
     equal(MOS6502._A, 0x83, "Test 2: Memory loaded into accumulator correctly.");
 
-    equal(MOS6502._P, 0xA0, "Test 2: Status register set correctly.");
+    equal(MOS6502._statusRegister.dumpStatus(), 0xA0, "Test 2: Status register set correctly.");
 
     /**
      * Test 3: Set zero.
@@ -13498,13 +11727,13 @@ test("0xB5 - LDA (Zero Page, X)",function() {
     MOS6502._PC = PCStart;
     MOS6502._RAM[(ZPAddress + XRegister) & 0xFF] = 0;
     MOS6502._CYCLES = 0;
-    MOS6502._P = 0x20;
+    
 
     MOS6502.emulateCycle();
 
     equal(MOS6502._A, 0, "Test 3: Memory loaded into accumulator correctly.");
 
-    equal(MOS6502._P, 0x22, "Test 3: Status register set correctly.");
+    equal(MOS6502._statusRegister.dumpStatus(), 0x22, "Test 3: Status register set correctly.");
 
     equal(MOS6502._PC, PCStart + BytesUsed, "Program counter incremented successfully.");
 
@@ -13540,20 +11769,20 @@ test("0xAD - LDA (Absolute)",function() {
 
     equal(MOS6502._A, 0x53, "Test 1: Memory loaded into accumulator correctly.");
 
-    equal(MOS6502._P, 0x20, "Test 1: Status register set correctly.");
+    equal(MOS6502._statusRegister.dumpStatus(), 0x20, "Test 1: Status register set correctly.");
 
     /**
      * Test 2: Set sign.
      */
     MOS6502._PC = PCStart;
     MOS6502._RAM[FullAddress] = 0x83;
-    MOS6502._P = 0x20;
+    
 
     MOS6502.emulateCycle();
 
     equal(MOS6502._A, 0x83, "Test 2: Memory loaded into accumulator correctly.");
 
-    equal(MOS6502._P, 0xA0, "Test 2: Status register set correctly.");
+    equal(MOS6502._statusRegister.dumpStatus(), 0xA0, "Test 2: Status register set correctly.");
 
     /**
      * Test 3: Set zero.
@@ -13561,13 +11790,13 @@ test("0xAD - LDA (Absolute)",function() {
     MOS6502._PC = PCStart;
     MOS6502._RAM[FullAddress] = 0;
     MOS6502._CYCLES = 0;
-    MOS6502._P = 0x20;
+    
 
     MOS6502.emulateCycle();
 
     equal(MOS6502._A, 0, "Test 3: Memory loaded into accumulator correctly.");
 
-    equal(MOS6502._P, 0x22, "Test 3: Status register set correctly.");
+    equal(MOS6502._statusRegister.dumpStatus(), 0x22, "Test 3: Status register set correctly.");
 
     equal(MOS6502._PC, PCStart + BytesUsed, "Program counter incremented successfully.");
 
@@ -13605,20 +11834,20 @@ test("0xBD - LDA (Absolute, X) (Same Page)",function() {
 
     equal(MOS6502._A, 0x53, "Test 1: Memory loaded into accumulator correctly.");
 
-    equal(MOS6502._P, 0x20, "Test 1: Status register set correctly.");
+    equal(MOS6502._statusRegister.dumpStatus(), 0x20, "Test 1: Status register set correctly.");
 
     /**
      * Test 2: Set sign.
      */
     MOS6502._PC = PCStart;
     MOS6502._RAM[FullAddress] = 0x83;
-    MOS6502._P = 0x20;
+    
 
     MOS6502.emulateCycle();
 
     equal(MOS6502._A, 0x83, "Test 2: Memory loaded into accumulator correctly.");
 
-    equal(MOS6502._P, 0xA0, "Test 2: Status register set correctly.");
+    equal(MOS6502._statusRegister.dumpStatus(), 0xA0, "Test 2: Status register set correctly.");
 
     /**
      * Test 3: Set zero.
@@ -13626,13 +11855,13 @@ test("0xBD - LDA (Absolute, X) (Same Page)",function() {
     MOS6502._PC = PCStart;
     MOS6502._RAM[FullAddress] = 0;
     MOS6502._CYCLES = 0;
-    MOS6502._P = 0x20;
+    
 
     MOS6502.emulateCycle();
 
     equal(MOS6502._A, 0, "Test 3: Memory loaded into accumulator correctly.");
 
-    equal(MOS6502._P, 0x22, "Test 3: Status register set correctly.");
+    equal(MOS6502._statusRegister.dumpStatus(), 0x22, "Test 3: Status register set correctly.");
 
     equal(MOS6502._PC, PCStart + BytesUsed, "Program counter incremented successfully.");
 
@@ -13670,20 +11899,20 @@ test("0xBD - LDA (Absolute, X) (Cross Page)",function() {
 
     equal(MOS6502._A, 0x53, "Test 1: Memory loaded into accumulator correctly.");
 
-    equal(MOS6502._P, 0x20, "Test 1: Status register set correctly.");
+    equal(MOS6502._statusRegister.dumpStatus(), 0x20, "Test 1: Status register set correctly.");
 
     /**
      * Test 2: Set sign.
      */
     MOS6502._PC = PCStart;
     MOS6502._RAM[FullAddress] = 0x83;
-    MOS6502._P = 0x20;
+    
 
     MOS6502.emulateCycle();
 
     equal(MOS6502._A, 0x83, "Test 2: Memory loaded into accumulator correctly.");
 
-    equal(MOS6502._P, 0xA0, "Test 2: Status register set correctly.");
+    equal(MOS6502._statusRegister.dumpStatus(), 0xA0, "Test 2: Status register set correctly.");
 
     /**
      * Test 3: Set zero.
@@ -13691,13 +11920,13 @@ test("0xBD - LDA (Absolute, X) (Cross Page)",function() {
     MOS6502._PC = PCStart;
     MOS6502._RAM[FullAddress] = 0;
     MOS6502._CYCLES = 0;
-    MOS6502._P = 0x20;
+    
 
     MOS6502.emulateCycle();
 
     equal(MOS6502._A, 0, "Test 3: Memory loaded into accumulator correctly.");
 
-    equal(MOS6502._P, 0x22, "Test 3: Status register set correctly.");
+    equal(MOS6502._statusRegister.dumpStatus(), 0x22, "Test 3: Status register set correctly.");
 
     equal(MOS6502._PC, PCStart + BytesUsed, "Program counter incremented successfully.");
 
@@ -13735,20 +11964,20 @@ test("0xB9 - LDA (Absolute, Y) (Same Page)",function() {
 
     equal(MOS6502._A, 0x53, "Test 1: Memory loaded into accumulator correctly.");
 
-    equal(MOS6502._P, 0x20, "Test 1: Status register set correctly.");
+    equal(MOS6502._statusRegister.dumpStatus(), 0x20, "Test 1: Status register set correctly.");
 
     /**
      * Test 2: Set sign.
      */
     MOS6502._PC = PCStart;
     MOS6502._RAM[FullAddress] = 0x83;
-    MOS6502._P = 0x20;
+    
 
     MOS6502.emulateCycle();
 
     equal(MOS6502._A, 0x83, "Test 2: Memory loaded into accumulator correctly.");
 
-    equal(MOS6502._P, 0xA0, "Test 2: Status register set correctly.");
+    equal(MOS6502._statusRegister.dumpStatus(), 0xA0, "Test 2: Status register set correctly.");
 
     /**
      * Test 3: Set zero.
@@ -13756,13 +11985,13 @@ test("0xB9 - LDA (Absolute, Y) (Same Page)",function() {
     MOS6502._PC = PCStart;
     MOS6502._RAM[FullAddress] = 0;
     MOS6502._CYCLES = 0;
-    MOS6502._P = 0x20;
+    
 
     MOS6502.emulateCycle();
 
     equal(MOS6502._A, 0, "Test 3: Memory loaded into accumulator correctly.");
 
-    equal(MOS6502._P, 0x22, "Test 3: Status register set correctly.");
+    equal(MOS6502._statusRegister.dumpStatus(), 0x22, "Test 3: Status register set correctly.");
 
     equal(MOS6502._PC, PCStart + BytesUsed, "Program counter incremented successfully.");
 
@@ -13800,20 +12029,20 @@ test("0xB9 - LDA (Absolute, Y) (Cross Page)",function() {
 
     equal(MOS6502._A, 0x53, "Test 1: Memory loaded into accumulator correctly.");
 
-    equal(MOS6502._P, 0x20, "Test 1: Status register set correctly.");
+    equal(MOS6502._statusRegister.dumpStatus(), 0x20, "Test 1: Status register set correctly.");
 
     /**
      * Test 2: Set sign.
      */
     MOS6502._PC = PCStart;
     MOS6502._RAM[FullAddress] = 0x83;
-    MOS6502._P = 0x20;
+    
 
     MOS6502.emulateCycle();
 
     equal(MOS6502._A, 0x83, "Test 2: Memory loaded into accumulator correctly.");
 
-    equal(MOS6502._P, 0xA0, "Test 2: Status register set correctly.");
+    equal(MOS6502._statusRegister.dumpStatus(), 0xA0, "Test 2: Status register set correctly.");
 
     /**
      * Test 3: Set zero.
@@ -13821,13 +12050,13 @@ test("0xB9 - LDA (Absolute, Y) (Cross Page)",function() {
     MOS6502._PC = PCStart;
     MOS6502._RAM[FullAddress] = 0;
     MOS6502._CYCLES = 0;
-    MOS6502._P = 0x20;
+    
 
     MOS6502.emulateCycle();
 
     equal(MOS6502._A, 0, "Test 3: Memory loaded into accumulator correctly.");
 
-    equal(MOS6502._P, 0x22, "Test 3: Status register set correctly.");
+    equal(MOS6502._statusRegister.dumpStatus(), 0x22, "Test 3: Status register set correctly.");
 
     equal(MOS6502._PC, PCStart + BytesUsed, "Program counter incremented successfully.");
 
@@ -13867,20 +12096,20 @@ test("0xA1 - LDA (Indirect, X)",function() {
 
     equal(MOS6502._A, 0x53, "Test 1: Memory loaded into accumulator correctly.");
 
-    equal(MOS6502._P, 0x20, "Test 1: Status register set correctly.");
+    equal(MOS6502._statusRegister.dumpStatus(), 0x20, "Test 1: Status register set correctly.");
 
     /**
      * Test 2: Set sign.
      */
     MOS6502._PC = PCStart;
     MOS6502._RAM[FullAddress] = 0x83;
-    MOS6502._P = 0x20;
+    
 
     MOS6502.emulateCycle();
 
     equal(MOS6502._A, 0x83, "Test 2: Memory loaded into accumulator correctly.");
 
-    equal(MOS6502._P, 0xA0, "Test 2: Status register set correctly.");
+    equal(MOS6502._statusRegister.dumpStatus(), 0xA0, "Test 2: Status register set correctly.");
 
     /**
      * Test 3: Set zero.
@@ -13888,13 +12117,13 @@ test("0xA1 - LDA (Indirect, X)",function() {
     MOS6502._PC = PCStart;
     MOS6502._RAM[FullAddress] = 0;
     MOS6502._CYCLES = 0;
-    MOS6502._P = 0x20;
+    
 
     MOS6502.emulateCycle();
 
     equal(MOS6502._A, 0, "Test 3: Memory loaded into accumulator correctly.");
 
-    equal(MOS6502._P, 0x22, "Test 3: Status register set correctly.");
+    equal(MOS6502._statusRegister.dumpStatus(), 0x22, "Test 3: Status register set correctly.");
 
     equal(MOS6502._PC, PCStart + BytesUsed, "Program counter incremented successfully.");
 
@@ -13933,20 +12162,20 @@ test("0xB1 - LDA (Indirect, Y) (Same Page)",function() {
 
     equal(MOS6502._A, 0x53, "Test 1: Memory loaded into accumulator correctly.");
 
-    equal(MOS6502._P, 0x20, "Test 1: Status register set correctly.");
+    equal(MOS6502._statusRegister.dumpStatus(), 0x20, "Test 1: Status register set correctly.");
 
     /**
      * Test 2: Set sign.
      */
     MOS6502._PC = PCStart;
     MOS6502._RAM[FullAddress] = 0x83;
-    MOS6502._P = 0x20;
+    
 
     MOS6502.emulateCycle();
 
     equal(MOS6502._A, 0x83, "Test 2: Memory loaded into accumulator correctly.");
 
-    equal(MOS6502._P, 0xA0, "Test 2: Status register set correctly.");
+    equal(MOS6502._statusRegister.dumpStatus(), 0xA0, "Test 2: Status register set correctly.");
 
     /**
      * Test 3: Set zero.
@@ -13954,13 +12183,13 @@ test("0xB1 - LDA (Indirect, Y) (Same Page)",function() {
     MOS6502._PC = PCStart;
     MOS6502._RAM[FullAddress] = 0;
     MOS6502._CYCLES = 0;
-    MOS6502._P = 0x20;
+    
 
     MOS6502.emulateCycle();
 
     equal(MOS6502._A, 0, "Test 3: Memory loaded into accumulator correctly.");
 
-    equal(MOS6502._P, 0x22, "Test 3: Status register set correctly.");
+    equal(MOS6502._statusRegister.dumpStatus(), 0x22, "Test 3: Status register set correctly.");
 
     equal(MOS6502._PC, PCStart + BytesUsed, "Program counter incremented successfully.");
 
@@ -13999,20 +12228,20 @@ test("0xB1 - LDA (Indirect, Y) (Cross Page)",function() {
 
     equal(MOS6502._A, 0x53, "Test 1: Memory loaded into accumulator correctly.");
 
-    equal(MOS6502._P, 0x20, "Test 1: Status register set correctly.");
+    equal(MOS6502._statusRegister.dumpStatus(), 0x20, "Test 1: Status register set correctly.");
 
     /**
      * Test 2: Set sign.
      */
     MOS6502._PC = PCStart;
     MOS6502._RAM[FullAddress] = 0x83;
-    MOS6502._P = 0x20;
+    
 
     MOS6502.emulateCycle();
 
     equal(MOS6502._A, 0x83, "Test 2: Memory loaded into accumulator correctly.");
 
-    equal(MOS6502._P, 0xA0, "Test 2: Status register set correctly.");
+    equal(MOS6502._statusRegister.dumpStatus(), 0xA0, "Test 2: Status register set correctly.");
 
     /**
      * Test 3: Set zero.
@@ -14020,13 +12249,13 @@ test("0xB1 - LDA (Indirect, Y) (Cross Page)",function() {
     MOS6502._PC = PCStart;
     MOS6502._RAM[FullAddress] = 0;
     MOS6502._CYCLES = 0;
-    MOS6502._P = 0x20;
+    
 
     MOS6502.emulateCycle();
 
     equal(MOS6502._A, 0, "Test 3: Memory loaded into accumulator correctly.");
 
-    equal(MOS6502._P, 0x22, "Test 3: Status register set correctly.");
+    equal(MOS6502._statusRegister.dumpStatus(), 0x22, "Test 3: Status register set correctly.");
 
     equal(MOS6502._PC, PCStart + BytesUsed, "Program counter incremented successfully.");
 
@@ -14069,20 +12298,20 @@ test("0xA2 - LDX (Immediate)",function() {
 
     equal(MOS6502._X, 0x53, "Test 1: Memory loaded into index X correctly.");
 
-    equal(MOS6502._P, 0x20, "Test 1: Status register set correctly.");
+    equal(MOS6502._statusRegister.dumpStatus(), 0x20, "Test 1: Status register set correctly.");
 
     /**
      * Test 2: Set sign.
      */
     MOS6502._PC = PCStart;
     MOS6502._RAM[PCStart + 1] = 0x83;
-    MOS6502._P = 0x20;
+    
 
     MOS6502.emulateCycle();
 
     equal(MOS6502._X, 0x83, "Test 2: Memory loaded into index X correctly.");
 
-    equal(MOS6502._P, 0xA0, "Test 2: Status register set correctly.");
+    equal(MOS6502._statusRegister.dumpStatus(), 0xA0, "Test 2: Status register set correctly.");
 
     /**
      * Test 3: Set zero.
@@ -14090,13 +12319,13 @@ test("0xA2 - LDX (Immediate)",function() {
     MOS6502._PC = PCStart;
     MOS6502._RAM[PCStart + 1] = 0;
     MOS6502._CYCLES = 0;
-    MOS6502._P = 0x20;
+    
 
     MOS6502.emulateCycle();
 
     equal(MOS6502._X, 0, "Test 3: Memory loaded into index X correctly.");
 
-    equal(MOS6502._P, 0x22, "Test 3: Status register set correctly.");
+    equal(MOS6502._statusRegister.dumpStatus(), 0x22, "Test 3: Status register set correctly.");
 
     equal(MOS6502._PC, PCStart + BytesUsed, "Program counter incremented successfully.");
 
@@ -14129,20 +12358,20 @@ test("0xA6 - LDX (Zero Page)",function() {
 
     equal(MOS6502._X, 0x53, "Test 1: Memory loaded into index X correctly.");
 
-    equal(MOS6502._P, 0x20, "Test 1: Status register set correctly.");
+    equal(MOS6502._statusRegister.dumpStatus(), 0x20, "Test 1: Status register set correctly.");
 
     /**
      * Test 2: Set sign.
      */
     MOS6502._PC = PCStart;
     MOS6502._RAM[ZPAddress] = 0x83;
-    MOS6502._P = 0x20;
+    
 
     MOS6502.emulateCycle();
 
     equal(MOS6502._X, 0x83, "Test 2: Memory loaded into index X correctly.");
 
-    equal(MOS6502._P, 0xA0, "Test 2: Status register set correctly.");
+    equal(MOS6502._statusRegister.dumpStatus(), 0xA0, "Test 2: Status register set correctly.");
 
     /**
      * Test 3: Set zero.
@@ -14150,13 +12379,13 @@ test("0xA6 - LDX (Zero Page)",function() {
     MOS6502._PC = PCStart;
     MOS6502._RAM[ZPAddress] = 0;
     MOS6502._CYCLES = 0;
-    MOS6502._P = 0x20;
+    
 
     MOS6502.emulateCycle();
 
     equal(MOS6502._X, 0, "Test 3: Memory loaded into index X correctly.");
 
-    equal(MOS6502._P, 0x22, "Test 3: Status register set correctly.");
+    equal(MOS6502._statusRegister.dumpStatus(), 0x22, "Test 3: Status register set correctly.");
 
     equal(MOS6502._PC, PCStart + BytesUsed, "Program counter incremented successfully.");
 
@@ -14192,20 +12421,20 @@ test("0xB6 - LDX (Zero Page, Y)",function() {
 
     equal(MOS6502._X, 0x53, "Test 1: Memory loaded into index X correctly.");
 
-    equal(MOS6502._P, 0x20, "Test 1: Status register set correctly.");
+    equal(MOS6502._statusRegister.dumpStatus(), 0x20, "Test 1: Status register set correctly.");
 
     /**
      * Test 2: Set sign.
      */
     MOS6502._PC = PCStart;
     MOS6502._RAM[FullAddress] = 0x83;
-    MOS6502._P = 0x20;
+    
 
     MOS6502.emulateCycle();
 
     equal(MOS6502._X, 0x83, "Test 2: Memory loaded into index X correctly.");
 
-    equal(MOS6502._P, 0xA0, "Test 2: Status register set correctly.");
+    equal(MOS6502._statusRegister.dumpStatus(), 0xA0, "Test 2: Status register set correctly.");
 
     /**
      * Test 3: Set zero.
@@ -14213,13 +12442,13 @@ test("0xB6 - LDX (Zero Page, Y)",function() {
     MOS6502._PC = PCStart;
     MOS6502._RAM[FullAddress] = 0;
     MOS6502._CYCLES = 0;
-    MOS6502._P = 0x20;
+    
 
     MOS6502.emulateCycle();
 
     equal(MOS6502._X, 0, "Test 3: Memory loaded into index X correctly.");
 
-    equal(MOS6502._P, 0x22, "Test 3: Status register set correctly.");
+    equal(MOS6502._statusRegister.dumpStatus(), 0x22, "Test 3: Status register set correctly.");
 
     equal(MOS6502._PC, PCStart + BytesUsed, "Program counter incremented successfully.");
 
@@ -14255,20 +12484,20 @@ test("0xAE - LDX (Absolute)",function() {
 
     equal(MOS6502._X, 0x53, "Test 1: Memory loaded into index X correctly.");
 
-    equal(MOS6502._P, 0x20, "Test 1: Status register set correctly.");
+    equal(MOS6502._statusRegister.dumpStatus(), 0x20, "Test 1: Status register set correctly.");
 
     /**
      * Test 2: Set sign.
      */
     MOS6502._PC = PCStart;
     MOS6502._RAM[FullAddress] = 0x83;
-    MOS6502._P = 0x20;
+    
 
     MOS6502.emulateCycle();
 
     equal(MOS6502._X, 0x83, "Test 2: Memory loaded into index X correctly.");
 
-    equal(MOS6502._P, 0xA0, "Test 2: Status register set correctly.");
+    equal(MOS6502._statusRegister.dumpStatus(), 0xA0, "Test 2: Status register set correctly.");
 
     /**
      * Test 3: Set zero.
@@ -14276,13 +12505,13 @@ test("0xAE - LDX (Absolute)",function() {
     MOS6502._PC = PCStart;
     MOS6502._RAM[FullAddress] = 0;
     MOS6502._CYCLES = 0;
-    MOS6502._P = 0x20;
+    
 
     MOS6502.emulateCycle();
 
     equal(MOS6502._X, 0, "Test 3: Memory loaded into index X correctly.");
 
-    equal(MOS6502._P, 0x22, "Test 3: Status register set correctly.");
+    equal(MOS6502._statusRegister.dumpStatus(), 0x22, "Test 3: Status register set correctly.");
 
     equal(MOS6502._PC, PCStart + BytesUsed, "Program counter incremented successfully.");
 
@@ -14320,20 +12549,20 @@ test("0xBE - LDX (Absolute, Y) (Same Page)",function() {
 
     equal(MOS6502._X, 0x53, "Test 1: Memory loaded into index X correctly.");
 
-    equal(MOS6502._P, 0x20, "Test 1: Status register set correctly.");
+    equal(MOS6502._statusRegister.dumpStatus(), 0x20, "Test 1: Status register set correctly.");
 
     /**
      * Test 2: Set sign.
      */
     MOS6502._PC = PCStart;
     MOS6502._RAM[FullAddress] = 0x83;
-    MOS6502._P = 0x20;
+    
 
     MOS6502.emulateCycle();
 
     equal(MOS6502._X, 0x83, "Test 2: Memory loaded into index X correctly.");
 
-    equal(MOS6502._P, 0xA0, "Test 2: Status register set correctly.");
+    equal(MOS6502._statusRegister.dumpStatus(), 0xA0, "Test 2: Status register set correctly.");
 
     /**
      * Test 3: Set zero.
@@ -14341,13 +12570,13 @@ test("0xBE - LDX (Absolute, Y) (Same Page)",function() {
     MOS6502._PC = PCStart;
     MOS6502._RAM[FullAddress] = 0;
     MOS6502._CYCLES = 0;
-    MOS6502._P = 0x20;
+    
 
     MOS6502.emulateCycle();
 
     equal(MOS6502._X, 0, "Test 3: Memory loaded into index X correctly.");
 
-    equal(MOS6502._P, 0x22, "Test 3: Status register set correctly.");
+    equal(MOS6502._statusRegister.dumpStatus(), 0x22, "Test 3: Status register set correctly.");
 
     equal(MOS6502._PC, PCStart + BytesUsed, "Program counter incremented successfully.");
 
@@ -14385,20 +12614,20 @@ test("0xBE - LDX (Absolute, Y) (Cross Page)",function() {
 
     equal(MOS6502._X, 0x53, "Test 1: Memory loaded into index X correctly.");
 
-    equal(MOS6502._P, 0x20, "Test 1: Status register set correctly.");
+    equal(MOS6502._statusRegister.dumpStatus(), 0x20, "Test 1: Status register set correctly.");
 
     /**
      * Test 2: Set sign.
      */
     MOS6502._PC = PCStart;
     MOS6502._RAM[FullAddress] = 0x83;
-    MOS6502._P = 0x20;
+    
 
     MOS6502.emulateCycle();
 
     equal(MOS6502._X, 0x83, "Test 2: Memory loaded into index X correctly.");
 
-    equal(MOS6502._P, 0xA0, "Test 2: Status register set correctly.");
+    equal(MOS6502._statusRegister.dumpStatus(), 0xA0, "Test 2: Status register set correctly.");
 
     /**
      * Test 3: Set zero.
@@ -14406,13 +12635,13 @@ test("0xBE - LDX (Absolute, Y) (Cross Page)",function() {
     MOS6502._PC = PCStart;
     MOS6502._RAM[FullAddress] = 0;
     MOS6502._CYCLES = 0;
-    MOS6502._P = 0x20;
+    
 
     MOS6502.emulateCycle();
 
     equal(MOS6502._X, 0, "Test 3: Memory loaded into index X correctly.");
 
-    equal(MOS6502._P, 0x22, "Test 3: Status register set correctly.");
+    equal(MOS6502._statusRegister.dumpStatus(), 0x22, "Test 3: Status register set correctly.");
 
     equal(MOS6502._PC, PCStart + BytesUsed, "Program counter incremented successfully.");
 
@@ -14449,26 +12678,26 @@ test("0xA8 - TAY (Implied)",function() {
      */
     MOS6502._PC = PCStart;
     MOS6502._A = 0x53;
-    MOS6502._P = 0x20;
+    
 
     MOS6502.emulateCycle();
 
     equal(MOS6502._Y, 0x53, "Test 1: Accumulator loaded into index Y correctly.");
 
-    equal(MOS6502._P, 0x20, "Test 1: Status register set correctly.");
+    equal(MOS6502._statusRegister.dumpStatus(), 0x20, "Test 1: Status register set correctly.");
 
     /**
      * Test 2: Set sign.
      */
     MOS6502._PC = PCStart;
     MOS6502._A = 0x83;
-    MOS6502._P = 0x20;
+    
 
     MOS6502.emulateCycle();
 
     equal(MOS6502._Y, 0x83, "Test 2: Accumulator loaded into index Y correctly.");
 
-    equal(MOS6502._P, 0xA0, "Test 2: Status register set correctly.");
+    equal(MOS6502._statusRegister.dumpStatus(), 0xA0, "Test 2: Status register set correctly.");
 
     /**
      * Test 3: Set zero.
@@ -14476,13 +12705,13 @@ test("0xA8 - TAY (Implied)",function() {
     MOS6502._PC = PCStart;
     MOS6502._A = 0;
     MOS6502._CYCLES = 0;
-    MOS6502._P = 0x20;
+    
 
     MOS6502.emulateCycle();
 
     equal(MOS6502._Y, 0, "Test 3: Accumulator loaded into index Y correctly.");
 
-    equal(MOS6502._P, 0x22, "Test 3: Status register set correctly.");
+    equal(MOS6502._statusRegister.dumpStatus(), 0x22, "Test 3: Status register set correctly.");
 
     equal(MOS6502._PC, PCStart + BytesUsed, "Program counter incremented successfully.");
 
@@ -14519,26 +12748,26 @@ test("0xAA - TAX (Implied)",function() {
      */
     MOS6502._PC = PCStart;
     MOS6502._A = 0x53;
-    MOS6502._P = 0x20;
+    
 
     MOS6502.emulateCycle();
 
     equal(MOS6502._X, 0x53, "Test 1: Accumulator loaded into index X correctly.");
 
-    equal(MOS6502._P, 0x20, "Test 1: Status register set correctly.");
+    equal(MOS6502._statusRegister.dumpStatus(), 0x20, "Test 1: Status register set correctly.");
 
     /**
      * Test 2: Set sign.
      */
     MOS6502._PC = PCStart;
     MOS6502._A = 0x83;
-    MOS6502._P = 0x20;
+    
 
     MOS6502.emulateCycle();
 
     equal(MOS6502._X, 0x83, "Test 2: Accumulator loaded into index X correctly.");
 
-    equal(MOS6502._P, 0xA0, "Test 2: Status register set correctly.");
+    equal(MOS6502._statusRegister.dumpStatus(), 0xA0, "Test 2: Status register set correctly.");
 
     /**
      * Test 3: Set zero.
@@ -14546,13 +12775,13 @@ test("0xAA - TAX (Implied)",function() {
     MOS6502._PC = PCStart;
     MOS6502._A = 0;
     MOS6502._CYCLES = 0;
-    MOS6502._P = 0x20;
+    
 
     MOS6502.emulateCycle();
 
     equal(MOS6502._X, 0, "Test 3: Accumulator loaded into index X correctly.");
 
-    equal(MOS6502._P, 0x22, "Test 3: Status register set correctly.");
+    equal(MOS6502._statusRegister.dumpStatus(), 0x22, "Test 3: Status register set correctly.");
 
     equal(MOS6502._PC, PCStart + BytesUsed, "Program counter incremented successfully.");
 
@@ -14600,7 +12829,7 @@ test("0xB0 - BCS (Relative)", function() {
      */
 
         // Enable overflow.
-    MOS6502._P = 0x20;
+    
 
     MOS6502.emulateCycle();
 
@@ -14616,7 +12845,7 @@ test("0xB0 - BCS (Relative)", function() {
      * Test 2: Carry set. Branch forward to same page. (3 cycles)
      */
 
-    MOS6502._P = 0x21;
+    //MOS6502._statusRegister.dumpStatus() = 0x21;
     MOS6502._PC = PCStart;
     MOS6502._RAM[PCStart + 1] = relativePlusSamePage;
     MOS6502._CYCLES = 0;
@@ -14635,7 +12864,7 @@ test("0xB0 - BCS (Relative)", function() {
      * Test 3: Carry set. Branch backward to same page. (3 cycles)
      */
 
-    MOS6502._P = 0x21;
+    //MOS6502._statusRegister.dumpStatus() = 0x21;
     MOS6502._PC = PCStart;
     MOS6502._RAM[PCStart + 1] = relativeMinusSamePage;
     MOS6502._CYCLES = 0;
@@ -14643,7 +12872,7 @@ test("0xB0 - BCS (Relative)", function() {
     MOS6502.emulateCycle();
 
     equal(MOS6502._PC,
-            (PCStart + relativeMinusSamePage) - 256,
+            (PCStart + relativeMinusSamePage) - 255,
         "Carry set, branch backwards, same page: Program Counter set correctly.");
 
     equal(MOS6502._CYCLES,
@@ -14656,7 +12885,7 @@ test("0xB0 - BCS (Relative)", function() {
      * NOTE: It's not possible to branch to another page from 0x4080. Using 0x40E0 for forward branch.
      */
 
-    MOS6502._P = 0x21;
+    //MOS6502._statusRegister.dumpStatus() = 0x21;
     MOS6502._PC = PCStartHigh;
     MOS6502._RAM[PCStartHigh + 1] = relativePlusNextPage;
     MOS6502._CYCLES = 0;
@@ -14675,7 +12904,7 @@ test("0xB0 - BCS (Relative)", function() {
      * Test 5: Carry set. Branch backward to different page. (4 cycles)
      */
 
-    MOS6502._P = 0x21;
+    //MOS6502._statusRegister.dumpStatus() = 0x21;
     MOS6502._PC = PCStartLow;
     MOS6502._RAM[PCStartLow + 1] = relativeMinusNextPage;
     MOS6502._CYCLES = 0;
@@ -14683,7 +12912,7 @@ test("0xB0 - BCS (Relative)", function() {
     MOS6502.emulateCycle();
 
     equal(MOS6502._PC,
-            (PCStartLow + relativeMinusNextPage) - 256,
+            (PCStartLow + relativeMinusNextPage) - 255,
         "Carry set, branch backwards, different page: Program Counter set correctly.");
 
     equal(MOS6502._CYCLES,
@@ -14721,22 +12950,22 @@ test("0xB8 - CLV (Implied)",function() {
      * Test 1: Clear overflow when set.
      */
     MOS6502._PC = PCStart;
-    MOS6502._P = 0x60;
+    //MOS6502._statusRegister.dumpStatus() = 0x60;
 
     MOS6502.emulateCycle();
 
-    equal(MOS6502._P, 0x20, "Test 1: Status register set correctly.");
+    equal(MOS6502._statusRegister.dumpStatus(), 0x20, "Test 1: Status register set correctly.");
 
     /**
      * Test 2: Clear overflow when overflow not set.
      */
     MOS6502._PC = PCStart;
-    MOS6502._P = 0x20;
+    
     MOS6502._CYCLES = 0;
 
     MOS6502.emulateCycle();
 
-    equal(MOS6502._P, 0x20, "Test 2: Status register set correctly.");
+    equal(MOS6502._statusRegister.dumpStatus(), 0x20, "Test 2: Status register set correctly.");
 
     equal(MOS6502._PC, PCStart + BytesUsed, "Program counter incremented successfully.");
 
@@ -14775,26 +13004,26 @@ test("0xBA - TSX (Implied)",function() {
      */
     MOS6502._PC = PCStart;
     MOS6502._SP = 0x53;
-    MOS6502._P = 0x20;
+    
 
     MOS6502.emulateCycle();
 
     equal(MOS6502._X, 0x53, "Test 1: Stack pointer transfered to index X correctly.");
 
-    equal(MOS6502._P, 0x20, "Test 1: Status register set correctly.");
+    equal(MOS6502._statusRegister.dumpStatus(), 0x20, "Test 1: Status register set correctly.");
 
     /**
      * Test 2: Set sign.
      */
     MOS6502._PC = PCStart;
     MOS6502._SP = 0x83;
-    MOS6502._P = 0x20;
+    
 
     MOS6502.emulateCycle();
 
     equal(MOS6502._X, 0x83, "Test 2: Stack pointer transfered to index X correctly.");
 
-    equal(MOS6502._P, 0xA0, "Test 2: Status register set correctly.");
+    equal(MOS6502._statusRegister.dumpStatus(), 0xA0, "Test 2: Status register set correctly.");
 
     /**
      * Test 3: Set zero.
@@ -14802,13 +13031,13 @@ test("0xBA - TSX (Implied)",function() {
     MOS6502._PC = PCStart;
     MOS6502._SP = 0;
     MOS6502._CYCLES = 0;
-    MOS6502._P = 0x20;
+    
 
     MOS6502.emulateCycle();
 
     equal(MOS6502._X, 0, "Test 3: Stack pointer transfered to index X correctly.");
 
-    equal(MOS6502._P, 0x22, "Test 3: Status register set correctly.");
+    equal(MOS6502._statusRegister.dumpStatus(), 0x22, "Test 3: Status register set correctly.");
 
     equal(MOS6502._PC, PCStart + BytesUsed, "Program counter incremented successfully.");
 
@@ -14846,11 +13075,11 @@ test("0xC0 - CPY (Immediate)",function() {
     MOS6502._PC = PCStart;
     MOS6502._RAM[PCStart + 1] = 0x53;
     MOS6502._Y = 0x51;
-    MOS6502._P = 0x20;
+    
 
     MOS6502.emulateCycle();
 
-    equal(MOS6502._P, 0xA0, "Test 1: Status register set correctly.");
+    equal(MOS6502._statusRegister.dumpStatus(), 0xA0, "Test 1: Status register set correctly.");
 
     /**
      * Test 2: Set zero & carry.
@@ -14858,11 +13087,11 @@ test("0xC0 - CPY (Immediate)",function() {
     MOS6502._PC = PCStart;
     MOS6502._RAM[PCStart + 1] = 0x53;
     MOS6502._Y = 0x53;
-    MOS6502._P = 0x20;
+    
 
     MOS6502.emulateCycle();
 
-    equal(MOS6502._P, 0x23, "Test 2: Status register set correctly.");
+    equal(MOS6502._statusRegister.dumpStatus(), 0x23, "Test 2: Status register set correctly.");
 
     /**
      * Test 3: Set carry.
@@ -14870,12 +13099,12 @@ test("0xC0 - CPY (Immediate)",function() {
     MOS6502._PC = PCStart;
     MOS6502._RAM[PCStart + 1] = 0x53;
     MOS6502._Y = 0x56;
-    MOS6502._P = 0x20;
+    
     MOS6502._CYCLES = 0;
 
     MOS6502.emulateCycle();
 
-    equal(MOS6502._P, 0x21, "Test 3: Status register set correctly.");
+    equal(MOS6502._statusRegister.dumpStatus(), 0x21, "Test 3: Status register set correctly.");
 
     equal(MOS6502._PC, PCStart + BytesUsed, "Program counter incremented successfully.");
 
@@ -14903,11 +13132,11 @@ test("0xC4 - CPY (Zero Page)",function() {
     MOS6502._PC = PCStart;
     MOS6502._RAM[ZPAddress] = 0x53;
     MOS6502._Y = 0x51;
-    MOS6502._P = 0x20;
+    
 
     MOS6502.emulateCycle();
 
-    equal(MOS6502._P, 0xA0, "Test 1: Status register set correctly.");
+    equal(MOS6502._statusRegister.dumpStatus(), 0xA0, "Test 1: Status register set correctly.");
 
     /**
      * Test 2: Set zero & carry.
@@ -14915,11 +13144,11 @@ test("0xC4 - CPY (Zero Page)",function() {
     MOS6502._PC = PCStart;
     MOS6502._RAM[ZPAddress] = 0x53;
     MOS6502._Y = 0x53;
-    MOS6502._P = 0x20;
+    
 
     MOS6502.emulateCycle();
 
-    equal(MOS6502._P, 0x23, "Test 2: Status register set correctly.");
+    equal(MOS6502._statusRegister.dumpStatus(), 0x23, "Test 2: Status register set correctly.");
 
     /**
      * Test 3: Set carry.
@@ -14927,12 +13156,12 @@ test("0xC4 - CPY (Zero Page)",function() {
     MOS6502._PC = PCStart;
     MOS6502._RAM[ZPAddress] = 0x53;
     MOS6502._Y = 0x56;
-    MOS6502._P = 0x20;
+    
     MOS6502._CYCLES = 0;
 
     MOS6502.emulateCycle();
 
-    equal(MOS6502._P, 0x21, "Test 3: Status register set correctly.");
+    equal(MOS6502._statusRegister.dumpStatus(), 0x21, "Test 3: Status register set correctly.");
 
     equal(MOS6502._PC, PCStart + BytesUsed, "Program counter incremented successfully.");
 
@@ -14963,11 +13192,11 @@ test("0xCC - CPY (Absolute)",function() {
     MOS6502._PC = PCStart;
     MOS6502._RAM[Address] = 0x53;
     MOS6502._Y = 0x51;
-    MOS6502._P = 0x20;
+    
 
     MOS6502.emulateCycle();
 
-    equal(MOS6502._P, 0xA0, "Test 1: Status register set correctly.");
+    equal(MOS6502._statusRegister.dumpStatus(), 0xA0, "Test 1: Status register set correctly.");
 
     /**
      * Test 2: Set zero & carry.
@@ -14975,11 +13204,11 @@ test("0xCC - CPY (Absolute)",function() {
     MOS6502._PC = PCStart;
     MOS6502._RAM[Address] = 0x53;
     MOS6502._Y = 0x53;
-    MOS6502._P = 0x20;
+    
 
     MOS6502.emulateCycle();
 
-    equal(MOS6502._P, 0x23, "Test 2: Status register set correctly.");
+    equal(MOS6502._statusRegister.dumpStatus(), 0x23, "Test 2: Status register set correctly.");
 
     /**
      * Test 3: Set carry.
@@ -14987,12 +13216,12 @@ test("0xCC - CPY (Absolute)",function() {
     MOS6502._PC = PCStart;
     MOS6502._RAM[Address] = 0x53;
     MOS6502._Y = 0x56;
-    MOS6502._P = 0x20;
+    
     MOS6502._CYCLES = 0;
 
     MOS6502.emulateCycle();
 
-    equal(MOS6502._P, 0x21, "Test 3: Status register set correctly.");
+    equal(MOS6502._statusRegister.dumpStatus(), 0x21, "Test 3: Status register set correctly.");
 
     equal(MOS6502._PC, PCStart + BytesUsed, "Program counter incremented successfully.");
 
@@ -15030,11 +13259,11 @@ test("0xC9 - CMP (Immediate)",function() {
     MOS6502._PC = PCStart;
     MOS6502._RAM[PCStart + 1] = 0x53;
     MOS6502._A = 0x51;
-    MOS6502._P = 0x20;
+    
 
     MOS6502.emulateCycle();
 
-    equal(MOS6502._P, 0xA0, "Test 1: Status register set correctly.");
+    equal(MOS6502._statusRegister.dumpStatus(), 0xA0, "Test 1: Status register set correctly.");
 
     /**
      * Test 2: Set zero & carry.
@@ -15042,11 +13271,11 @@ test("0xC9 - CMP (Immediate)",function() {
     MOS6502._PC = PCStart;
     MOS6502._RAM[PCStart + 1] = 0x53;
     MOS6502._A = 0x53;
-    MOS6502._P = 0x20;
+    
 
     MOS6502.emulateCycle();
 
-    equal(MOS6502._P, 0x23, "Test 2: Status register set correctly.");
+    equal(MOS6502._statusRegister.dumpStatus(), 0x23, "Test 2: Status register set correctly.");
 
     /**
      * Test 3: Set carry.
@@ -15054,12 +13283,12 @@ test("0xC9 - CMP (Immediate)",function() {
     MOS6502._PC = PCStart;
     MOS6502._RAM[PCStart + 1] = 0x53;
     MOS6502._A = 0x56;
-    MOS6502._P = 0x20;
+    
     MOS6502._CYCLES = 0;
 
     MOS6502.emulateCycle();
 
-    equal(MOS6502._P, 0x21, "Test 3: Status register set correctly.");
+    equal(MOS6502._statusRegister.dumpStatus(), 0x21, "Test 3: Status register set correctly.");
 
     equal(MOS6502._PC, PCStart + BytesUsed, "Program counter incremented successfully.");
 
@@ -15088,11 +13317,11 @@ test("0xC5 - CMP (Zero Page)",function() {
     MOS6502._PC = PCStart;
     MOS6502._RAM[MemAddress] = 0x53;
     MOS6502._A = 0x51;
-    MOS6502._P = 0x20;
+    
 
     MOS6502.emulateCycle();
 
-    equal(MOS6502._P, 0xA0, "Test 1: Status register set correctly.");
+    equal(MOS6502._statusRegister.dumpStatus(), 0xA0, "Test 1: Status register set correctly.");
 
     /**
      * Test 2: Set zero & carry.
@@ -15100,11 +13329,11 @@ test("0xC5 - CMP (Zero Page)",function() {
     MOS6502._PC = PCStart;
     MOS6502._RAM[MemAddress] = 0x53;
     MOS6502._A = 0x53;
-    MOS6502._P = 0x20;
+    
 
     MOS6502.emulateCycle();
 
-    equal(MOS6502._P, 0x23, "Test 2: Status register set correctly.");
+    equal(MOS6502._statusRegister.dumpStatus(), 0x23, "Test 2: Status register set correctly.");
 
     /**
      * Test 3: Set carry.
@@ -15112,12 +13341,12 @@ test("0xC5 - CMP (Zero Page)",function() {
     MOS6502._PC = PCStart;
     MOS6502._RAM[MemAddress] = 0x53;
     MOS6502._A = 0x56;
-    MOS6502._P = 0x20;
+    
     MOS6502._CYCLES = 0;
 
     MOS6502.emulateCycle();
 
-    equal(MOS6502._P, 0x21, "Test 3: Status register set correctly.");
+    equal(MOS6502._statusRegister.dumpStatus(), 0x21, "Test 3: Status register set correctly.");
 
     equal(MOS6502._PC, PCStart + BytesUsed, "Program counter incremented successfully.");
 
@@ -15148,11 +13377,11 @@ test("0xD5 - CMP (Zero Page, X)",function() {
     MOS6502._PC = PCStart;
     MOS6502._RAM[MemAddress] = 0x53;
     MOS6502._A = 0x51;
-    MOS6502._P = 0x20;
+    
 
     MOS6502.emulateCycle();
 
-    equal(MOS6502._P, 0xA0, "Test 1: Status register set correctly.");
+    equal(MOS6502._statusRegister.dumpStatus(), 0xA0, "Test 1: Status register set correctly.");
 
     /**
      * Test 2: Set zero & carry.
@@ -15160,11 +13389,11 @@ test("0xD5 - CMP (Zero Page, X)",function() {
     MOS6502._PC = PCStart;
     MOS6502._RAM[MemAddress] = 0x53;
     MOS6502._A = 0x53;
-    MOS6502._P = 0x20;
+    
 
     MOS6502.emulateCycle();
 
-    equal(MOS6502._P, 0x23, "Test 2: Status register set correctly.");
+    equal(MOS6502._statusRegister.dumpStatus(), 0x23, "Test 2: Status register set correctly.");
 
     /**
      * Test 3: Set carry.
@@ -15172,12 +13401,12 @@ test("0xD5 - CMP (Zero Page, X)",function() {
     MOS6502._PC = PCStart;
     MOS6502._RAM[MemAddress] = 0x53;
     MOS6502._A = 0x56;
-    MOS6502._P = 0x20;
+    
     MOS6502._CYCLES = 0;
 
     MOS6502.emulateCycle();
 
-    equal(MOS6502._P, 0x21, "Test 3: Status register set correctly.");
+    equal(MOS6502._statusRegister.dumpStatus(), 0x21, "Test 3: Status register set correctly.");
 
     equal(MOS6502._PC, PCStart + BytesUsed, "Program counter incremented successfully.");
 
@@ -15209,11 +13438,11 @@ test("0xCD - CMP (Absolute)",function() {
     MOS6502._PC = PCStart;
     MOS6502._RAM[MemAddress] = 0x53;
     MOS6502._A = 0x51;
-    MOS6502._P = 0x20;
+    
 
     MOS6502.emulateCycle();
 
-    equal(MOS6502._P, 0xA0, "Test 1: Status register set correctly.");
+    equal(MOS6502._statusRegister.dumpStatus(), 0xA0, "Test 1: Status register set correctly.");
 
     /**
      * Test 2: Set zero & carry.
@@ -15221,11 +13450,11 @@ test("0xCD - CMP (Absolute)",function() {
     MOS6502._PC = PCStart;
     MOS6502._RAM[MemAddress] = 0x53;
     MOS6502._A = 0x53;
-    MOS6502._P = 0x20;
+    
 
     MOS6502.emulateCycle();
 
-    equal(MOS6502._P, 0x23, "Test 2: Status register set correctly.");
+    equal(MOS6502._statusRegister.dumpStatus(), 0x23, "Test 2: Status register set correctly.");
 
     /**
      * Test 3: Set carry.
@@ -15233,12 +13462,12 @@ test("0xCD - CMP (Absolute)",function() {
     MOS6502._PC = PCStart;
     MOS6502._RAM[MemAddress] = 0x53;
     MOS6502._A = 0x56;
-    MOS6502._P = 0x20;
+    
     MOS6502._CYCLES = 0;
 
     MOS6502.emulateCycle();
 
-    equal(MOS6502._P, 0x21, "Test 3: Status register set correctly.");
+    equal(MOS6502._statusRegister.dumpStatus(), 0x21, "Test 3: Status register set correctly.");
 
     equal(MOS6502._PC, PCStart + BytesUsed, "Program counter incremented successfully.");
 
@@ -15271,11 +13500,11 @@ test("0xDD - CMP (Absolute, X) (Same Page)",function() {
     MOS6502._PC = PCStart;
     MOS6502._RAM[MemAddress] = 0x53;
     MOS6502._A = 0x51;
-    MOS6502._P = 0x20;
+    
 
     MOS6502.emulateCycle();
 
-    equal(MOS6502._P, 0xA0, "Test 1: Status register set correctly.");
+    equal(MOS6502._statusRegister.dumpStatus(), 0xA0, "Test 1: Status register set correctly.");
 
     /**
      * Test 2: Set zero & carry.
@@ -15283,11 +13512,11 @@ test("0xDD - CMP (Absolute, X) (Same Page)",function() {
     MOS6502._PC = PCStart;
     MOS6502._RAM[MemAddress] = 0x53;
     MOS6502._A = 0x53;
-    MOS6502._P = 0x20;
+    
 
     MOS6502.emulateCycle();
 
-    equal(MOS6502._P, 0x23, "Test 2: Status register set correctly.");
+    equal(MOS6502._statusRegister.dumpStatus(), 0x23, "Test 2: Status register set correctly.");
 
     /**
      * Test 3: Set carry.
@@ -15295,12 +13524,12 @@ test("0xDD - CMP (Absolute, X) (Same Page)",function() {
     MOS6502._PC = PCStart;
     MOS6502._RAM[MemAddress] = 0x53;
     MOS6502._A = 0x56;
-    MOS6502._P = 0x20;
+    
     MOS6502._CYCLES = 0;
 
     MOS6502.emulateCycle();
 
-    equal(MOS6502._P, 0x21, "Test 3: Status register set correctly.");
+    equal(MOS6502._statusRegister.dumpStatus(), 0x21, "Test 3: Status register set correctly.");
 
     equal(MOS6502._PC, PCStart + BytesUsed, "Program counter incremented successfully.");
 
@@ -15333,11 +13562,11 @@ test("0xDD - CMP (Absolute, X) (Cross Page)",function() {
     MOS6502._PC = PCStart;
     MOS6502._RAM[MemAddress] = 0x53;
     MOS6502._A = 0x51;
-    MOS6502._P = 0x20;
+    
 
     MOS6502.emulateCycle();
 
-    equal(MOS6502._P, 0xA0, "Test 1: Status register set correctly.");
+    equal(MOS6502._statusRegister.dumpStatus(), 0xA0, "Test 1: Status register set correctly.");
 
     /**
      * Test 2: Set zero & carry.
@@ -15345,11 +13574,11 @@ test("0xDD - CMP (Absolute, X) (Cross Page)",function() {
     MOS6502._PC = PCStart;
     MOS6502._RAM[MemAddress] = 0x53;
     MOS6502._A = 0x53;
-    MOS6502._P = 0x20;
+    
 
     MOS6502.emulateCycle();
 
-    equal(MOS6502._P, 0x23, "Test 2: Status register set correctly.");
+    equal(MOS6502._statusRegister.dumpStatus(), 0x23, "Test 2: Status register set correctly.");
 
     /**
      * Test 3: Set carry.
@@ -15357,12 +13586,12 @@ test("0xDD - CMP (Absolute, X) (Cross Page)",function() {
     MOS6502._PC = PCStart;
     MOS6502._RAM[MemAddress] = 0x53;
     MOS6502._A = 0x56;
-    MOS6502._P = 0x20;
+    
     MOS6502._CYCLES = 0;
 
     MOS6502.emulateCycle();
 
-    equal(MOS6502._P, 0x21, "Test 3: Status register set correctly.");
+    equal(MOS6502._statusRegister.dumpStatus(), 0x21, "Test 3: Status register set correctly.");
 
     equal(MOS6502._PC, PCStart + BytesUsed, "Program counter incremented successfully.");
 
@@ -15395,11 +13624,11 @@ test("0xD9 - CMP (Absolute, Y) (Same Page)",function() {
     MOS6502._PC = PCStart;
     MOS6502._RAM[MemAddress] = 0x53;
     MOS6502._A = 0x51;
-    MOS6502._P = 0x20;
+    
 
     MOS6502.emulateCycle();
 
-    equal(MOS6502._P, 0xA0, "Test 1: Status register set correctly.");
+    equal(MOS6502._statusRegister.dumpStatus(), 0xA0, "Test 1: Status register set correctly.");
 
     /**
      * Test 2: Set zero & carry.
@@ -15407,11 +13636,11 @@ test("0xD9 - CMP (Absolute, Y) (Same Page)",function() {
     MOS6502._PC = PCStart;
     MOS6502._RAM[MemAddress] = 0x53;
     MOS6502._A = 0x53;
-    MOS6502._P = 0x20;
+    
 
     MOS6502.emulateCycle();
 
-    equal(MOS6502._P, 0x23, "Test 2: Status register set correctly.");
+    equal(MOS6502._statusRegister.dumpStatus(), 0x23, "Test 2: Status register set correctly.");
 
     /**
      * Test 3: Set carry.
@@ -15419,12 +13648,12 @@ test("0xD9 - CMP (Absolute, Y) (Same Page)",function() {
     MOS6502._PC = PCStart;
     MOS6502._RAM[MemAddress] = 0x53;
     MOS6502._A = 0x56;
-    MOS6502._P = 0x20;
+    
     MOS6502._CYCLES = 0;
 
     MOS6502.emulateCycle();
 
-    equal(MOS6502._P, 0x21, "Test 3: Status register set correctly.");
+    equal(MOS6502._statusRegister.dumpStatus(), 0x21, "Test 3: Status register set correctly.");
 
     equal(MOS6502._PC, PCStart + BytesUsed, "Program counter incremented successfully.");
 
@@ -15457,11 +13686,11 @@ test("0xD9 - CMP (Absolute, Y) (Cross Page)",function() {
     MOS6502._PC = PCStart;
     MOS6502._RAM[MemAddress] = 0x53;
     MOS6502._A = 0x51;
-    MOS6502._P = 0x20;
+    
 
     MOS6502.emulateCycle();
 
-    equal(MOS6502._P, 0xA0, "Test 1: Status register set correctly.");
+    equal(MOS6502._statusRegister.dumpStatus(), 0xA0, "Test 1: Status register set correctly.");
 
     /**
      * Test 2: Set zero & carry.
@@ -15469,11 +13698,11 @@ test("0xD9 - CMP (Absolute, Y) (Cross Page)",function() {
     MOS6502._PC = PCStart;
     MOS6502._RAM[MemAddress] = 0x53;
     MOS6502._A = 0x53;
-    MOS6502._P = 0x20;
+    
 
     MOS6502.emulateCycle();
 
-    equal(MOS6502._P, 0x23, "Test 2: Status register set correctly.");
+    equal(MOS6502._statusRegister.dumpStatus(), 0x23, "Test 2: Status register set correctly.");
 
     /**
      * Test 3: Set carry.
@@ -15481,12 +13710,12 @@ test("0xD9 - CMP (Absolute, Y) (Cross Page)",function() {
     MOS6502._PC = PCStart;
     MOS6502._RAM[MemAddress] = 0x53;
     MOS6502._A = 0x56;
-    MOS6502._P = 0x20;
+    
     MOS6502._CYCLES = 0;
 
     MOS6502.emulateCycle();
 
-    equal(MOS6502._P, 0x21, "Test 3: Status register set correctly.");
+    equal(MOS6502._statusRegister.dumpStatus(), 0x21, "Test 3: Status register set correctly.");
 
     equal(MOS6502._PC, PCStart + BytesUsed, "Program counter incremented successfully.");
 
@@ -15521,11 +13750,11 @@ test("0xC1 - CMP (Indirect, X)",function() {
     MOS6502._PC = PCStart;
     MOS6502._RAM[MemAddress] = 0x53;
     MOS6502._A = 0x51;
-    MOS6502._P = 0x20;
+    
 
     MOS6502.emulateCycle();
 
-    equal(MOS6502._P, 0xA0, "Test 1: Status register set correctly.");
+    equal(MOS6502._statusRegister.dumpStatus(), 0xA0, "Test 1: Status register set correctly.");
 
     /**
      * Test 2: Set zero & carry.
@@ -15533,11 +13762,11 @@ test("0xC1 - CMP (Indirect, X)",function() {
     MOS6502._PC = PCStart;
     MOS6502._RAM[MemAddress] = 0x53;
     MOS6502._A = 0x53;
-    MOS6502._P = 0x20;
+    
 
     MOS6502.emulateCycle();
 
-    equal(MOS6502._P, 0x23, "Test 2: Status register set correctly.");
+    equal(MOS6502._statusRegister.dumpStatus(), 0x23, "Test 2: Status register set correctly.");
 
     /**
      * Test 3: Set carry.
@@ -15545,12 +13774,12 @@ test("0xC1 - CMP (Indirect, X)",function() {
     MOS6502._PC = PCStart;
     MOS6502._RAM[MemAddress] = 0x53;
     MOS6502._A = 0x56;
-    MOS6502._P = 0x20;
+    
     MOS6502._CYCLES = 0;
 
     MOS6502.emulateCycle();
 
-    equal(MOS6502._P, 0x21, "Test 3: Status register set correctly.");
+    equal(MOS6502._statusRegister.dumpStatus(), 0x21, "Test 3: Status register set correctly.");
 
     equal(MOS6502._PC, PCStart + BytesUsed, "Program counter incremented successfully.");
 
@@ -15585,11 +13814,11 @@ test("0xD1 - CMP (Indirect, Y) (Same Page)",function() {
     MOS6502._PC = PCStart;
     MOS6502._RAM[MemAddress] = 0x53;
     MOS6502._A = 0x51;
-    MOS6502._P = 0x20;
+    
 
     MOS6502.emulateCycle();
 
-    equal(MOS6502._P, 0xA0, "Test 1: Status register set correctly.");
+    equal(MOS6502._statusRegister.dumpStatus(), 0xA0, "Test 1: Status register set correctly.");
 
     /**
      * Test 2: Set zero & carry.
@@ -15597,11 +13826,11 @@ test("0xD1 - CMP (Indirect, Y) (Same Page)",function() {
     MOS6502._PC = PCStart;
     MOS6502._RAM[MemAddress] = 0x53;
     MOS6502._A = 0x53;
-    MOS6502._P = 0x20;
+    
 
     MOS6502.emulateCycle();
 
-    equal(MOS6502._P, 0x23, "Test 2: Status register set correctly.");
+    equal(MOS6502._statusRegister.dumpStatus(), 0x23, "Test 2: Status register set correctly.");
 
     /**
      * Test 3: Set carry.
@@ -15609,12 +13838,12 @@ test("0xD1 - CMP (Indirect, Y) (Same Page)",function() {
     MOS6502._PC = PCStart;
     MOS6502._RAM[MemAddress] = 0x53;
     MOS6502._A = 0x56;
-    MOS6502._P = 0x20;
+    
     MOS6502._CYCLES = 0;
 
     MOS6502.emulateCycle();
 
-    equal(MOS6502._P, 0x21, "Test 3: Status register set correctly.");
+    equal(MOS6502._statusRegister.dumpStatus(), 0x21, "Test 3: Status register set correctly.");
 
     equal(MOS6502._PC, PCStart + BytesUsed, "Program counter incremented successfully.");
 
@@ -15649,11 +13878,11 @@ test("0xD1 - CMP (Indirect, Y) (Cross Page)",function() {
     MOS6502._PC = PCStart;
     MOS6502._RAM[MemAddress] = 0x53;
     MOS6502._A = 0x51;
-    MOS6502._P = 0x20;
+    
 
     MOS6502.emulateCycle();
 
-    equal(MOS6502._P, 0xA0, "Test 1: Status register set correctly.");
+    equal(MOS6502._statusRegister.dumpStatus(), 0xA0, "Test 1: Status register set correctly.");
 
     /**
      * Test 2: Set zero & carry.
@@ -15661,11 +13890,11 @@ test("0xD1 - CMP (Indirect, Y) (Cross Page)",function() {
     MOS6502._PC = PCStart;
     MOS6502._RAM[MemAddress] = 0x53;
     MOS6502._A = 0x53;
-    MOS6502._P = 0x20;
+    
 
     MOS6502.emulateCycle();
 
-    equal(MOS6502._P, 0x23, "Test 2: Status register set correctly.");
+    equal(MOS6502._statusRegister.dumpStatus(), 0x23, "Test 2: Status register set correctly.");
 
     /**
      * Test 3: Set carry.
@@ -15673,12 +13902,12 @@ test("0xD1 - CMP (Indirect, Y) (Cross Page)",function() {
     MOS6502._PC = PCStart;
     MOS6502._RAM[MemAddress] = 0x53;
     MOS6502._A = 0x56;
-    MOS6502._P = 0x20;
+    
     MOS6502._CYCLES = 0;
 
     MOS6502.emulateCycle();
 
-    equal(MOS6502._P, 0x21, "Test 3: Status register set correctly.");
+    equal(MOS6502._statusRegister.dumpStatus(), 0x21, "Test 3: Status register set correctly.");
 
     equal(MOS6502._PC, PCStart + BytesUsed, "Program counter incremented successfully.");
 
@@ -15718,7 +13947,7 @@ test("0xC6 - DEC (Zero Page)",function() {
      */
 
     MOS6502._PC = PCStart;
-    MOS6502._P = 0x20;
+    
     MOS6502._CYCLES = 0;
     MOS6502._RAM[MemoryLocation] = 0x20;
 
@@ -15726,42 +13955,42 @@ test("0xC6 - DEC (Zero Page)",function() {
 
     equal(MOS6502._RAM[MemoryLocation], 0x1F, "Test 1: Memory decremented successfully.");
 
-    equal(MOS6502._P,0x20,"Test 1: Status register set correctly.");
+    equal(MOS6502._statusRegister.dumpStatus(),0x20,"Test 1: Status register set correctly.");
 
     /**
      * Test 2: Set sign from high number.
      */
 
     MOS6502._PC = PCStart;
-    MOS6502._P = 0x20;
+    
     MOS6502._RAM[MemoryLocation] = 0xFF;
 
     MOS6502.emulateCycle();
 
     equal(MOS6502._RAM[MemoryLocation], 0xFE, "Test 2: Memory decremented successfully.");
 
-    equal(MOS6502._P,0xA0,"Test 2: Status register set correctly.");
+    equal(MOS6502._statusRegister.dumpStatus(),0xA0,"Test 2: Status register set correctly.");
 
     /**
      * Test 3: Set sign from subtracting from zero.
      */
 
     MOS6502._PC = PCStart;
-    MOS6502._P = 0x20;
+    
     MOS6502._RAM[MemoryLocation] = 0x0;
 
     MOS6502.emulateCycle();
 
     equal(MOS6502._RAM[MemoryLocation], 0xFF, "Test 3: Memory decremented successfully.");
 
-    equal(MOS6502._P,0xA0,"Test 3: Status register set correctly.");
+    equal(MOS6502._statusRegister.dumpStatus(),0xA0,"Test 3: Status register set correctly.");
 
     /**
      * Test 4: Set zero.
      */
 
     MOS6502._PC = PCStart;
-    MOS6502._P = 0x20;
+    
     MOS6502._CYCLES = 0;
     MOS6502._RAM[MemoryLocation] = 0x01;
 
@@ -15769,7 +13998,7 @@ test("0xC6 - DEC (Zero Page)",function() {
 
     equal(MOS6502._RAM[MemoryLocation], 0x00, "Test 4: Memory decremented successfully.");
 
-    equal(MOS6502._P,0x22,"Test 4: Status register set correctly.");
+    equal(MOS6502._statusRegister.dumpStatus(),0x22,"Test 4: Status register set correctly.");
 
     equal(MOS6502._PC, PCStart + BytesUsed, "Program counter incremented successfully.");
 
@@ -15799,7 +14028,7 @@ test("0xD6 - DEC (Zero Page, X)",function() {
      */
 
     MOS6502._PC = PCStart;
-    MOS6502._P = 0x20;
+    
     MOS6502._CYCLES = 0;
     MOS6502._RAM[MemoryLocation] = 0x20;
 
@@ -15807,42 +14036,42 @@ test("0xD6 - DEC (Zero Page, X)",function() {
 
     equal(MOS6502._RAM[MemoryLocation], 0x1F, "Test 1: Memory decremented successfully.");
 
-    equal(MOS6502._P,0x20,"Test 1: Status register set correctly.");
+    equal(MOS6502._statusRegister.dumpStatus(),0x20,"Test 1: Status register set correctly.");
 
     /**
      * Test 2: Set sign from high number.
      */
 
     MOS6502._PC = PCStart;
-    MOS6502._P = 0x20;
+    
     MOS6502._RAM[MemoryLocation] = 0xFF;
 
     MOS6502.emulateCycle();
 
     equal(MOS6502._RAM[MemoryLocation], 0xFE, "Test 2: Memory decremented successfully.");
 
-    equal(MOS6502._P,0xA0,"Test 2: Status register set correctly.");
+    equal(MOS6502._statusRegister.dumpStatus(),0xA0,"Test 2: Status register set correctly.");
 
     /**
      * Test 3: Set sign from subtracting from zero.
      */
 
     MOS6502._PC = PCStart;
-    MOS6502._P = 0x20;
+    
     MOS6502._RAM[MemoryLocation] = 0x0;
 
     MOS6502.emulateCycle();
 
     equal(MOS6502._RAM[MemoryLocation], 0xFF, "Test 3: Memory decremented successfully.");
 
-    equal(MOS6502._P,0xA0,"Test 3: Status register set correctly.");
+    equal(MOS6502._statusRegister.dumpStatus(),0xA0,"Test 3: Status register set correctly.");
 
     /**
      * Test 4: Set zero.
      */
 
     MOS6502._PC = PCStart;
-    MOS6502._P = 0x20;
+    
     MOS6502._CYCLES = 0;
     MOS6502._RAM[MemoryLocation] = 0x01;
 
@@ -15850,7 +14079,7 @@ test("0xD6 - DEC (Zero Page, X)",function() {
 
     equal(MOS6502._RAM[MemoryLocation], 0x00, "Test 4: Memory decremented successfully.");
 
-    equal(MOS6502._P,0x22,"Test 4: Status register set correctly.");
+    equal(MOS6502._statusRegister.dumpStatus(),0x22,"Test 4: Status register set correctly.");
 
     equal(MOS6502._PC, PCStart + BytesUsed, "Program counter incremented successfully.");
 
@@ -15880,7 +14109,7 @@ test("0xCE - DEC (Absolute)",function() {
      */
 
     MOS6502._PC = PCStart;
-    MOS6502._P = 0x20;
+    
     MOS6502._CYCLES = 0;
     MOS6502._RAM[MemoryLocation] = 0x20;
 
@@ -15888,42 +14117,42 @@ test("0xCE - DEC (Absolute)",function() {
 
     equal(MOS6502._RAM[MemoryLocation], 0x1F, "Test 1: Memory decremented successfully.");
 
-    equal(MOS6502._P,0x20,"Test 1: Status register set correctly.");
+    equal(MOS6502._statusRegister.dumpStatus(),0x20,"Test 1: Status register set correctly.");
 
     /**
      * Test 2: Set sign from high number.
      */
 
     MOS6502._PC = PCStart;
-    MOS6502._P = 0x20;
+    
     MOS6502._RAM[MemoryLocation] = 0xFF;
 
     MOS6502.emulateCycle();
 
     equal(MOS6502._RAM[MemoryLocation], 0xFE, "Test 2: Memory decremented successfully.");
 
-    equal(MOS6502._P,0xA0,"Test 2: Status register set correctly.");
+    equal(MOS6502._statusRegister.dumpStatus(),0xA0,"Test 2: Status register set correctly.");
 
     /**
      * Test 3: Set sign from subtracting from zero.
      */
 
     MOS6502._PC = PCStart;
-    MOS6502._P = 0x20;
+    
     MOS6502._RAM[MemoryLocation] = 0x0;
 
     MOS6502.emulateCycle();
 
     equal(MOS6502._RAM[MemoryLocation], 0xFF, "Test 3: Memory decremented successfully.");
 
-    equal(MOS6502._P,0xA0,"Test 3: Status register set correctly.");
+    equal(MOS6502._statusRegister.dumpStatus(),0xA0,"Test 3: Status register set correctly.");
 
     /**
      * Test 4: Set zero.
      */
 
     MOS6502._PC = PCStart;
-    MOS6502._P = 0x20;
+    
     MOS6502._CYCLES = 0;
     MOS6502._RAM[MemoryLocation] = 0x01;
 
@@ -15931,7 +14160,7 @@ test("0xCE - DEC (Absolute)",function() {
 
     equal(MOS6502._RAM[MemoryLocation], 0x00, "Test 4: Memory decremented successfully.");
 
-    equal(MOS6502._P,0x22,"Test 4: Status register set correctly.");
+    equal(MOS6502._statusRegister.dumpStatus(),0x22,"Test 4: Status register set correctly.");
 
     equal(MOS6502._PC, PCStart + BytesUsed, "Program counter incremented successfully.");
 
@@ -15963,7 +14192,7 @@ test("0xDE - DEC (Absolute, X)",function() {
      */
 
     MOS6502._PC = PCStart;
-    MOS6502._P = 0x20;
+    
     MOS6502._CYCLES = 0;
     MOS6502._RAM[MemoryLocation] = 0x20;
 
@@ -15971,42 +14200,42 @@ test("0xDE - DEC (Absolute, X)",function() {
 
     equal(MOS6502._RAM[MemoryLocation], 0x1F, "Test 1: Memory decremented successfully.");
 
-    equal(MOS6502._P,0x20,"Test 1: Status register set correctly.");
+    equal(MOS6502._statusRegister.dumpStatus(),0x20,"Test 1: Status register set correctly.");
 
     /**
      * Test 2: Set sign from high number.
      */
 
     MOS6502._PC = PCStart;
-    MOS6502._P = 0x20;
+    
     MOS6502._RAM[MemoryLocation] = 0xFF;
 
     MOS6502.emulateCycle();
 
     equal(MOS6502._RAM[MemoryLocation], 0xFE, "Test 2: Memory decremented successfully.");
 
-    equal(MOS6502._P,0xA0,"Test 2: Status register set correctly.");
+    equal(MOS6502._statusRegister.dumpStatus(),0xA0,"Test 2: Status register set correctly.");
 
     /**
      * Test 3: Set sign from subtracting from zero.
      */
 
     MOS6502._PC = PCStart;
-    MOS6502._P = 0x20;
+    
     MOS6502._RAM[MemoryLocation] = 0x0;
 
     MOS6502.emulateCycle();
 
     equal(MOS6502._RAM[MemoryLocation], 0xFF, "Test 3: Memory decremented successfully.");
 
-    equal(MOS6502._P,0xA0,"Test 3: Status register set correctly.");
+    equal(MOS6502._statusRegister.dumpStatus(),0xA0,"Test 3: Status register set correctly.");
 
     /**
      * Test 4: Set zero.
      */
 
     MOS6502._PC = PCStart;
-    MOS6502._P = 0x20;
+    
     MOS6502._CYCLES = 0;
     MOS6502._RAM[MemoryLocation] = 0x01;
 
@@ -16014,7 +14243,7 @@ test("0xDE - DEC (Absolute, X)",function() {
 
     equal(MOS6502._RAM[MemoryLocation], 0x00, "Test 4: Memory decremented successfully.");
 
-    equal(MOS6502._P,0x22,"Test 4: Status register set correctly.");
+    equal(MOS6502._statusRegister.dumpStatus(),0x22,"Test 4: Status register set correctly.");
 
     equal(MOS6502._PC, PCStart + BytesUsed, "Program counter incremented successfully.");
 
@@ -16051,35 +14280,35 @@ test("0xC8 - INY (Implied)",function() {
      */
 
     MOS6502._PC = PCStart;
-    MOS6502._P = 0x20;
+    
     MOS6502._Y = 0x21;
 
     MOS6502.emulateCycle();
 
     equal(MOS6502._Y, 0x22, "Test 1: Y Index incremented successfully.");
 
-    equal(MOS6502._P, 0x20, "Test 1: Status register set correctly");
+    equal(MOS6502._statusRegister.dumpStatus(), 0x20, "Test 1: Status register set correctly");
 
     /**
      * Test 2: Set sign.
      */
 
     MOS6502._PC = PCStart;
-    MOS6502._P = 0x20;
+    
     MOS6502._Y = 0xF0;
 
     MOS6502.emulateCycle();
 
     equal(MOS6502._Y, 0xF1, "Test 2: Y Index incremented successfully.");
 
-    equal(MOS6502._P, 0xA0, "Test 2: Status register set correctly");
+    equal(MOS6502._statusRegister.dumpStatus(), 0xA0, "Test 2: Status register set correctly");
 
     /**
      * Test 3: Set zero.
      */
 
     MOS6502._PC = PCStart;
-    MOS6502._P = 0x20;
+    
     MOS6502._CYCLES = 0;
     MOS6502._Y = 0xFF;
 
@@ -16087,7 +14316,7 @@ test("0xC8 - INY (Implied)",function() {
 
     equal(MOS6502._Y, 0x00, "Test 3: Y Index incremented successfully.");
 
-    equal(MOS6502._P, 0x22, "Test 3: Status register set correctly");
+    equal(MOS6502._statusRegister.dumpStatus(), 0x22, "Test 3: Status register set correctly");
 
     equal(MOS6502._PC, PCStart + BytesUsed, "Program counter incremented successfully.");
 
@@ -16123,20 +14352,20 @@ test("0xCA - DEX (Implied)",function() {
      * Test 1: Set none.
      */
     MOS6502._PC = PCStart;
-    MOS6502._P = 0x20;
+    
     MOS6502._X = 0x31;
 
     MOS6502.emulateCycle();
 
     equal(MOS6502._X, 0x30, "Test 1: X Index decremented successfully.");
 
-    equal(MOS6502._P, 0x20, "Test 1: Status register set correctly.");
+    equal(MOS6502._statusRegister.dumpStatus(), 0x20, "Test 1: Status register set correctly.");
 
     /**
      * Test 2: Set zero.
      */
     MOS6502._PC = PCStart;
-    MOS6502._P = 0x20;
+    
     MOS6502._CYCLES = 0;
     MOS6502._X = 0x01;
 
@@ -16144,7 +14373,7 @@ test("0xCA - DEX (Implied)",function() {
 
     equal(MOS6502._X, 0x00, "Test 2: X Index decremented successfully.");
 
-    equal(MOS6502._P, 0x22, "Test 2: Status register set correctly.");
+    equal(MOS6502._statusRegister.dumpStatus(), 0x22, "Test 2: Status register set correctly.");
 
     equal(MOS6502._PC, PCStart + BytesUsed, "Program counter incremented successfully.");
 
@@ -16154,7 +14383,7 @@ test("0xCA - DEX (Implied)",function() {
      * Test 3: Set sign.
      */
     MOS6502._PC = PCStart;
-    MOS6502._P = 0x20;
+    
     MOS6502._CYCLES = 0;
     MOS6502._X = 0x00;
 
@@ -16162,7 +14391,7 @@ test("0xCA - DEX (Implied)",function() {
 
     equal(MOS6502._X, 0xFF, "Test 3: X Index decremented successfully.");
 
-    equal(MOS6502._P, 0xA0, "Test 3: Status register set correctly.");
+    equal(MOS6502._statusRegister.dumpStatus(), 0xA0, "Test 3: Status register set correctly.");
 
     equal(MOS6502._PC, PCStart + BytesUsed, "Program counter incremented successfully.");
 
@@ -16210,7 +14439,7 @@ test("0xD0 - BNE (Relative)", function() {
      */
 
         // Enable overflow.
-    MOS6502._P = 0x22;
+    //MOS6502._statusRegister.dumpStatus() = 0x22;
 
     MOS6502.emulateCycle();
 
@@ -16226,7 +14455,7 @@ test("0xD0 - BNE (Relative)", function() {
      * Test 2: Zero clear. Branch forward to same page. (3 cycles)
      */
 
-    MOS6502._P = 0x20;
+    
     MOS6502._PC = PCStart;
     MOS6502._RAM[PCStart + 1] = relativePlusSamePage;
     MOS6502._CYCLES = 0;
@@ -16245,7 +14474,7 @@ test("0xD0 - BNE (Relative)", function() {
      * Test 3: Zero clear. Branch backward to same page. (3 cycles)
      */
 
-    MOS6502._P = 0x20;
+    
     MOS6502._PC = PCStart;
     MOS6502._RAM[PCStart + 1] = relativeMinusSamePage;
     MOS6502._CYCLES = 0;
@@ -16266,7 +14495,7 @@ test("0xD0 - BNE (Relative)", function() {
      * NOTE: It's not possible to branch to another page from 0x4080. Using 0x40E0 for forward branch.
      */
 
-    MOS6502._P = 0x21;
+    //MOS6502._statusRegister.dumpStatus() = 0x21;
     MOS6502._PC = PCStartHigh;
     MOS6502._RAM[PCStartHigh + 1] = relativePlusNextPage;
     MOS6502._CYCLES = 0;
@@ -16285,7 +14514,7 @@ test("0xD0 - BNE (Relative)", function() {
      * Test 5: Zero clear. Branch backward to different page. (4 cycles)
      */
 
-    MOS6502._P = 0x21;
+    //MOS6502._statusRegister.dumpStatus() = 0x21;
     MOS6502._PC = PCStartLow;
     MOS6502._RAM[PCStartLow + 1] = relativeMinusNextPage;
     MOS6502._CYCLES = 0;
@@ -16331,22 +14560,22 @@ test("0xD8 - CLD (Implied)",function() {
      * Test 1: Clear decimal mode when set.
      */
     MOS6502._PC = PCStart;
-    MOS6502._P = 0x28;
+    //MOS6502._statusRegister.dumpStatus() = 0x28;
 
     MOS6502.emulateCycle();
 
-    equal(MOS6502._P, 0x20, "Test 1: Status register set correctly.");
+    equal(MOS6502._statusRegister.dumpStatus(), 0x20, "Test 1: Status register set correctly.");
 
     /**
      * Test 2: Clear decimal mode when decimal mode not set.
      */
     MOS6502._PC = PCStart;
-    MOS6502._P = 0x20;
+    
     MOS6502._CYCLES = 0;
 
     MOS6502.emulateCycle();
 
-    equal(MOS6502._P, 0x20, "Test 2: Status register set correctly.");
+    equal(MOS6502._statusRegister.dumpStatus(), 0x20, "Test 2: Status register set correctly.");
 
     equal(MOS6502._PC, PCStart + BytesUsed, "Program counter incremented successfully.");
 
@@ -16385,11 +14614,11 @@ test("0xE0 - CPX (Immediate)",function() {
     MOS6502._PC = PCStart;
     MOS6502._RAM[PCStart + 1] = 0x53;
     MOS6502._X = 0x51;
-    MOS6502._P = 0x20;
+    
 
     MOS6502.emulateCycle();
 
-    equal(MOS6502._P, 0xA0, "Test 1: Status register set correctly.");
+    equal(MOS6502._statusRegister.dumpStatus(), 0xA0, "Test 1: Status register set correctly.");
 
     /**
      * Test 2: Set zero & carry.
@@ -16397,11 +14626,11 @@ test("0xE0 - CPX (Immediate)",function() {
     MOS6502._PC = PCStart;
     MOS6502._RAM[PCStart + 1] = 0x53;
     MOS6502._X = 0x53;
-    MOS6502._P = 0x20;
+    
 
     MOS6502.emulateCycle();
 
-    equal(MOS6502._P, 0x23, "Test 2: Status register set correctly.");
+    equal(MOS6502._statusRegister.dumpStatus(), 0x23, "Test 2: Status register set correctly.");
 
     /**
      * Test 3: Set carry.
@@ -16409,12 +14638,12 @@ test("0xE0 - CPX (Immediate)",function() {
     MOS6502._PC = PCStart;
     MOS6502._RAM[PCStart + 1] = 0x53;
     MOS6502._X = 0x56;
-    MOS6502._P = 0x20;
+    
     MOS6502._CYCLES = 0;
 
     MOS6502.emulateCycle();
 
-    equal(MOS6502._P, 0x21, "Test 3: Status register set correctly.");
+    equal(MOS6502._statusRegister.dumpStatus(), 0x21, "Test 3: Status register set correctly.");
 
     equal(MOS6502._PC, PCStart + BytesUsed, "Program counter incremented successfully.");
 
@@ -16442,11 +14671,11 @@ test("0xE4 - CPX (Zero Page)",function() {
     MOS6502._PC = PCStart;
     MOS6502._RAM[ZPAddress] = 0x53;
     MOS6502._X = 0x51;
-    MOS6502._P = 0x20;
+    
 
     MOS6502.emulateCycle();
 
-    equal(MOS6502._P, 0xA0, "Test 1: Status register set correctly.");
+    equal(MOS6502._statusRegister.dumpStatus(), 0xA0, "Test 1: Status register set correctly.");
 
     /**
      * Test 2: Set zero & carry.
@@ -16454,11 +14683,11 @@ test("0xE4 - CPX (Zero Page)",function() {
     MOS6502._PC = PCStart;
     MOS6502._RAM[ZPAddress] = 0x53;
     MOS6502._X = 0x53;
-    MOS6502._P = 0x20;
+    
 
     MOS6502.emulateCycle();
 
-    equal(MOS6502._P, 0x23, "Test 2: Status register set correctly.");
+    equal(MOS6502._statusRegister.dumpStatus(), 0x23, "Test 2: Status register set correctly.");
 
     /**
      * Test 3: Set carry.
@@ -16466,12 +14695,12 @@ test("0xE4 - CPX (Zero Page)",function() {
     MOS6502._PC = PCStart;
     MOS6502._RAM[ZPAddress] = 0x53;
     MOS6502._X = 0x56;
-    MOS6502._P = 0x20;
+    
     MOS6502._CYCLES = 0;
 
     MOS6502.emulateCycle();
 
-    equal(MOS6502._P, 0x21, "Test 3: Status register set correctly.");
+    equal(MOS6502._statusRegister.dumpStatus(), 0x21, "Test 3: Status register set correctly.");
 
     equal(MOS6502._PC, PCStart + BytesUsed, "Program counter incremented successfully.");
 
@@ -16502,11 +14731,11 @@ test("0xEC - CPX (Absolute)",function() {
     MOS6502._PC = PCStart;
     MOS6502._RAM[Address] = 0x53;
     MOS6502._X = 0x51;
-    MOS6502._P = 0x20;
+    
 
     MOS6502.emulateCycle();
 
-    equal(MOS6502._P, 0xA0, "Test 1: Status register set correctly.");
+    equal(MOS6502._statusRegister.dumpStatus(), 0xA0, "Test 1: Status register set correctly.");
 
     /**
      * Test 2: Set zero & carry.
@@ -16514,11 +14743,11 @@ test("0xEC - CPX (Absolute)",function() {
     MOS6502._PC = PCStart;
     MOS6502._RAM[Address] = 0x53;
     MOS6502._X = 0x53;
-    MOS6502._P = 0x20;
+    
 
     MOS6502.emulateCycle();
 
-    equal(MOS6502._P, 0x23, "Test 2: Status register set correctly.");
+    equal(MOS6502._statusRegister.dumpStatus(), 0x23, "Test 2: Status register set correctly.");
 
     /**
      * Test 3: Set carry.
@@ -16526,12 +14755,12 @@ test("0xEC - CPX (Absolute)",function() {
     MOS6502._PC = PCStart;
     MOS6502._RAM[Address] = 0x53;
     MOS6502._X = 0x56;
-    MOS6502._P = 0x20;
+    
     MOS6502._CYCLES = 0;
 
     MOS6502.emulateCycle();
 
-    equal(MOS6502._P, 0x21, "Test 3: Status register set correctly.");
+    equal(MOS6502._statusRegister.dumpStatus(), 0x21, "Test 3: Status register set correctly.");
 
     equal(MOS6502._PC, PCStart + BytesUsed, "Program counter incremented successfully.");
 
@@ -16572,12 +14801,12 @@ test("0xE9 - SBC (Immediate)", function() {
     MOS6502._A = 0;
     MOS6502._RAM[MemoryLocation] = 0;
 
-    MOS6502._P = 0x20 + 0x08;
+    //MOS6502._statusRegister.dumpStatus() = 0x20 + 0x08;
     MOS6502._PC = PCStart;
 
     MOS6502.emulateCycle();
 
-    equal(MOS6502._P, 0x20 + 0x80 + 0x08, "Test 1: Status register set correctly.");
+    equal(MOS6502._statusRegister.dumpStatus(), 0x20 + 0x80 + 0x08, "Test 1: Status register set correctly.");
 
     equal(MOS6502._A, 0x99, "Test 1: Memory subtracted from accumulator correctly.");
 
@@ -16588,12 +14817,12 @@ test("0xE9 - SBC (Immediate)", function() {
     MOS6502._A = 0;
     MOS6502._RAM[MemoryLocation] = 0;
 
-    MOS6502._P = 0x20 + 0x08 + 0x01;
+    //MOS6502._statusRegister.dumpStatus() = 0x20 + 0x08 + 0x01;
     MOS6502._PC = PCStart;
 
     MOS6502.emulateCycle();
 
-    equal(MOS6502._P, 0x20 + 0x08 + 0x02 + 0x01, "Test 2: Status register set correctly.");
+    equal(MOS6502._statusRegister.dumpStatus(), 0x20 + 0x08 + 0x02 + 0x01, "Test 2: Status register set correctly.");
 
     equal(MOS6502._A, 0x00, "Test 2: Memory subtracted from accumulator correctly.");
 
@@ -16604,12 +14833,12 @@ test("0xE9 - SBC (Immediate)", function() {
     MOS6502._A = 0x00;
     MOS6502._RAM[MemoryLocation] = 0x01;
 
-    MOS6502._P = 0x20 + 0x08 + 0x01;
+    //MOS6502._statusRegister.dumpStatus() = 0x20 + 0x08 + 0x01;
     MOS6502._PC = PCStart;
 
     MOS6502.emulateCycle();
 
-    equal(MOS6502._P, 0x20 + 0x80 + 0x08, "Test 3: Status register set correctly.");
+    equal(MOS6502._statusRegister.dumpStatus(), 0x20 + 0x80 + 0x08, "Test 3: Status register set correctly.");
 
     equal(MOS6502._A, 0x99, "Test 3: Memory subtracted from accumulator correctly.");
 
@@ -16620,12 +14849,12 @@ test("0xE9 - SBC (Immediate)", function() {
     MOS6502._A = 0x0A;
     MOS6502._RAM[MemoryLocation] = 0x00;
 
-    MOS6502._P = 0x20 + 0x08 + 0x01;
+    //MOS6502._statusRegister.dumpStatus() = 0x20 + 0x08 + 0x01;
     MOS6502._PC = PCStart;
 
     MOS6502.emulateCycle();
 
-    equal(MOS6502._P, 0x20 + 0x08 + 0x01, "Test 4: Status register set correctly.");
+    equal(MOS6502._statusRegister.dumpStatus(), 0x20 + 0x08 + 0x01, "Test 4: Status register set correctly.");
 
     equal(MOS6502._A, 0x0A, "Test 4: Memory subtracted from accumulator correctly.");
 
@@ -16636,12 +14865,12 @@ test("0xE9 - SBC (Immediate)", function() {
     MOS6502._A = 0x0B;
     MOS6502._RAM[MemoryLocation] = 0x00;
 
-    MOS6502._P = 0x20 + 0x08;
+    //MOS6502._statusRegister.dumpStatus() = 0x20 + 0x08;
     MOS6502._PC = PCStart;
 
     MOS6502.emulateCycle();
 
-    equal(MOS6502._P, 0x20 + 0x08 + 0x01, "Test 5: Status register set correctly.");
+    equal(MOS6502._statusRegister.dumpStatus(), 0x20 + 0x08 + 0x01, "Test 5: Status register set correctly.");
 
     equal(MOS6502._A, 0x0A, "Test 5: Memory subtracted from accumulator correctly.");
 
@@ -16652,12 +14881,12 @@ test("0xE9 - SBC (Immediate)", function() {
     MOS6502._A = 0x9A;
     MOS6502._RAM[MemoryLocation] = 0x00;
 
-    MOS6502._P = 0x20 + 0x08 + 0x01;
+    //MOS6502._statusRegister.dumpStatus() = 0x20 + 0x08 + 0x01;
     MOS6502._PC = PCStart;
 
     MOS6502.emulateCycle();
 
-    equal(MOS6502._P, 0x20 + 0x80 + 0x08 + 0x01, "Test 6: Status register set correctly.");
+    equal(MOS6502._statusRegister.dumpStatus(), 0x20 + 0x80 + 0x08 + 0x01, "Test 6: Status register set correctly.");
 
     equal(MOS6502._A, 0x9A, "Test 6: Memory subtracted from accumulator correctly.");
 
@@ -16668,13 +14897,13 @@ test("0xE9 - SBC (Immediate)", function() {
     MOS6502._A = 0x9B;
     MOS6502._RAM[MemoryLocation] = 0x00;
 
-    MOS6502._P = 0x20 + 0x08;
+    //MOS6502._statusRegister.dumpStatus() = 0x20 + 0x08;
     MOS6502._PC = PCStart;
     MOS6502._CYCLES = 0;
 
     MOS6502.emulateCycle();
 
-    equal(MOS6502._P, 0x20 + 0x80 + 0x08 + 0x01, "Test 7: Status register set correctly.");
+    equal(MOS6502._statusRegister.dumpStatus(), 0x20 + 0x80 + 0x08 + 0x01, "Test 7: Status register set correctly.");
 
     equal(MOS6502._A, 0x9A, "Test 7: Memory subtracted from accumulator correctly.");
 
@@ -16686,13 +14915,13 @@ test("0xE9 - SBC (Immediate)", function() {
     MOS6502._A = 0x00;
     MOS6502._RAM[MemoryLocation] = 0x00;
 
-    MOS6502._P = 0x20;
+    
     MOS6502._PC = PCStart;
     MOS6502._CYCLES = 0;
 
     MOS6502.emulateCycle();
 
-    equal(MOS6502._P, 0x20 + 0x80, "Test 8: Status register set correctly.");
+    equal(MOS6502._statusRegister.dumpStatus(), 0x20 + 0x80, "Test 8: Status register set correctly.");
 
     equal(MOS6502._A, 0xFF, "Test 8: Memory subtracted from accumulator correctly.");
 
@@ -16726,12 +14955,12 @@ test("0xE5 - SBC (Zero Page)", function() {
     MOS6502._A = 0;
     MOS6502._RAM[MemoryLocation] = 0;
 
-    MOS6502._P = 0x20 + 0x08;
+    //MOS6502._statusRegister.dumpStatus() = 0x20 + 0x08;
     MOS6502._PC = PCStart;
 
     MOS6502.emulateCycle();
 
-    equal(MOS6502._P, 0x20 + 0x80 + 0x08, "Test 1: Status register set correctly.");
+    equal(MOS6502._statusRegister.dumpStatus(), 0x20 + 0x80 + 0x08, "Test 1: Status register set correctly.");
 
     equal(MOS6502._A, 0x99, "Test 1: Memory subtracted from accumulator correctly.");
 
@@ -16742,12 +14971,12 @@ test("0xE5 - SBC (Zero Page)", function() {
     MOS6502._A = 0;
     MOS6502._RAM[MemoryLocation] = 0;
 
-    MOS6502._P = 0x20 + 0x08 + 0x01;
+    //MOS6502._statusRegister.dumpStatus() = 0x20 + 0x08 + 0x01;
     MOS6502._PC = PCStart;
 
     MOS6502.emulateCycle();
 
-    equal(MOS6502._P, 0x20 + 0x08 + 0x02 + 0x01, "Test 2: Status register set correctly.");
+    equal(MOS6502._statusRegister.dumpStatus(), 0x20 + 0x08 + 0x02 + 0x01, "Test 2: Status register set correctly.");
 
     equal(MOS6502._A, 0x00, "Test 2: Memory subtracted from accumulator correctly.");
 
@@ -16758,12 +14987,12 @@ test("0xE5 - SBC (Zero Page)", function() {
     MOS6502._A = 0x00;
     MOS6502._RAM[MemoryLocation] = 0x01;
 
-    MOS6502._P = 0x20 + 0x08 + 0x01;
+    //MOS6502._statusRegister.dumpStatus() = 0x20 + 0x08 + 0x01;
     MOS6502._PC = PCStart;
 
     MOS6502.emulateCycle();
 
-    equal(MOS6502._P, 0x20 + 0x80 + 0x08, "Test 3: Status register set correctly.");
+    equal(MOS6502._statusRegister.dumpStatus(), 0x20 + 0x80 + 0x08, "Test 3: Status register set correctly.");
 
     equal(MOS6502._A, 0x99, "Test 3: Memory subtracted from accumulator correctly.");
 
@@ -16774,12 +15003,12 @@ test("0xE5 - SBC (Zero Page)", function() {
     MOS6502._A = 0x0A;
     MOS6502._RAM[MemoryLocation] = 0x00;
 
-    MOS6502._P = 0x20 + 0x08 + 0x01;
+    //MOS6502._statusRegister.dumpStatus() = 0x20 + 0x08 + 0x01;
     MOS6502._PC = PCStart;
 
     MOS6502.emulateCycle();
 
-    equal(MOS6502._P, 0x20 + 0x08 + 0x01, "Test 4: Status register set correctly.");
+    equal(MOS6502._statusRegister.dumpStatus(), 0x20 + 0x08 + 0x01, "Test 4: Status register set correctly.");
 
     equal(MOS6502._A, 0x0A, "Test 4: Memory subtracted from accumulator correctly.");
 
@@ -16790,12 +15019,12 @@ test("0xE5 - SBC (Zero Page)", function() {
     MOS6502._A = 0x0B;
     MOS6502._RAM[MemoryLocation] = 0x00;
 
-    MOS6502._P = 0x20 + 0x08;
+    //MOS6502._statusRegister.dumpStatus() = 0x20 + 0x08;
     MOS6502._PC = PCStart;
 
     MOS6502.emulateCycle();
 
-    equal(MOS6502._P, 0x20 + 0x08 + 0x01, "Test 5: Status register set correctly.");
+    equal(MOS6502._statusRegister.dumpStatus(), 0x20 + 0x08 + 0x01, "Test 5: Status register set correctly.");
 
     equal(MOS6502._A, 0x0A, "Test 5: Memory subtracted from accumulator correctly.");
 
@@ -16806,12 +15035,12 @@ test("0xE5 - SBC (Zero Page)", function() {
     MOS6502._A = 0x9A;
     MOS6502._RAM[MemoryLocation] = 0x00;
 
-    MOS6502._P = 0x20 + 0x08 + 0x01;
+    //MOS6502._statusRegister.dumpStatus() = 0x20 + 0x08 + 0x01;
     MOS6502._PC = PCStart;
 
     MOS6502.emulateCycle();
 
-    equal(MOS6502._P, 0x20 + 0x80 + 0x08 + 0x01, "Test 6: Status register set correctly.");
+    equal(MOS6502._statusRegister.dumpStatus(), 0x20 + 0x80 + 0x08 + 0x01, "Test 6: Status register set correctly.");
 
     equal(MOS6502._A, 0x9A, "Test 6: Memory subtracted from accumulator correctly.");
 
@@ -16822,12 +15051,12 @@ test("0xE5 - SBC (Zero Page)", function() {
     MOS6502._A = 0x9B;
     MOS6502._RAM[MemoryLocation] = 0x00;
 
-    MOS6502._P = 0x20 + 0x08;
+    //MOS6502._statusRegister.dumpStatus() = 0x20 + 0x08;
     MOS6502._PC = PCStart;
 
     MOS6502.emulateCycle();
 
-    equal(MOS6502._P, 0x20 + 0x80 + 0x08 + 0x01, "Test 7: Status register set correctly.");
+    equal(MOS6502._statusRegister.dumpStatus(), 0x20 + 0x80 + 0x08 + 0x01, "Test 7: Status register set correctly.");
 
     equal(MOS6502._A, 0x9A, "Test 7: Memory subtracted from accumulator correctly.");
 
@@ -16839,13 +15068,13 @@ test("0xE5 - SBC (Zero Page)", function() {
     MOS6502._A = 0x00;
     MOS6502._RAM[MemoryLocation] = 0x00;
 
-    MOS6502._P = 0x20;
+    
     MOS6502._PC = PCStart;
     MOS6502._CYCLES = 0;
 
     MOS6502.emulateCycle();
 
-    equal(MOS6502._P, 0x20 + 0x80, "Test 8: Status register set correctly.");
+    equal(MOS6502._statusRegister.dumpStatus(), 0x20 + 0x80, "Test 8: Status register set correctly.");
 
     equal(MOS6502._A, 0xFF, "Test 8: Memory subtracted from accumulator correctly.");
 
@@ -16881,12 +15110,12 @@ test("0xF5 - SBC (Zero Page, X)", function() {
     MOS6502._A = 0;
     MOS6502._RAM[MemoryLocation] = 0;
 
-    MOS6502._P = 0x20 + 0x08;
+    //MOS6502._statusRegister.dumpStatus() = 0x20 + 0x08;
     MOS6502._PC = PCStart;
 
     MOS6502.emulateCycle();
 
-    equal(MOS6502._P, 0x20 + 0x80 + 0x08, "Test 1: Status register set correctly.");
+    equal(MOS6502._statusRegister.dumpStatus(), 0x20 + 0x80 + 0x08, "Test 1: Status register set correctly.");
 
     equal(MOS6502._A, 0x99, "Test 1: Memory subtracted from accumulator correctly.");
 
@@ -16897,12 +15126,12 @@ test("0xF5 - SBC (Zero Page, X)", function() {
     MOS6502._A = 0;
     MOS6502._RAM[MemoryLocation] = 0;
 
-    MOS6502._P = 0x20 + 0x08 + 0x01;
+    //MOS6502._statusRegister.dumpStatus() = 0x20 + 0x08 + 0x01;
     MOS6502._PC = PCStart;
 
     MOS6502.emulateCycle();
 
-    equal(MOS6502._P, 0x20 + 0x08 + 0x02 + 0x01, "Test 2: Status register set correctly.");
+    equal(MOS6502._statusRegister.dumpStatus(), 0x20 + 0x08 + 0x02 + 0x01, "Test 2: Status register set correctly.");
 
     equal(MOS6502._A, 0x00, "Test 2: Memory subtracted from accumulator correctly.");
 
@@ -16913,12 +15142,12 @@ test("0xF5 - SBC (Zero Page, X)", function() {
     MOS6502._A = 0x00;
     MOS6502._RAM[MemoryLocation] = 0x01;
 
-    MOS6502._P = 0x20 + 0x08 + 0x01;
+    //MOS6502._statusRegister.dumpStatus() = 0x20 + 0x08 + 0x01;
     MOS6502._PC = PCStart;
 
     MOS6502.emulateCycle();
 
-    equal(MOS6502._P, 0x20 + 0x80 + 0x08, "Test 3: Status register set correctly.");
+    equal(MOS6502._statusRegister.dumpStatus(), 0x20 + 0x80 + 0x08, "Test 3: Status register set correctly.");
 
     equal(MOS6502._A, 0x99, "Test 3: Memory subtracted from accumulator correctly.");
 
@@ -16929,12 +15158,12 @@ test("0xF5 - SBC (Zero Page, X)", function() {
     MOS6502._A = 0x0A;
     MOS6502._RAM[MemoryLocation] = 0x00;
 
-    MOS6502._P = 0x20 + 0x08 + 0x01;
+    //MOS6502._statusRegister.dumpStatus() = 0x20 + 0x08 + 0x01;
     MOS6502._PC = PCStart;
 
     MOS6502.emulateCycle();
 
-    equal(MOS6502._P, 0x20 + 0x08 + 0x01, "Test 4: Status register set correctly.");
+    equal(MOS6502._statusRegister.dumpStatus(), 0x20 + 0x08 + 0x01, "Test 4: Status register set correctly.");
 
     equal(MOS6502._A, 0x0A, "Test 4: Memory subtracted from accumulator correctly.");
 
@@ -16945,12 +15174,12 @@ test("0xF5 - SBC (Zero Page, X)", function() {
     MOS6502._A = 0x0B;
     MOS6502._RAM[MemoryLocation] = 0x00;
 
-    MOS6502._P = 0x20 + 0x08;
+    //MOS6502._statusRegister.dumpStatus() = 0x20 + 0x08;
     MOS6502._PC = PCStart;
 
     MOS6502.emulateCycle();
 
-    equal(MOS6502._P, 0x20 + 0x08 + 0x01, "Test 5: Status register set correctly.");
+    equal(MOS6502._statusRegister.dumpStatus(), 0x20 + 0x08 + 0x01, "Test 5: Status register set correctly.");
 
     equal(MOS6502._A, 0x0A, "Test 5: Memory subtracted from accumulator correctly.");
 
@@ -16961,12 +15190,12 @@ test("0xF5 - SBC (Zero Page, X)", function() {
     MOS6502._A = 0x9A;
     MOS6502._RAM[MemoryLocation] = 0x00;
 
-    MOS6502._P = 0x20 + 0x08 + 0x01;
+    //MOS6502._statusRegister.dumpStatus() = 0x20 + 0x08 + 0x01;
     MOS6502._PC = PCStart;
 
     MOS6502.emulateCycle();
 
-    equal(MOS6502._P, 0x20 + 0x80 + 0x08 + 0x01, "Test 6: Status register set correctly.");
+    equal(MOS6502._statusRegister.dumpStatus(), 0x20 + 0x80 + 0x08 + 0x01, "Test 6: Status register set correctly.");
 
     equal(MOS6502._A, 0x9A, "Test 6: Memory subtracted from accumulator correctly.");
 
@@ -16977,12 +15206,12 @@ test("0xF5 - SBC (Zero Page, X)", function() {
     MOS6502._A = 0x9B;
     MOS6502._RAM[MemoryLocation] = 0x00;
 
-    MOS6502._P = 0x20 + 0x08;
+    //MOS6502._statusRegister.dumpStatus() = 0x20 + 0x08;
     MOS6502._PC = PCStart;
 
     MOS6502.emulateCycle();
 
-    equal(MOS6502._P, 0x20 + 0x80 + 0x08 + 0x01, "Test 7: Status register set correctly.");
+    equal(MOS6502._statusRegister.dumpStatus(), 0x20 + 0x80 + 0x08 + 0x01, "Test 7: Status register set correctly.");
 
     equal(MOS6502._A, 0x9A, "Test 7: Memory subtracted from accumulator correctly.");
 
@@ -16994,13 +15223,13 @@ test("0xF5 - SBC (Zero Page, X)", function() {
     MOS6502._A = 0x00;
     MOS6502._RAM[MemoryLocation] = 0x00;
 
-    MOS6502._P = 0x20;
+    
     MOS6502._PC = PCStart;
     MOS6502._CYCLES = 0;
 
     MOS6502.emulateCycle();
 
-    equal(MOS6502._P, 0x20 + 0x80, "Test 8: Status register set correctly.");
+    equal(MOS6502._statusRegister.dumpStatus(), 0x20 + 0x80, "Test 8: Status register set correctly.");
 
     equal(MOS6502._A, 0xFF, "Test 8: Memory subtracted from accumulator correctly.");
 
@@ -17037,12 +15266,12 @@ test("0xED - SBC (Absolute)", function() {
     MOS6502._A = 0;
     MOS6502._RAM[MemoryLocation] = 0;
 
-    MOS6502._P = 0x20 + 0x08;
+    //MOS6502._statusRegister.dumpStatus() = 0x20 + 0x08;
     MOS6502._PC = PCStart;
 
     MOS6502.emulateCycle();
 
-    equal(MOS6502._P, 0x20 + 0x80 + 0x08, "Test 1: Status register set correctly.");
+    equal(MOS6502._statusRegister.dumpStatus(), 0x20 + 0x80 + 0x08, "Test 1: Status register set correctly.");
 
     equal(MOS6502._A, 0x99, "Test 1: Memory subtracted from accumulator correctly.");
 
@@ -17053,12 +15282,12 @@ test("0xED - SBC (Absolute)", function() {
     MOS6502._A = 0;
     MOS6502._RAM[MemoryLocation] = 0;
 
-    MOS6502._P = 0x20 + 0x08 + 0x01;
+    //MOS6502._statusRegister.dumpStatus() = 0x20 + 0x08 + 0x01;
     MOS6502._PC = PCStart;
 
     MOS6502.emulateCycle();
 
-    equal(MOS6502._P, 0x20 + 0x08 + 0x02 + 0x01, "Test 2: Status register set correctly.");
+    equal(MOS6502._statusRegister.dumpStatus(), 0x20 + 0x08 + 0x02 + 0x01, "Test 2: Status register set correctly.");
 
     equal(MOS6502._A, 0x00, "Test 2: Memory subtracted from accumulator correctly.");
 
@@ -17069,12 +15298,12 @@ test("0xED - SBC (Absolute)", function() {
     MOS6502._A = 0x00;
     MOS6502._RAM[MemoryLocation] = 0x01;
 
-    MOS6502._P = 0x20 + 0x08 + 0x01;
+    //MOS6502._statusRegister.dumpStatus() = 0x20 + 0x08 + 0x01;
     MOS6502._PC = PCStart;
 
     MOS6502.emulateCycle();
 
-    equal(MOS6502._P, 0x20 + 0x80 + 0x08, "Test 3: Status register set correctly.");
+    equal(MOS6502._statusRegister.dumpStatus(), 0x20 + 0x80 + 0x08, "Test 3: Status register set correctly.");
 
     equal(MOS6502._A, 0x99, "Test 3: Memory subtracted from accumulator correctly.");
 
@@ -17085,12 +15314,12 @@ test("0xED - SBC (Absolute)", function() {
     MOS6502._A = 0x0A;
     MOS6502._RAM[MemoryLocation] = 0x00;
 
-    MOS6502._P = 0x20 + 0x08 + 0x01;
+    //MOS6502._statusRegister.dumpStatus() = 0x20 + 0x08 + 0x01;
     MOS6502._PC = PCStart;
 
     MOS6502.emulateCycle();
 
-    equal(MOS6502._P, 0x20 + 0x08 + 0x01, "Test 4: Status register set correctly.");
+    equal(MOS6502._statusRegister.dumpStatus(), 0x20 + 0x08 + 0x01, "Test 4: Status register set correctly.");
 
     equal(MOS6502._A, 0x0A, "Test 4: Memory subtracted from accumulator correctly.");
 
@@ -17101,12 +15330,12 @@ test("0xED - SBC (Absolute)", function() {
     MOS6502._A = 0x0B;
     MOS6502._RAM[MemoryLocation] = 0x00;
 
-    MOS6502._P = 0x20 + 0x08;
+    //MOS6502._statusRegister.dumpStatus() = 0x20 + 0x08;
     MOS6502._PC = PCStart;
 
     MOS6502.emulateCycle();
 
-    equal(MOS6502._P, 0x20 + 0x08 + 0x01, "Test 5: Status register set correctly.");
+    equal(MOS6502._statusRegister.dumpStatus(), 0x20 + 0x08 + 0x01, "Test 5: Status register set correctly.");
 
     equal(MOS6502._A, 0x0A, "Test 5: Memory subtracted from accumulator correctly.");
 
@@ -17117,12 +15346,12 @@ test("0xED - SBC (Absolute)", function() {
     MOS6502._A = 0x9A;
     MOS6502._RAM[MemoryLocation] = 0x00;
 
-    MOS6502._P = 0x20 + 0x08 + 0x01;
+    //MOS6502._statusRegister.dumpStatus() = 0x20 + 0x08 + 0x01;
     MOS6502._PC = PCStart;
 
     MOS6502.emulateCycle();
 
-    equal(MOS6502._P, 0x20 + 0x80 + 0x08 + 0x01, "Test 6: Status register set correctly.");
+    equal(MOS6502._statusRegister.dumpStatus(), 0x20 + 0x80 + 0x08 + 0x01, "Test 6: Status register set correctly.");
 
     equal(MOS6502._A, 0x9A, "Test 6: Memory subtracted from accumulator correctly.");
 
@@ -17133,12 +15362,12 @@ test("0xED - SBC (Absolute)", function() {
     MOS6502._A = 0x9B;
     MOS6502._RAM[MemoryLocation] = 0x00;
 
-    MOS6502._P = 0x20 + 0x08;
+    //MOS6502._statusRegister.dumpStatus() = 0x20 + 0x08;
     MOS6502._PC = PCStart;
 
     MOS6502.emulateCycle();
 
-    equal(MOS6502._P, 0x20 + 0x80 + 0x08 + 0x01, "Test 7: Status register set correctly.");
+    equal(MOS6502._statusRegister.dumpStatus(), 0x20 + 0x80 + 0x08 + 0x01, "Test 7: Status register set correctly.");
 
     equal(MOS6502._A, 0x9A, "Test 7: Memory subtracted from accumulator correctly.");
 
@@ -17150,13 +15379,13 @@ test("0xED - SBC (Absolute)", function() {
     MOS6502._A = 0x00;
     MOS6502._RAM[MemoryLocation] = 0x00;
 
-    MOS6502._P = 0x20;
+    
     MOS6502._PC = PCStart;
     MOS6502._CYCLES = 0;
 
     MOS6502.emulateCycle();
 
-    equal(MOS6502._P, 0x20 + 0x80, "Test 8: Status register set correctly.");
+    equal(MOS6502._statusRegister.dumpStatus(), 0x20 + 0x80, "Test 8: Status register set correctly.");
 
     equal(MOS6502._A, 0xFF, "Test 8: Memory subtracted from accumulator correctly.");
 
@@ -17195,12 +15424,12 @@ test("0xFD - SBC (Absolute, X) (Same Page)", function() {
     MOS6502._A = 0;
     MOS6502._RAM[MemoryLocation] = 0;
 
-    MOS6502._P = 0x20 + 0x08;
+    //MOS6502._statusRegister.dumpStatus() = 0x20 + 0x08;
     MOS6502._PC = PCStart;
 
     MOS6502.emulateCycle();
 
-    equal(MOS6502._P, 0x20 + 0x80 + 0x08, "Test 1: Status register set correctly.");
+    equal(MOS6502._statusRegister.dumpStatus(), 0x20 + 0x80 + 0x08, "Test 1: Status register set correctly.");
 
     equal(MOS6502._A, 0x99, "Test 1: Memory subtracted from accumulator correctly.");
 
@@ -17211,12 +15440,12 @@ test("0xFD - SBC (Absolute, X) (Same Page)", function() {
     MOS6502._A = 0;
     MOS6502._RAM[MemoryLocation] = 0;
 
-    MOS6502._P = 0x20 + 0x08 + 0x01;
+    //MOS6502._statusRegister.dumpStatus() = 0x20 + 0x08 + 0x01;
     MOS6502._PC = PCStart;
 
     MOS6502.emulateCycle();
 
-    equal(MOS6502._P, 0x20 + 0x08 + 0x02 + 0x01, "Test 2: Status register set correctly.");
+    equal(MOS6502._statusRegister.dumpStatus(), 0x20 + 0x08 + 0x02 + 0x01, "Test 2: Status register set correctly.");
 
     equal(MOS6502._A, 0x00, "Test 2: Memory subtracted from accumulator correctly.");
 
@@ -17227,12 +15456,12 @@ test("0xFD - SBC (Absolute, X) (Same Page)", function() {
     MOS6502._A = 0x00;
     MOS6502._RAM[MemoryLocation] = 0x01;
 
-    MOS6502._P = 0x20 + 0x08 + 0x01;
+    //MOS6502._statusRegister.dumpStatus() = 0x20 + 0x08 + 0x01;
     MOS6502._PC = PCStart;
 
     MOS6502.emulateCycle();
 
-    equal(MOS6502._P, 0x20 + 0x80 + 0x08, "Test 3: Status register set correctly.");
+    equal(MOS6502._statusRegister.dumpStatus(), 0x20 + 0x80 + 0x08, "Test 3: Status register set correctly.");
 
     equal(MOS6502._A, 0x99, "Test 3: Memory subtracted from accumulator correctly.");
 
@@ -17243,12 +15472,12 @@ test("0xFD - SBC (Absolute, X) (Same Page)", function() {
     MOS6502._A = 0x0A;
     MOS6502._RAM[MemoryLocation] = 0x00;
 
-    MOS6502._P = 0x20 + 0x08 + 0x01;
+    //MOS6502._statusRegister.dumpStatus() = 0x20 + 0x08 + 0x01;
     MOS6502._PC = PCStart;
 
     MOS6502.emulateCycle();
 
-    equal(MOS6502._P, 0x20 + 0x08 + 0x01, "Test 4: Status register set correctly.");
+    equal(MOS6502._statusRegister.dumpStatus(), 0x20 + 0x08 + 0x01, "Test 4: Status register set correctly.");
 
     equal(MOS6502._A, 0x0A, "Test 4: Memory subtracted from accumulator correctly.");
 
@@ -17259,12 +15488,12 @@ test("0xFD - SBC (Absolute, X) (Same Page)", function() {
     MOS6502._A = 0x0B;
     MOS6502._RAM[MemoryLocation] = 0x00;
 
-    MOS6502._P = 0x20 + 0x08;
+    //MOS6502._statusRegister.dumpStatus() = 0x20 + 0x08;
     MOS6502._PC = PCStart;
 
     MOS6502.emulateCycle();
 
-    equal(MOS6502._P, 0x20 + 0x08 + 0x01, "Test 5: Status register set correctly.");
+    equal(MOS6502._statusRegister.dumpStatus(), 0x20 + 0x08 + 0x01, "Test 5: Status register set correctly.");
 
     equal(MOS6502._A, 0x0A, "Test 5: Memory subtracted from accumulator correctly.");
 
@@ -17275,12 +15504,12 @@ test("0xFD - SBC (Absolute, X) (Same Page)", function() {
     MOS6502._A = 0x9A;
     MOS6502._RAM[MemoryLocation] = 0x00;
 
-    MOS6502._P = 0x20 + 0x08 + 0x01;
+    //MOS6502._statusRegister.dumpStatus() = 0x20 + 0x08 + 0x01;
     MOS6502._PC = PCStart;
 
     MOS6502.emulateCycle();
 
-    equal(MOS6502._P, 0x20 + 0x80 + 0x08 + 0x01, "Test 6: Status register set correctly.");
+    equal(MOS6502._statusRegister.dumpStatus(), 0x20 + 0x80 + 0x08 + 0x01, "Test 6: Status register set correctly.");
 
     equal(MOS6502._A, 0x9A, "Test 6: Memory subtracted from accumulator correctly.");
 
@@ -17291,12 +15520,12 @@ test("0xFD - SBC (Absolute, X) (Same Page)", function() {
     MOS6502._A = 0x9B;
     MOS6502._RAM[MemoryLocation] = 0x00;
 
-    MOS6502._P = 0x20 + 0x08;
+    //MOS6502._statusRegister.dumpStatus() = 0x20 + 0x08;
     MOS6502._PC = PCStart;
 
     MOS6502.emulateCycle();
 
-    equal(MOS6502._P, 0x20 + 0x80 + 0x08 + 0x01, "Test 7: Status register set correctly.");
+    equal(MOS6502._statusRegister.dumpStatus(), 0x20 + 0x80 + 0x08 + 0x01, "Test 7: Status register set correctly.");
 
     equal(MOS6502._A, 0x9A, "Test 7: Memory subtracted from accumulator correctly.");
 
@@ -17308,13 +15537,13 @@ test("0xFD - SBC (Absolute, X) (Same Page)", function() {
     MOS6502._A = 0x00;
     MOS6502._RAM[MemoryLocation] = 0x00;
 
-    MOS6502._P = 0x20;
+    
     MOS6502._PC = PCStart;
     MOS6502._CYCLES = 0;
 
     MOS6502.emulateCycle();
 
-    equal(MOS6502._P, 0x20 + 0x80, "Test 8: Status register set correctly.");
+    equal(MOS6502._statusRegister.dumpStatus(), 0x20 + 0x80, "Test 8: Status register set correctly.");
 
     equal(MOS6502._A, 0xFF, "Test 8: Memory subtracted from accumulator correctly.");
 
@@ -17353,12 +15582,12 @@ test("0xFD - SBC (Absolute, X) (Cross Page)", function() {
     MOS6502._A = 0;
     MOS6502._RAM[MemoryLocation] = 0;
 
-    MOS6502._P = 0x20 + 0x08;
+    //MOS6502._statusRegister.dumpStatus() = 0x20 + 0x08;
     MOS6502._PC = PCStart;
 
     MOS6502.emulateCycle();
 
-    equal(MOS6502._P, 0x20 + 0x80 + 0x08, "Test 1: Status register set correctly.");
+    equal(MOS6502._statusRegister.dumpStatus(), 0x20 + 0x80 + 0x08, "Test 1: Status register set correctly.");
 
     equal(MOS6502._A, 0x99, "Test 1: Memory subtracted from accumulator correctly.");
 
@@ -17369,12 +15598,12 @@ test("0xFD - SBC (Absolute, X) (Cross Page)", function() {
     MOS6502._A = 0;
     MOS6502._RAM[MemoryLocation] = 0;
 
-    MOS6502._P = 0x20 + 0x08 + 0x01;
+    //MOS6502._statusRegister.dumpStatus() = 0x20 + 0x08 + 0x01;
     MOS6502._PC = PCStart;
 
     MOS6502.emulateCycle();
 
-    equal(MOS6502._P, 0x20 + 0x08 + 0x02 + 0x01, "Test 2: Status register set correctly.");
+    equal(MOS6502._statusRegister.dumpStatus(), 0x20 + 0x08 + 0x02 + 0x01, "Test 2: Status register set correctly.");
 
     equal(MOS6502._A, 0x00, "Test 2: Memory subtracted from accumulator correctly.");
 
@@ -17385,12 +15614,12 @@ test("0xFD - SBC (Absolute, X) (Cross Page)", function() {
     MOS6502._A = 0x00;
     MOS6502._RAM[MemoryLocation] = 0x01;
 
-    MOS6502._P = 0x20 + 0x08 + 0x01;
+    //MOS6502._statusRegister.dumpStatus() = 0x20 + 0x08 + 0x01;
     MOS6502._PC = PCStart;
 
     MOS6502.emulateCycle();
 
-    equal(MOS6502._P, 0x20 + 0x80 + 0x08, "Test 3: Status register set correctly.");
+    equal(MOS6502._statusRegister.dumpStatus(), 0x20 + 0x80 + 0x08, "Test 3: Status register set correctly.");
 
     equal(MOS6502._A, 0x99, "Test 3: Memory subtracted from accumulator correctly.");
 
@@ -17401,12 +15630,12 @@ test("0xFD - SBC (Absolute, X) (Cross Page)", function() {
     MOS6502._A = 0x0A;
     MOS6502._RAM[MemoryLocation] = 0x00;
 
-    MOS6502._P = 0x20 + 0x08 + 0x01;
+    //MOS6502._statusRegister.dumpStatus() = 0x20 + 0x08 + 0x01;
     MOS6502._PC = PCStart;
 
     MOS6502.emulateCycle();
 
-    equal(MOS6502._P, 0x20 + 0x08 + 0x01, "Test 4: Status register set correctly.");
+    equal(MOS6502._statusRegister.dumpStatus(), 0x20 + 0x08 + 0x01, "Test 4: Status register set correctly.");
 
     equal(MOS6502._A, 0x0A, "Test 4: Memory subtracted from accumulator correctly.");
 
@@ -17417,12 +15646,12 @@ test("0xFD - SBC (Absolute, X) (Cross Page)", function() {
     MOS6502._A = 0x0B;
     MOS6502._RAM[MemoryLocation] = 0x00;
 
-    MOS6502._P = 0x20 + 0x08;
+    //MOS6502._statusRegister.dumpStatus() = 0x20 + 0x08;
     MOS6502._PC = PCStart;
 
     MOS6502.emulateCycle();
 
-    equal(MOS6502._P, 0x20 + 0x08 + 0x01, "Test 5: Status register set correctly.");
+    equal(MOS6502._statusRegister.dumpStatus(), 0x20 + 0x08 + 0x01, "Test 5: Status register set correctly.");
 
     equal(MOS6502._A, 0x0A, "Test 5: Memory subtracted from accumulator correctly.");
 
@@ -17433,12 +15662,12 @@ test("0xFD - SBC (Absolute, X) (Cross Page)", function() {
     MOS6502._A = 0x9A;
     MOS6502._RAM[MemoryLocation] = 0x00;
 
-    MOS6502._P = 0x20 + 0x08 + 0x01;
+    //MOS6502._statusRegister.dumpStatus() = 0x20 + 0x08 + 0x01;
     MOS6502._PC = PCStart;
 
     MOS6502.emulateCycle();
 
-    equal(MOS6502._P, 0x20 + 0x80 + 0x08 + 0x01, "Test 6: Status register set correctly.");
+    equal(MOS6502._statusRegister.dumpStatus(), 0x20 + 0x80 + 0x08 + 0x01, "Test 6: Status register set correctly.");
 
     equal(MOS6502._A, 0x9A, "Test 6: Memory subtracted from accumulator correctly.");
 
@@ -17449,12 +15678,12 @@ test("0xFD - SBC (Absolute, X) (Cross Page)", function() {
     MOS6502._A = 0x9B;
     MOS6502._RAM[MemoryLocation] = 0x00;
 
-    MOS6502._P = 0x20 + 0x08;
+    //MOS6502._statusRegister.dumpStatus() = 0x20 + 0x08;
     MOS6502._PC = PCStart;
 
     MOS6502.emulateCycle();
 
-    equal(MOS6502._P, 0x20 + 0x80 + 0x08 + 0x01, "Test 7: Status register set correctly.");
+    equal(MOS6502._statusRegister.dumpStatus(), 0x20 + 0x80 + 0x08 + 0x01, "Test 7: Status register set correctly.");
 
     equal(MOS6502._A, 0x9A, "Test 7: Memory subtracted from accumulator correctly.");
 
@@ -17466,13 +15695,13 @@ test("0xFD - SBC (Absolute, X) (Cross Page)", function() {
     MOS6502._A = 0x00;
     MOS6502._RAM[MemoryLocation] = 0x00;
 
-    MOS6502._P = 0x20;
+    
     MOS6502._PC = PCStart;
     MOS6502._CYCLES = 0;
 
     MOS6502.emulateCycle();
 
-    equal(MOS6502._P, 0x20 + 0x80, "Test 8: Status register set correctly.");
+    equal(MOS6502._statusRegister.dumpStatus(), 0x20 + 0x80, "Test 8: Status register set correctly.");
 
     equal(MOS6502._A, 0xFF, "Test 8: Memory subtracted from accumulator correctly.");
 
@@ -17511,12 +15740,12 @@ test("0xF9 - SBC (Absolute, Y) (Same Page)", function() {
     MOS6502._A = 0;
     MOS6502._RAM[MemoryLocation] = 0;
 
-    MOS6502._P = 0x20 + 0x08;
+    //MOS6502._statusRegister.dumpStatus() = 0x20 + 0x08;
     MOS6502._PC = PCStart;
 
     MOS6502.emulateCycle();
 
-    equal(MOS6502._P, 0x20 + 0x80 + 0x08, "Test 1: Status register set correctly.");
+    equal(MOS6502._statusRegister.dumpStatus(), 0x20 + 0x80 + 0x08, "Test 1: Status register set correctly.");
 
     equal(MOS6502._A, 0x99, "Test 1: Memory subtracted from accumulator correctly.");
 
@@ -17527,12 +15756,12 @@ test("0xF9 - SBC (Absolute, Y) (Same Page)", function() {
     MOS6502._A = 0;
     MOS6502._RAM[MemoryLocation] = 0;
 
-    MOS6502._P = 0x20 + 0x08 + 0x01;
+    //MOS6502._statusRegister.dumpStatus() = 0x20 + 0x08 + 0x01;
     MOS6502._PC = PCStart;
 
     MOS6502.emulateCycle();
 
-    equal(MOS6502._P, 0x20 + 0x08 + 0x02 + 0x01, "Test 2: Status register set correctly.");
+    equal(MOS6502._statusRegister.dumpStatus(), 0x20 + 0x08 + 0x02 + 0x01, "Test 2: Status register set correctly.");
 
     equal(MOS6502._A, 0x00, "Test 2: Memory subtracted from accumulator correctly.");
 
@@ -17543,12 +15772,12 @@ test("0xF9 - SBC (Absolute, Y) (Same Page)", function() {
     MOS6502._A = 0x00;
     MOS6502._RAM[MemoryLocation] = 0x01;
 
-    MOS6502._P = 0x20 + 0x08 + 0x01;
+    //MOS6502._statusRegister.dumpStatus() = 0x20 + 0x08 + 0x01;
     MOS6502._PC = PCStart;
 
     MOS6502.emulateCycle();
 
-    equal(MOS6502._P, 0x20 + 0x80 + 0x08, "Test 3: Status register set correctly.");
+    equal(MOS6502._statusRegister.dumpStatus(), 0x20 + 0x80 + 0x08, "Test 3: Status register set correctly.");
 
     equal(MOS6502._A, 0x99, "Test 3: Memory subtracted from accumulator correctly.");
 
@@ -17559,12 +15788,12 @@ test("0xF9 - SBC (Absolute, Y) (Same Page)", function() {
     MOS6502._A = 0x0A;
     MOS6502._RAM[MemoryLocation] = 0x00;
 
-    MOS6502._P = 0x20 + 0x08 + 0x01;
+    //MOS6502._statusRegister.dumpStatus() = 0x20 + 0x08 + 0x01;
     MOS6502._PC = PCStart;
 
     MOS6502.emulateCycle();
 
-    equal(MOS6502._P, 0x20 + 0x08 + 0x01, "Test 4: Status register set correctly.");
+    equal(MOS6502._statusRegister.dumpStatus(), 0x20 + 0x08 + 0x01, "Test 4: Status register set correctly.");
 
     equal(MOS6502._A, 0x0A, "Test 4: Memory subtracted from accumulator correctly.");
 
@@ -17575,12 +15804,12 @@ test("0xF9 - SBC (Absolute, Y) (Same Page)", function() {
     MOS6502._A = 0x0B;
     MOS6502._RAM[MemoryLocation] = 0x00;
 
-    MOS6502._P = 0x20 + 0x08;
+    //MOS6502._statusRegister.dumpStatus() = 0x20 + 0x08;
     MOS6502._PC = PCStart;
 
     MOS6502.emulateCycle();
 
-    equal(MOS6502._P, 0x20 + 0x08 + 0x01, "Test 5: Status register set correctly.");
+    equal(MOS6502._statusRegister.dumpStatus(), 0x20 + 0x08 + 0x01, "Test 5: Status register set correctly.");
 
     equal(MOS6502._A, 0x0A, "Test 5: Memory subtracted from accumulator correctly.");
 
@@ -17591,12 +15820,12 @@ test("0xF9 - SBC (Absolute, Y) (Same Page)", function() {
     MOS6502._A = 0x9A;
     MOS6502._RAM[MemoryLocation] = 0x00;
 
-    MOS6502._P = 0x20 + 0x08 + 0x01;
+    //MOS6502._statusRegister.dumpStatus() = 0x20 + 0x08 + 0x01;
     MOS6502._PC = PCStart;
 
     MOS6502.emulateCycle();
 
-    equal(MOS6502._P, 0x20 + 0x80 + 0x08 + 0x01, "Test 6: Status register set correctly.");
+    equal(MOS6502._statusRegister.dumpStatus(), 0x20 + 0x80 + 0x08 + 0x01, "Test 6: Status register set correctly.");
 
     equal(MOS6502._A, 0x9A, "Test 6: Memory subtracted from accumulator correctly.");
 
@@ -17607,12 +15836,12 @@ test("0xF9 - SBC (Absolute, Y) (Same Page)", function() {
     MOS6502._A = 0x9B;
     MOS6502._RAM[MemoryLocation] = 0x00;
 
-    MOS6502._P = 0x20 + 0x08;
+    //MOS6502._statusRegister.dumpStatus() = 0x20 + 0x08;
     MOS6502._PC = PCStart;
 
     MOS6502.emulateCycle();
 
-    equal(MOS6502._P, 0x20 + 0x80 + 0x08 + 0x01, "Test 7: Status register set correctly.");
+    equal(MOS6502._statusRegister.dumpStatus(), 0x20 + 0x80 + 0x08 + 0x01, "Test 7: Status register set correctly.");
 
     equal(MOS6502._A, 0x9A, "Test 7: Memory subtracted from accumulator correctly.");
 
@@ -17624,13 +15853,13 @@ test("0xF9 - SBC (Absolute, Y) (Same Page)", function() {
     MOS6502._A = 0x00;
     MOS6502._RAM[MemoryLocation] = 0x00;
 
-    MOS6502._P = 0x20;
+    
     MOS6502._PC = PCStart;
     MOS6502._CYCLES = 0;
 
     MOS6502.emulateCycle();
 
-    equal(MOS6502._P, 0x20 + 0x80, "Test 8: Status register set correctly.");
+    equal(MOS6502._statusRegister.dumpStatus(), 0x20 + 0x80, "Test 8: Status register set correctly.");
 
     equal(MOS6502._A, 0xFF, "Test 8: Memory subtracted from accumulator correctly.");
 
@@ -17669,12 +15898,12 @@ test("0xF9 - SBC (Absolute, Y) (Cross Page)", function() {
     MOS6502._A = 0;
     MOS6502._RAM[MemoryLocation] = 0;
 
-    MOS6502._P = 0x20 + 0x08;
+    //MOS6502._statusRegister.dumpStatus() = 0x20 + 0x08;
     MOS6502._PC = PCStart;
 
     MOS6502.emulateCycle();
 
-    equal(MOS6502._P, 0x20 + 0x80 + 0x08, "Test 1: Status register set correctly.");
+    equal(MOS6502._statusRegister.dumpStatus(), 0x20 + 0x80 + 0x08, "Test 1: Status register set correctly.");
 
     equal(MOS6502._A, 0x99, "Test 1: Memory subtracted from accumulator correctly.");
 
@@ -17685,12 +15914,12 @@ test("0xF9 - SBC (Absolute, Y) (Cross Page)", function() {
     MOS6502._A = 0;
     MOS6502._RAM[MemoryLocation] = 0;
 
-    MOS6502._P = 0x20 + 0x08 + 0x01;
+    //MOS6502._statusRegister.dumpStatus() = 0x20 + 0x08 + 0x01;
     MOS6502._PC = PCStart;
 
     MOS6502.emulateCycle();
 
-    equal(MOS6502._P, 0x20 + 0x08 + 0x02 + 0x01, "Test 2: Status register set correctly.");
+    equal(MOS6502._statusRegister.dumpStatus(), 0x20 + 0x08 + 0x02 + 0x01, "Test 2: Status register set correctly.");
 
     equal(MOS6502._A, 0x00, "Test 2: Memory subtracted from accumulator correctly.");
 
@@ -17701,12 +15930,12 @@ test("0xF9 - SBC (Absolute, Y) (Cross Page)", function() {
     MOS6502._A = 0x00;
     MOS6502._RAM[MemoryLocation] = 0x01;
 
-    MOS6502._P = 0x20 + 0x08 + 0x01;
+    //MOS6502._statusRegister.dumpStatus() = 0x20 + 0x08 + 0x01;
     MOS6502._PC = PCStart;
 
     MOS6502.emulateCycle();
 
-    equal(MOS6502._P, 0x20 + 0x80 + 0x08, "Test 3: Status register set correctly.");
+    equal(MOS6502._statusRegister.dumpStatus(), 0x20 + 0x80 + 0x08, "Test 3: Status register set correctly.");
 
     equal(MOS6502._A, 0x99, "Test 3: Memory subtracted from accumulator correctly.");
 
@@ -17717,12 +15946,12 @@ test("0xF9 - SBC (Absolute, Y) (Cross Page)", function() {
     MOS6502._A = 0x0A;
     MOS6502._RAM[MemoryLocation] = 0x00;
 
-    MOS6502._P = 0x20 + 0x08 + 0x01;
+    //MOS6502._statusRegister.dumpStatus() = 0x20 + 0x08 + 0x01;
     MOS6502._PC = PCStart;
 
     MOS6502.emulateCycle();
 
-    equal(MOS6502._P, 0x20 + 0x08 + 0x01, "Test 4: Status register set correctly.");
+    equal(MOS6502._statusRegister.dumpStatus(), 0x20 + 0x08 + 0x01, "Test 4: Status register set correctly.");
 
     equal(MOS6502._A, 0x0A, "Test 4: Memory subtracted from accumulator correctly.");
 
@@ -17733,12 +15962,12 @@ test("0xF9 - SBC (Absolute, Y) (Cross Page)", function() {
     MOS6502._A = 0x0B;
     MOS6502._RAM[MemoryLocation] = 0x00;
 
-    MOS6502._P = 0x20 + 0x08;
+    //MOS6502._statusRegister.dumpStatus() = 0x20 + 0x08;
     MOS6502._PC = PCStart;
 
     MOS6502.emulateCycle();
 
-    equal(MOS6502._P, 0x20 + 0x08 + 0x01, "Test 5: Status register set correctly.");
+    equal(MOS6502._statusRegister.dumpStatus(), 0x20 + 0x08 + 0x01, "Test 5: Status register set correctly.");
 
     equal(MOS6502._A, 0x0A, "Test 5: Memory subtracted from accumulator correctly.");
 
@@ -17749,12 +15978,12 @@ test("0xF9 - SBC (Absolute, Y) (Cross Page)", function() {
     MOS6502._A = 0x9A;
     MOS6502._RAM[MemoryLocation] = 0x00;
 
-    MOS6502._P = 0x20 + 0x08 + 0x01;
+    //MOS6502._statusRegister.dumpStatus() = 0x20 + 0x08 + 0x01;
     MOS6502._PC = PCStart;
 
     MOS6502.emulateCycle();
 
-    equal(MOS6502._P, 0x20 + 0x80 + 0x08 + 0x01, "Test 6: Status register set correctly.");
+    equal(MOS6502._statusRegister.dumpStatus(), 0x20 + 0x80 + 0x08 + 0x01, "Test 6: Status register set correctly.");
 
     equal(MOS6502._A, 0x9A, "Test 6: Memory subtracted from accumulator correctly.");
 
@@ -17765,12 +15994,12 @@ test("0xF9 - SBC (Absolute, Y) (Cross Page)", function() {
     MOS6502._A = 0x9B;
     MOS6502._RAM[MemoryLocation] = 0x00;
 
-    MOS6502._P = 0x20 + 0x08;
+    //MOS6502._statusRegister.dumpStatus() = 0x20 + 0x08;
     MOS6502._PC = PCStart;
 
     MOS6502.emulateCycle();
 
-    equal(MOS6502._P, 0x20 + 0x80 + 0x08 + 0x01, "Test 7: Status register set correctly.");
+    equal(MOS6502._statusRegister.dumpStatus(), 0x20 + 0x80 + 0x08 + 0x01, "Test 7: Status register set correctly.");
 
     equal(MOS6502._A, 0x9A, "Test 7: Memory subtracted from accumulator correctly.");
 
@@ -17782,13 +16011,13 @@ test("0xF9 - SBC (Absolute, Y) (Cross Page)", function() {
     MOS6502._A = 0x00;
     MOS6502._RAM[MemoryLocation] = 0x00;
 
-    MOS6502._P = 0x20;
+    
     MOS6502._PC = PCStart;
     MOS6502._CYCLES = 0;
 
     MOS6502.emulateCycle();
 
-    equal(MOS6502._P, 0x20 + 0x80, "Test 8: Status register set correctly.");
+    equal(MOS6502._statusRegister.dumpStatus(), 0x20 + 0x80, "Test 8: Status register set correctly.");
 
     equal(MOS6502._A, 0xFF, "Test 8: Memory subtracted from accumulator correctly.");
 
@@ -17828,12 +16057,12 @@ test("0xE1 - SBC (Indirect, X)", function() {
     MOS6502._A = 0;
     MOS6502._RAM[MemoryLocation] = 0;
 
-    MOS6502._P = 0x20 + 0x08;
+    //MOS6502._statusRegister.dumpStatus() = 0x20 + 0x08;
     MOS6502._PC = PCStart;
 
     MOS6502.emulateCycle();
 
-    equal(MOS6502._P, 0x20 + 0x80 + 0x08, "Test 1: Status register set correctly.");
+    equal(MOS6502._statusRegister.dumpStatus(), 0x20 + 0x80 + 0x08, "Test 1: Status register set correctly.");
 
     equal(MOS6502._A, 0x99, "Test 1: Memory subtracted from accumulator correctly.");
 
@@ -17844,12 +16073,12 @@ test("0xE1 - SBC (Indirect, X)", function() {
     MOS6502._A = 0;
     MOS6502._RAM[MemoryLocation] = 0;
 
-    MOS6502._P = 0x20 + 0x08 + 0x01;
+    //MOS6502._statusRegister.dumpStatus() = 0x20 + 0x08 + 0x01;
     MOS6502._PC = PCStart;
 
     MOS6502.emulateCycle();
 
-    equal(MOS6502._P, 0x20 + 0x08 + 0x02 + 0x01, "Test 2: Status register set correctly.");
+    equal(MOS6502._statusRegister.dumpStatus(), 0x20 + 0x08 + 0x02 + 0x01, "Test 2: Status register set correctly.");
 
     equal(MOS6502._A, 0x00, "Test 2: Memory subtracted from accumulator correctly.");
 
@@ -17860,12 +16089,12 @@ test("0xE1 - SBC (Indirect, X)", function() {
     MOS6502._A = 0x00;
     MOS6502._RAM[MemoryLocation] = 0x01;
 
-    MOS6502._P = 0x20 + 0x08 + 0x01;
+    //MOS6502._statusRegister.dumpStatus() = 0x20 + 0x08 + 0x01;
     MOS6502._PC = PCStart;
 
     MOS6502.emulateCycle();
 
-    equal(MOS6502._P, 0x20 + 0x80 + 0x08, "Test 3: Status register set correctly.");
+    equal(MOS6502._statusRegister.dumpStatus(), 0x20 + 0x80 + 0x08, "Test 3: Status register set correctly.");
 
     equal(MOS6502._A, 0x99, "Test 3: Memory subtracted from accumulator correctly.");
 
@@ -17876,12 +16105,12 @@ test("0xE1 - SBC (Indirect, X)", function() {
     MOS6502._A = 0x0A;
     MOS6502._RAM[MemoryLocation] = 0x00;
 
-    MOS6502._P = 0x20 + 0x08 + 0x01;
+    //MOS6502._statusRegister.dumpStatus() = 0x20 + 0x08 + 0x01;
     MOS6502._PC = PCStart;
 
     MOS6502.emulateCycle();
 
-    equal(MOS6502._P, 0x20 + 0x08 + 0x01, "Test 4: Status register set correctly.");
+    equal(MOS6502._statusRegister.dumpStatus(), 0x20 + 0x08 + 0x01, "Test 4: Status register set correctly.");
 
     equal(MOS6502._A, 0x0A, "Test 4: Memory subtracted from accumulator correctly.");
 
@@ -17892,12 +16121,12 @@ test("0xE1 - SBC (Indirect, X)", function() {
     MOS6502._A = 0x0B;
     MOS6502._RAM[MemoryLocation] = 0x00;
 
-    MOS6502._P = 0x20 + 0x08;
+    //MOS6502._statusRegister.dumpStatus() = 0x20 + 0x08;
     MOS6502._PC = PCStart;
 
     MOS6502.emulateCycle();
 
-    equal(MOS6502._P, 0x20 + 0x08 + 0x01, "Test 5: Status register set correctly.");
+    equal(MOS6502._statusRegister.dumpStatus(), 0x20 + 0x08 + 0x01, "Test 5: Status register set correctly.");
 
     equal(MOS6502._A, 0x0A, "Test 5: Memory subtracted from accumulator correctly.");
 
@@ -17908,12 +16137,12 @@ test("0xE1 - SBC (Indirect, X)", function() {
     MOS6502._A = 0x9A;
     MOS6502._RAM[MemoryLocation] = 0x00;
 
-    MOS6502._P = 0x20 + 0x08 + 0x01;
+    //MOS6502._statusRegister.dumpStatus() = 0x20 + 0x08 + 0x01;
     MOS6502._PC = PCStart;
 
     MOS6502.emulateCycle();
 
-    equal(MOS6502._P, 0x20 + 0x80 + 0x08 + 0x01, "Test 6: Status register set correctly.");
+    equal(MOS6502._statusRegister.dumpStatus(), 0x20 + 0x80 + 0x08 + 0x01, "Test 6: Status register set correctly.");
 
     equal(MOS6502._A, 0x9A, "Test 6: Memory subtracted from accumulator correctly.");
 
@@ -17924,12 +16153,12 @@ test("0xE1 - SBC (Indirect, X)", function() {
     MOS6502._A = 0x9B;
     MOS6502._RAM[MemoryLocation] = 0x00;
 
-    MOS6502._P = 0x20 + 0x08;
+    //MOS6502._statusRegister.dumpStatus() = 0x20 + 0x08;
     MOS6502._PC = PCStart;
 
     MOS6502.emulateCycle();
 
-    equal(MOS6502._P, 0x20 + 0x80 + 0x08 + 0x01, "Test 7: Status register set correctly.");
+    equal(MOS6502._statusRegister.dumpStatus(), 0x20 + 0x80 + 0x08 + 0x01, "Test 7: Status register set correctly.");
 
     equal(MOS6502._A, 0x9A, "Test 7: Memory subtracted from accumulator correctly.");
 
@@ -17941,13 +16170,13 @@ test("0xE1 - SBC (Indirect, X)", function() {
     MOS6502._A = 0x00;
     MOS6502._RAM[MemoryLocation] = 0x00;
 
-    MOS6502._P = 0x20;
+    
     MOS6502._PC = PCStart;
     MOS6502._CYCLES = 0;
 
     MOS6502.emulateCycle();
 
-    equal(MOS6502._P, 0x20 + 0x80, "Test 8: Status register set correctly.");
+    equal(MOS6502._statusRegister.dumpStatus(), 0x20 + 0x80, "Test 8: Status register set correctly.");
 
     equal(MOS6502._A, 0xFF, "Test 8: Memory subtracted from accumulator correctly.");
 
@@ -17987,12 +16216,12 @@ test("0xF1 - SBC (Indirect, Y) (Same Page)", function() {
     MOS6502._A = 0;
     MOS6502._RAM[MemoryLocation] = 0;
 
-    MOS6502._P = 0x20 + 0x08;
+    //MOS6502._statusRegister.dumpStatus() = 0x20 + 0x08;
     MOS6502._PC = PCStart;
 
     MOS6502.emulateCycle();
 
-    equal(MOS6502._P, 0x20 + 0x80 + 0x08, "Test 1: Status register set correctly.");
+    equal(MOS6502._statusRegister.dumpStatus(), 0x20 + 0x80 + 0x08, "Test 1: Status register set correctly.");
 
     equal(MOS6502._A, 0x99, "Test 1: Memory subtracted from accumulator correctly.");
 
@@ -18003,12 +16232,12 @@ test("0xF1 - SBC (Indirect, Y) (Same Page)", function() {
     MOS6502._A = 0;
     MOS6502._RAM[MemoryLocation] = 0;
 
-    MOS6502._P = 0x20 + 0x08 + 0x01;
+    //MOS6502._statusRegister.dumpStatus() = 0x20 + 0x08 + 0x01;
     MOS6502._PC = PCStart;
 
     MOS6502.emulateCycle();
 
-    equal(MOS6502._P, 0x20 + 0x08 + 0x02 + 0x01, "Test 2: Status register set correctly.");
+    equal(MOS6502._statusRegister.dumpStatus(), 0x20 + 0x08 + 0x02 + 0x01, "Test 2: Status register set correctly.");
 
     equal(MOS6502._A, 0x00, "Test 2: Memory subtracted from accumulator correctly.");
 
@@ -18019,12 +16248,12 @@ test("0xF1 - SBC (Indirect, Y) (Same Page)", function() {
     MOS6502._A = 0x00;
     MOS6502._RAM[MemoryLocation] = 0x01;
 
-    MOS6502._P = 0x20 + 0x08 + 0x01;
+    //MOS6502._statusRegister.dumpStatus() = 0x20 + 0x08 + 0x01;
     MOS6502._PC = PCStart;
 
     MOS6502.emulateCycle();
 
-    equal(MOS6502._P, 0x20 + 0x80 + 0x08, "Test 3: Status register set correctly.");
+    equal(MOS6502._statusRegister.dumpStatus(), 0x20 + 0x80 + 0x08, "Test 3: Status register set correctly.");
 
     equal(MOS6502._A, 0x99, "Test 3: Memory subtracted from accumulator correctly.");
 
@@ -18035,12 +16264,12 @@ test("0xF1 - SBC (Indirect, Y) (Same Page)", function() {
     MOS6502._A = 0x0A;
     MOS6502._RAM[MemoryLocation] = 0x00;
 
-    MOS6502._P = 0x20 + 0x08 + 0x01;
+    //MOS6502._statusRegister.dumpStatus() = 0x20 + 0x08 + 0x01;
     MOS6502._PC = PCStart;
 
     MOS6502.emulateCycle();
 
-    equal(MOS6502._P, 0x20 + 0x08 + 0x01, "Test 4: Status register set correctly.");
+    equal(MOS6502._statusRegister.dumpStatus(), 0x20 + 0x08 + 0x01, "Test 4: Status register set correctly.");
 
     equal(MOS6502._A, 0x0A, "Test 4: Memory subtracted from accumulator correctly.");
 
@@ -18051,12 +16280,12 @@ test("0xF1 - SBC (Indirect, Y) (Same Page)", function() {
     MOS6502._A = 0x0B;
     MOS6502._RAM[MemoryLocation] = 0x00;
 
-    MOS6502._P = 0x20 + 0x08;
+    //MOS6502._statusRegister.dumpStatus() = 0x20 + 0x08;
     MOS6502._PC = PCStart;
 
     MOS6502.emulateCycle();
 
-    equal(MOS6502._P, 0x20 + 0x08 + 0x01, "Test 5: Status register set correctly.");
+    equal(MOS6502._statusRegister.dumpStatus(), 0x20 + 0x08 + 0x01, "Test 5: Status register set correctly.");
 
     equal(MOS6502._A, 0x0A, "Test 5: Memory subtracted from accumulator correctly.");
 
@@ -18067,12 +16296,12 @@ test("0xF1 - SBC (Indirect, Y) (Same Page)", function() {
     MOS6502._A = 0x9A;
     MOS6502._RAM[MemoryLocation] = 0x00;
 
-    MOS6502._P = 0x20 + 0x08 + 0x01;
+    //MOS6502._statusRegister.dumpStatus() = 0x20 + 0x08 + 0x01;
     MOS6502._PC = PCStart;
 
     MOS6502.emulateCycle();
 
-    equal(MOS6502._P, 0x20 + 0x80 + 0x08 + 0x01, "Test 6: Status register set correctly.");
+    equal(MOS6502._statusRegister.dumpStatus(), 0x20 + 0x80 + 0x08 + 0x01, "Test 6: Status register set correctly.");
 
     equal(MOS6502._A, 0x9A, "Test 6: Memory subtracted from accumulator correctly.");
 
@@ -18083,12 +16312,12 @@ test("0xF1 - SBC (Indirect, Y) (Same Page)", function() {
     MOS6502._A = 0x9B;
     MOS6502._RAM[MemoryLocation] = 0x00;
 
-    MOS6502._P = 0x20 + 0x08;
+    //MOS6502._statusRegister.dumpStatus() = 0x20 + 0x08;
     MOS6502._PC = PCStart;
 
     MOS6502.emulateCycle();
 
-    equal(MOS6502._P, 0x20 + 0x80 + 0x08 + 0x01, "Test 7: Status register set correctly.");
+    equal(MOS6502._statusRegister.dumpStatus(), 0x20 + 0x80 + 0x08 + 0x01, "Test 7: Status register set correctly.");
 
     equal(MOS6502._A, 0x9A, "Test 7: Memory subtracted from accumulator correctly.");
 
@@ -18100,13 +16329,13 @@ test("0xF1 - SBC (Indirect, Y) (Same Page)", function() {
     MOS6502._A = 0x00;
     MOS6502._RAM[MemoryLocation] = 0x00;
 
-    MOS6502._P = 0x20;
+    
     MOS6502._PC = PCStart;
     MOS6502._CYCLES = 0;
 
     MOS6502.emulateCycle();
 
-    equal(MOS6502._P, 0x20 + 0x80, "Test 8: Status register set correctly.");
+    equal(MOS6502._statusRegister.dumpStatus(), 0x20 + 0x80, "Test 8: Status register set correctly.");
 
     equal(MOS6502._A, 0xFF, "Test 8: Memory subtracted from accumulator correctly.");
 
@@ -18146,12 +16375,12 @@ test("0xF1 - SBC (Indirect, Y) (Cross Page)", function() {
     MOS6502._A = 0;
     MOS6502._RAM[MemoryLocation] = 0;
 
-    MOS6502._P = 0x20 + 0x08;
+    //MOS6502._statusRegister.dumpStatus() = 0x20 + 0x08;
     MOS6502._PC = PCStart;
 
     MOS6502.emulateCycle();
 
-    equal(MOS6502._P, 0x20 + 0x80 + 0x08, "Test 1: Status register set correctly.");
+    equal(MOS6502._statusRegister.dumpStatus(), 0x20 + 0x80 + 0x08, "Test 1: Status register set correctly.");
 
     equal(MOS6502._A, 0x99, "Test 1: Memory subtracted from accumulator correctly.");
 
@@ -18162,12 +16391,12 @@ test("0xF1 - SBC (Indirect, Y) (Cross Page)", function() {
     MOS6502._A = 0;
     MOS6502._RAM[MemoryLocation] = 0;
 
-    MOS6502._P = 0x20 + 0x08 + 0x01;
+    //MOS6502._statusRegister.dumpStatus() = 0x20 + 0x08 + 0x01;
     MOS6502._PC = PCStart;
 
     MOS6502.emulateCycle();
 
-    equal(MOS6502._P, 0x20 + 0x08 + 0x02 + 0x01, "Test 2: Status register set correctly.");
+    equal(MOS6502._statusRegister.dumpStatus(), 0x20 + 0x08 + 0x02 + 0x01, "Test 2: Status register set correctly.");
 
     equal(MOS6502._A, 0x00, "Test 2: Memory subtracted from accumulator correctly.");
 
@@ -18178,12 +16407,12 @@ test("0xF1 - SBC (Indirect, Y) (Cross Page)", function() {
     MOS6502._A = 0x00;
     MOS6502._RAM[MemoryLocation] = 0x01;
 
-    MOS6502._P = 0x20 + 0x08 + 0x01;
+    //MOS6502._statusRegister.dumpStatus() = 0x20 + 0x08 + 0x01;
     MOS6502._PC = PCStart;
 
     MOS6502.emulateCycle();
 
-    equal(MOS6502._P, 0x20 + 0x80 + 0x08, "Test 3: Status register set correctly.");
+    equal(MOS6502._statusRegister.dumpStatus(), 0x20 + 0x80 + 0x08, "Test 3: Status register set correctly.");
 
     equal(MOS6502._A, 0x99, "Test 3: Memory subtracted from accumulator correctly.");
 
@@ -18194,12 +16423,12 @@ test("0xF1 - SBC (Indirect, Y) (Cross Page)", function() {
     MOS6502._A = 0x0A;
     MOS6502._RAM[MemoryLocation] = 0x00;
 
-    MOS6502._P = 0x20 + 0x08 + 0x01;
+    //MOS6502._statusRegister.dumpStatus() = 0x20 + 0x08 + 0x01;
     MOS6502._PC = PCStart;
 
     MOS6502.emulateCycle();
 
-    equal(MOS6502._P, 0x20 + 0x08 + 0x01, "Test 4: Status register set correctly.");
+    equal(MOS6502._statusRegister.dumpStatus(), 0x20 + 0x08 + 0x01, "Test 4: Status register set correctly.");
 
     equal(MOS6502._A, 0x0A, "Test 4: Memory subtracted from accumulator correctly.");
 
@@ -18210,12 +16439,12 @@ test("0xF1 - SBC (Indirect, Y) (Cross Page)", function() {
     MOS6502._A = 0x0B;
     MOS6502._RAM[MemoryLocation] = 0x00;
 
-    MOS6502._P = 0x20 + 0x08;
+    //MOS6502._statusRegister.dumpStatus() = 0x20 + 0x08;
     MOS6502._PC = PCStart;
 
     MOS6502.emulateCycle();
 
-    equal(MOS6502._P, 0x20 + 0x08 + 0x01, "Test 5: Status register set correctly.");
+    equal(MOS6502._statusRegister.dumpStatus(), 0x20 + 0x08 + 0x01, "Test 5: Status register set correctly.");
 
     equal(MOS6502._A, 0x0A, "Test 5: Memory subtracted from accumulator correctly.");
 
@@ -18226,12 +16455,12 @@ test("0xF1 - SBC (Indirect, Y) (Cross Page)", function() {
     MOS6502._A = 0x9A;
     MOS6502._RAM[MemoryLocation] = 0x00;
 
-    MOS6502._P = 0x20 + 0x08 + 0x01;
+    //MOS6502._statusRegister.dumpStatus() = 0x20 + 0x08 + 0x01;
     MOS6502._PC = PCStart;
 
     MOS6502.emulateCycle();
 
-    equal(MOS6502._P, 0x20 + 0x80 + 0x08 + 0x01, "Test 6: Status register set correctly.");
+    equal(MOS6502._statusRegister.dumpStatus(), 0x20 + 0x80 + 0x08 + 0x01, "Test 6: Status register set correctly.");
 
     equal(MOS6502._A, 0x9A, "Test 6: Memory subtracted from accumulator correctly.");
 
@@ -18242,12 +16471,12 @@ test("0xF1 - SBC (Indirect, Y) (Cross Page)", function() {
     MOS6502._A = 0x9B;
     MOS6502._RAM[MemoryLocation] = 0x00;
 
-    MOS6502._P = 0x20 + 0x08;
+    //MOS6502._statusRegister.dumpStatus() = 0x20 + 0x08;
     MOS6502._PC = PCStart;
 
     MOS6502.emulateCycle();
 
-    equal(MOS6502._P, 0x20 + 0x80 + 0x08 + 0x01, "Test 7: Status register set correctly.");
+    equal(MOS6502._statusRegister.dumpStatus(), 0x20 + 0x80 + 0x08 + 0x01, "Test 7: Status register set correctly.");
 
     equal(MOS6502._A, 0x9A, "Test 7: Memory subtracted from accumulator correctly.");
 
@@ -18259,13 +16488,13 @@ test("0xF1 - SBC (Indirect, Y) (Cross Page)", function() {
     MOS6502._A = 0x00;
     MOS6502._RAM[MemoryLocation] = 0x00;
 
-    MOS6502._P = 0x20;
+    
     MOS6502._PC = PCStart;
     MOS6502._CYCLES = 0;
 
     MOS6502.emulateCycle();
 
-    equal(MOS6502._P, 0x20 + 0x80, "Test 8: Status register set correctly.");
+    equal(MOS6502._statusRegister.dumpStatus(), 0x20 + 0x80, "Test 8: Status register set correctly.");
 
     equal(MOS6502._A, 0xFF, "Test 8: Memory subtracted from accumulator correctly.");
 
@@ -18308,7 +16537,7 @@ test("0xE6 - INC (Zero Page)",function() {
      */
 
     MOS6502._PC = PCStart;
-    MOS6502._P = 0x20;
+    
     MOS6502._CYCLES = 0;
     MOS6502._RAM[MemoryLocation] = 0x20;
 
@@ -18316,28 +16545,28 @@ test("0xE6 - INC (Zero Page)",function() {
 
     equal(MOS6502._RAM[MemoryLocation], 0x21, "Test 1: Memory incremented successfully.");
 
-    equal(MOS6502._P,0x20,"Test 1: Status register set correctly.");
+    equal(MOS6502._statusRegister.dumpStatus(),0x20,"Test 1: Status register set correctly.");
 
     /**
      * Test 2: Set sign.
      */
 
     MOS6502._PC = PCStart;
-    MOS6502._P = 0x20;
+    
     MOS6502._RAM[MemoryLocation] = 0xFE;
 
     MOS6502.emulateCycle();
 
     equal(MOS6502._RAM[MemoryLocation], 0xFF, "Test 2: Memory incremented successfully.");
 
-    equal(MOS6502._P,0xA0,"Test 2: Status register set correctly.");
+    equal(MOS6502._statusRegister.dumpStatus(),0xA0,"Test 2: Status register set correctly.");
 
     /**
      * Test 3: Set zero.
      */
 
     MOS6502._PC = PCStart;
-    MOS6502._P = 0x20;
+    
     MOS6502._CYCLES = 0;
     MOS6502._RAM[MemoryLocation] = 0xFF;
 
@@ -18345,7 +16574,7 @@ test("0xE6 - INC (Zero Page)",function() {
 
     equal(MOS6502._RAM[MemoryLocation], 0x00, "Test 3: Memory incremented successfully.");
 
-    equal(MOS6502._P,0x22,"Test 3: Status register set correctly.");
+    equal(MOS6502._statusRegister.dumpStatus(),0x22,"Test 3: Status register set correctly.");
 
     equal(MOS6502._PC, PCStart + BytesUsed, "Program counter incremented successfully.");
 
@@ -18375,7 +16604,7 @@ test("0xF6 - INC (Zero Page, X)",function() {
      */
 
     MOS6502._PC = PCStart;
-    MOS6502._P = 0x20;
+    
     MOS6502._CYCLES = 0;
     MOS6502._RAM[MemoryLocation] = 0x20;
 
@@ -18383,28 +16612,28 @@ test("0xF6 - INC (Zero Page, X)",function() {
 
     equal(MOS6502._RAM[MemoryLocation], 0x21, "Test 1: Memory incremented successfully.");
 
-    equal(MOS6502._P,0x20,"Test 1: Status register set correctly.");
+    equal(MOS6502._statusRegister.dumpStatus(),0x20,"Test 1: Status register set correctly.");
 
     /**
      * Test 2: Set sign.
      */
 
     MOS6502._PC = PCStart;
-    MOS6502._P = 0x20;
+    
     MOS6502._RAM[MemoryLocation] = 0xFE;
 
     MOS6502.emulateCycle();
 
     equal(MOS6502._RAM[MemoryLocation], 0xFF, "Test 2: Memory incremented successfully.");
 
-    equal(MOS6502._P,0xA0,"Test 2: Status register set correctly.");
+    equal(MOS6502._statusRegister.dumpStatus(),0xA0,"Test 2: Status register set correctly.");
 
     /**
      * Test 3: Set zero.
      */
 
     MOS6502._PC = PCStart;
-    MOS6502._P = 0x20;
+    
     MOS6502._CYCLES = 0;
     MOS6502._RAM[MemoryLocation] = 0xFF;
 
@@ -18412,7 +16641,7 @@ test("0xF6 - INC (Zero Page, X)",function() {
 
     equal(MOS6502._RAM[MemoryLocation], 0x00, "Test 3: Memory incremented successfully.");
 
-    equal(MOS6502._P,0x22,"Test 3: Status register set correctly.");
+    equal(MOS6502._statusRegister.dumpStatus(),0x22,"Test 3: Status register set correctly.");
 
     equal(MOS6502._PC, PCStart + BytesUsed, "Program counter incremented successfully.");
 
@@ -18442,7 +16671,7 @@ test("0xEE - INC (Absolute)",function() {
      */
 
     MOS6502._PC = PCStart;
-    MOS6502._P = 0x20;
+    
     MOS6502._CYCLES = 0;
     MOS6502._RAM[MemoryLocation] = 0x20;
 
@@ -18450,28 +16679,28 @@ test("0xEE - INC (Absolute)",function() {
 
     equal(MOS6502._RAM[MemoryLocation], 0x21, "Test 1: Memory incremented successfully.");
 
-    equal(MOS6502._P,0x20,"Test 1: Status register set correctly.");
+    equal(MOS6502._statusRegister.dumpStatus(),0x20,"Test 1: Status register set correctly.");
 
     /**
      * Test 2: Set sign.
      */
 
     MOS6502._PC = PCStart;
-    MOS6502._P = 0x20;
+    
     MOS6502._RAM[MemoryLocation] = 0xFE;
 
     MOS6502.emulateCycle();
 
     equal(MOS6502._RAM[MemoryLocation], 0xFF, "Test 2: Memory incremented successfully.");
 
-    equal(MOS6502._P,0xA0,"Test 2: Status register set correctly.");
+    equal(MOS6502._statusRegister.dumpStatus(),0xA0,"Test 2: Status register set correctly.");
 
     /**
      * Test 3: Set zero.
      */
 
     MOS6502._PC = PCStart;
-    MOS6502._P = 0x20;
+    
     MOS6502._CYCLES = 0;
     MOS6502._RAM[MemoryLocation] = 0xFF;
 
@@ -18479,7 +16708,7 @@ test("0xEE - INC (Absolute)",function() {
 
     equal(MOS6502._RAM[MemoryLocation], 0x00, "Test 3: Memory incremented successfully.");
 
-    equal(MOS6502._P,0x22,"Test 3: Status register set correctly.");
+    equal(MOS6502._statusRegister.dumpStatus(),0x22,"Test 3: Status register set correctly.");
 
     equal(MOS6502._PC, PCStart + BytesUsed, "Program counter incremented successfully.");
 
@@ -18511,7 +16740,7 @@ test("0xFE - INC (Absolute, X)",function() {
      */
 
     MOS6502._PC = PCStart;
-    MOS6502._P = 0x20;
+    
     MOS6502._CYCLES = 0;
     MOS6502._RAM[MemoryLocation] = 0x20;
 
@@ -18519,28 +16748,28 @@ test("0xFE - INC (Absolute, X)",function() {
 
     equal(MOS6502._RAM[MemoryLocation], 0x21, "Test 1: Memory incremented successfully.");
 
-    equal(MOS6502._P,0x20,"Test 1: Status register set correctly.");
+    equal(MOS6502._statusRegister.dumpStatus(),0x20,"Test 1: Status register set correctly.");
 
     /**
      * Test 2: Set sign.
      */
 
     MOS6502._PC = PCStart;
-    MOS6502._P = 0x20;
+    
     MOS6502._RAM[MemoryLocation] = 0xFE;
 
     MOS6502.emulateCycle();
 
     equal(MOS6502._RAM[MemoryLocation], 0xFF, "Test 2: Memory incremented successfully.");
 
-    equal(MOS6502._P,0xA0,"Test 2: Status register set correctly.");
+    equal(MOS6502._statusRegister.dumpStatus(),0xA0,"Test 2: Status register set correctly.");
 
     /**
      * Test 3: Set zero.
      */
 
     MOS6502._PC = PCStart;
-    MOS6502._P = 0x20;
+    
     MOS6502._CYCLES = 0;
     MOS6502._RAM[MemoryLocation] = 0xFF;
 
@@ -18548,7 +16777,7 @@ test("0xFE - INC (Absolute, X)",function() {
 
     equal(MOS6502._RAM[MemoryLocation], 0x00, "Test 3: Memory incremented successfully.");
 
-    equal(MOS6502._P,0x22,"Test 3: Status register set correctly.");
+    equal(MOS6502._statusRegister.dumpStatus(),0x22,"Test 3: Status register set correctly.");
 
     equal(MOS6502._PC, PCStart + BytesUsed, "Program counter incremented successfully.");
 
@@ -18585,35 +16814,35 @@ test("0xE8 - INX (Implied)",function() {
      */
 
     MOS6502._PC = PCStart;
-    MOS6502._P = 0x20;
+    
     MOS6502._X = 0x21;
 
     MOS6502.emulateCycle();
 
     equal(MOS6502._X, 0x22, "Test 1: X Index incremented successfully.");
 
-    equal(MOS6502._P, 0x20, "Test 1: Status register set correctly");
+    equal(MOS6502._statusRegister.dumpStatus(), 0x20, "Test 1: Status register set correctly");
 
     /**
      * Test 2: Set sign.
      */
 
     MOS6502._PC = PCStart;
-    MOS6502._P = 0x20;
+    
     MOS6502._X = 0xF0;
 
     MOS6502.emulateCycle();
 
     equal(MOS6502._X, 0xF1, "Test 2: X Index incremented successfully.");
 
-    equal(MOS6502._P, 0xA0, "Test 2: Status register set correctly");
+    equal(MOS6502._statusRegister.dumpStatus(), 0xA0, "Test 2: Status register set correctly");
 
     /**
      * Test 3: Set zero.
      */
 
     MOS6502._PC = PCStart;
-    MOS6502._P = 0x20;
+    
     MOS6502._CYCLES = 0;
     MOS6502._X = 0xFF;
 
@@ -18621,7 +16850,7 @@ test("0xE8 - INX (Implied)",function() {
 
     equal(MOS6502._X, 0x00, "Test 3: X Index incremented successfully.");
 
-    equal(MOS6502._P, 0x22, "Test 3: Status register set correctly");
+    equal(MOS6502._statusRegister.dumpStatus(), 0x22, "Test 3: Status register set correctly");
 
     equal(MOS6502._PC, PCStart + BytesUsed, "Program counter incremented successfully.");
 
@@ -18656,7 +16885,7 @@ test("0xEA - NOP (Implied)", function() {
 
     MOS6502._PC = PCStart;
     MOS6502._CYCLES = 0;
-    MOS6502._P = 0x20;
+    
 
     MOS6502.emulateCycle();
 
@@ -18707,7 +16936,7 @@ test("0xF0 - BEQ (Relative)", function() {
      */
 
         // Enable overflow.
-    MOS6502._P = 0x20;
+    
 
     MOS6502.emulateCycle();
 
@@ -18723,7 +16952,7 @@ test("0xF0 - BEQ (Relative)", function() {
      * Test 2: Zero set. Branch forward to same page. (3 cycles)
      */
 
-    MOS6502._P = 0x22;
+    //MOS6502._statusRegister.dumpStatus() = 0x22;
     MOS6502._PC = PCStart;
     MOS6502._RAM[PCStart + 1] = relativePlusSamePage;
     MOS6502._CYCLES = 0;
@@ -18742,7 +16971,7 @@ test("0xF0 - BEQ (Relative)", function() {
      * Test 3: Zero set. Branch backward to same page. (3 cycles)
      */
 
-    MOS6502._P = 0x22;
+    //MOS6502._statusRegister.dumpStatus() = 0x22;
     MOS6502._PC = PCStart;
     MOS6502._RAM[PCStart + 1] = relativeMinusSamePage;
     MOS6502._CYCLES = 0;
@@ -18750,7 +16979,7 @@ test("0xF0 - BEQ (Relative)", function() {
     MOS6502.emulateCycle();
 
     equal(MOS6502._PC,
-            (PCStart + relativeMinusSamePage) - 256,
+            (PCStart + relativeMinusSamePage) - 255,
         "Zero set, branch backwards, same page: Program Counter set correctly.");
 
     equal(MOS6502._CYCLES,
@@ -18763,7 +16992,7 @@ test("0xF0 - BEQ (Relative)", function() {
      * NOTE: It's not possible to branch to another page from 0x4080. Using 0x40E0 for forward branch.
      */
 
-    MOS6502._P = 0x23;
+    //MOS6502._statusRegister.dumpStatus() = 0x23;
     MOS6502._PC = PCStartHigh;
     MOS6502._RAM[PCStartHigh + 1] = relativePlusNextPage;
     MOS6502._CYCLES = 0;
@@ -18782,7 +17011,7 @@ test("0xF0 - BEQ (Relative)", function() {
      * Test 5: Zero set. Branch backward to different page. (4 cycles)
      */
 
-    MOS6502._P = 0x23;
+    //MOS6502._statusRegister.dumpStatus() = 0x23;
     MOS6502._PC = PCStartLow;
     MOS6502._RAM[PCStartLow + 1] = relativeMinusNextPage;
     MOS6502._CYCLES = 0;
@@ -18790,7 +17019,7 @@ test("0xF0 - BEQ (Relative)", function() {
     MOS6502.emulateCycle();
 
     equal(MOS6502._PC,
-            (PCStartLow + relativeMinusNextPage) - 256,
+            (PCStartLow + relativeMinusNextPage) - 255,
         "Zero set, branch backwards, different page: Program Counter set correctly.");
 
     equal(MOS6502._CYCLES,
@@ -18826,11 +17055,11 @@ test("0xF8 - SED (Implied)",function() {
 
     MOS6502._PC = PCStart;
     MOS6502._CYCLES = 0;
-    MOS6502._P = 0x20;
+    
 
     MOS6502.emulateCycle();
 
-    equal(MOS6502._P, 0x28, "Decimal mode set successfully.");
+    equal(MOS6502._statusRegister.dumpStatus(), 0x28, "Decimal mode set successfully.");
 
     equal(MOS6502._PC, PCStart + BytesUsed, "Program counter incremented successfully.");
 
