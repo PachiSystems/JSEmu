@@ -1,4 +1,4 @@
-/** Wires the NES together. This will feed in the cartridge, system memory and other items to run the NES. **/
+/** Nintendo Entertainment System (NES) **/
 define(['MOS6502/6502-CPU.js','RP2C02/RP2C02-PPU.js'], function() {
     var NES = NES || {};
 
