@@ -4,13 +4,16 @@
     <meta charset="UTF-8">
     <title>NES Builder</title>
 
-    <!-- Get the components of a NES -->
-    <script type="text/javascript" src="../js/NES/6502-CPU.js"></script> <!-- NES CPU -->
-    <script type="text/javascript" src="../js/NES/RP2C02-PPU.js"></script> <!-- NES PPU -->
+    <!-- Get the components of a MOS6502 -->
+    <script type="text/javascript" src="../js/MOS6502/6502-CPU.js"></script> <!-- MOS6502 CPU -->
+    <script type="text/javascript" src="../js/RP2C02/RP2C02-PPU.js"></script> <!-- MOS6502 PPU -->
 
     <script>
         /** WIRE IT UP! **/
+        var NES = NES || {};
 
+        NES.CPU = new MOS6502();
+        NES.PPU = new RP2C02();
     </script>
 
 </head>

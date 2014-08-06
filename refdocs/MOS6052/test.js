@@ -21,7 +21,7 @@ test("CPU initialisation", function() {
      * and stack pointer to the right place.
      */
 
-    //NES.init("TEST_MODE");
+    //MOS6502.init("TEST_MODE");
 
     equal(true,true,"Not implemented. True for CI build passing.")
 });
@@ -30,7 +30,7 @@ test("Make Address", function() {
 
     /**
      * _MAKE_ADDRESS
-     * Given two bytes, it should return a 16-bit address. NES is little endian.
+     * Given two bytes, it should return a 16-bit address. MOS6502 is little endian.
      */
 
     var addressByte1 = 0xFF & (Math.floor(Math.random() * 255 - 1)),
@@ -4964,7 +4964,7 @@ test("0x30 - BMI (Relative)", function() {
      * Test 3: Result minus. Branch backward to same page. (3 cycles)
      */
 
-    //NES._statusRegister.dumpStatus() = 0xA0;
+    //MOS6502._statusRegister.dumpStatus() = 0xA0;
     MOS6502._PC = PCStart;
     MOS6502._RAM[PCStart + 1] = relativeMinusSamePage;
     MOS6502._CYCLES = 0;
@@ -4985,7 +4985,7 @@ test("0x30 - BMI (Relative)", function() {
      * NOTE: It's not possible to branch to another page from 0x4080. Using 0x40E0 for forward branch.
      */
 
-    //NES._statusRegister.dumpStatus() = 0xA0;
+    //MOS6502._statusRegister.dumpStatus() = 0xA0;
     MOS6502._PC = PCStartHigh;
     MOS6502._RAM[PCStartHigh + 1] = relativePlusNextPage;
     MOS6502._CYCLES = 0;
@@ -5004,7 +5004,7 @@ test("0x30 - BMI (Relative)", function() {
      * Test 5: Result minus. Branch backward to different page. (4 cycles)
      */
 
-    //NES._statusRegister.dumpStatus() = 0xA0;
+    //MOS6502._statusRegister.dumpStatus() = 0xA0;
     MOS6502._PC = PCStartLow;
     MOS6502._RAM[PCStartLow + 1] = relativeMinusNextPage;
     MOS6502._CYCLES = 0;
@@ -7332,7 +7332,7 @@ test("0x69 - ADC (Immediate)", function() {
      * Test 3:
      * 24 + 56 and C=0 gives 80 and N=1 V=1 Z=0 C=0 (simulate)
      */
-    //NES._statusRegister.dumpStatus() = 0x20 + 0x08;
+    //MOS6502._statusRegister.dumpStatus() = 0x20 + 0x08;
     MOS6502._RAM[PCStart + 1] = 0x24;
     MOS6502._A = 0x56;
     MOS6502._PC = PCStart;
@@ -7346,7 +7346,7 @@ test("0x69 - ADC (Immediate)", function() {
      * Test 4:
      * 93 + 82 and C=0 gives 75 and N=0 V=1 Z=0 C=1 (simulate)
      */
-    //NES._statusRegister.dumpStatus() = 0x20 + 0x08;
+    //MOS6502._statusRegister.dumpStatus() = 0x20 + 0x08;
     MOS6502._RAM[PCStart + 1] = 0x93;
     MOS6502._A = 0x82;
     MOS6502._PC = PCStart;
@@ -7360,7 +7360,7 @@ test("0x69 - ADC (Immediate)", function() {
      * Test 5:
      * 89 + 76 and C=0 gives 65 and N=0 V=0 Z=0 C=1 (simulate)
      */
-    //NES._statusRegister.dumpStatus() = 0x20 + 0x08;
+    //MOS6502._statusRegister.dumpStatus() = 0x20 + 0x08;
     MOS6502._RAM[PCStart + 1] = 0x89;
     MOS6502._A = 0x76;
     MOS6502._PC = PCStart;
@@ -7376,7 +7376,7 @@ test("0x69 - ADC (Immediate)", function() {
      *
      * Fails: Carry is not set.
      */
-    //NES._statusRegister.dumpStatus() = 0x20 + 0x08 + 0x01;
+    //MOS6502._statusRegister.dumpStatus() = 0x20 + 0x08 + 0x01;
     MOS6502._RAM[PCStart + 1] = 0x89;
     MOS6502._A = 0x76;
     MOS6502._PC = PCStart;
@@ -7390,7 +7390,7 @@ test("0x69 - ADC (Immediate)", function() {
      * Test 7:
      * 80 + f0 and C=0 gives d0 and N=1 V=1 Z=0 C=1
      */
-    //NES._statusRegister.dumpStatus() = 0x20 + 0x80 + 0x08;
+    //MOS6502._statusRegister.dumpStatus() = 0x20 + 0x80 + 0x08;
     MOS6502._RAM[PCStart + 1] = 0x80;
     MOS6502._A = 0xF0;
     MOS6502._PC = PCStart;
@@ -7404,7 +7404,7 @@ test("0x69 - ADC (Immediate)", function() {
      * Test 8:
      * 80 + fa and C=0 gives e0 and N=1 V=0 Z=0 C=1
      */
-    //NES._statusRegister.dumpStatus() = 0x20 + 0x08;
+    //MOS6502._statusRegister.dumpStatus() = 0x20 + 0x08;
     MOS6502._RAM[PCStart + 1] = 0x80;
     MOS6502._A = 0xFA;
     MOS6502._PC = PCStart;
@@ -7418,7 +7418,7 @@ test("0x69 - ADC (Immediate)", function() {
      * Test 9:
      * 2f + 4f and C=0 gives 74 and N=0 V=0 Z=0 C=0
      */
-    //NES._statusRegister.dumpStatus() = 0x20 + 0x08;
+    //MOS6502._statusRegister.dumpStatus() = 0x20 + 0x08;
     MOS6502._RAM[PCStart + 1] = 0x4F;
     MOS6502._A = 0x2F;
     MOS6502._PC = PCStart;
@@ -7432,7 +7432,7 @@ test("0x69 - ADC (Immediate)", function() {
      * Test 10:
      * 6f + 00 and C=1 gives 76 and N=0 V=0 Z=0 C=0 (simulate)
      */
-    //NES._statusRegister.dumpStatus() = 0x20 + 0x08 + 0x01;
+    //MOS6502._statusRegister.dumpStatus() = 0x20 + 0x08 + 0x01;
     MOS6502._RAM[PCStart + 1] = 0x6F;
     MOS6502._A = 0x00;
     MOS6502._PC = PCStart;
@@ -7462,7 +7462,7 @@ test("0x69 - ADC (Immediate)", function() {
      * DECIMAL MODE OFF
      * FF + FF and C=1 gives FF and N=1 V=0 Z=0 C=1
      */
-    //NES._statusRegister.dumpStatus() = 0x20 + 0x01;
+    //MOS6502._statusRegister.dumpStatus() = 0x20 + 0x01;
     MOS6502._RAM[PCStart + 1] = 0xFF;
     MOS6502._A = 0xFF;
     MOS6502._PC = PCStart;
@@ -7500,7 +7500,7 @@ test("0x65 - ADC (Zero Page)", function() {
      * 00 + 00 and C=0 gives 00 and N=0 V=0 Z=1 C=0
      */
 
-    //NES._statusRegister.dumpStatus() = 0x20 + 0x08;
+    //MOS6502._statusRegister.dumpStatus() = 0x20 + 0x08;
     MOS6502._RAM[ZPAddress] = 0x00;
     MOS6502._A = 0x00;
     MOS6502._PC = PCStart;
@@ -7514,7 +7514,7 @@ test("0x65 - ADC (Zero Page)", function() {
      * Test 2:
      * 79 + 00 and C=1 gives 80 and N=1 V=1 Z=0 C=0
      */
-    //NES._statusRegister.dumpStatus() = 0x20 + 0x08 + 0x01;
+    //MOS6502._statusRegister.dumpStatus() = 0x20 + 0x08 + 0x01;
     MOS6502._RAM[ZPAddress] = 0x79;
     MOS6502._A = 0x00;
     MOS6502._PC = PCStart;
@@ -7528,7 +7528,7 @@ test("0x65 - ADC (Zero Page)", function() {
      * Test 3:
      * 24 + 56 and C=0 gives 80 and N=1 V=1 Z=0 C=0 (simulate)
      */
-    //NES._statusRegister.dumpStatus() = 0x20 + 0x08;
+    //MOS6502._statusRegister.dumpStatus() = 0x20 + 0x08;
     MOS6502._RAM[ZPAddress] = 0x24;
     MOS6502._A = 0x56;
     MOS6502._PC = PCStart;
@@ -7542,7 +7542,7 @@ test("0x65 - ADC (Zero Page)", function() {
      * Test 4:
      * 93 + 82 and C=0 gives 75 and N=0 V=1 Z=0 C=1 (simulate)
      */
-    //NES._statusRegister.dumpStatus() = 0x20 + 0x08;
+    //MOS6502._statusRegister.dumpStatus() = 0x20 + 0x08;
     MOS6502._RAM[ZPAddress] = 0x93;
     MOS6502._A = 0x82;
     MOS6502._PC = PCStart;
@@ -7556,7 +7556,7 @@ test("0x65 - ADC (Zero Page)", function() {
      * Test 5:
      * 89 + 76 and C=0 gives 65 and N=0 V=0 Z=0 C=1 (simulate)
      */
-    //NES._statusRegister.dumpStatus() = 0x20 + 0x08;
+    //MOS6502._statusRegister.dumpStatus() = 0x20 + 0x08;
     MOS6502._RAM[ZPAddress] = 0x89;
     MOS6502._A = 0x76;
     MOS6502._PC = PCStart;
@@ -7572,7 +7572,7 @@ test("0x65 - ADC (Zero Page)", function() {
      *
      * Fails: Carry is not set.
      */
-    //NES._statusRegister.dumpStatus() = 0x20 + 0x08 + 0x01;
+    //MOS6502._statusRegister.dumpStatus() = 0x20 + 0x08 + 0x01;
     MOS6502._RAM[ZPAddress] = 0x89;
     MOS6502._A = 0x76;
     MOS6502._PC = PCStart;
@@ -7586,7 +7586,7 @@ test("0x65 - ADC (Zero Page)", function() {
      * Test 7:
      * 80 + f0 and C=0 gives d0 and N=1 V=1 Z=0 C=1
      */
-    //NES._statusRegister.dumpStatus() = 0x20 + 0x80 + 0x08;
+    //MOS6502._statusRegister.dumpStatus() = 0x20 + 0x80 + 0x08;
     MOS6502._RAM[ZPAddress] = 0x80;
     MOS6502._A = 0xF0;
     MOS6502._PC = PCStart;
@@ -7600,7 +7600,7 @@ test("0x65 - ADC (Zero Page)", function() {
      * Test 8:
      * 80 + fa and C=0 gives e0 and N=1 V=0 Z=0 C=1
      */
-    //NES._statusRegister.dumpStatus() = 0x20 + 0x08;
+    //MOS6502._statusRegister.dumpStatus() = 0x20 + 0x08;
     MOS6502._RAM[ZPAddress] = 0x80;
     MOS6502._A = 0xFA;
     MOS6502._PC = PCStart;
@@ -7614,7 +7614,7 @@ test("0x65 - ADC (Zero Page)", function() {
      * Test 9:
      * 2f + 4f and C=0 gives 74 and N=0 V=0 Z=0 C=0
      */
-    //NES._statusRegister.dumpStatus() = 0x20 + 0x08;
+    //MOS6502._statusRegister.dumpStatus() = 0x20 + 0x08;
     MOS6502._RAM[ZPAddress] = 0x4F;
     MOS6502._A = 0x2F;
     MOS6502._PC = PCStart;
@@ -7628,7 +7628,7 @@ test("0x65 - ADC (Zero Page)", function() {
      * Test 10:
      * 6f + 00 and C=1 gives 76 and N=0 V=0 Z=0 C=0 (simulate)
      */
-    //NES._statusRegister.dumpStatus() = 0x20 + 0x08 + 0x01;
+    //MOS6502._statusRegister.dumpStatus() = 0x20 + 0x08 + 0x01;
     MOS6502._RAM[ZPAddress] = 0x6F;
     MOS6502._A = 0x00;
     MOS6502._PC = PCStart;
@@ -7658,7 +7658,7 @@ test("0x65 - ADC (Zero Page)", function() {
      * DECIMAL MODE OFF
      * FF + FF and C=1 gives FF and N=1 V=0 Z=0 C=1
      */
-    //NES._statusRegister.dumpStatus() = 0x20 + 0x01;
+    //MOS6502._statusRegister.dumpStatus() = 0x20 + 0x01;
     MOS6502._RAM[ZPAddress] = 0xFF;
     MOS6502._A = 0xFF;
     MOS6502._PC = PCStart;
@@ -7699,7 +7699,7 @@ test("0x75 - ADC (Zero Page, X)", function() {
      * 00 + 00 and C=0 gives 00 and N=0 V=0 Z=1 C=0
      */
 
-    //NES._statusRegister.dumpStatus() = 0x20 + 0x08;
+    //MOS6502._statusRegister.dumpStatus() = 0x20 + 0x08;
     MOS6502._RAM[OperandAddress] = 0x00;
     MOS6502._A = 0x00;
     MOS6502._PC = PCStart;
@@ -7713,7 +7713,7 @@ test("0x75 - ADC (Zero Page, X)", function() {
      * Test 2:
      * 79 + 00 and C=1 gives 80 and N=1 V=1 Z=0 C=0
      */
-    //NES._statusRegister.dumpStatus() = 0x20 + 0x08 + 0x01;
+    //MOS6502._statusRegister.dumpStatus() = 0x20 + 0x08 + 0x01;
     MOS6502._RAM[OperandAddress] = 0x79;
     MOS6502._A = 0x00;
     MOS6502._PC = PCStart;
@@ -7727,7 +7727,7 @@ test("0x75 - ADC (Zero Page, X)", function() {
      * Test 3:
      * 24 + 56 and C=0 gives 80 and N=1 V=1 Z=0 C=0 (simulate)
      */
-    //NES._statusRegister.dumpStatus() = 0x20 + 0x08;
+    //MOS6502._statusRegister.dumpStatus() = 0x20 + 0x08;
     MOS6502._RAM[OperandAddress] = 0x24;
     MOS6502._A = 0x56;
     MOS6502._PC = PCStart;
@@ -7741,7 +7741,7 @@ test("0x75 - ADC (Zero Page, X)", function() {
      * Test 4:
      * 93 + 82 and C=0 gives 75 and N=0 V=1 Z=0 C=1 (simulate)
      */
-    //NES._statusRegister.dumpStatus() = 0x20 + 0x08;
+    //MOS6502._statusRegister.dumpStatus() = 0x20 + 0x08;
     MOS6502._RAM[OperandAddress] = 0x93;
     MOS6502._A = 0x82;
     MOS6502._PC = PCStart;
@@ -7755,7 +7755,7 @@ test("0x75 - ADC (Zero Page, X)", function() {
      * Test 5:
      * 89 + 76 and C=0 gives 65 and N=0 V=0 Z=0 C=1 (simulate)
      */
-    //NES._statusRegister.dumpStatus() = 0x20 + 0x08;
+    //MOS6502._statusRegister.dumpStatus() = 0x20 + 0x08;
     MOS6502._RAM[OperandAddress] = 0x89;
     MOS6502._A = 0x76;
     MOS6502._PC = PCStart;
@@ -7771,7 +7771,7 @@ test("0x75 - ADC (Zero Page, X)", function() {
      *
      * Fails: Carry is not set.
      */
-    //NES._statusRegister.dumpStatus() = 0x20 + 0x08 + 0x01;
+    //MOS6502._statusRegister.dumpStatus() = 0x20 + 0x08 + 0x01;
     MOS6502._RAM[OperandAddress] = 0x89;
     MOS6502._A = 0x76;
     MOS6502._PC = PCStart;
@@ -7785,7 +7785,7 @@ test("0x75 - ADC (Zero Page, X)", function() {
      * Test 7:
      * 80 + f0 and C=0 gives d0 and N=1 V=1 Z=0 C=1
      */
-    //NES._statusRegister.dumpStatus() = 0x20 + 0x80 + 0x08;
+    //MOS6502._statusRegister.dumpStatus() = 0x20 + 0x80 + 0x08;
     MOS6502._RAM[OperandAddress] = 0x80;
     MOS6502._A = 0xF0;
     MOS6502._PC = PCStart;
@@ -7799,7 +7799,7 @@ test("0x75 - ADC (Zero Page, X)", function() {
      * Test 8:
      * 80 + fa and C=0 gives e0 and N=1 V=0 Z=0 C=1
      */
-    //NES._statusRegister.dumpStatus() = 0x20 + 0x08;
+    //MOS6502._statusRegister.dumpStatus() = 0x20 + 0x08;
     MOS6502._RAM[OperandAddress] = 0x80;
     MOS6502._A = 0xFA;
     MOS6502._PC = PCStart;
@@ -7813,7 +7813,7 @@ test("0x75 - ADC (Zero Page, X)", function() {
      * Test 9:
      * 2f + 4f and C=0 gives 74 and N=0 V=0 Z=0 C=0
      */
-    //NES._statusRegister.dumpStatus() = 0x20 + 0x08;
+    //MOS6502._statusRegister.dumpStatus() = 0x20 + 0x08;
     MOS6502._RAM[OperandAddress] = 0x4F;
     MOS6502._A = 0x2F;
     MOS6502._PC = PCStart;
@@ -7827,7 +7827,7 @@ test("0x75 - ADC (Zero Page, X)", function() {
      * Test 10:
      * 6f + 00 and C=1 gives 76 and N=0 V=0 Z=0 C=0 (simulate)
      */
-    //NES._statusRegister.dumpStatus() = 0x20 + 0x08 + 0x01;
+    //MOS6502._statusRegister.dumpStatus() = 0x20 + 0x08 + 0x01;
     MOS6502._RAM[OperandAddress] = 0x6F;
     MOS6502._A = 0x00;
     MOS6502._PC = PCStart;
@@ -7857,7 +7857,7 @@ test("0x75 - ADC (Zero Page, X)", function() {
      * DECIMAL MODE OFF
      * FF + FF and C=1 gives FF and N=1 V=0 Z=0 C=1
      */
-    //NES._statusRegister.dumpStatus() = 0x20 + 0x01;
+    //MOS6502._statusRegister.dumpStatus() = 0x20 + 0x01;
     MOS6502._RAM[OperandAddress] = 0xFF;
     MOS6502._A = 0xFF;
     MOS6502._PC = PCStart;
@@ -7898,7 +7898,7 @@ test("0x6D - ADC (Absolute)", function() {
      * 00 + 00 and C=0 gives 00 and N=0 V=0 Z=1 C=0
      */
 
-    //NES._statusRegister.dumpStatus() = 0x20 + 0x08;
+    //MOS6502._statusRegister.dumpStatus() = 0x20 + 0x08;
     MOS6502._RAM[OperandAddress] = 0x00;
     MOS6502._A = 0x00;
     MOS6502._PC = PCStart;
@@ -7912,7 +7912,7 @@ test("0x6D - ADC (Absolute)", function() {
      * Test 2:
      * 79 + 00 and C=1 gives 80 and N=1 V=1 Z=0 C=0
      */
-    //NES._statusRegister.dumpStatus() = 0x20 + 0x08 + 0x01;
+    //MOS6502._statusRegister.dumpStatus() = 0x20 + 0x08 + 0x01;
     MOS6502._RAM[OperandAddress] = 0x79;
     MOS6502._A = 0x00;
     MOS6502._PC = PCStart;
@@ -7926,7 +7926,7 @@ test("0x6D - ADC (Absolute)", function() {
      * Test 3:
      * 24 + 56 and C=0 gives 80 and N=1 V=1 Z=0 C=0 (simulate)
      */
-    //NES._statusRegister.dumpStatus() = 0x20 + 0x08;
+    //MOS6502._statusRegister.dumpStatus() = 0x20 + 0x08;
     MOS6502._RAM[OperandAddress] = 0x24;
     MOS6502._A = 0x56;
     MOS6502._PC = PCStart;
@@ -7940,7 +7940,7 @@ test("0x6D - ADC (Absolute)", function() {
      * Test 4:
      * 93 + 82 and C=0 gives 75 and N=0 V=1 Z=0 C=1 (simulate)
      */
-    //NES._statusRegister.dumpStatus() = 0x20 + 0x08;
+    //MOS6502._statusRegister.dumpStatus() = 0x20 + 0x08;
     MOS6502._RAM[OperandAddress] = 0x93;
     MOS6502._A = 0x82;
     MOS6502._PC = PCStart;
@@ -7954,7 +7954,7 @@ test("0x6D - ADC (Absolute)", function() {
      * Test 5:
      * 89 + 76 and C=0 gives 65 and N=0 V=0 Z=0 C=1 (simulate)
      */
-    //NES._statusRegister.dumpStatus() = 0x20 + 0x08;
+    //MOS6502._statusRegister.dumpStatus() = 0x20 + 0x08;
     MOS6502._RAM[OperandAddress] = 0x89;
     MOS6502._A = 0x76;
     MOS6502._PC = PCStart;
@@ -7970,7 +7970,7 @@ test("0x6D - ADC (Absolute)", function() {
      *
      * Fails: Carry is not set.
      */
-    //NES._statusRegister.dumpStatus() = 0x20 + 0x08 + 0x01;
+    //MOS6502._statusRegister.dumpStatus() = 0x20 + 0x08 + 0x01;
     MOS6502._RAM[OperandAddress] = 0x89;
     MOS6502._A = 0x76;
     MOS6502._PC = PCStart;
@@ -7984,7 +7984,7 @@ test("0x6D - ADC (Absolute)", function() {
      * Test 7:
      * 80 + f0 and C=0 gives d0 and N=1 V=1 Z=0 C=1
      */
-    //NES._statusRegister.dumpStatus() = 0x20 + 0x80 + 0x08;
+    //MOS6502._statusRegister.dumpStatus() = 0x20 + 0x80 + 0x08;
     MOS6502._RAM[OperandAddress] = 0x80;
     MOS6502._A = 0xF0;
     MOS6502._PC = PCStart;
@@ -7998,7 +7998,7 @@ test("0x6D - ADC (Absolute)", function() {
      * Test 8:
      * 80 + fa and C=0 gives e0 and N=1 V=0 Z=0 C=1
      */
-    //NES._statusRegister.dumpStatus() = 0x20 + 0x08;
+    //MOS6502._statusRegister.dumpStatus() = 0x20 + 0x08;
     MOS6502._RAM[OperandAddress] = 0x80;
     MOS6502._A = 0xFA;
     MOS6502._PC = PCStart;
@@ -8012,7 +8012,7 @@ test("0x6D - ADC (Absolute)", function() {
      * Test 9:
      * 2f + 4f and C=0 gives 74 and N=0 V=0 Z=0 C=0
      */
-    //NES._statusRegister.dumpStatus() = 0x20 + 0x08;
+    //MOS6502._statusRegister.dumpStatus() = 0x20 + 0x08;
     MOS6502._RAM[OperandAddress] = 0x4F;
     MOS6502._A = 0x2F;
     MOS6502._PC = PCStart;
@@ -8026,7 +8026,7 @@ test("0x6D - ADC (Absolute)", function() {
      * Test 10:
      * 6f + 00 and C=1 gives 76 and N=0 V=0 Z=0 C=0 (simulate)
      */
-    //NES._statusRegister.dumpStatus() = 0x20 + 0x08 + 0x01;
+    //MOS6502._statusRegister.dumpStatus() = 0x20 + 0x08 + 0x01;
     MOS6502._RAM[OperandAddress] = 0x6F;
     MOS6502._A = 0x00;
     MOS6502._PC = PCStart;
@@ -8056,7 +8056,7 @@ test("0x6D - ADC (Absolute)", function() {
      * DECIMAL MODE OFF
      * FF + FF and C=1 gives FF and N=1 V=0 Z=0 C=1
      */
-    //NES._statusRegister.dumpStatus() = 0x20 + 0x01;
+    //MOS6502._statusRegister.dumpStatus() = 0x20 + 0x01;
     MOS6502._RAM[OperandAddress] = 0xFF;
     MOS6502._A = 0xFF;
     MOS6502._PC = PCStart;
@@ -8099,7 +8099,7 @@ test("0x7D - ADC (Absolute, X) (Same Page)", function() {
      * 00 + 00 and C=0 gives 00 and N=0 V=0 Z=1 C=0
      */
 
-    //NES._statusRegister.dumpStatus() = 0x20 + 0x08;
+    //MOS6502._statusRegister.dumpStatus() = 0x20 + 0x08;
     MOS6502._RAM[OperandAddress] = 0x00;
     MOS6502._A = 0x00;
     MOS6502._PC = PCStart;
@@ -8113,7 +8113,7 @@ test("0x7D - ADC (Absolute, X) (Same Page)", function() {
      * Test 2:
      * 79 + 00 and C=1 gives 80 and N=1 V=1 Z=0 C=0
      */
-    //NES._statusRegister.dumpStatus() = 0x20 + 0x08 + 0x01;
+    //MOS6502._statusRegister.dumpStatus() = 0x20 + 0x08 + 0x01;
     MOS6502._RAM[OperandAddress] = 0x79;
     MOS6502._A = 0x00;
     MOS6502._PC = PCStart;
@@ -8127,7 +8127,7 @@ test("0x7D - ADC (Absolute, X) (Same Page)", function() {
      * Test 3:
      * 24 + 56 and C=0 gives 80 and N=1 V=1 Z=0 C=0 (simulate)
      */
-    //NES._statusRegister.dumpStatus() = 0x20 + 0x08;
+    //MOS6502._statusRegister.dumpStatus() = 0x20 + 0x08;
     MOS6502._RAM[OperandAddress] = 0x24;
     MOS6502._A = 0x56;
     MOS6502._PC = PCStart;
@@ -8141,7 +8141,7 @@ test("0x7D - ADC (Absolute, X) (Same Page)", function() {
      * Test 4:
      * 93 + 82 and C=0 gives 75 and N=0 V=1 Z=0 C=1 (simulate)
      */
-    //NES._statusRegister.dumpStatus() = 0x20 + 0x08;
+    //MOS6502._statusRegister.dumpStatus() = 0x20 + 0x08;
     MOS6502._RAM[OperandAddress] = 0x93;
     MOS6502._A = 0x82;
     MOS6502._PC = PCStart;
@@ -8155,7 +8155,7 @@ test("0x7D - ADC (Absolute, X) (Same Page)", function() {
      * Test 5:
      * 89 + 76 and C=0 gives 65 and N=0 V=0 Z=0 C=1 (simulate)
      */
-    //NES._statusRegister.dumpStatus() = 0x20 + 0x08;
+    //MOS6502._statusRegister.dumpStatus() = 0x20 + 0x08;
     MOS6502._RAM[OperandAddress] = 0x89;
     MOS6502._A = 0x76;
     MOS6502._PC = PCStart;
@@ -8171,7 +8171,7 @@ test("0x7D - ADC (Absolute, X) (Same Page)", function() {
      *
      * Fails: Carry is not set.
      */
-    //NES._statusRegister.dumpStatus() = 0x20 + 0x08 + 0x01;
+    //MOS6502._statusRegister.dumpStatus() = 0x20 + 0x08 + 0x01;
     MOS6502._RAM[OperandAddress] = 0x89;
     MOS6502._A = 0x76;
     MOS6502._PC = PCStart;
@@ -8185,7 +8185,7 @@ test("0x7D - ADC (Absolute, X) (Same Page)", function() {
      * Test 7:
      * 80 + f0 and C=0 gives d0 and N=1 V=1 Z=0 C=1
      */
-    //NES._statusRegister.dumpStatus() = 0x20 + 0x80 + 0x08;
+    //MOS6502._statusRegister.dumpStatus() = 0x20 + 0x80 + 0x08;
     MOS6502._RAM[OperandAddress] = 0x80;
     MOS6502._A = 0xF0;
     MOS6502._PC = PCStart;
@@ -8199,7 +8199,7 @@ test("0x7D - ADC (Absolute, X) (Same Page)", function() {
      * Test 8:
      * 80 + fa and C=0 gives e0 and N=1 V=0 Z=0 C=1
      */
-    //NES._statusRegister.dumpStatus() = 0x20 + 0x08;
+    //MOS6502._statusRegister.dumpStatus() = 0x20 + 0x08;
     MOS6502._RAM[OperandAddress] = 0x80;
     MOS6502._A = 0xFA;
     MOS6502._PC = PCStart;
@@ -8213,7 +8213,7 @@ test("0x7D - ADC (Absolute, X) (Same Page)", function() {
      * Test 9:
      * 2f + 4f and C=0 gives 74 and N=0 V=0 Z=0 C=0
      */
-    //NES._statusRegister.dumpStatus() = 0x20 + 0x08;
+    //MOS6502._statusRegister.dumpStatus() = 0x20 + 0x08;
     MOS6502._RAM[OperandAddress] = 0x4F;
     MOS6502._A = 0x2F;
     MOS6502._PC = PCStart;
@@ -8227,7 +8227,7 @@ test("0x7D - ADC (Absolute, X) (Same Page)", function() {
      * Test 10:
      * 6f + 00 and C=1 gives 76 and N=0 V=0 Z=0 C=0 (simulate)
      */
-    //NES._statusRegister.dumpStatus() = 0x20 + 0x08 + 0x01;
+    //MOS6502._statusRegister.dumpStatus() = 0x20 + 0x08 + 0x01;
     MOS6502._RAM[OperandAddress] = 0x6F;
     MOS6502._A = 0x00;
     MOS6502._PC = PCStart;
@@ -8257,7 +8257,7 @@ test("0x7D - ADC (Absolute, X) (Same Page)", function() {
      * DECIMAL MODE OFF
      * FF + FF and C=1 gives FF and N=1 V=0 Z=0 C=1
      */
-    //NES._statusRegister.dumpStatus() = 0x20 + 0x01;
+    //MOS6502._statusRegister.dumpStatus() = 0x20 + 0x01;
     MOS6502._RAM[OperandAddress] = 0xFF;
     MOS6502._A = 0xFF;
     MOS6502._PC = PCStart;
@@ -8300,7 +8300,7 @@ test("0x7D - ADC (Absolute, X) (Cross Page)", function() {
      * 00 + 00 and C=0 gives 00 and N=0 V=0 Z=1 C=0
      */
 
-    //NES._statusRegister.dumpStatus() = 0x20 + 0x08;
+    //MOS6502._statusRegister.dumpStatus() = 0x20 + 0x08;
     MOS6502._RAM[OperandAddress] = 0x00;
     MOS6502._A = 0x00;
     MOS6502._PC = PCStart;
@@ -8314,7 +8314,7 @@ test("0x7D - ADC (Absolute, X) (Cross Page)", function() {
      * Test 2:
      * 79 + 00 and C=1 gives 80 and N=1 V=1 Z=0 C=0
      */
-    //NES._statusRegister.dumpStatus() = 0x20 + 0x08 + 0x01;
+    //MOS6502._statusRegister.dumpStatus() = 0x20 + 0x08 + 0x01;
     MOS6502._RAM[OperandAddress] = 0x79;
     MOS6502._A = 0x00;
     MOS6502._PC = PCStart;
@@ -8328,7 +8328,7 @@ test("0x7D - ADC (Absolute, X) (Cross Page)", function() {
      * Test 3:
      * 24 + 56 and C=0 gives 80 and N=1 V=1 Z=0 C=0 (simulate)
      */
-    //NES._statusRegister.dumpStatus() = 0x20 + 0x08;
+    //MOS6502._statusRegister.dumpStatus() = 0x20 + 0x08;
     MOS6502._RAM[OperandAddress] = 0x24;
     MOS6502._A = 0x56;
     MOS6502._PC = PCStart;
@@ -8342,7 +8342,7 @@ test("0x7D - ADC (Absolute, X) (Cross Page)", function() {
      * Test 4:
      * 93 + 82 and C=0 gives 75 and N=0 V=1 Z=0 C=1 (simulate)
      */
-    //NES._statusRegister.dumpStatus() = 0x20 + 0x08;
+    //MOS6502._statusRegister.dumpStatus() = 0x20 + 0x08;
     MOS6502._RAM[OperandAddress] = 0x93;
     MOS6502._A = 0x82;
     MOS6502._PC = PCStart;
@@ -8356,7 +8356,7 @@ test("0x7D - ADC (Absolute, X) (Cross Page)", function() {
      * Test 5:
      * 89 + 76 and C=0 gives 65 and N=0 V=0 Z=0 C=1 (simulate)
      */
-    //NES._statusRegister.dumpStatus() = 0x20 + 0x08;
+    //MOS6502._statusRegister.dumpStatus() = 0x20 + 0x08;
     MOS6502._RAM[OperandAddress] = 0x89;
     MOS6502._A = 0x76;
     MOS6502._PC = PCStart;
@@ -8372,7 +8372,7 @@ test("0x7D - ADC (Absolute, X) (Cross Page)", function() {
      *
      * Fails: Carry is not set.
      */
-    //NES._statusRegister.dumpStatus() = 0x20 + 0x08 + 0x01;
+    //MOS6502._statusRegister.dumpStatus() = 0x20 + 0x08 + 0x01;
     MOS6502._RAM[OperandAddress] = 0x89;
     MOS6502._A = 0x76;
     MOS6502._PC = PCStart;
@@ -8386,7 +8386,7 @@ test("0x7D - ADC (Absolute, X) (Cross Page)", function() {
      * Test 7:
      * 80 + f0 and C=0 gives d0 and N=1 V=1 Z=0 C=1
      */
-    //NES._statusRegister.dumpStatus() = 0x20 + 0x80 + 0x08;
+    //MOS6502._statusRegister.dumpStatus() = 0x20 + 0x80 + 0x08;
     MOS6502._RAM[OperandAddress] = 0x80;
     MOS6502._A = 0xF0;
     MOS6502._PC = PCStart;
@@ -8400,7 +8400,7 @@ test("0x7D - ADC (Absolute, X) (Cross Page)", function() {
      * Test 8:
      * 80 + fa and C=0 gives e0 and N=1 V=0 Z=0 C=1
      */
-    //NES._statusRegister.dumpStatus() = 0x20 + 0x08;
+    //MOS6502._statusRegister.dumpStatus() = 0x20 + 0x08;
     MOS6502._RAM[OperandAddress] = 0x80;
     MOS6502._A = 0xFA;
     MOS6502._PC = PCStart;
@@ -8414,7 +8414,7 @@ test("0x7D - ADC (Absolute, X) (Cross Page)", function() {
      * Test 9:
      * 2f + 4f and C=0 gives 74 and N=0 V=0 Z=0 C=0
      */
-    //NES._statusRegister.dumpStatus() = 0x20 + 0x08;
+    //MOS6502._statusRegister.dumpStatus() = 0x20 + 0x08;
     MOS6502._RAM[OperandAddress] = 0x4F;
     MOS6502._A = 0x2F;
     MOS6502._PC = PCStart;
@@ -8428,7 +8428,7 @@ test("0x7D - ADC (Absolute, X) (Cross Page)", function() {
      * Test 10:
      * 6f + 00 and C=1 gives 76 and N=0 V=0 Z=0 C=0 (simulate)
      */
-    //NES._statusRegister.dumpStatus() = 0x20 + 0x08 + 0x01;
+    //MOS6502._statusRegister.dumpStatus() = 0x20 + 0x08 + 0x01;
     MOS6502._RAM[OperandAddress] = 0x6F;
     MOS6502._A = 0x00;
     MOS6502._PC = PCStart;
@@ -8458,7 +8458,7 @@ test("0x7D - ADC (Absolute, X) (Cross Page)", function() {
      * DECIMAL MODE OFF
      * FF + FF and C=1 gives FF and N=1 V=0 Z=0 C=1
      */
-    //NES._statusRegister.dumpStatus() = 0x20 + 0x01;
+    //MOS6502._statusRegister.dumpStatus() = 0x20 + 0x01;
     MOS6502._RAM[OperandAddress] = 0xFF;
     MOS6502._A = 0xFF;
     MOS6502._PC = PCStart;
@@ -8501,7 +8501,7 @@ test("0x79 - ADC (Absolute, Y) (Same Page)", function() {
      * 00 + 00 and C=0 gives 00 and N=0 V=0 Z=1 C=0
      */
 
-    //NES._statusRegister.dumpStatus() = 0x20 + 0x08;
+    //MOS6502._statusRegister.dumpStatus() = 0x20 + 0x08;
     MOS6502._RAM[OperandAddress] = 0x00;
     MOS6502._A = 0x00;
     MOS6502._PC = PCStart;
@@ -8515,7 +8515,7 @@ test("0x79 - ADC (Absolute, Y) (Same Page)", function() {
      * Test 2:
      * 79 + 00 and C=1 gives 80 and N=1 V=1 Z=0 C=0
      */
-    //NES._statusRegister.dumpStatus() = 0x20 + 0x08 + 0x01;
+    //MOS6502._statusRegister.dumpStatus() = 0x20 + 0x08 + 0x01;
     MOS6502._RAM[OperandAddress] = 0x79;
     MOS6502._A = 0x00;
     MOS6502._PC = PCStart;
@@ -8529,7 +8529,7 @@ test("0x79 - ADC (Absolute, Y) (Same Page)", function() {
      * Test 3:
      * 24 + 56 and C=0 gives 80 and N=1 V=1 Z=0 C=0 (simulate)
      */
-    //NES._statusRegister.dumpStatus() = 0x20 + 0x08;
+    //MOS6502._statusRegister.dumpStatus() = 0x20 + 0x08;
     MOS6502._RAM[OperandAddress] = 0x24;
     MOS6502._A = 0x56;
     MOS6502._PC = PCStart;
@@ -8543,7 +8543,7 @@ test("0x79 - ADC (Absolute, Y) (Same Page)", function() {
      * Test 4:
      * 93 + 82 and C=0 gives 75 and N=0 V=1 Z=0 C=1 (simulate)
      */
-    //NES._statusRegister.dumpStatus() = 0x20 + 0x08;
+    //MOS6502._statusRegister.dumpStatus() = 0x20 + 0x08;
     MOS6502._RAM[OperandAddress] = 0x93;
     MOS6502._A = 0x82;
     MOS6502._PC = PCStart;
@@ -8557,7 +8557,7 @@ test("0x79 - ADC (Absolute, Y) (Same Page)", function() {
      * Test 5:
      * 89 + 76 and C=0 gives 65 and N=0 V=0 Z=0 C=1 (simulate)
      */
-    //NES._statusRegister.dumpStatus() = 0x20 + 0x08;
+    //MOS6502._statusRegister.dumpStatus() = 0x20 + 0x08;
     MOS6502._RAM[OperandAddress] = 0x89;
     MOS6502._A = 0x76;
     MOS6502._PC = PCStart;
@@ -8573,7 +8573,7 @@ test("0x79 - ADC (Absolute, Y) (Same Page)", function() {
      *
      * Fails: Carry is not set.
      */
-    //NES._statusRegister.dumpStatus() = 0x20 + 0x08 + 0x01;
+    //MOS6502._statusRegister.dumpStatus() = 0x20 + 0x08 + 0x01;
     MOS6502._RAM[OperandAddress] = 0x89;
     MOS6502._A = 0x76;
     MOS6502._PC = PCStart;
@@ -8587,7 +8587,7 @@ test("0x79 - ADC (Absolute, Y) (Same Page)", function() {
      * Test 7:
      * 80 + f0 and C=0 gives d0 and N=1 V=1 Z=0 C=1
      */
-    //NES._statusRegister.dumpStatus() = 0x20 + 0x80 + 0x08;
+    //MOS6502._statusRegister.dumpStatus() = 0x20 + 0x80 + 0x08;
     MOS6502._RAM[OperandAddress] = 0x80;
     MOS6502._A = 0xF0;
     MOS6502._PC = PCStart;
@@ -8601,7 +8601,7 @@ test("0x79 - ADC (Absolute, Y) (Same Page)", function() {
      * Test 8:
      * 80 + fa and C=0 gives e0 and N=1 V=0 Z=0 C=1
      */
-    //NES._statusRegister.dumpStatus() = 0x20 + 0x08;
+    //MOS6502._statusRegister.dumpStatus() = 0x20 + 0x08;
     MOS6502._RAM[OperandAddress] = 0x80;
     MOS6502._A = 0xFA;
     MOS6502._PC = PCStart;
@@ -8615,7 +8615,7 @@ test("0x79 - ADC (Absolute, Y) (Same Page)", function() {
      * Test 9:
      * 2f + 4f and C=0 gives 74 and N=0 V=0 Z=0 C=0
      */
-    //NES._statusRegister.dumpStatus() = 0x20 + 0x08;
+    //MOS6502._statusRegister.dumpStatus() = 0x20 + 0x08;
     MOS6502._RAM[OperandAddress] = 0x4F;
     MOS6502._A = 0x2F;
     MOS6502._PC = PCStart;
@@ -8629,7 +8629,7 @@ test("0x79 - ADC (Absolute, Y) (Same Page)", function() {
      * Test 10:
      * 6f + 00 and C=1 gives 76 and N=0 V=0 Z=0 C=0 (simulate)
      */
-    //NES._statusRegister.dumpStatus() = 0x20 + 0x08 + 0x01;
+    //MOS6502._statusRegister.dumpStatus() = 0x20 + 0x08 + 0x01;
     MOS6502._RAM[OperandAddress] = 0x6F;
     MOS6502._A = 0x00;
     MOS6502._PC = PCStart;
@@ -8659,7 +8659,7 @@ test("0x79 - ADC (Absolute, Y) (Same Page)", function() {
      * DECIMAL MODE OFF
      * FF + FF and C=1 gives FF and N=1 V=0 Z=0 C=1
      */
-    //NES._statusRegister.dumpStatus() = 0x20 + 0x01;
+    //MOS6502._statusRegister.dumpStatus() = 0x20 + 0x01;
     MOS6502._RAM[OperandAddress] = 0xFF;
     MOS6502._A = 0xFF;
     MOS6502._PC = PCStart;
@@ -8702,7 +8702,7 @@ test("0x79 - ADC (Absolute, Y) (Cross Page)", function() {
      * 00 + 00 and C=0 gives 00 and N=0 V=0 Z=1 C=0
      */
 
-    //NES._statusRegister.dumpStatus() = 0x20 + 0x08;
+    //MOS6502._statusRegister.dumpStatus() = 0x20 + 0x08;
     MOS6502._RAM[OperandAddress] = 0x00;
     MOS6502._A = 0x00;
     MOS6502._PC = PCStart;
@@ -8716,7 +8716,7 @@ test("0x79 - ADC (Absolute, Y) (Cross Page)", function() {
      * Test 2:
      * 79 + 00 and C=1 gives 80 and N=1 V=1 Z=0 C=0
      */
-    //NES._statusRegister.dumpStatus() = 0x20 + 0x08 + 0x01;
+    //MOS6502._statusRegister.dumpStatus() = 0x20 + 0x08 + 0x01;
     MOS6502._RAM[OperandAddress] = 0x79;
     MOS6502._A = 0x00;
     MOS6502._PC = PCStart;
@@ -8730,7 +8730,7 @@ test("0x79 - ADC (Absolute, Y) (Cross Page)", function() {
      * Test 3:
      * 24 + 56 and C=0 gives 80 and N=1 V=1 Z=0 C=0 (simulate)
      */
-    //NES._statusRegister.dumpStatus() = 0x20 + 0x08;
+    //MOS6502._statusRegister.dumpStatus() = 0x20 + 0x08;
     MOS6502._RAM[OperandAddress] = 0x24;
     MOS6502._A = 0x56;
     MOS6502._PC = PCStart;
@@ -8744,7 +8744,7 @@ test("0x79 - ADC (Absolute, Y) (Cross Page)", function() {
      * Test 4:
      * 93 + 82 and C=0 gives 75 and N=0 V=1 Z=0 C=1 (simulate)
      */
-    //NES._statusRegister.dumpStatus() = 0x20 + 0x08;
+    //MOS6502._statusRegister.dumpStatus() = 0x20 + 0x08;
     MOS6502._RAM[OperandAddress] = 0x93;
     MOS6502._A = 0x82;
     MOS6502._PC = PCStart;
@@ -8758,7 +8758,7 @@ test("0x79 - ADC (Absolute, Y) (Cross Page)", function() {
      * Test 5:
      * 89 + 76 and C=0 gives 65 and N=0 V=0 Z=0 C=1 (simulate)
      */
-    //NES._statusRegister.dumpStatus() = 0x20 + 0x08;
+    //MOS6502._statusRegister.dumpStatus() = 0x20 + 0x08;
     MOS6502._RAM[OperandAddress] = 0x89;
     MOS6502._A = 0x76;
     MOS6502._PC = PCStart;
@@ -8774,7 +8774,7 @@ test("0x79 - ADC (Absolute, Y) (Cross Page)", function() {
      *
      * Fails: Carry is not set.
      */
-    //NES._statusRegister.dumpStatus() = 0x20 + 0x08 + 0x01;
+    //MOS6502._statusRegister.dumpStatus() = 0x20 + 0x08 + 0x01;
     MOS6502._RAM[OperandAddress] = 0x89;
     MOS6502._A = 0x76;
     MOS6502._PC = PCStart;
@@ -8788,7 +8788,7 @@ test("0x79 - ADC (Absolute, Y) (Cross Page)", function() {
      * Test 7:
      * 80 + f0 and C=0 gives d0 and N=1 V=1 Z=0 C=1
      */
-    //NES._statusRegister.dumpStatus() = 0x20 + 0x80 + 0x08;
+    //MOS6502._statusRegister.dumpStatus() = 0x20 + 0x80 + 0x08;
     MOS6502._RAM[OperandAddress] = 0x80;
     MOS6502._A = 0xF0;
     MOS6502._PC = PCStart;
@@ -8802,7 +8802,7 @@ test("0x79 - ADC (Absolute, Y) (Cross Page)", function() {
      * Test 8:
      * 80 + fa and C=0 gives e0 and N=1 V=0 Z=0 C=1
      */
-    //NES._statusRegister.dumpStatus() = 0x20 + 0x08;
+    //MOS6502._statusRegister.dumpStatus() = 0x20 + 0x08;
     MOS6502._RAM[OperandAddress] = 0x80;
     MOS6502._A = 0xFA;
     MOS6502._PC = PCStart;
@@ -8816,7 +8816,7 @@ test("0x79 - ADC (Absolute, Y) (Cross Page)", function() {
      * Test 9:
      * 2f + 4f and C=0 gives 74 and N=0 V=0 Z=0 C=0
      */
-    //NES._statusRegister.dumpStatus() = 0x20 + 0x08;
+    //MOS6502._statusRegister.dumpStatus() = 0x20 + 0x08;
     MOS6502._RAM[OperandAddress] = 0x4F;
     MOS6502._A = 0x2F;
     MOS6502._PC = PCStart;
@@ -8830,7 +8830,7 @@ test("0x79 - ADC (Absolute, Y) (Cross Page)", function() {
      * Test 10:
      * 6f + 00 and C=1 gives 76 and N=0 V=0 Z=0 C=0 (simulate)
      */
-    //NES._statusRegister.dumpStatus() = 0x20 + 0x08 + 0x01;
+    //MOS6502._statusRegister.dumpStatus() = 0x20 + 0x08 + 0x01;
     MOS6502._RAM[OperandAddress] = 0x6F;
     MOS6502._A = 0x00;
     MOS6502._PC = PCStart;
@@ -8860,7 +8860,7 @@ test("0x79 - ADC (Absolute, Y) (Cross Page)", function() {
      * DECIMAL MODE OFF
      * FF + FF and C=1 gives FF and N=1 V=0 Z=0 C=1
      */
-    //NES._statusRegister.dumpStatus() = 0x20 + 0x01;
+    //MOS6502._statusRegister.dumpStatus() = 0x20 + 0x01;
     MOS6502._RAM[OperandAddress] = 0xFF;
     MOS6502._A = 0xFF;
     MOS6502._PC = PCStart;
@@ -8906,7 +8906,7 @@ test("0x61 - ADC (Indirect, X)", function() {
      * 00 + 00 and C=0 gives 00 and N=0 V=0 Z=1 C=0
      */
 
-    //NES._statusRegister.dumpStatus() = 0x20 + 0x08;
+    //MOS6502._statusRegister.dumpStatus() = 0x20 + 0x08;
     MOS6502._RAM[OperandAddress] = 0x00;
     MOS6502._A = 0x00;
     MOS6502._PC = PCStart;
@@ -8920,7 +8920,7 @@ test("0x61 - ADC (Indirect, X)", function() {
      * Test 2:
      * 79 + 00 and C=1 gives 80 and N=1 V=1 Z=0 C=0
      */
-    //NES._statusRegister.dumpStatus() = 0x20 + 0x08 + 0x01;
+    //MOS6502._statusRegister.dumpStatus() = 0x20 + 0x08 + 0x01;
     MOS6502._RAM[OperandAddress] = 0x79;
     MOS6502._A = 0x00;
     MOS6502._PC = PCStart;
@@ -8934,7 +8934,7 @@ test("0x61 - ADC (Indirect, X)", function() {
      * Test 3:
      * 24 + 56 and C=0 gives 80 and N=1 V=1 Z=0 C=0 (simulate)
      */
-    //NES._statusRegister.dumpStatus() = 0x20 + 0x08;
+    //MOS6502._statusRegister.dumpStatus() = 0x20 + 0x08;
     MOS6502._RAM[OperandAddress] = 0x24;
     MOS6502._A = 0x56;
     MOS6502._PC = PCStart;
@@ -8948,7 +8948,7 @@ test("0x61 - ADC (Indirect, X)", function() {
      * Test 4:
      * 93 + 82 and C=0 gives 75 and N=0 V=1 Z=0 C=1 (simulate)
      */
-    //NES._statusRegister.dumpStatus() = 0x20 + 0x08;
+    //MOS6502._statusRegister.dumpStatus() = 0x20 + 0x08;
     MOS6502._RAM[OperandAddress] = 0x93;
     MOS6502._A = 0x82;
     MOS6502._PC = PCStart;
@@ -8962,7 +8962,7 @@ test("0x61 - ADC (Indirect, X)", function() {
      * Test 5:
      * 89 + 76 and C=0 gives 65 and N=0 V=0 Z=0 C=1 (simulate)
      */
-    //NES._statusRegister.dumpStatus() = 0x20 + 0x08;
+    //MOS6502._statusRegister.dumpStatus() = 0x20 + 0x08;
     MOS6502._RAM[OperandAddress] = 0x89;
     MOS6502._A = 0x76;
     MOS6502._PC = PCStart;
@@ -8978,7 +8978,7 @@ test("0x61 - ADC (Indirect, X)", function() {
      *
      * Fails: Carry is not set.
      */
-    //NES._statusRegister.dumpStatus() = 0x20 + 0x08 + 0x01;
+    //MOS6502._statusRegister.dumpStatus() = 0x20 + 0x08 + 0x01;
     MOS6502._RAM[OperandAddress] = 0x89;
     MOS6502._A = 0x76;
     MOS6502._PC = PCStart;
@@ -8992,7 +8992,7 @@ test("0x61 - ADC (Indirect, X)", function() {
      * Test 7:
      * 80 + f0 and C=0 gives d0 and N=1 V=1 Z=0 C=1
      */
-    //NES._statusRegister.dumpStatus() = 0x20 + 0x80 + 0x08;
+    //MOS6502._statusRegister.dumpStatus() = 0x20 + 0x80 + 0x08;
     MOS6502._RAM[OperandAddress] = 0x80;
     MOS6502._A = 0xF0;
     MOS6502._PC = PCStart;
@@ -9006,7 +9006,7 @@ test("0x61 - ADC (Indirect, X)", function() {
      * Test 8:
      * 80 + fa and C=0 gives e0 and N=1 V=0 Z=0 C=1
      */
-    //NES._statusRegister.dumpStatus() = 0x20 + 0x08;
+    //MOS6502._statusRegister.dumpStatus() = 0x20 + 0x08;
     MOS6502._RAM[OperandAddress] = 0x80;
     MOS6502._A = 0xFA;
     MOS6502._PC = PCStart;
@@ -9020,7 +9020,7 @@ test("0x61 - ADC (Indirect, X)", function() {
      * Test 9:
      * 2f + 4f and C=0 gives 74 and N=0 V=0 Z=0 C=0
      */
-    //NES._statusRegister.dumpStatus() = 0x20 + 0x08;
+    //MOS6502._statusRegister.dumpStatus() = 0x20 + 0x08;
     MOS6502._RAM[OperandAddress] = 0x4F;
     MOS6502._A = 0x2F;
     MOS6502._PC = PCStart;
@@ -9034,7 +9034,7 @@ test("0x61 - ADC (Indirect, X)", function() {
      * Test 10:
      * 6f + 00 and C=1 gives 76 and N=0 V=0 Z=0 C=0 (simulate)
      */
-    //NES._statusRegister.dumpStatus() = 0x20 + 0x08 + 0x01;
+    //MOS6502._statusRegister.dumpStatus() = 0x20 + 0x08 + 0x01;
     MOS6502._RAM[OperandAddress] = 0x6F;
     MOS6502._A = 0x00;
     MOS6502._PC = PCStart;
@@ -9064,7 +9064,7 @@ test("0x61 - ADC (Indirect, X)", function() {
      * DECIMAL MODE OFF
      * FF + FF and C=1 gives FF and N=1 V=0 Z=0 C=1
      */
-    //NES._statusRegister.dumpStatus() = 0x20 + 0x01;
+    //MOS6502._statusRegister.dumpStatus() = 0x20 + 0x01;
     MOS6502._RAM[OperandAddress] = 0xFF;
     MOS6502._A = 0xFF;
     MOS6502._PC = PCStart;
@@ -9110,7 +9110,7 @@ test("0x71 - ADC (Indirect, Y) (Same Page)", function() {
      * 00 + 00 and C=0 gives 00 and N=0 V=0 Z=1 C=0
      */
 
-    //NES._statusRegister.dumpStatus() = 0x20 + 0x08;
+    //MOS6502._statusRegister.dumpStatus() = 0x20 + 0x08;
     MOS6502._RAM[OperandAddress] = 0x00;
     MOS6502._A = 0x00;
     MOS6502._PC = PCStart;
@@ -9124,7 +9124,7 @@ test("0x71 - ADC (Indirect, Y) (Same Page)", function() {
      * Test 2:
      * 79 + 00 and C=1 gives 80 and N=1 V=1 Z=0 C=0
      */
-    //NES._statusRegister.dumpStatus() = 0x20 + 0x08 + 0x01;
+    //MOS6502._statusRegister.dumpStatus() = 0x20 + 0x08 + 0x01;
     MOS6502._RAM[OperandAddress] = 0x79;
     MOS6502._A = 0x00;
     MOS6502._PC = PCStart;
@@ -9138,7 +9138,7 @@ test("0x71 - ADC (Indirect, Y) (Same Page)", function() {
      * Test 3:
      * 24 + 56 and C=0 gives 80 and N=1 V=1 Z=0 C=0 (simulate)
      */
-    //NES._statusRegister.dumpStatus() = 0x20 + 0x08;
+    //MOS6502._statusRegister.dumpStatus() = 0x20 + 0x08;
     MOS6502._RAM[OperandAddress] = 0x24;
     MOS6502._A = 0x56;
     MOS6502._PC = PCStart;
@@ -9152,7 +9152,7 @@ test("0x71 - ADC (Indirect, Y) (Same Page)", function() {
      * Test 4:
      * 93 + 82 and C=0 gives 75 and N=0 V=1 Z=0 C=1 (simulate)
      */
-    //NES._statusRegister.dumpStatus() = 0x20 + 0x08;
+    //MOS6502._statusRegister.dumpStatus() = 0x20 + 0x08;
     MOS6502._RAM[OperandAddress] = 0x93;
     MOS6502._A = 0x82;
     MOS6502._PC = PCStart;
@@ -9166,7 +9166,7 @@ test("0x71 - ADC (Indirect, Y) (Same Page)", function() {
      * Test 5:
      * 89 + 76 and C=0 gives 65 and N=0 V=0 Z=0 C=1 (simulate)
      */
-    //NES._statusRegister.dumpStatus() = 0x20 + 0x08;
+    //MOS6502._statusRegister.dumpStatus() = 0x20 + 0x08;
     MOS6502._RAM[OperandAddress] = 0x89;
     MOS6502._A = 0x76;
     MOS6502._PC = PCStart;
@@ -9182,7 +9182,7 @@ test("0x71 - ADC (Indirect, Y) (Same Page)", function() {
      *
      * Fails: Carry is not set.
      */
-    //NES._statusRegister.dumpStatus() = 0x20 + 0x08 + 0x01;
+    //MOS6502._statusRegister.dumpStatus() = 0x20 + 0x08 + 0x01;
     MOS6502._RAM[OperandAddress] = 0x89;
     MOS6502._A = 0x76;
     MOS6502._PC = PCStart;
@@ -9196,7 +9196,7 @@ test("0x71 - ADC (Indirect, Y) (Same Page)", function() {
      * Test 7:
      * 80 + f0 and C=0 gives d0 and N=1 V=1 Z=0 C=1
      */
-    //NES._statusRegister.dumpStatus() = 0x20 + 0x80 + 0x08;
+    //MOS6502._statusRegister.dumpStatus() = 0x20 + 0x80 + 0x08;
     MOS6502._RAM[OperandAddress] = 0x80;
     MOS6502._A = 0xF0;
     MOS6502._PC = PCStart;
@@ -9210,7 +9210,7 @@ test("0x71 - ADC (Indirect, Y) (Same Page)", function() {
      * Test 8:
      * 80 + fa and C=0 gives e0 and N=1 V=0 Z=0 C=1
      */
-    //NES._statusRegister.dumpStatus() = 0x20 + 0x08;
+    //MOS6502._statusRegister.dumpStatus() = 0x20 + 0x08;
     MOS6502._RAM[OperandAddress] = 0x80;
     MOS6502._A = 0xFA;
     MOS6502._PC = PCStart;
@@ -9224,7 +9224,7 @@ test("0x71 - ADC (Indirect, Y) (Same Page)", function() {
      * Test 9:
      * 2f + 4f and C=0 gives 74 and N=0 V=0 Z=0 C=0
      */
-    //NES._statusRegister.dumpStatus() = 0x20 + 0x08;
+    //MOS6502._statusRegister.dumpStatus() = 0x20 + 0x08;
     MOS6502._RAM[OperandAddress] = 0x4F;
     MOS6502._A = 0x2F;
     MOS6502._PC = PCStart;
@@ -9238,7 +9238,7 @@ test("0x71 - ADC (Indirect, Y) (Same Page)", function() {
      * Test 10:
      * 6f + 00 and C=1 gives 76 and N=0 V=0 Z=0 C=0 (simulate)
      */
-    //NES._statusRegister.dumpStatus() = 0x20 + 0x08 + 0x01;
+    //MOS6502._statusRegister.dumpStatus() = 0x20 + 0x08 + 0x01;
     MOS6502._RAM[OperandAddress] = 0x6F;
     MOS6502._A = 0x00;
     MOS6502._PC = PCStart;
@@ -9268,7 +9268,7 @@ test("0x71 - ADC (Indirect, Y) (Same Page)", function() {
      * DECIMAL MODE OFF
      * FF + FF and C=1 gives FF and N=1 V=0 Z=0 C=1
      */
-    //NES._statusRegister.dumpStatus() = 0x20 + 0x01;
+    //MOS6502._statusRegister.dumpStatus() = 0x20 + 0x01;
     MOS6502._RAM[OperandAddress] = 0xFF;
     MOS6502._A = 0xFF;
     MOS6502._PC = PCStart;
@@ -9314,7 +9314,7 @@ test("0x71 - ADC (Indirect, Y) (Cross Page)", function() {
      * 00 + 00 and C=0 gives 00 and N=0 V=0 Z=1 C=0
      */
 
-    //NES._statusRegister.dumpStatus() = 0x20 + 0x08;
+    //MOS6502._statusRegister.dumpStatus() = 0x20 + 0x08;
     MOS6502._RAM[OperandAddress] = 0x00;
     MOS6502._A = 0x00;
     MOS6502._PC = PCStart;
@@ -9328,7 +9328,7 @@ test("0x71 - ADC (Indirect, Y) (Cross Page)", function() {
      * Test 2:
      * 79 + 00 and C=1 gives 80 and N=1 V=1 Z=0 C=0
      */
-    //NES._statusRegister.dumpStatus() = 0x20 + 0x08 + 0x01;
+    //MOS6502._statusRegister.dumpStatus() = 0x20 + 0x08 + 0x01;
     MOS6502._RAM[OperandAddress] = 0x79;
     MOS6502._A = 0x00;
     MOS6502._PC = PCStart;
@@ -9342,7 +9342,7 @@ test("0x71 - ADC (Indirect, Y) (Cross Page)", function() {
      * Test 3:
      * 24 + 56 and C=0 gives 80 and N=1 V=1 Z=0 C=0 (simulate)
      */
-    //NES._statusRegister.dumpStatus() = 0x20 + 0x08;
+    //MOS6502._statusRegister.dumpStatus() = 0x20 + 0x08;
     MOS6502._RAM[OperandAddress] = 0x24;
     MOS6502._A = 0x56;
     MOS6502._PC = PCStart;
@@ -9356,7 +9356,7 @@ test("0x71 - ADC (Indirect, Y) (Cross Page)", function() {
      * Test 4:
      * 93 + 82 and C=0 gives 75 and N=0 V=1 Z=0 C=1 (simulate)
      */
-    //NES._statusRegister.dumpStatus() = 0x20 + 0x08;
+    //MOS6502._statusRegister.dumpStatus() = 0x20 + 0x08;
     MOS6502._RAM[OperandAddress] = 0x93;
     MOS6502._A = 0x82;
     MOS6502._PC = PCStart;
@@ -9370,7 +9370,7 @@ test("0x71 - ADC (Indirect, Y) (Cross Page)", function() {
      * Test 5:
      * 89 + 76 and C=0 gives 65 and N=0 V=0 Z=0 C=1 (simulate)
      */
-    //NES._statusRegister.dumpStatus() = 0x20 + 0x08;
+    //MOS6502._statusRegister.dumpStatus() = 0x20 + 0x08;
     MOS6502._RAM[OperandAddress] = 0x89;
     MOS6502._A = 0x76;
     MOS6502._PC = PCStart;
@@ -9386,7 +9386,7 @@ test("0x71 - ADC (Indirect, Y) (Cross Page)", function() {
      *
      * Fails: Carry is not set.
      */
-    //NES._statusRegister.dumpStatus() = 0x20 + 0x08 + 0x01;
+    //MOS6502._statusRegister.dumpStatus() = 0x20 + 0x08 + 0x01;
     MOS6502._RAM[OperandAddress] = 0x89;
     MOS6502._A = 0x76;
     MOS6502._PC = PCStart;
@@ -9400,7 +9400,7 @@ test("0x71 - ADC (Indirect, Y) (Cross Page)", function() {
      * Test 7:
      * 80 + f0 and C=0 gives d0 and N=1 V=1 Z=0 C=1
      */
-    //NES._statusRegister.dumpStatus() = 0x20 + 0x80 + 0x08;
+    //MOS6502._statusRegister.dumpStatus() = 0x20 + 0x80 + 0x08;
     MOS6502._RAM[OperandAddress] = 0x80;
     MOS6502._A = 0xF0;
     MOS6502._PC = PCStart;
@@ -9414,7 +9414,7 @@ test("0x71 - ADC (Indirect, Y) (Cross Page)", function() {
      * Test 8:
      * 80 + fa and C=0 gives e0 and N=1 V=0 Z=0 C=1
      */
-    //NES._statusRegister.dumpStatus() = 0x20 + 0x08;
+    //MOS6502._statusRegister.dumpStatus() = 0x20 + 0x08;
     MOS6502._RAM[OperandAddress] = 0x80;
     MOS6502._A = 0xFA;
     MOS6502._PC = PCStart;
@@ -9428,7 +9428,7 @@ test("0x71 - ADC (Indirect, Y) (Cross Page)", function() {
      * Test 9:
      * 2f + 4f and C=0 gives 74 and N=0 V=0 Z=0 C=0
      */
-    //NES._statusRegister.dumpStatus() = 0x20 + 0x08;
+    //MOS6502._statusRegister.dumpStatus() = 0x20 + 0x08;
     MOS6502._RAM[OperandAddress] = 0x4F;
     MOS6502._A = 0x2F;
     MOS6502._PC = PCStart;
@@ -9442,7 +9442,7 @@ test("0x71 - ADC (Indirect, Y) (Cross Page)", function() {
      * Test 10:
      * 6f + 00 and C=1 gives 76 and N=0 V=0 Z=0 C=0 (simulate)
      */
-    //NES._statusRegister.dumpStatus() = 0x20 + 0x08 + 0x01;
+    //MOS6502._statusRegister.dumpStatus() = 0x20 + 0x08 + 0x01;
     MOS6502._RAM[OperandAddress] = 0x6F;
     MOS6502._A = 0x00;
     MOS6502._PC = PCStart;
@@ -9472,7 +9472,7 @@ test("0x71 - ADC (Indirect, Y) (Cross Page)", function() {
      * DECIMAL MODE OFF
      * FF + FF and C=1 gives FF and N=1 V=0 Z=0 C=1
      */
-    //NES._statusRegister.dumpStatus() = 0x20 + 0x01;
+    //MOS6502._statusRegister.dumpStatus() = 0x20 + 0x01;
     MOS6502._RAM[OperandAddress] = 0xFF;
     MOS6502._A = 0xFF;
     MOS6502._PC = PCStart;
@@ -9534,7 +9534,7 @@ test("0x6A - ROR (Accumulator)",function() {
      * Test 2: Carry set. Sets sign.
      */
     MOS6502._A = 102;
-    //NES._statusRegister.dumpStatus() = 0x21;
+    //MOS6502._statusRegister.dumpStatus() = 0x21;
 
     MOS6502._PC = PCStart;
 
@@ -9552,7 +9552,7 @@ test("0x6A - ROR (Accumulator)",function() {
      * Test 3: Carry set. ROR Sets sign and carry.
      */
     MOS6502._A = 89;
-    //NES._statusRegister.dumpStatus() = 0x21;
+    //MOS6502._statusRegister.dumpStatus() = 0x21;
 
     MOS6502._PC = PCStart;
     MOS6502._CYCLES = 0;
@@ -9653,7 +9653,7 @@ test("0x66 - ROR (Zero Page)",function() {
      * Test 2: Carry set. Sets sign.
      */
     MOS6502._RAM[OperandLocation] = 102;
-    //NES._statusRegister.dumpStatus() = 0x21;
+    //MOS6502._statusRegister.dumpStatus() = 0x21;
 
     MOS6502._PC = PCStart;
 
@@ -9671,7 +9671,7 @@ test("0x66 - ROR (Zero Page)",function() {
      * Test 3: Carry set. ROR Sets sign and carry.
      */
     MOS6502._RAM[OperandLocation] = 89;
-    //NES._statusRegister.dumpStatus() = 0x21;
+    //MOS6502._statusRegister.dumpStatus() = 0x21;
 
     MOS6502._PC = PCStart;
     MOS6502._CYCLES = 0;
@@ -9773,7 +9773,7 @@ test("0x76 - ROR (Zero Page, X)",function() {
      * Test 2: Carry set. Sets sign.
      */
     MOS6502._RAM[OperandLocation] = 102;
-    //NES._statusRegister.dumpStatus() = 0x21;
+    //MOS6502._statusRegister.dumpStatus() = 0x21;
 
     MOS6502._PC = PCStart;
 
@@ -9791,7 +9791,7 @@ test("0x76 - ROR (Zero Page, X)",function() {
      * Test 3: Carry set. ROR Sets sign and carry.
      */
     MOS6502._RAM[OperandLocation] = 89;
-    //NES._statusRegister.dumpStatus() = 0x21;
+    //MOS6502._statusRegister.dumpStatus() = 0x21;
 
     MOS6502._PC = PCStart;
     MOS6502._CYCLES = 0;
@@ -9894,7 +9894,7 @@ test("0x6E - ROR (Absolute)",function() {
      * Test 2: Carry set. Sets sign.
      */
     MOS6502._RAM[OperandLocation] = 102;
-    //NES._statusRegister.dumpStatus() = 0x21;
+    //MOS6502._statusRegister.dumpStatus() = 0x21;
 
     MOS6502._PC = PCStart;
 
@@ -9912,7 +9912,7 @@ test("0x6E - ROR (Absolute)",function() {
      * Test 3: Carry set. ROR Sets sign and carry.
      */
     MOS6502._RAM[OperandLocation] = 89;
-    //NES._statusRegister.dumpStatus() = 0x21;
+    //MOS6502._statusRegister.dumpStatus() = 0x21;
 
     MOS6502._PC = PCStart;
     MOS6502._CYCLES = 0;
@@ -10017,7 +10017,7 @@ test("0x7E - ROR (Absolute, X)",function() {
      * Test 2: Carry set. Sets sign.
      */
     MOS6502._RAM[OperandLocation] = 102;
-    //NES._statusRegister.dumpStatus() = 0x21;
+    //MOS6502._statusRegister.dumpStatus() = 0x21;
 
     MOS6502._PC = PCStart;
 
@@ -10035,7 +10035,7 @@ test("0x7E - ROR (Absolute, X)",function() {
      * Test 3: Carry set. ROR Sets sign and carry.
      */
     MOS6502._RAM[OperandLocation] = 89;
-    //NES._statusRegister.dumpStatus() = 0x21;
+    //MOS6502._statusRegister.dumpStatus() = 0x21;
 
     MOS6502._PC = PCStart;
     MOS6502._CYCLES = 0;
@@ -10198,7 +10198,7 @@ test("0x70 - BVS (Relative)", function() {
      * Test 2: Overflow set. Branch forward to same page. (3 cycles)
      */
 
-    //NES._statusRegister.dumpStatus() = 0x60;
+    //MOS6502._statusRegister.dumpStatus() = 0x60;
     MOS6502._PC = PCStart;
     MOS6502._RAM[PCStart + 1] = relativePlusSamePage;
     MOS6502._CYCLES = 0;
@@ -10217,7 +10217,7 @@ test("0x70 - BVS (Relative)", function() {
      * Test 3: Overflow set. Branch backward to same page. (3 cycles)
      */
 
-    //NES._statusRegister.dumpStatus() = 0x60;
+    //MOS6502._statusRegister.dumpStatus() = 0x60;
     MOS6502._PC = PCStart;
     MOS6502._RAM[PCStart + 1] = relativeMinusSamePage;
     MOS6502._CYCLES = 0;
@@ -10238,7 +10238,7 @@ test("0x70 - BVS (Relative)", function() {
      * NOTE: It's not possible to branch to another page from 0x4080. Using 0x40E0 for forward branch.
      */
 
-    //NES._statusRegister.dumpStatus() = 0x60;
+    //MOS6502._statusRegister.dumpStatus() = 0x60;
     MOS6502._PC = PCStartHigh;
     MOS6502._RAM[PCStartHigh + 1] = relativePlusNextPage;
     MOS6502._CYCLES = 0;
@@ -10257,7 +10257,7 @@ test("0x70 - BVS (Relative)", function() {
      * Test 5: Overflow set. Branch backward to different page. (4 cycles)
      */
 
-    //NES._statusRegister.dumpStatus() = 0x60;
+    //MOS6502._statusRegister.dumpStatus() = 0x60;
     MOS6502._PC = PCStartLow;
     MOS6502._RAM[PCStartLow + 1] = relativeMinusNextPage;
     MOS6502._CYCLES = 0;
@@ -10959,7 +10959,7 @@ test("0x90 - BCC (Relative)", function() {
      */
 
         // Enable overflow.
-    //NES._statusRegister.dumpStatus() = 0x21;
+    //MOS6502._statusRegister.dumpStatus() = 0x21;
 
     MOS6502.emulateCycle();
 
@@ -12845,7 +12845,7 @@ test("0xB0 - BCS (Relative)", function() {
      * Test 2: Carry set. Branch forward to same page. (3 cycles)
      */
 
-    //NES._statusRegister.dumpStatus() = 0x21;
+    //MOS6502._statusRegister.dumpStatus() = 0x21;
     MOS6502._PC = PCStart;
     MOS6502._RAM[PCStart + 1] = relativePlusSamePage;
     MOS6502._CYCLES = 0;
@@ -12864,7 +12864,7 @@ test("0xB0 - BCS (Relative)", function() {
      * Test 3: Carry set. Branch backward to same page. (3 cycles)
      */
 
-    //NES._statusRegister.dumpStatus() = 0x21;
+    //MOS6502._statusRegister.dumpStatus() = 0x21;
     MOS6502._PC = PCStart;
     MOS6502._RAM[PCStart + 1] = relativeMinusSamePage;
     MOS6502._CYCLES = 0;
@@ -12885,7 +12885,7 @@ test("0xB0 - BCS (Relative)", function() {
      * NOTE: It's not possible to branch to another page from 0x4080. Using 0x40E0 for forward branch.
      */
 
-    //NES._statusRegister.dumpStatus() = 0x21;
+    //MOS6502._statusRegister.dumpStatus() = 0x21;
     MOS6502._PC = PCStartHigh;
     MOS6502._RAM[PCStartHigh + 1] = relativePlusNextPage;
     MOS6502._CYCLES = 0;
@@ -12904,7 +12904,7 @@ test("0xB0 - BCS (Relative)", function() {
      * Test 5: Carry set. Branch backward to different page. (4 cycles)
      */
 
-    //NES._statusRegister.dumpStatus() = 0x21;
+    //MOS6502._statusRegister.dumpStatus() = 0x21;
     MOS6502._PC = PCStartLow;
     MOS6502._RAM[PCStartLow + 1] = relativeMinusNextPage;
     MOS6502._CYCLES = 0;
@@ -12950,7 +12950,7 @@ test("0xB8 - CLV (Implied)",function() {
      * Test 1: Clear overflow when set.
      */
     MOS6502._PC = PCStart;
-    //NES._statusRegister.dumpStatus() = 0x60;
+    //MOS6502._statusRegister.dumpStatus() = 0x60;
 
     MOS6502.emulateCycle();
 
@@ -14439,7 +14439,7 @@ test("0xD0 - BNE (Relative)", function() {
      */
 
         // Enable overflow.
-    //NES._statusRegister.dumpStatus() = 0x22;
+    //MOS6502._statusRegister.dumpStatus() = 0x22;
 
     MOS6502.emulateCycle();
 
@@ -14495,7 +14495,7 @@ test("0xD0 - BNE (Relative)", function() {
      * NOTE: It's not possible to branch to another page from 0x4080. Using 0x40E0 for forward branch.
      */
 
-    //NES._statusRegister.dumpStatus() = 0x21;
+    //MOS6502._statusRegister.dumpStatus() = 0x21;
     MOS6502._PC = PCStartHigh;
     MOS6502._RAM[PCStartHigh + 1] = relativePlusNextPage;
     MOS6502._CYCLES = 0;
@@ -14514,7 +14514,7 @@ test("0xD0 - BNE (Relative)", function() {
      * Test 5: Zero clear. Branch backward to different page. (4 cycles)
      */
 
-    //NES._statusRegister.dumpStatus() = 0x21;
+    //MOS6502._statusRegister.dumpStatus() = 0x21;
     MOS6502._PC = PCStartLow;
     MOS6502._RAM[PCStartLow + 1] = relativeMinusNextPage;
     MOS6502._CYCLES = 0;
@@ -14560,7 +14560,7 @@ test("0xD8 - CLD (Implied)",function() {
      * Test 1: Clear decimal mode when set.
      */
     MOS6502._PC = PCStart;
-    //NES._statusRegister.dumpStatus() = 0x28;
+    //MOS6502._statusRegister.dumpStatus() = 0x28;
 
     MOS6502.emulateCycle();
 
@@ -14801,7 +14801,7 @@ test("0xE9 - SBC (Immediate)", function() {
     MOS6502._A = 0;
     MOS6502._RAM[MemoryLocation] = 0;
 
-    //NES._statusRegister.dumpStatus() = 0x20 + 0x08;
+    //MOS6502._statusRegister.dumpStatus() = 0x20 + 0x08;
     MOS6502._PC = PCStart;
 
     MOS6502.emulateCycle();
@@ -14817,7 +14817,7 @@ test("0xE9 - SBC (Immediate)", function() {
     MOS6502._A = 0;
     MOS6502._RAM[MemoryLocation] = 0;
 
-    //NES._statusRegister.dumpStatus() = 0x20 + 0x08 + 0x01;
+    //MOS6502._statusRegister.dumpStatus() = 0x20 + 0x08 + 0x01;
     MOS6502._PC = PCStart;
 
     MOS6502.emulateCycle();
@@ -14833,7 +14833,7 @@ test("0xE9 - SBC (Immediate)", function() {
     MOS6502._A = 0x00;
     MOS6502._RAM[MemoryLocation] = 0x01;
 
-    //NES._statusRegister.dumpStatus() = 0x20 + 0x08 + 0x01;
+    //MOS6502._statusRegister.dumpStatus() = 0x20 + 0x08 + 0x01;
     MOS6502._PC = PCStart;
 
     MOS6502.emulateCycle();
@@ -14849,7 +14849,7 @@ test("0xE9 - SBC (Immediate)", function() {
     MOS6502._A = 0x0A;
     MOS6502._RAM[MemoryLocation] = 0x00;
 
-    //NES._statusRegister.dumpStatus() = 0x20 + 0x08 + 0x01;
+    //MOS6502._statusRegister.dumpStatus() = 0x20 + 0x08 + 0x01;
     MOS6502._PC = PCStart;
 
     MOS6502.emulateCycle();
@@ -14865,7 +14865,7 @@ test("0xE9 - SBC (Immediate)", function() {
     MOS6502._A = 0x0B;
     MOS6502._RAM[MemoryLocation] = 0x00;
 
-    //NES._statusRegister.dumpStatus() = 0x20 + 0x08;
+    //MOS6502._statusRegister.dumpStatus() = 0x20 + 0x08;
     MOS6502._PC = PCStart;
 
     MOS6502.emulateCycle();
@@ -14881,7 +14881,7 @@ test("0xE9 - SBC (Immediate)", function() {
     MOS6502._A = 0x9A;
     MOS6502._RAM[MemoryLocation] = 0x00;
 
-    //NES._statusRegister.dumpStatus() = 0x20 + 0x08 + 0x01;
+    //MOS6502._statusRegister.dumpStatus() = 0x20 + 0x08 + 0x01;
     MOS6502._PC = PCStart;
 
     MOS6502.emulateCycle();
@@ -14897,7 +14897,7 @@ test("0xE9 - SBC (Immediate)", function() {
     MOS6502._A = 0x9B;
     MOS6502._RAM[MemoryLocation] = 0x00;
 
-    //NES._statusRegister.dumpStatus() = 0x20 + 0x08;
+    //MOS6502._statusRegister.dumpStatus() = 0x20 + 0x08;
     MOS6502._PC = PCStart;
     MOS6502._CYCLES = 0;
 
@@ -14955,7 +14955,7 @@ test("0xE5 - SBC (Zero Page)", function() {
     MOS6502._A = 0;
     MOS6502._RAM[MemoryLocation] = 0;
 
-    //NES._statusRegister.dumpStatus() = 0x20 + 0x08;
+    //MOS6502._statusRegister.dumpStatus() = 0x20 + 0x08;
     MOS6502._PC = PCStart;
 
     MOS6502.emulateCycle();
@@ -14971,7 +14971,7 @@ test("0xE5 - SBC (Zero Page)", function() {
     MOS6502._A = 0;
     MOS6502._RAM[MemoryLocation] = 0;
 
-    //NES._statusRegister.dumpStatus() = 0x20 + 0x08 + 0x01;
+    //MOS6502._statusRegister.dumpStatus() = 0x20 + 0x08 + 0x01;
     MOS6502._PC = PCStart;
 
     MOS6502.emulateCycle();
@@ -14987,7 +14987,7 @@ test("0xE5 - SBC (Zero Page)", function() {
     MOS6502._A = 0x00;
     MOS6502._RAM[MemoryLocation] = 0x01;
 
-    //NES._statusRegister.dumpStatus() = 0x20 + 0x08 + 0x01;
+    //MOS6502._statusRegister.dumpStatus() = 0x20 + 0x08 + 0x01;
     MOS6502._PC = PCStart;
 
     MOS6502.emulateCycle();
@@ -15003,7 +15003,7 @@ test("0xE5 - SBC (Zero Page)", function() {
     MOS6502._A = 0x0A;
     MOS6502._RAM[MemoryLocation] = 0x00;
 
-    //NES._statusRegister.dumpStatus() = 0x20 + 0x08 + 0x01;
+    //MOS6502._statusRegister.dumpStatus() = 0x20 + 0x08 + 0x01;
     MOS6502._PC = PCStart;
 
     MOS6502.emulateCycle();
@@ -15019,7 +15019,7 @@ test("0xE5 - SBC (Zero Page)", function() {
     MOS6502._A = 0x0B;
     MOS6502._RAM[MemoryLocation] = 0x00;
 
-    //NES._statusRegister.dumpStatus() = 0x20 + 0x08;
+    //MOS6502._statusRegister.dumpStatus() = 0x20 + 0x08;
     MOS6502._PC = PCStart;
 
     MOS6502.emulateCycle();
@@ -15035,7 +15035,7 @@ test("0xE5 - SBC (Zero Page)", function() {
     MOS6502._A = 0x9A;
     MOS6502._RAM[MemoryLocation] = 0x00;
 
-    //NES._statusRegister.dumpStatus() = 0x20 + 0x08 + 0x01;
+    //MOS6502._statusRegister.dumpStatus() = 0x20 + 0x08 + 0x01;
     MOS6502._PC = PCStart;
 
     MOS6502.emulateCycle();
@@ -15051,7 +15051,7 @@ test("0xE5 - SBC (Zero Page)", function() {
     MOS6502._A = 0x9B;
     MOS6502._RAM[MemoryLocation] = 0x00;
 
-    //NES._statusRegister.dumpStatus() = 0x20 + 0x08;
+    //MOS6502._statusRegister.dumpStatus() = 0x20 + 0x08;
     MOS6502._PC = PCStart;
 
     MOS6502.emulateCycle();
@@ -15110,7 +15110,7 @@ test("0xF5 - SBC (Zero Page, X)", function() {
     MOS6502._A = 0;
     MOS6502._RAM[MemoryLocation] = 0;
 
-    //NES._statusRegister.dumpStatus() = 0x20 + 0x08;
+    //MOS6502._statusRegister.dumpStatus() = 0x20 + 0x08;
     MOS6502._PC = PCStart;
 
     MOS6502.emulateCycle();
@@ -15126,7 +15126,7 @@ test("0xF5 - SBC (Zero Page, X)", function() {
     MOS6502._A = 0;
     MOS6502._RAM[MemoryLocation] = 0;
 
-    //NES._statusRegister.dumpStatus() = 0x20 + 0x08 + 0x01;
+    //MOS6502._statusRegister.dumpStatus() = 0x20 + 0x08 + 0x01;
     MOS6502._PC = PCStart;
 
     MOS6502.emulateCycle();
@@ -15142,7 +15142,7 @@ test("0xF5 - SBC (Zero Page, X)", function() {
     MOS6502._A = 0x00;
     MOS6502._RAM[MemoryLocation] = 0x01;
 
-    //NES._statusRegister.dumpStatus() = 0x20 + 0x08 + 0x01;
+    //MOS6502._statusRegister.dumpStatus() = 0x20 + 0x08 + 0x01;
     MOS6502._PC = PCStart;
 
     MOS6502.emulateCycle();
@@ -15158,7 +15158,7 @@ test("0xF5 - SBC (Zero Page, X)", function() {
     MOS6502._A = 0x0A;
     MOS6502._RAM[MemoryLocation] = 0x00;
 
-    //NES._statusRegister.dumpStatus() = 0x20 + 0x08 + 0x01;
+    //MOS6502._statusRegister.dumpStatus() = 0x20 + 0x08 + 0x01;
     MOS6502._PC = PCStart;
 
     MOS6502.emulateCycle();
@@ -15174,7 +15174,7 @@ test("0xF5 - SBC (Zero Page, X)", function() {
     MOS6502._A = 0x0B;
     MOS6502._RAM[MemoryLocation] = 0x00;
 
-    //NES._statusRegister.dumpStatus() = 0x20 + 0x08;
+    //MOS6502._statusRegister.dumpStatus() = 0x20 + 0x08;
     MOS6502._PC = PCStart;
 
     MOS6502.emulateCycle();
@@ -15190,7 +15190,7 @@ test("0xF5 - SBC (Zero Page, X)", function() {
     MOS6502._A = 0x9A;
     MOS6502._RAM[MemoryLocation] = 0x00;
 
-    //NES._statusRegister.dumpStatus() = 0x20 + 0x08 + 0x01;
+    //MOS6502._statusRegister.dumpStatus() = 0x20 + 0x08 + 0x01;
     MOS6502._PC = PCStart;
 
     MOS6502.emulateCycle();
@@ -15206,7 +15206,7 @@ test("0xF5 - SBC (Zero Page, X)", function() {
     MOS6502._A = 0x9B;
     MOS6502._RAM[MemoryLocation] = 0x00;
 
-    //NES._statusRegister.dumpStatus() = 0x20 + 0x08;
+    //MOS6502._statusRegister.dumpStatus() = 0x20 + 0x08;
     MOS6502._PC = PCStart;
 
     MOS6502.emulateCycle();
@@ -15266,7 +15266,7 @@ test("0xED - SBC (Absolute)", function() {
     MOS6502._A = 0;
     MOS6502._RAM[MemoryLocation] = 0;
 
-    //NES._statusRegister.dumpStatus() = 0x20 + 0x08;
+    //MOS6502._statusRegister.dumpStatus() = 0x20 + 0x08;
     MOS6502._PC = PCStart;
 
     MOS6502.emulateCycle();
@@ -15282,7 +15282,7 @@ test("0xED - SBC (Absolute)", function() {
     MOS6502._A = 0;
     MOS6502._RAM[MemoryLocation] = 0;
 
-    //NES._statusRegister.dumpStatus() = 0x20 + 0x08 + 0x01;
+    //MOS6502._statusRegister.dumpStatus() = 0x20 + 0x08 + 0x01;
     MOS6502._PC = PCStart;
 
     MOS6502.emulateCycle();
@@ -15298,7 +15298,7 @@ test("0xED - SBC (Absolute)", function() {
     MOS6502._A = 0x00;
     MOS6502._RAM[MemoryLocation] = 0x01;
 
-    //NES._statusRegister.dumpStatus() = 0x20 + 0x08 + 0x01;
+    //MOS6502._statusRegister.dumpStatus() = 0x20 + 0x08 + 0x01;
     MOS6502._PC = PCStart;
 
     MOS6502.emulateCycle();
@@ -15314,7 +15314,7 @@ test("0xED - SBC (Absolute)", function() {
     MOS6502._A = 0x0A;
     MOS6502._RAM[MemoryLocation] = 0x00;
 
-    //NES._statusRegister.dumpStatus() = 0x20 + 0x08 + 0x01;
+    //MOS6502._statusRegister.dumpStatus() = 0x20 + 0x08 + 0x01;
     MOS6502._PC = PCStart;
 
     MOS6502.emulateCycle();
@@ -15330,7 +15330,7 @@ test("0xED - SBC (Absolute)", function() {
     MOS6502._A = 0x0B;
     MOS6502._RAM[MemoryLocation] = 0x00;
 
-    //NES._statusRegister.dumpStatus() = 0x20 + 0x08;
+    //MOS6502._statusRegister.dumpStatus() = 0x20 + 0x08;
     MOS6502._PC = PCStart;
 
     MOS6502.emulateCycle();
@@ -15346,7 +15346,7 @@ test("0xED - SBC (Absolute)", function() {
     MOS6502._A = 0x9A;
     MOS6502._RAM[MemoryLocation] = 0x00;
 
-    //NES._statusRegister.dumpStatus() = 0x20 + 0x08 + 0x01;
+    //MOS6502._statusRegister.dumpStatus() = 0x20 + 0x08 + 0x01;
     MOS6502._PC = PCStart;
 
     MOS6502.emulateCycle();
@@ -15362,7 +15362,7 @@ test("0xED - SBC (Absolute)", function() {
     MOS6502._A = 0x9B;
     MOS6502._RAM[MemoryLocation] = 0x00;
 
-    //NES._statusRegister.dumpStatus() = 0x20 + 0x08;
+    //MOS6502._statusRegister.dumpStatus() = 0x20 + 0x08;
     MOS6502._PC = PCStart;
 
     MOS6502.emulateCycle();
@@ -15424,7 +15424,7 @@ test("0xFD - SBC (Absolute, X) (Same Page)", function() {
     MOS6502._A = 0;
     MOS6502._RAM[MemoryLocation] = 0;
 
-    //NES._statusRegister.dumpStatus() = 0x20 + 0x08;
+    //MOS6502._statusRegister.dumpStatus() = 0x20 + 0x08;
     MOS6502._PC = PCStart;
 
     MOS6502.emulateCycle();
@@ -15440,7 +15440,7 @@ test("0xFD - SBC (Absolute, X) (Same Page)", function() {
     MOS6502._A = 0;
     MOS6502._RAM[MemoryLocation] = 0;
 
-    //NES._statusRegister.dumpStatus() = 0x20 + 0x08 + 0x01;
+    //MOS6502._statusRegister.dumpStatus() = 0x20 + 0x08 + 0x01;
     MOS6502._PC = PCStart;
 
     MOS6502.emulateCycle();
@@ -15456,7 +15456,7 @@ test("0xFD - SBC (Absolute, X) (Same Page)", function() {
     MOS6502._A = 0x00;
     MOS6502._RAM[MemoryLocation] = 0x01;
 
-    //NES._statusRegister.dumpStatus() = 0x20 + 0x08 + 0x01;
+    //MOS6502._statusRegister.dumpStatus() = 0x20 + 0x08 + 0x01;
     MOS6502._PC = PCStart;
 
     MOS6502.emulateCycle();
@@ -15472,7 +15472,7 @@ test("0xFD - SBC (Absolute, X) (Same Page)", function() {
     MOS6502._A = 0x0A;
     MOS6502._RAM[MemoryLocation] = 0x00;
 
-    //NES._statusRegister.dumpStatus() = 0x20 + 0x08 + 0x01;
+    //MOS6502._statusRegister.dumpStatus() = 0x20 + 0x08 + 0x01;
     MOS6502._PC = PCStart;
 
     MOS6502.emulateCycle();
@@ -15488,7 +15488,7 @@ test("0xFD - SBC (Absolute, X) (Same Page)", function() {
     MOS6502._A = 0x0B;
     MOS6502._RAM[MemoryLocation] = 0x00;
 
-    //NES._statusRegister.dumpStatus() = 0x20 + 0x08;
+    //MOS6502._statusRegister.dumpStatus() = 0x20 + 0x08;
     MOS6502._PC = PCStart;
 
     MOS6502.emulateCycle();
@@ -15504,7 +15504,7 @@ test("0xFD - SBC (Absolute, X) (Same Page)", function() {
     MOS6502._A = 0x9A;
     MOS6502._RAM[MemoryLocation] = 0x00;
 
-    //NES._statusRegister.dumpStatus() = 0x20 + 0x08 + 0x01;
+    //MOS6502._statusRegister.dumpStatus() = 0x20 + 0x08 + 0x01;
     MOS6502._PC = PCStart;
 
     MOS6502.emulateCycle();
@@ -15520,7 +15520,7 @@ test("0xFD - SBC (Absolute, X) (Same Page)", function() {
     MOS6502._A = 0x9B;
     MOS6502._RAM[MemoryLocation] = 0x00;
 
-    //NES._statusRegister.dumpStatus() = 0x20 + 0x08;
+    //MOS6502._statusRegister.dumpStatus() = 0x20 + 0x08;
     MOS6502._PC = PCStart;
 
     MOS6502.emulateCycle();
@@ -15582,7 +15582,7 @@ test("0xFD - SBC (Absolute, X) (Cross Page)", function() {
     MOS6502._A = 0;
     MOS6502._RAM[MemoryLocation] = 0;
 
-    //NES._statusRegister.dumpStatus() = 0x20 + 0x08;
+    //MOS6502._statusRegister.dumpStatus() = 0x20 + 0x08;
     MOS6502._PC = PCStart;
 
     MOS6502.emulateCycle();
@@ -15598,7 +15598,7 @@ test("0xFD - SBC (Absolute, X) (Cross Page)", function() {
     MOS6502._A = 0;
     MOS6502._RAM[MemoryLocation] = 0;
 
-    //NES._statusRegister.dumpStatus() = 0x20 + 0x08 + 0x01;
+    //MOS6502._statusRegister.dumpStatus() = 0x20 + 0x08 + 0x01;
     MOS6502._PC = PCStart;
 
     MOS6502.emulateCycle();
@@ -15614,7 +15614,7 @@ test("0xFD - SBC (Absolute, X) (Cross Page)", function() {
     MOS6502._A = 0x00;
     MOS6502._RAM[MemoryLocation] = 0x01;
 
-    //NES._statusRegister.dumpStatus() = 0x20 + 0x08 + 0x01;
+    //MOS6502._statusRegister.dumpStatus() = 0x20 + 0x08 + 0x01;
     MOS6502._PC = PCStart;
 
     MOS6502.emulateCycle();
@@ -15630,7 +15630,7 @@ test("0xFD - SBC (Absolute, X) (Cross Page)", function() {
     MOS6502._A = 0x0A;
     MOS6502._RAM[MemoryLocation] = 0x00;
 
-    //NES._statusRegister.dumpStatus() = 0x20 + 0x08 + 0x01;
+    //MOS6502._statusRegister.dumpStatus() = 0x20 + 0x08 + 0x01;
     MOS6502._PC = PCStart;
 
     MOS6502.emulateCycle();
@@ -15646,7 +15646,7 @@ test("0xFD - SBC (Absolute, X) (Cross Page)", function() {
     MOS6502._A = 0x0B;
     MOS6502._RAM[MemoryLocation] = 0x00;
 
-    //NES._statusRegister.dumpStatus() = 0x20 + 0x08;
+    //MOS6502._statusRegister.dumpStatus() = 0x20 + 0x08;
     MOS6502._PC = PCStart;
 
     MOS6502.emulateCycle();
@@ -15662,7 +15662,7 @@ test("0xFD - SBC (Absolute, X) (Cross Page)", function() {
     MOS6502._A = 0x9A;
     MOS6502._RAM[MemoryLocation] = 0x00;
 
-    //NES._statusRegister.dumpStatus() = 0x20 + 0x08 + 0x01;
+    //MOS6502._statusRegister.dumpStatus() = 0x20 + 0x08 + 0x01;
     MOS6502._PC = PCStart;
 
     MOS6502.emulateCycle();
@@ -15678,7 +15678,7 @@ test("0xFD - SBC (Absolute, X) (Cross Page)", function() {
     MOS6502._A = 0x9B;
     MOS6502._RAM[MemoryLocation] = 0x00;
 
-    //NES._statusRegister.dumpStatus() = 0x20 + 0x08;
+    //MOS6502._statusRegister.dumpStatus() = 0x20 + 0x08;
     MOS6502._PC = PCStart;
 
     MOS6502.emulateCycle();
@@ -15740,7 +15740,7 @@ test("0xF9 - SBC (Absolute, Y) (Same Page)", function() {
     MOS6502._A = 0;
     MOS6502._RAM[MemoryLocation] = 0;
 
-    //NES._statusRegister.dumpStatus() = 0x20 + 0x08;
+    //MOS6502._statusRegister.dumpStatus() = 0x20 + 0x08;
     MOS6502._PC = PCStart;
 
     MOS6502.emulateCycle();
@@ -15756,7 +15756,7 @@ test("0xF9 - SBC (Absolute, Y) (Same Page)", function() {
     MOS6502._A = 0;
     MOS6502._RAM[MemoryLocation] = 0;
 
-    //NES._statusRegister.dumpStatus() = 0x20 + 0x08 + 0x01;
+    //MOS6502._statusRegister.dumpStatus() = 0x20 + 0x08 + 0x01;
     MOS6502._PC = PCStart;
 
     MOS6502.emulateCycle();
@@ -15772,7 +15772,7 @@ test("0xF9 - SBC (Absolute, Y) (Same Page)", function() {
     MOS6502._A = 0x00;
     MOS6502._RAM[MemoryLocation] = 0x01;
 
-    //NES._statusRegister.dumpStatus() = 0x20 + 0x08 + 0x01;
+    //MOS6502._statusRegister.dumpStatus() = 0x20 + 0x08 + 0x01;
     MOS6502._PC = PCStart;
 
     MOS6502.emulateCycle();
@@ -15788,7 +15788,7 @@ test("0xF9 - SBC (Absolute, Y) (Same Page)", function() {
     MOS6502._A = 0x0A;
     MOS6502._RAM[MemoryLocation] = 0x00;
 
-    //NES._statusRegister.dumpStatus() = 0x20 + 0x08 + 0x01;
+    //MOS6502._statusRegister.dumpStatus() = 0x20 + 0x08 + 0x01;
     MOS6502._PC = PCStart;
 
     MOS6502.emulateCycle();
@@ -15804,7 +15804,7 @@ test("0xF9 - SBC (Absolute, Y) (Same Page)", function() {
     MOS6502._A = 0x0B;
     MOS6502._RAM[MemoryLocation] = 0x00;
 
-    //NES._statusRegister.dumpStatus() = 0x20 + 0x08;
+    //MOS6502._statusRegister.dumpStatus() = 0x20 + 0x08;
     MOS6502._PC = PCStart;
 
     MOS6502.emulateCycle();
@@ -15820,7 +15820,7 @@ test("0xF9 - SBC (Absolute, Y) (Same Page)", function() {
     MOS6502._A = 0x9A;
     MOS6502._RAM[MemoryLocation] = 0x00;
 
-    //NES._statusRegister.dumpStatus() = 0x20 + 0x08 + 0x01;
+    //MOS6502._statusRegister.dumpStatus() = 0x20 + 0x08 + 0x01;
     MOS6502._PC = PCStart;
 
     MOS6502.emulateCycle();
@@ -15836,7 +15836,7 @@ test("0xF9 - SBC (Absolute, Y) (Same Page)", function() {
     MOS6502._A = 0x9B;
     MOS6502._RAM[MemoryLocation] = 0x00;
 
-    //NES._statusRegister.dumpStatus() = 0x20 + 0x08;
+    //MOS6502._statusRegister.dumpStatus() = 0x20 + 0x08;
     MOS6502._PC = PCStart;
 
     MOS6502.emulateCycle();
@@ -15898,7 +15898,7 @@ test("0xF9 - SBC (Absolute, Y) (Cross Page)", function() {
     MOS6502._A = 0;
     MOS6502._RAM[MemoryLocation] = 0;
 
-    //NES._statusRegister.dumpStatus() = 0x20 + 0x08;
+    //MOS6502._statusRegister.dumpStatus() = 0x20 + 0x08;
     MOS6502._PC = PCStart;
 
     MOS6502.emulateCycle();
@@ -15914,7 +15914,7 @@ test("0xF9 - SBC (Absolute, Y) (Cross Page)", function() {
     MOS6502._A = 0;
     MOS6502._RAM[MemoryLocation] = 0;
 
-    //NES._statusRegister.dumpStatus() = 0x20 + 0x08 + 0x01;
+    //MOS6502._statusRegister.dumpStatus() = 0x20 + 0x08 + 0x01;
     MOS6502._PC = PCStart;
 
     MOS6502.emulateCycle();
@@ -15930,7 +15930,7 @@ test("0xF9 - SBC (Absolute, Y) (Cross Page)", function() {
     MOS6502._A = 0x00;
     MOS6502._RAM[MemoryLocation] = 0x01;
 
-    //NES._statusRegister.dumpStatus() = 0x20 + 0x08 + 0x01;
+    //MOS6502._statusRegister.dumpStatus() = 0x20 + 0x08 + 0x01;
     MOS6502._PC = PCStart;
 
     MOS6502.emulateCycle();
@@ -15946,7 +15946,7 @@ test("0xF9 - SBC (Absolute, Y) (Cross Page)", function() {
     MOS6502._A = 0x0A;
     MOS6502._RAM[MemoryLocation] = 0x00;
 
-    //NES._statusRegister.dumpStatus() = 0x20 + 0x08 + 0x01;
+    //MOS6502._statusRegister.dumpStatus() = 0x20 + 0x08 + 0x01;
     MOS6502._PC = PCStart;
 
     MOS6502.emulateCycle();
@@ -15962,7 +15962,7 @@ test("0xF9 - SBC (Absolute, Y) (Cross Page)", function() {
     MOS6502._A = 0x0B;
     MOS6502._RAM[MemoryLocation] = 0x00;
 
-    //NES._statusRegister.dumpStatus() = 0x20 + 0x08;
+    //MOS6502._statusRegister.dumpStatus() = 0x20 + 0x08;
     MOS6502._PC = PCStart;
 
     MOS6502.emulateCycle();
@@ -15978,7 +15978,7 @@ test("0xF9 - SBC (Absolute, Y) (Cross Page)", function() {
     MOS6502._A = 0x9A;
     MOS6502._RAM[MemoryLocation] = 0x00;
 
-    //NES._statusRegister.dumpStatus() = 0x20 + 0x08 + 0x01;
+    //MOS6502._statusRegister.dumpStatus() = 0x20 + 0x08 + 0x01;
     MOS6502._PC = PCStart;
 
     MOS6502.emulateCycle();
@@ -15994,7 +15994,7 @@ test("0xF9 - SBC (Absolute, Y) (Cross Page)", function() {
     MOS6502._A = 0x9B;
     MOS6502._RAM[MemoryLocation] = 0x00;
 
-    //NES._statusRegister.dumpStatus() = 0x20 + 0x08;
+    //MOS6502._statusRegister.dumpStatus() = 0x20 + 0x08;
     MOS6502._PC = PCStart;
 
     MOS6502.emulateCycle();
@@ -16057,7 +16057,7 @@ test("0xE1 - SBC (Indirect, X)", function() {
     MOS6502._A = 0;
     MOS6502._RAM[MemoryLocation] = 0;
 
-    //NES._statusRegister.dumpStatus() = 0x20 + 0x08;
+    //MOS6502._statusRegister.dumpStatus() = 0x20 + 0x08;
     MOS6502._PC = PCStart;
 
     MOS6502.emulateCycle();
@@ -16073,7 +16073,7 @@ test("0xE1 - SBC (Indirect, X)", function() {
     MOS6502._A = 0;
     MOS6502._RAM[MemoryLocation] = 0;
 
-    //NES._statusRegister.dumpStatus() = 0x20 + 0x08 + 0x01;
+    //MOS6502._statusRegister.dumpStatus() = 0x20 + 0x08 + 0x01;
     MOS6502._PC = PCStart;
 
     MOS6502.emulateCycle();
@@ -16089,7 +16089,7 @@ test("0xE1 - SBC (Indirect, X)", function() {
     MOS6502._A = 0x00;
     MOS6502._RAM[MemoryLocation] = 0x01;
 
-    //NES._statusRegister.dumpStatus() = 0x20 + 0x08 + 0x01;
+    //MOS6502._statusRegister.dumpStatus() = 0x20 + 0x08 + 0x01;
     MOS6502._PC = PCStart;
 
     MOS6502.emulateCycle();
@@ -16105,7 +16105,7 @@ test("0xE1 - SBC (Indirect, X)", function() {
     MOS6502._A = 0x0A;
     MOS6502._RAM[MemoryLocation] = 0x00;
 
-    //NES._statusRegister.dumpStatus() = 0x20 + 0x08 + 0x01;
+    //MOS6502._statusRegister.dumpStatus() = 0x20 + 0x08 + 0x01;
     MOS6502._PC = PCStart;
 
     MOS6502.emulateCycle();
@@ -16121,7 +16121,7 @@ test("0xE1 - SBC (Indirect, X)", function() {
     MOS6502._A = 0x0B;
     MOS6502._RAM[MemoryLocation] = 0x00;
 
-    //NES._statusRegister.dumpStatus() = 0x20 + 0x08;
+    //MOS6502._statusRegister.dumpStatus() = 0x20 + 0x08;
     MOS6502._PC = PCStart;
 
     MOS6502.emulateCycle();
@@ -16137,7 +16137,7 @@ test("0xE1 - SBC (Indirect, X)", function() {
     MOS6502._A = 0x9A;
     MOS6502._RAM[MemoryLocation] = 0x00;
 
-    //NES._statusRegister.dumpStatus() = 0x20 + 0x08 + 0x01;
+    //MOS6502._statusRegister.dumpStatus() = 0x20 + 0x08 + 0x01;
     MOS6502._PC = PCStart;
 
     MOS6502.emulateCycle();
@@ -16153,7 +16153,7 @@ test("0xE1 - SBC (Indirect, X)", function() {
     MOS6502._A = 0x9B;
     MOS6502._RAM[MemoryLocation] = 0x00;
 
-    //NES._statusRegister.dumpStatus() = 0x20 + 0x08;
+    //MOS6502._statusRegister.dumpStatus() = 0x20 + 0x08;
     MOS6502._PC = PCStart;
 
     MOS6502.emulateCycle();
@@ -16216,7 +16216,7 @@ test("0xF1 - SBC (Indirect, Y) (Same Page)", function() {
     MOS6502._A = 0;
     MOS6502._RAM[MemoryLocation] = 0;
 
-    //NES._statusRegister.dumpStatus() = 0x20 + 0x08;
+    //MOS6502._statusRegister.dumpStatus() = 0x20 + 0x08;
     MOS6502._PC = PCStart;
 
     MOS6502.emulateCycle();
@@ -16232,7 +16232,7 @@ test("0xF1 - SBC (Indirect, Y) (Same Page)", function() {
     MOS6502._A = 0;
     MOS6502._RAM[MemoryLocation] = 0;
 
-    //NES._statusRegister.dumpStatus() = 0x20 + 0x08 + 0x01;
+    //MOS6502._statusRegister.dumpStatus() = 0x20 + 0x08 + 0x01;
     MOS6502._PC = PCStart;
 
     MOS6502.emulateCycle();
@@ -16248,7 +16248,7 @@ test("0xF1 - SBC (Indirect, Y) (Same Page)", function() {
     MOS6502._A = 0x00;
     MOS6502._RAM[MemoryLocation] = 0x01;
 
-    //NES._statusRegister.dumpStatus() = 0x20 + 0x08 + 0x01;
+    //MOS6502._statusRegister.dumpStatus() = 0x20 + 0x08 + 0x01;
     MOS6502._PC = PCStart;
 
     MOS6502.emulateCycle();
@@ -16264,7 +16264,7 @@ test("0xF1 - SBC (Indirect, Y) (Same Page)", function() {
     MOS6502._A = 0x0A;
     MOS6502._RAM[MemoryLocation] = 0x00;
 
-    //NES._statusRegister.dumpStatus() = 0x20 + 0x08 + 0x01;
+    //MOS6502._statusRegister.dumpStatus() = 0x20 + 0x08 + 0x01;
     MOS6502._PC = PCStart;
 
     MOS6502.emulateCycle();
@@ -16280,7 +16280,7 @@ test("0xF1 - SBC (Indirect, Y) (Same Page)", function() {
     MOS6502._A = 0x0B;
     MOS6502._RAM[MemoryLocation] = 0x00;
 
-    //NES._statusRegister.dumpStatus() = 0x20 + 0x08;
+    //MOS6502._statusRegister.dumpStatus() = 0x20 + 0x08;
     MOS6502._PC = PCStart;
 
     MOS6502.emulateCycle();
@@ -16296,7 +16296,7 @@ test("0xF1 - SBC (Indirect, Y) (Same Page)", function() {
     MOS6502._A = 0x9A;
     MOS6502._RAM[MemoryLocation] = 0x00;
 
-    //NES._statusRegister.dumpStatus() = 0x20 + 0x08 + 0x01;
+    //MOS6502._statusRegister.dumpStatus() = 0x20 + 0x08 + 0x01;
     MOS6502._PC = PCStart;
 
     MOS6502.emulateCycle();
@@ -16312,7 +16312,7 @@ test("0xF1 - SBC (Indirect, Y) (Same Page)", function() {
     MOS6502._A = 0x9B;
     MOS6502._RAM[MemoryLocation] = 0x00;
 
-    //NES._statusRegister.dumpStatus() = 0x20 + 0x08;
+    //MOS6502._statusRegister.dumpStatus() = 0x20 + 0x08;
     MOS6502._PC = PCStart;
 
     MOS6502.emulateCycle();
@@ -16375,7 +16375,7 @@ test("0xF1 - SBC (Indirect, Y) (Cross Page)", function() {
     MOS6502._A = 0;
     MOS6502._RAM[MemoryLocation] = 0;
 
-    //NES._statusRegister.dumpStatus() = 0x20 + 0x08;
+    //MOS6502._statusRegister.dumpStatus() = 0x20 + 0x08;
     MOS6502._PC = PCStart;
 
     MOS6502.emulateCycle();
@@ -16391,7 +16391,7 @@ test("0xF1 - SBC (Indirect, Y) (Cross Page)", function() {
     MOS6502._A = 0;
     MOS6502._RAM[MemoryLocation] = 0;
 
-    //NES._statusRegister.dumpStatus() = 0x20 + 0x08 + 0x01;
+    //MOS6502._statusRegister.dumpStatus() = 0x20 + 0x08 + 0x01;
     MOS6502._PC = PCStart;
 
     MOS6502.emulateCycle();
@@ -16407,7 +16407,7 @@ test("0xF1 - SBC (Indirect, Y) (Cross Page)", function() {
     MOS6502._A = 0x00;
     MOS6502._RAM[MemoryLocation] = 0x01;
 
-    //NES._statusRegister.dumpStatus() = 0x20 + 0x08 + 0x01;
+    //MOS6502._statusRegister.dumpStatus() = 0x20 + 0x08 + 0x01;
     MOS6502._PC = PCStart;
 
     MOS6502.emulateCycle();
@@ -16423,7 +16423,7 @@ test("0xF1 - SBC (Indirect, Y) (Cross Page)", function() {
     MOS6502._A = 0x0A;
     MOS6502._RAM[MemoryLocation] = 0x00;
 
-    //NES._statusRegister.dumpStatus() = 0x20 + 0x08 + 0x01;
+    //MOS6502._statusRegister.dumpStatus() = 0x20 + 0x08 + 0x01;
     MOS6502._PC = PCStart;
 
     MOS6502.emulateCycle();
@@ -16439,7 +16439,7 @@ test("0xF1 - SBC (Indirect, Y) (Cross Page)", function() {
     MOS6502._A = 0x0B;
     MOS6502._RAM[MemoryLocation] = 0x00;
 
-    //NES._statusRegister.dumpStatus() = 0x20 + 0x08;
+    //MOS6502._statusRegister.dumpStatus() = 0x20 + 0x08;
     MOS6502._PC = PCStart;
 
     MOS6502.emulateCycle();
@@ -16455,7 +16455,7 @@ test("0xF1 - SBC (Indirect, Y) (Cross Page)", function() {
     MOS6502._A = 0x9A;
     MOS6502._RAM[MemoryLocation] = 0x00;
 
-    //NES._statusRegister.dumpStatus() = 0x20 + 0x08 + 0x01;
+    //MOS6502._statusRegister.dumpStatus() = 0x20 + 0x08 + 0x01;
     MOS6502._PC = PCStart;
 
     MOS6502.emulateCycle();
@@ -16471,7 +16471,7 @@ test("0xF1 - SBC (Indirect, Y) (Cross Page)", function() {
     MOS6502._A = 0x9B;
     MOS6502._RAM[MemoryLocation] = 0x00;
 
-    //NES._statusRegister.dumpStatus() = 0x20 + 0x08;
+    //MOS6502._statusRegister.dumpStatus() = 0x20 + 0x08;
     MOS6502._PC = PCStart;
 
     MOS6502.emulateCycle();
@@ -16952,7 +16952,7 @@ test("0xF0 - BEQ (Relative)", function() {
      * Test 2: Zero set. Branch forward to same page. (3 cycles)
      */
 
-    //NES._statusRegister.dumpStatus() = 0x22;
+    //MOS6502._statusRegister.dumpStatus() = 0x22;
     MOS6502._PC = PCStart;
     MOS6502._RAM[PCStart + 1] = relativePlusSamePage;
     MOS6502._CYCLES = 0;
@@ -16971,7 +16971,7 @@ test("0xF0 - BEQ (Relative)", function() {
      * Test 3: Zero set. Branch backward to same page. (3 cycles)
      */
 
-    //NES._statusRegister.dumpStatus() = 0x22;
+    //MOS6502._statusRegister.dumpStatus() = 0x22;
     MOS6502._PC = PCStart;
     MOS6502._RAM[PCStart + 1] = relativeMinusSamePage;
     MOS6502._CYCLES = 0;
@@ -16992,7 +16992,7 @@ test("0xF0 - BEQ (Relative)", function() {
      * NOTE: It's not possible to branch to another page from 0x4080. Using 0x40E0 for forward branch.
      */
 
-    //NES._statusRegister.dumpStatus() = 0x23;
+    //MOS6502._statusRegister.dumpStatus() = 0x23;
     MOS6502._PC = PCStartHigh;
     MOS6502._RAM[PCStartHigh + 1] = relativePlusNextPage;
     MOS6502._CYCLES = 0;
@@ -17011,7 +17011,7 @@ test("0xF0 - BEQ (Relative)", function() {
      * Test 5: Zero set. Branch backward to different page. (4 cycles)
      */
 
-    //NES._statusRegister.dumpStatus() = 0x23;
+    //MOS6502._statusRegister.dumpStatus() = 0x23;
     MOS6502._PC = PCStartLow;
     MOS6502._RAM[PCStartLow + 1] = relativeMinusNextPage;
     MOS6502._CYCLES = 0;
