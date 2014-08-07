@@ -19,10 +19,6 @@
  * In addition, the PC will point to a single byte and incremented according to the length of the command.
  */
 
-var JSEmu = window.JSEmu || {};
-
-JSEmu.NES = window.JSEmu.NES || {};
-
 var MOS6502 = function() {
 
     /* Registers */
@@ -3102,5 +3098,3 @@ MOS6502.prototype.BRK = function() {
     }
 
 };
-
-JSEmu.NES.CPU = new MOS6502();
