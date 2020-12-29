@@ -210,11 +210,16 @@ Chip8Emu.prototype = {
 
                 // There's some problem with speed here... I'm assuming it's to do with the way that the loop processes
                 // a fairly big array rather inefficiently... Perhaps I should find another way to run the loop...
+                var start;
 
-               requestAnimFrame(function cpuCycle() {
-                    for (i = 0 , len = me.cycleAmount; i < len; i++) {
-                        me.emulateCycle();
-                    }
+               requestAnimationFrame(function cpuCycle(timeStamp) {
+                   if (typeof start === 'undefined') start = timeStamp;
+                   var elapsed = timeStamp - start;
+
+                   if (elapsed >= 16) {
+                       start = timeStamp;
+                       me.emulateCycle();
+                   }
 
                     if (me.drawflag) {
                         me.renderer.renderScreen(me.gfx);
@@ -227,14 +232,14 @@ Chip8Emu.prototype = {
                         }
 
                         if (me.sound_timer > 0) {
-                            if (me.sound_timer == 1) {
+                            if (me.sound_timer === 1) {
                                 console.log("BEEP!");
                             }
                             me.sound_timer--;
                         }
                     }
 
-                   requestAnimFrame(cpuCycle);
+                   requestAnimationFrame(cpuCycle);
                });
 
             } else {
@@ -338,7 +343,8 @@ Chip8Emu.prototype = {
 
             case 0x2000: // 0x2nnn: Calls the subroutine at address nnn
                 // Execute opcode
-                me.stack[me.sp] = me.pc + 2; // If we don't increment the program counter here, we will just keep bouncing.
+                me.stack[me.sp] = me.pc + 2; // If we don't increment the program counter here,
+                                             // we will just keep bouncing.
                 me.sp++;
                 // We're jumping... Don't increment the program counter, but point it somewhere else...
                 me.pc = me.opcode & 0x0FFF;
@@ -357,7 +363,7 @@ Chip8Emu.prototype = {
 
             case 0x4000: // 0x4Xnn: Skips the next instruction if VX doesn't equal nn.
                 // Execute opcode
-                if(me.V[me.Vx] != (me.opcode & 0x00FF)) {
+                if(me.V[me.Vx] !== (me.opcode & 0x00FF)) {
                     // Not equal, so skip the next instruction.
                     me.pc += 4;
                 } else {
