@@ -26,7 +26,7 @@ Chip8Display.prototype = {
 
         for (i = 0 , len = vRam.length; i < len ; i++) {
 
-            if(vRam[i] == 1) {
+            if(vRam[i] === 1) {
 
                 me.drawPixel(i % 64, y,'#FFF');
 
@@ -36,7 +36,7 @@ Chip8Display.prototype = {
 
             }
 
-            if(i % 64 == 0 && i % 32 == 0 && i != 0) { y++; }
+            if(i % 64 === 0 && i % 32 === 0 && i !== 0) { y++; }
 
         }
 

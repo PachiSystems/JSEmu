@@ -2,7 +2,7 @@ var Chip8Emu = function() {
     var memory = new ArrayBuffer(0x1000);
 
     this.delay_timer = 0;
-    this.cycleAmount = 16; // Should give us about 60Hz
+    this.cycleAmount = 8; // Should give us about 60Hz
     this.halt = false;
     this.gfx = new Array(64 * 32);
     this.I = 0;
@@ -120,22 +120,22 @@ Chip8Emu.prototype = {
          This object maps an ASCII keycode to the keypad HEX value.
          */
         me.keymap = {
-            49:0x1, // PC 1 -> C8 1
-            50:0x2, // PC 2 -> C8 2
-            51:0x3, // PC 3 -> C8 3
-            52:0xC, // PC 4 -> C8 C
-            81:0x4, // PC Q -> C8 4
-            87:0x5, // PC W -> C8 5
-            69:0x6, // PC E -> C8 6
-            82:0xD, // PC R -> C8 D
-            65:0x7, // PC A -> C8 7
-            83:0x8, // PC S -> C8 8
-            68:0x9, // PC D -> C8 9
-            70:0xE, // PC F -> C8 E
-            90:0xA, // PC Z -> C8 A
-            88:0x0, // PC X -> C8 0
-            67:0xB, // PC C -> C8 B
-            86:0xF  // PC V -> C8 F
+            "Digit1":0x1, // PC 1 -> C8 1
+            "Digit2":0x2, // PC 2 -> C8 2
+            "Digit3":0x3, // PC 3 -> C8 3
+            "Digit4":0xC, // PC 4 -> C8 C
+            "KeyQ":0x4, // PC Q -> C8 4
+            "KeyW":0x5, // PC W -> C8 5
+            "KeyE":0x6, // PC E -> C8 6
+            "KeyR":0xD, // PC R -> C8 D
+            "KeyA":0x7, // PC A -> C8 7
+            "KeyS":0x8, // PC S -> C8 8
+            "KeyD":0x9, // PC D -> C8 9
+            "KeyF":0xE, // PC F -> C8 E
+            "KeyZ":0xA, // PC Z -> C8 A
+            "KeyX":0x0, // PC X -> C8 0
+            "KeyC":0xB, // PC C -> C8 B
+            "KeyV":0xF  // PC V -> C8 F
         };
         for (i = 0 ; i < me.key.length ; i++) { me.key[i]=0; }
 
@@ -147,7 +147,7 @@ Chip8Emu.prototype = {
          */
         window.onkeydown = function (ev) {
 
-            var pressedKey = (ev || window.event).keyCode;
+            var pressedKey = ev.code;
 
             if(pressedKey in me.keymap) {
                 me.key[me.keymap[pressedKey]] = 1;
@@ -156,7 +156,7 @@ Chip8Emu.prototype = {
 
         window.onkeyup = function (ev) {
             // Unset the lastKeyPressed.
-            var releasedKey = (ev || window.event).keyCode;
+            var releasedKey = ev.code;
 
             if(releasedKey in me.keymap) {
                 me.key[me.keymap[releasedKey]] = 0;
@@ -216,10 +216,15 @@ Chip8Emu.prototype = {
                    if (typeof start === 'undefined') start = timeStamp;
                    var elapsed = timeStamp - start;
 
-                   if (elapsed >= 16) {
+                   // This is incredibly slow...
+                   if (elapsed >= me.cycleAmount) {
                        start = timeStamp;
                        me.emulateCycle();
                    }
+
+                   // for (i = 0 , len = me.cycleAmount; i < len; i++) {
+                   //     me.emulateCycle();
+                   // }
 
                     if (me.drawflag) {
                         me.renderer.renderScreen(me.gfx);
