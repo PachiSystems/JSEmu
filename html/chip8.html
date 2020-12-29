@@ -16,8 +16,6 @@
                 left: 0;
             }
         </style>
-        <script type="text/javascript" src="../libs/jquery-1.10.2.min.js"></script>
-<!--        <script type="text/javascript" src="../libs/animPolyfill.js"></script>-->
         <script type="text/javascript" src="../js/CHIP8/CHIP8.js"></script>
         <script type="text/javascript" src="../js/CHIP8/CHIP8Renderer.js"></script>
     </head>
@@ -26,18 +24,12 @@
     <input type="text" name="ipadinput" value="" /><br>
     Controls: Left = Q, Right = E, Fire = W
     <script>
-
-        $(function() {
-
+        document.addEventListener('DOMContentLoaded', function() {
             var emu = new Chip8Emu(),
                 renderer = new Chip8Display();
-
             renderer.init('chip8Screen');
-
             emu.beginEmulation("../roms/chip8/MAZE.ch8",renderer);
-
-        });
-
+        })
     </script>
     </body>
 </html>
